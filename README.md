@@ -1,41 +1,40 @@
 # GAP Extension Library #
 
-### Author ###
+## Author ##
 Haopin Wu <psistwu@outlook.com>
 
-### Synopsis ###
+## Synopsis ##
 This library extends capability of GAP in
-the the following aspects.
+the the following aspects:
 
-#### System ####
-
+### System ###
 * "libSys.g"
 * exception handling
 
-#### Basic group theory ####
-
+### Basic group theory ###
 * "libBasicGroupTheory.g"
 * the partial order for conjugacy classes of subgroups (CCSs)
 * lattice of CCSs
 
-#### Orbit types ####
-
+### Orbit types ###
 * "libOrbitTypes.g"
 * dimension of fixed set
 * orbit types
 * lattice of orbit types
+* alpha-characteristic
 
-#### Direct product of groups ####
-
+### Direct product of groups ###
 * "libGroupDirectProduct.g"
 * CCSs
 
-#### Representation & Character theory ####
-
+### Representation & Character theory ###
 * "libRespnCharTheory.g"
 
-#### Burnside ring ####
-
+### Burnside ring ###
 * "libBurnsideRing.g"
 * calculus in the Burnside ring
 * basic degrees
+
+### 2-transitive group ###
+* "lib2transtiveGroup.g"
+* 2transitivity of groups

@@ -13,8 +13,8 @@
 # => Read( "/home/psist/Development/lib/gap/libSys.g" );
 
 # read declaration file
-  Read( "/home/psist/Development/lib/gap/libRepresentationCharacterTheory.gd" );
+  Read( "/home/psist/Development/lib/gap/libRepsnCharTheory.gd" );
 
 # read implementation file
-  Read( "/home/psist/Development/lib/gap/libRepresentationCharacterTheory.gi" );
+  Read( "/home/psist/Development/lib/gap/libRepsnCharTheory.gi" );
 

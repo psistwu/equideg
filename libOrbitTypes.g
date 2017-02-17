@@ -14,8 +14,8 @@
 # => Read("/home/psist/Development/lib/gap/libSys.g");
 
 # include declaration file
-  Read("/home/psist/project/lib/gap/libLatticeOrbitTypes.gd");
+  Read("/home/psist/project/lib/gap/libOrbitTypes.gd");
 
 # include implementation file
-  Read("/home/psist/project/lib/gap/libLatticeOrbitTypes.gi");
+  Read("/home/psist/project/lib/gap/libOrbitTypes.gi");
 
