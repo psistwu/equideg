@@ -1,105 +1,43 @@
-#-------
-# GAP: Basic Group Theory Library
-#-------
+# GAP: Basic Group Theory Library #
+
+### Synopsis ###
+#---
 # Declaration file of libBasicGroupTheory.g
-#
-# Author: Hao-pin Wu <hxw132130@utdallas.edu>
-# Last update:  2016-11-24
-#-------
-
-#-----
-# global variable(s)
-#-----
-
-#-----
-# attribute(s)
-#-----
-
-#---
-# CCSubgroups
-#---
-  if IsReadOnlyGlobal( "CCSubgroups" ) then
-    MakeReadWriteGlobal( "CCSubgroups" );
-    MakeReadWriteGlobal( "SetCCSubgroups" );
-    MakeReadWriteGlobal( "HasCCSubgroups" );
-    UnbindGlobal( "CCSubgroups" );
-    UnbindGlobal( "SetCCSubgroups" );
-    UnbindGlobal( "HasCCSubgroups" );
-  fi;
-  DeclareAttribute( "CCSubgroups", IsGroup );
 #---
 
+### Author ###
 #---
-# CCSubgroups
-#---
-  if IsReadOnlyGlobal( "CCSubgroups" ) then
-    MakeReadWriteGlobal( "CCSubgroups" );
-    MakeReadWriteGlobal( "SetCCSubgroups" );
-    MakeReadWriteGlobal( "HasCCSubgroups" );
-    UnbindGlobal( "CCSubgroups" );
-    UnbindGlobal( "SetCCSubgroups" );
-    UnbindGlobal( "HasCCSubgroups" );
-  fi;
-  DeclareAttribute( "CCSubgroups", IsGroup );
+# Hao-pin Wu <hxw132130@utdallas.edu>
 #---
 
-#-----
-# property(s)
-#-----
+## Part 1: Lattice of Conjugacy Classes of Subgroups ##
 
-#-----
-# method(s)
-#-----
+### category ###
+  DeclareCategory( "IsLatticeCCSs", CategoryCollections( CategoryCollections( CategoryCollections( IsMultiplicativeElementWithInverse ) ) ) );
 
-#-----
-# function(s)
-#-----
+### representation ###
+  DeclareRepresentation( "IsLatticeCCSsRep", IsAttributeStoringRep, [ "conjugacyClassesSubgroups", "group" ]);
 
-#---
-# pCyclicGroup
-#---
-  if IsBound( pCyclicGroup ) then
-    Unbind( pCyclicGroup );
-  fi;
-#---
+### constructor ###
+  DeclareOperation( "LatticeCCSs", IsGroup );
 
-#---
-# pDihedralGroup
-#---
-  if IsBound( pDihedralGroup ) then
-    Unbind( pDihedralGroup );
-  fi;
-#---
+### attribute ###
+  DeclareAttribute( "MaximalSubCCSsLattice", IsLatticeCCSs );
 
-#---
-# idCCS
-#---
-  if IsBound( idCCS ) then
-    Unbind( idCCS );
-  fi;
-#---
+  DeclareAttribute( "MinimalSupCCSsLattice", IsLatticeCCSs );
 
-#---
-# isSubgroupUptoConjugacy
-#---
-  if IsBound( isSubgroupUptoConjugacy ) then
-    Unbind( isSubgroupUptoConjugacy );
-  fi;
-#---
+## Part 2: other tools
 
-#---
-# nLHnumber
-#---
-  if IsBound( nLHnumber ) then
-    Unbind( nLHnumber );
-  fi;
-#---
+### attribute ###
+  DeclareAttribute( "CCSubgroups", IsGroup and HasParentAttr );
 
-#---
-# removeExtraConjugateCopy
-#---
-  if IsBound( removeExtraConjugateCopy ) then
-    Unbind( removeExtraConjugateCopy );
-  fi;
-#---
+### operation ###
+  DeclareOperation( "nLHnumber", [ IsGroup and HasParentAttr, IsGroup and HasParentAttr ] );
+
+### function ###
+  DeclareGlobalFunction( "pCyclicGroup" );
+
+  DeclareGlobalFunction( "pDihedralGroup" );
+
+  DeclareGlobalFunction( "removeExtraConjugateCopies" );
 

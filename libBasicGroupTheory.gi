@@ -4,7 +4,6 @@
 # Implementation file of libBasicGroupTheory.g
 #
 # Author: Hao-pin Wu <hxw132130@utdallas.edu>
-# Last update:  2016-11-24
 #-------
 
 #-----
@@ -14,17 +13,26 @@
 #---
 # CCSubgroups
 #---
+#CCSubgroups( subg ) returns the CCS which contains subg
+#
+# input
+#	subg:	a subgroup
+#
+# output
+#	ccs:	the CCS which contains subg
+#
+
   InstallMethod( CCSubgroups,
-    "the conjugacy class of subgroups containing the given subgroup",
+    "the CCS containing the given subgroup",
     [ IsGroup and HasParentAttr ],
     function( subg )
 
       local g,		# the parent group
-            ccs_list,	# conjugacy classes of subgroups
-            ccs;	# conjugacy class of subgroups
+            ccs_list,	# conjugacy classes of subgroups of g
+            ccs;	# conjugacy class of subgroups which contains h
 
       g := ParentAttr( subg );
-      ccs_list := ConjugacyClassesSubgroups(g);
+      ccs_list := ConjugacyClassesSubgroups( g );
 
       for ccs in ccs_list do
         if ( subg in ccs ) then
@@ -37,7 +45,27 @@
 #---
 
 #---
-# LatticeCCSs
+# MaximalCCSsLattice
+#---
+  InstallMethod( MaximalCCSsLattice,
+    "find the maximal subCCSs of the given CCS",
+    [ IsGeneratorsOfSemigroup and IsConjugacyClassSubgroupsRep ],
+    function( ccs )
+
+      local g,
+            subg,
+            lat,
+            ccs_list,
+            max_subg_lat
+
+      subg := Representative( ccs );
+      g := ParentAttr( subg );
+      lat := LatticeSubgroups( g );
+      ccs := ConjugacyClassesSubgroups( g );
+      max_subg_lat := MaximalSubgroupsLattice( lat );
+
+    end;
+  );
 #---
 
 #-----
@@ -58,8 +86,8 @@
     function( ccs1, ccs2 )
 
     # local variables
-    local s1,		# subgroup in ccs1
-          s2;		# subgroup in ccs2
+    local s1,		# subgroup in c1
+          s2;		# subgroup in c2
 
     s1 := Representative(ccs1);
 
@@ -229,6 +257,9 @@
 #---
   isSubgroupUptoConjugacy := function(G, supg, subg)
 #---
+### this function becomes archaic
+### it will be removed in the future version
+#
 #isSubgroupUptoConjugacy(G, supg, subg)
 #	determines whether subg is
 #	a subgroup of supg upto conjugacy in G
@@ -341,4 +372,3 @@
 #---
   end;
 #---
-
