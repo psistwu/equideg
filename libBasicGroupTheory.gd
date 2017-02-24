@@ -10,6 +10,7 @@
 # Hao-pin Wu <hxw132130@utdallas.edu>
 #---
 
+
 ## Part 1: Lattice of Conjugacy Classes of Subgroups ##
 
 ### category ###
@@ -19,14 +20,21 @@
   DeclareRepresentation( "IsLatticeCCSsRep", IsAttributeStoringRep, [ "conjugacyClassesSubgroups", "group" ]);
 
 ### constructor ###
-  DeclareOperation( "LatticeCCSs", IsGroup );
+
+#### LatticeCCSs ####
+#---
+# LatticeCCSs( G ) is the constructor of lattice of CCSs of G.
+#	It is also an attribute of G.
+#---
+  DeclareAttribute( "LatticeCCSs", IsGroup );
 
 ### attribute ###
   DeclareAttribute( "MaximalSubCCSsLattice", IsLatticeCCSs );
 
   DeclareAttribute( "MinimalSupCCSsLattice", IsLatticeCCSs );
 
-## Part 2: other tools
+
+## Part 2: general tools ##
 
 ### attribute ###
   DeclareAttribute( "CCSubgroups", IsGroup and HasParentAttr );
