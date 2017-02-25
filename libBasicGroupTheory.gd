@@ -11,7 +11,7 @@
 #---
 
 
-## Part 1: Lattice of Conjugacy Classes of Subgroups ##
+## Section 1: Lattice of Conjugacy Classes of Subgroups ##
 
 ### category ###
 
@@ -46,7 +46,7 @@
   DeclareAttribute( "MinimalSupCCSsLattice", IsLatticeCCSs );
 
 
-## Part 2: general tools ##
+## Section 2: general tools ##
 
 ### attribute ###
   DeclareAttribute( "CCSubgroups", IsGroup and HasParentAttr );
