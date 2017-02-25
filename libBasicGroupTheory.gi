@@ -15,9 +15,8 @@
 
 ### constructor ###
 
-#### LatticeCCSs ####
 #---
-# LatticeCCSs( G ) is the constructor of lattice of CCSs of G.
+#LatticeCCSs( G ) is the constructor of lattice of CCSs of G.
 #	It is also an attribute of G.
 #---
   InstallMethod( LatticeCCSs,
@@ -35,6 +34,91 @@
         );
       end
   );
+
+### attribute ###
+
+#---
+#MaximalSubCCSsLattice( lat ) finds maximal subCCSs of
+#	each CCS in the lattice.
+#---
+  InstallMethod( MaximalSubCCSsLattice,
+      "find maximal subCCSs of each CCS in the lattice",
+      [ IsLatticeCCSs and IsLatticeCCSsRep ],
+      function( lat )
+        local i, j,		# indices
+              ccs_list,		# CCSs
+              max_subccs_list;  # output
+
+        # extract the conjugacy classes of subgroups
+        ccs_list := lat!.conjugacyClassesSubgroups;
+
+        # initialize max_subccs_list;
+        max_subccs_list := [ ];
+
+        # find subCCSs of each CCS
+        for i in Reversed( [ 1 .. Size( ccs_list ) ] ) do
+          Add( max_subccs_list, [ ], 1 );
+          for j in [ 1 .. i-1 ] do
+            if ( ccs_list[ j ] < ccs_list[ i ] ) then
+              Add( max_subccs_list[ 1 ], j );
+            fi;
+          od;
+        od;
+
+        # remove subCCSs of each CCS which are not maximal
+        for i in Reversed( [ 1 .. Size( ccs_list ) ] ) do
+          j := 0;
+          while ( j < Size( max_subccs_list[ i ] ) - 1 ) do
+            SubtractSet( max_subccs_list[ i ], max_subccs_list[ max_subccs_list[ i ][ Size( max_subccs_list[ i ] ) - j ] ] );
+            j := j + 1;
+          od;
+        od;
+
+        return max_subccs_list;
+      end
+  );
+
+#---
+#MinimalSupCCSsLattice( lat ) finds minimal supCCSs of
+#	each CCS in the lattice.
+#---
+  InstallMethod( MinimalSupCCSsLattice,
+      "find minimal supCCSs of each CCS in the lattice",
+      [ IsLatticeCCSs and IsLatticeCCSsRep ],
+      function( lat )
+        local i, j,		# indices
+              ccs_list,		# CCSs
+              min_supccs_list;  # output
+
+        # extract the conjugacy classes of subgroups
+        ccs_list := lat!.conjugacyClassesSubgroups;
+
+        # initialize min_supccs_list;
+        min_supccs_list := [ ];
+
+        # find supCCSs of each CCS
+        for i in [ 1 .. Size( ccs_list ) ] do
+          Add( min_supccs_list, [ ] );
+          for j in [ i+1 .. Size( ccs_list ) ] do
+            if ( ccs_list[ i ] < ccs_list[ j ] ) then
+              Add( min_supccs_list[ Size( min_supccs_list ) ], j );
+            fi;
+          od;
+        od;
+
+        # remove supCCSs of each CCS which are not minimal
+        for i in [ 1 .. Size( ccs_list ) ] do
+          j := 1;
+          while ( j < Size( min_supccs_list[ i ] ) ) do
+            SubtractSet( min_supccs_list[ i ], min_supccs_list[ min_supccs_list[ i ][ j ] ] );
+            j := j + 1;
+          od;
+        od;
+
+        return min_supccs_list;
+      end
+  );
+
 
 ## Part 2: general tools ##
 

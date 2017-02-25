@@ -14,14 +14,17 @@
 ## Part 1: Lattice of Conjugacy Classes of Subgroups ##
 
 ### category ###
+
   DeclareCategory( "IsLatticeCCSs", CategoryCollections( CategoryCollections( CategoryCollections( IsMultiplicativeElementWithInverse ) ) ) );
 
+
 ### representation ###
+
   DeclareRepresentation( "IsLatticeCCSsRep", IsAttributeStoringRep, [ "conjugacyClassesSubgroups", "group" ]);
+
 
 ### constructor ###
 
-#### LatticeCCSs ####
 #---
 # LatticeCCSs( G ) is the constructor of lattice of CCSs of G.
 #	It is also an attribute of G.
@@ -29,8 +32,17 @@
   DeclareAttribute( "LatticeCCSs", IsGroup );
 
 ### attribute ###
+
+#---
+#MaximalSubCCSsLattice( lat ) finds maximal subCCSs of
+#	each CCS in the lattice.
+#---
   DeclareAttribute( "MaximalSubCCSsLattice", IsLatticeCCSs );
 
+#---
+#MinimalSupCCSsLattice( lat ) finds minimal supCCSs of
+#	each CCS in the lattice.
+#---
   DeclareAttribute( "MinimalSupCCSsLattice", IsLatticeCCSs );
 
 
