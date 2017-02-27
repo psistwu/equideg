@@ -143,6 +143,76 @@
     end
   );
 
+#---
+#DotFileLatticeCCSs( lat, file ) export the lattice of CCSs as a dot file
+#---
+  InstallMethod( DotFileLatticeCCSs,
+    "export lattice as a dot file",
+    [ IsLatticeCCSs and IsLatticeCCSsRep, IsString ],
+    function( lat, file )
+      local G,
+            ccs_list,
+            ccs_order_list,
+            ccs_number_list,
+            max_subccs_list,
+            outstream,
+            i, j,
+            nodelabel,
+            nodeshape,
+            linknode;
+
+      G := lat!.group;
+      ccs_list := lat!.conjugacyClassesSubgroups;
+      ccs_order_list := List( ccs_list, c -> Order( Representative( c ) ) );
+      ccs_number_list := List( ccs_list, c -> Size( c ) );
+      max_subccs_list := MaximalSubCCSsLattice( lat );
+      outstream := OutputTextFile( file, false );
+
+      # put the head of the dot file
+      AppendTo( outstream, "digraph lattice {\n" );
+      AppendTo( outstream, "size = \"6,6\";\n" );
+
+      # put label of order (bigger ones are in the higher position)
+      for i in Reversed( Set( ccs_order_list ) ) do
+        if ( i < Order( G ) ) then
+          AppendTo( outstream, "\"s", i, "\" [color=white,arrowhead=none];\n" );
+        fi;
+        AppendTo( outstream, "\"s", i, "\" [label=\"", i, "\", color=white];\n" );
+        if ( i > 1 ) then
+          AppendTo( outstream, "\"s", i, "\"->");
+        fi;
+      od;
+
+      # put CCSs
+      for i in [ 1 .. Size( ccs_list ) ] do
+        if HasName( ccs_list[ i ] ) then
+          nodelabel := Name( ccs_list[ i ] );
+        else
+          nodelabel := i;
+        fi;
+        if ( ccs_number_list[ i ] = 1 ) then
+          nodeshape := "box";
+        else
+          nodeshape := "circle";
+        fi;
+        AppendTo( outstream, "\"", i, "\" [label=\"", nodelabel, "\", shape=", nodeshape, "];\n" );
+        AppendTo( outstream, "{ rank=same; \"s", ccs_order_list[ i ], "\" \"", i, "\"; }\n" );
+      od;
+
+      # put links among CCSs
+      for i in [ 1 .. Size( max_subccs_list ) ] do
+        for j in [ 1 .. Size( max_subccs_list[ i ] ) ] do
+          linknode := max_subccs_list[ i ][ j ];
+          AppendTo( outstream, "\"", i, "\" -> \"", linknode, "\" [arrowhead=none];\n" );
+        od;
+      od;
+
+      AppendTo( outstream, "}" );
+      CloseStream( outstream );
+
+    end
+  );
+
 
 ## Section 2: general tools ##
 

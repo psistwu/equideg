@@ -45,6 +45,13 @@
 #---
   DeclareAttribute( "MinimalSupCCSsLattice", IsLatticeCCSs );
 
+### method ###
+
+#---
+#DotFileLatticeCCSs( lat, file ) export the lattice of CCSs as a dot file
+#---
+  DeclareOperation( "DotFileLatticeCCSs", [ IsLatticeCCSs, IsString ] );
+
 
 ## Section 2: general tools ##
 
