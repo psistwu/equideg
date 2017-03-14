@@ -1,21 +1,26 @@
-#-------
-# GAP: 2-transitive Group Library
-#-------
+# GAP: 2-transitive Group Library #
+
+### Synopsis ###
+#---
 # This library provides functions
 # for identifying 2-transitive
 # groups and representations
-#
-# Author: Hao-pin Wu <hxw132130@utdallas.edu>
-# Last update: 2016-11-27
-#-------
+#---
 
-# dependency
-  Read( Filename( GAPEL_DIR, "libBasicGroupTheory.g" ) );
-# => Read( Filename( GAPEL_DIR, "libSys.g" ) );
+### Author ###
+#---
+# Hao-pin Wu <hxw132130@utdallas.edu>
+#---
 
-# include declaration file
+### Dependency ###
+#---
+# => libBasicGroupTheory.g
+# => libSys.g
+#---
+
+### Declaration file ###
   Read( Filename( GAPEL_DIR, "lib2transitiveGroup.gd" ) );
 
-# include implementation file
+### Implementation file ###
   Read( Filename( GAPEL_DIR, "lib2transitiveGroup.gi" ) );
 

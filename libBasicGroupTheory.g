@@ -10,12 +10,14 @@
 # Hao-pin Wu <hxw132130@utdallas.edu>
 #---
 
-### dependency ##
-  Read( Filename( GAPEL_DIR, "libSys.g" ) );
+### Dependency ###
+#---
+# => libSys.g
+#---
 
-### declaration file ##
+### Declaration file ###
   Read( Filename( GAPEL_DIR, "libBasicGroupTheory.gd" ) );
 
-### implementation file ##
+### Implementation file ###
   Read( Filename( GAPEL_DIR, "libBasicGroupTheory.gi" ) );
 

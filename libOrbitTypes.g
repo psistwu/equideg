@@ -1,21 +1,26 @@
-#-------
-# GAP: Lattice of Orbit Types Library
-#-------
+# GAP: Lattice of Orbit Types Library #
+
+### Synopsis ###
+#---
 # This library provides functions for
 # finding lattice of orbit types of
 # a given group representation
-#
-# Author: Hao-pin Wu <hxw132130@utdalls.edu>
-# Last update: 2016-11-27
-#-------
+#---
 
-# dependency
-  Read( Filename( GAPEL_DIR, "libBasicGroupTheory.g" ) );
-# => Read("/home/psist/Development/lib/gap/libSys.g");
+### Author ###
+#---
+# Hao-pin Wu <hxw132130@utdalls.edu>
+#---
 
-# include declaration file
+### Dependency ###
+#---
+# => libBasicGroupTheory.g
+# => libSys.g
+#---
+
+### Declaration file ###
   Read( Filename( GAPEL_DIR, "libOrbitTypes.gd" ) );
 
-# include implementation file
+### Implementation file ###
   Read( Filename( GAPEL_DIR, "libOrbitTypes.gi" ) );
 
