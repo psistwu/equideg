@@ -71,11 +71,7 @@
         Remove( orbittypes );
       fi;
 
-      if IsEmpty( orbittypes ) then
-        return 1;
-      else
-        return Order( G ) / Lcm( List( ccs{ orbittypes }, c -> Size( Representative ( c ) ) ) );
-      fi;
+      return Order( G ) / Lcm( List( ccs{ orbittypes }, c -> Size( Representative ( c ) ) ) );
     end
   );
 #---
