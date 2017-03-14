@@ -65,16 +65,17 @@
 
       G := UnderlyingGroup( chi );
 
-      # alpha-characteristic of a trivial representation is always 1
-      if ( chi = TrivialCharacter( G ) ) then
-        return 1;
-      fi;
-
       ccs := ConjugacyClassesSubgroups( G );
       orbittypes := ShallowCopy( OrbitTypes( chi ) );
-      Remove( orbittypes );
+      if ( DimensionOfFixedSet( chi, G ) = 0 ) then
+        Remove( orbittypes );
+      fi;
 
-      return Order( G ) / Lcm( List( ccs{ orbittypes }, c -> Size( Representative ( c ) ) ) );
+      if IsEmpty( orbittypes ) then
+        return 1;
+      else
+        return Order( G ) / Lcm( List( ccs{ orbittypes }, c -> Size( Representative ( c ) ) ) );
+      fi;
     end
   );
 #---
