@@ -258,8 +258,7 @@
 #---
   InstallMethod( \<,
     "the partial order of conjugacy classes of subgroups",
-    [ IsGeneratorsOfSemigroup and IsConjugacyClassSubgroupsRep,
-      IsGeneratorsOfSemigroup and IsConjugacyClassSubgroupsRep ],
+    [ IsConjugacyClassSubgroupsRep, IsConjugacyClassSubgroupsRep ],
     function( ccs1, ccs2 )
 
     # local variables

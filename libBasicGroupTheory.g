@@ -11,11 +11,11 @@
 #---
 
 ### dependency ##
-  Read( "/media/sf_OneDrive/project/lib/gap/libSys.g" );
+  Read( Filename( GAPEL_DIR, "libSys.g" ) );
 
 ### declaration file ##
-  Read( "/media/sf_OneDrive/project/lib/gap/libBasicGroupTheory.gd" );
+  Read( Filename( GAPEL_DIR, "libBasicGroupTheory.gd" ) );
 
 ### implementation file ##
-  Read( "/media/sf_OneDrive/project/lib/gap/libBasicGroupTheory.gi" );
+  Read( Filename( GAPEL_DIR, "libBasicGroupTheory.gi" ) );
 

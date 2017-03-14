@@ -13,8 +13,8 @@
 # dependency
 
 # include declaration file
-  Read( "/media/sf_OneDrive/project/lib/gap/libSys.gd" );
+  Read( Filename( GAPEL_DIR, "libSys.gd" ) );
 
 # include implementation file
-  Read( "/media/sf_OneDrive/project/lib/gap/libSys.gi" );
+  Read( Filename( GAPEL_DIR, "libSys.gi" ) );
 

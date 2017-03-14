@@ -8,12 +8,12 @@
 #-------
 
 # dependency
-  Read( "/media/sf_OneDrive/Development/lib/gap/libBasicGroupTheory.g" );
-# => Read( "/media/sf_OneDrive/Development/lib/gap/libSys.g" );
+  Read( Filename( GAPEL_DIR, "libBasicGroupTheory.g" ) );
+# => Read( Filename( GAPEL_DIR, "libSys.g" ) );
 
 # include declaration file
-  Read( "/media/sf_OneDrive/Development/lib/gap/libBurnsideRing.gd" );
+  Read( Filename( GAPEL_DIR, "libBurnsideRing.gd" ) );
 
 # include implementation file
-  Read( "/media/sf_OneDrive/Development/lib/gap/libBurnsideRing.gi" );
+  Read( Filename( GAPEL_DIR, "libBurnsideRing.gi" ) );
 

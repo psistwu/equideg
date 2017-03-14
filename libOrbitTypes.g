@@ -10,12 +10,12 @@
 #-------
 
 # dependency
-  Read("/home/psist/project/lib/gap/libBasicGroupTheory.g");
+  Read( Filename( GAPEL_DIR, "libBasicGroupTheory.g" ) );
 # => Read("/home/psist/Development/lib/gap/libSys.g");
 
 # include declaration file
-  Read("/home/psist/project/lib/gap/libOrbitTypes.gd");
+  Read( Filename( GAPEL_DIR, "libOrbitTypes.gd" ) );
 
 # include implementation file
-  Read("/home/psist/project/lib/gap/libOrbitTypes.gi");
+  Read( Filename( GAPEL_DIR, "libOrbitTypes.gi" ) );
 

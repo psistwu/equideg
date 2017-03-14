@@ -9,12 +9,12 @@
 
 # dependency
   LoadPackage( "repsn" );
-  Read( "/home/psist/Development/lib/gap/libBasicGroupTheory.g" );
+  Read( Filename( GAPEL_DIR, "libBasicGroupTheory.g" ) );
 # => Read( "/home/psist/Development/lib/gap/libSys.g" );
 
 # read declaration file
-  Read( "/home/psist/Development/lib/gap/libRepsnCharTheory.gd" );
+  Read( Filename( GAPEL_DIR, "libRepsnCharTheory.gd" ) );
 
 # read implementation file
-  Read( "/home/psist/Development/lib/gap/libRepsnCharTheory.gi" );
+  Read( Filename( GAPEL_DIR, "libRepsnCharTheory.gi" ) );
 
