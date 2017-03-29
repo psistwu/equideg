@@ -1,22 +1,12 @@
-# GAP: Basic Group Theory Library #
-
-### Synopsis ###
-#---
 # Implementation file of libBasicGroupTheory.g
-#---
-
-### Author ###
-#---
-# Hao-pin Wu <hxw132130@utdallas.edu>
-#---
 
 
-## Section 1: Lattice of Conjugacy Classes of Subgroups ##
+## part 1: lattice of conjugacy classes of subgroups ##
 
 ### constructor ###
 
 #---
-#LatticeCCSs( G ) is the constructor of lattice of CCSs of G.
+# LatticeCCSs( G ) is the constructor of lattice of CCSs of G.
 #	It is also an attribute of G.
 #---
   InstallMethod( LatticeCCSs,
@@ -34,11 +24,12 @@
       );
     end
   );
+#---
 
 ### attribute ###
 
 #---
-#MaximalSubCCSsLattice( lat ) finds maximal subCCSs of
+# MaximalSubCCSsLattice( lat ) finds maximal subCCSs of
 #	each CCS in the lattice.
 #---
   InstallMethod( MaximalSubCCSsLattice,
@@ -47,7 +38,7 @@
     function( lat )
       local i, j,		# indices
             ccs_list,		# CCSs
-            max_subccs_list;  # output
+            max_subccs_list;	# output
 
       # extract the conjugacy classes of subgroups
       ccs_list := lat!.conjugacyClassesSubgroups;
@@ -77,9 +68,10 @@
       return max_subccs_list;
     end
   );
+#---
 
 #---
-#MinimalSupCCSsLattice( lat ) finds minimal supCCSs of
+# MinimalSupCCSsLattice( lat ) finds minimal supCCSs of
 #	each CCS in the lattice.
 #---
   InstallMethod( MinimalSupCCSsLattice,
@@ -118,11 +110,12 @@
       return min_supccs_list;
     end
   );
+#---
 
 ### method ###
 
 #---
-#PrintObj
+# PrintObj
 #---
   InstallMethod( PrintObj,
     "for lattice of CCSs",
@@ -131,9 +124,10 @@
       Print( "LatticeCCSs(", String( lat!.group ), ")\n" );
     end
   );
+#---
 
 #---
-#ViewObj
+# ViewObj
 #---
   InstallMethod( ViewObj,
     "for lattice of CCSs",
@@ -142,9 +136,10 @@
       Print( "<CCS lattice of ", ViewString( lat!.group ), ", ", Size( lat!.conjugacyClassesSubgroups), " classes>" );
     end
   );
+#---
 
 #---
-#DotFileLatticeCCSs( lat, file ) export the lattice of CCSs as a dot file
+# DotFileLatticeCCSs( lat, file ) export the lattice of CCSs as a dot file
 #---
   InstallMethod( DotFileLatticeCCSs,
     "export lattice as a dot file",
@@ -212,21 +207,16 @@
 
     end
   );
-
-
-## Section 2: general tools ##
-
-### CCSubgroups
 #---
-#CCSubgroups( subg ) returns the CCS which contains subg
-#
-# input
-#	subg:	a subgroup
-#
-# output
-#	ccs:	the CCS which contains subg
-#
 
+
+## part 2: general tools ##
+
+### attribute ###
+
+#---
+# CCSubgroups( subg ) returns the CCS which contains subg
+#---
   InstallMethod( CCSubgroups,
     "the CCS containing the given subgroup",
     [ IsGroup and HasParentAttr ],
@@ -249,9 +239,7 @@
   );
 #---
 
-#-----
-# method(s)
-#-----
+### method ###
 
 #---
 # "<" for Conjugacy Classes of Subgroups
@@ -265,7 +253,7 @@
     local s1,		# subgroup in c1
           s2;		# subgroup in c2
 
-    s1 := Representative(ccs1);
+    s1 := Representative( ccs1 );
 
     for s2 in ccs2 do
       if IsSubgroup( s2, s1 ) then
@@ -279,272 +267,238 @@
   );
 #---
 
-#-----
-# function(s)
-#-----
-
 #---
-# pCyclicGroup := function(n)
+# aConjugacyClassSubgroups( G, H ) returns the CCS of H with respect to G
 #---
-#pCyclicGroup(n) creates permutational Z_n
-#-
-# input(s):
-#	n
-#-
-# output(s):
-#	Z_n (< S_n)
-#---
+  InstallMethod( aConjugacyClassSubgroups,
+    "CCS of H with respect to G",
+    [ IsGroup, IsGroup ],
+    function( G, H )
 
-# # local variable(s)
-# local i,		# index
-#       gen;		# generator of Zn
+      local ccs_list,
+            c;		# CCS
 
-# # return error if n is not a positive integer
-# if not IsPosInt(n) then
-#   Info(ERROR, MSGLEVEL, "n is not a positive integer.");
-#   Error();
-# fi;
+      Print( "Finding CCSs of G.\n" );
+      Print( HasConjugacyClassesSubgroups( G ), "\n" );
+      ccs_list := ConjugacyClassesSubgroups( G );
+      Print( "\n\n" );
 
-# # take the generator
-# gen := ();
-# for i in [1..n-1] do
-#   gen := (i, i+1)*gen;
-# od;
+      for c in ccs_list do
+        if ( H in c ) then
+          return c;
+        fi;
+      od;
 
-# return Group([(),gen]);
+      return fail;
 
-#---
-# end;
+    end
+  );
 #---
 
 #---
-# pDihedralGroup := function(n)
+# nLHnumber( G, H, L ) finds n_G(L,H), i.e., the number of subgroups conjugate
+#	to H which contain L
 #---
-#pDihedralGroup(n) creates permutational D_n
-#-
-# input(s):
-#	n
-#-
-# output(s):
-#	D_n (which is a subgroup of Sn if n>3)
-#---
+  InstallMethod( nLHnumber,
+    "the n_G(L,H) number",
+    [ IsGroup, IsGroup, IsGroup ],
+    function( G, H, L )
 
-# # local variable(s)
-# local i,		# index
-#       gen1, gen2;	# generators of Dn
+    # local variables
+    local cH,		# subgroups conjugate to H
+          nLH;		# n(L,H)
 
-# # exclude the case n is not a positive integer
-# if not IsPosInt(n) then
-#   Info(ERROR, MSGLEVEL, "n is not a positive integer.");
-#   Error();
-# fi;
+    nLH := 0;
 
-# # case 1: n = 1
-# if (n = 1) then
-#   gen1 := (1,2);
-#   gen2 := ();
+    if not ( Order( H ) mod Order( L ) = 0 ) then
+      return nLH;
+    fi;
 
-# # case 2: n = 2
-# elif (n = 2) then
-#   gen1 := (1,2);
-#   gen2 := (3,4);
+    for cH in ConjugacyClassSubgroups( G, H ) do
+      if IsSubset( cH, L ) then
+        nLH := nLH + 1;
+      fi;
+    od;
 
-# # case 3: n > 2
-# else
-#   gen1 := ();
-#   for i in [1..Int(n/2)] do
-#     gen1 := (i,n+1-i)*gen1;
-#   od;
+    return nLH;
 
-#   gen2 := ();
-#   for i in [1..n-1] do
-#     gen2 := (i, i+1)*gen2;
-#   od;
-# fi;
-
-# return Group([gen1, gen2]);
-
-#---
-# end;
+    end
+  );
 #---
 
-#---
-# idCCS := function(ccs_list, subg)
-#---
-#idCCS(ccsslist, subg) finds the ID of the CCS contains subg
-#-
-# input(s):
-#	ccs_list	CCS list of a group
-#	subg		a subgounp
-#-
-# output(s):
-#	ID of the CCS contains subg
-#-
-
-# # define local variable
-# local i;	# the index
-
-# # check which CCS contains subg
-# for i in [1..Size(ccs_list)] do
-#   if subg in ccs_list[i] then
-#     return i;
-#   fi;
-# od;
-
-# # if none, print the WARN message and return fail
-# Info(WARN, MSGLEVEL, "subg is not in any of the CCSs.");
-# return fail;
+### function ###
 
 #---
-# end;
+# pCyclicGroup( n ) creates permutational Z_n
+#---
+  InstallGlobalFunction( pCyclicGroup,
+    function( n )
+
+    # local variable(s)
+    local i,		# index
+          gen;		# generator of Zn
+
+    # return error if n is not a positive integer
+    if not IsPosInt( n ) then
+      Info( ERROR, MSGLEVEL, "n is not a positive integer." );
+      Error( );
+    fi;
+
+    # take the generator
+    gen := ( );
+    for i in [ 1 .. n-1 ] do
+      gen := ( i, i+1 )*gen;
+    od;
+
+    return Group( [ ( ), gen ] );
+
+    end
+  );
 #---
 
 #---
-# idCC := function( cc_list, e )
+# pDihedralGroup( n ) creates permutational D_n
 #---
-#idCC( cc_list, e ) finds the ID of the CC contains element e
-#-
-# input(s):
-#	cc_list		list of CC of a group
-#	e		an element
-#-
-# output(s):
-#	ID of the CC contains e
-#-
+  InstallGlobalFunction( pDihedralGroup,
+    function(n)
 
-# # define local variable
-# local i;	# the index
+    # local variable(s)
+    local i,		# index
+          gen1, gen2;	# generators of Dn
 
-# # check which CCS contains subg
-# for i in [ 1 .. Size( cc_list ) ] do
-#   if e in cc_list[ i ] then
-#     return i;
-#   fi;
-# od;
+    # exclude the case n is not a positive integer
+    if not IsPosInt( n ) then
+      Info( ERROR, MSGLEVEL, "n is not a positive integer." );
+      Error( );
+    fi;
 
-# # if none, print the WARN message and return fail
-# Info(WARN, MSGLEVEL, "e is not in any of the CCs.");
-# return fail;
+    # case 1: n = 1
+    if ( n = 1 ) then
+      gen1 := ( 1, 2 );
+      gen2 := ( );
 
-#---
-# end;
-#---
+    # case 2: n = 2
+    elif ( n = 2 ) then
+      gen1 := ( 1, 2 );
+      gen2 := ( 3, 4 );
 
-#---
-# isSubgroupUptoConjugacy := function(G, supg, subg)
-#---
-### this function becomes archaic
-### it will be removed in the future version
-#
-#isSubgroupUptoConjugacy(G, supg, subg)
-#	determines whether subg is
-#	a subgroup of supg upto conjugacy in G
-#-
-# input(s):
-#	G	a group
-#	supg	the larger subgroup in G
-#	subg	the smaller subgroup in G
-#-
-# ouput(s):
-#	true or false
-#-
+    # case 3: n > 2
+    else
+      gen1 := ( );
+      for i in [ 1 .. Int( n/2 ) ] do
+        gen1 := ( i, n+1-i )*gen1;
+      od;
 
-# # local variables
-# local ccs_subg,		# CCS contains subg
-#       csubg;			# subgroup conjugate to subg
+      gen2 := ( );
+      for i in [ 1 .. n-1 ] do
+        gen2 := ( i, i+1 )*gen2;
+      od;
+    fi;
 
-# if (Order(supg) mod Order(subg) = 0) then
-#   ccs_subg := ConjugacyClassSubgroups(G, subg);
-#   for csubg in ccs_subg do
-#     if IsSubset(supg, csubg) then
-#       return true;
-#     fi;
-#   od;
-# fi;
+    return Group( [ gen1, gen2 ] );
 
-# return false;
-
-#---
-# end;
+    end
+  );
 #---
 
-#---
-# nLHnumber := function(G, H, L)
-#---
-#nLHnumber(G, L, H) finds n(L,H), i.e.,
-#	the number of subgroups
-#	conjugate to H which contain L
-#-
-# input(s)
-#	G	a group
-#	H	a larger subgroup in G
-#	L	a smaller subgroup in G
-#-
-# output(s):
-#	n(L,H)
-#-
 
-# # local variables
-# local cH,		# subgroups conjugate to H
-#       ccs_H,		# CCS contains H
-#       nLH;		# n(L,H)
-
-# if not (Order(H) mod Order(L) = 0) then
-#   return 0;
-# fi;
-
-# nLH := 0;
-# ccs_H := ConjugacyClassSubgroups(G, H);
-
-# for cH in List(ccs_H) do
-#   if IsSubset(cH, L) then
-#     nLH := nLH + 1;
-#   fi;
-# od;
-
-# return nLH;
+## part 3: archaic functions (will be removed in the future) ##
 
 #---
-# end;
+# idCCS(ccsslist, subg) finds the ID of the CCS contains subg
+#---
+  idCCS := function( ccs_list, subg )
+
+  # define local variable
+  local i;	# the index
+
+  # check which CCS contains subg
+  for i in [ 1 .. Size( ccs_list ) ] do
+    if subg in ccs_list[ i ] then
+      return i;
+    fi;
+  od;
+
+  # if none, print the WARN message and return fail
+  Info( WARN, MSGLEVEL, "subg is not in any of the CCSs." );
+  return fail;
+
+  end;
 #---
 
 #---
-# removeExtraConjugateCopy := function(G, subg_list)
+# idCC( cc_list, e ) finds the ID of the CC contains element e
 #---
-#removeExtraConjugateCopy(G, subg_list) removes all but
-#	one conjugate subgroups
-#	in the given collection of subgroups.
-#-
-# input(s):
-#	G		a group
-#	subg_list	a collection of subgroups in G
-#-
-# output(s):
-#	none
-#-
+  idCC := function( cc_list, e )
 
-# # local variables
-# local i, j;		# indexes
+  # define local variable
+  local i;	# the index
 
-# # sort the collection of subgroups by their order
-# SortBy(subg_list, v -> Order(v));
+  # check which CCS contains subg
+  for i in [ 1 .. Size( cc_list ) ] do
+    if e in cc_list[ i ] then
+      return i;
+    fi;
+  od;
 
-# # remove all but one conjugate subgroups
-# i := 1;
-# while i < Size(subg_list) do
-#   j := i + 1;
-#   while j <= Size(subg_list) do
-#     if (Order(subg_list[j]) > Order(subg_list[i])) then
-#       break;
-#     elif IsConjugate(G, subg_list[i], subg_list[j]) then
-#       Remove(subg_list, j);
-#     else
-#       j := j+1;
-#     fi;
-#   od;
-#   i := i+1;
-# od;
+  # if none, print the WARN message and return fail
+  Info( WARN, MSGLEVEL, "e is not in any of the CCs." );
+  return fail;
+
+  end;
+#---
 
 #---
-# end;
+# isSubgroupUptoConjugacy( G, supg, subg )
 #---
+  isSubgroupUptoConjugacy := function( G, supg, subg )
+
+  # local variables
+  local ccs_subg,		# CCS contains subg
+        csubg;			# subgroup conjugate to subg
+
+  if ( Order( supg ) mod Order( subg ) = 0 ) then
+    ccs_subg := ConjugacyClassSubgroups( G, subg );
+    for csubg in ccs_subg do
+      if IsSubset( supg, csubg ) then
+        return true;
+      fi;
+    od;
+  fi;
+
+  return false;
+
+  end;
+#---
+
+#---
+# removeExtraConjugateCopy(G, subg_list) removes all but one conjugate
+#	subgroups in the given collection of subgroups.
+#---
+  removeExtraConjugateCopy := function( G, subg_list )
+
+  # local variables
+  local i, j;		# indexes
+
+  # sort the collection of subgroups by their order
+  SortBy( subg_list, v -> Order( v ) );
+
+  # remove all but one conjugate subgroups
+  i := 1;
+  while i < Size( subg_list ) do
+    j := i + 1;
+    while j <= Size( subg_list ) do
+      if ( Order( subg_list[ j ] ) > Order( subg_list[ i ] ) ) then
+        break;
+      elif IsConjugate( G, subg_list[ i ], subg_list[ j ] ) then
+        Remove( subg_list, j );
+      else
+        j := j+1;
+      fi;
+    od;
+    i := i+1;
+  od;
+
+  end;
+#---
+

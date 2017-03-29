@@ -10,10 +10,6 @@
 #-----
 # global variable(s)
 #-----
-  if IsReadOnlyGlobal( "MSGLEVEL" ) then
-    MakeReadWriteGlobal( "MSGLEVEL" );
-    UnbindGlobal( "MSGLEVEL" );
-  fi;
   MSGLEVEL := 3;
   MakeReadOnlyGlobal( "MSGLEVEL" );
 
@@ -32,12 +28,3 @@
 #-----
 # function(s)
 #-----
-
-#---
-# SetMsgLevel
-#---
-  if IsBound( SetMsgLevel ) then
-    Unbind( SetMsgLevel );
-  fi;
-#---
-

@@ -2,9 +2,6 @@
 # GAP: Group Direct Product Library
 #-------
 # Implementation file of libGroupDirectProduct.g
-#
-# Author: Hao-pin Wu <hxw132130@utdallas.edu>
-# Last update: 2016-11-01
 #-------
 
 #-----

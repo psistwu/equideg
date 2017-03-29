@@ -2,9 +2,6 @@
 # GAP: Extended System Library
 #-------
 # Implementation file of libSys.g
-#
-# Author: Hao-pin Wu <hxw132130@utdallas.edu>
-# Last update:  2016-11-24
 #-------
 
 #-----
@@ -25,7 +22,6 @@
 
 #---
   setMsgLevel := function(level)
-#---
 #setMsgLevel(level) sets up MSGLEVEL.
 #	It follows the standard of Log4j Log Levels:
 #		6 -> off
@@ -68,7 +64,6 @@
   MSGLEVEL := level;
   MakeReadOnlyGlobal( "MSGLEVEL" );
 
-#---
   end;
 #---
 
@@ -77,14 +72,7 @@
 #-----
 
 #---
-# MyInfoHandler
-#---
-  if IsBound( MyInfoHandler ) then
-    Unbind( MyInfoHandler );
-  fi;
-#---
   myInfoHandler := function( infoclass, level, list )
-#---
 #myInfoHandler(infoclass, level, arg) defines
 #	info handler for the custom info classes
 #-
@@ -129,37 +117,26 @@
   DeclareInfoClass( "FATAL" );
   SetInfoLevel(FATAL, 5);
   SetInfoHandler(FATAL, myInfoHandler);
-#---
 
-#---
   DeclareInfoClass( "ERROR" );
   SetInfoLevel(ERROR, 4);
   SetInfoHandler(ERROR, myInfoHandler);
-#---
 
-#---
   DeclareInfoClass( "WARN" );
   SetInfoLevel(WARN, 3);
   SetInfoHandler(WARN, myInfoHandler);
-#---
 
-#---
   DeclareInfoClass("INFO");
   SetInfoLevel(INFO, 2);
   SetInfoHandler(INFO, myInfoHandler);
-#---
 
-#---
   DeclareInfoClass("DEBUG");
   SetInfoLevel(DEBUG, 1);
   SetInfoHandler(DEBUG, myInfoHandler);
-#---
 
-#---
   DeclareInfoClass("TRACE");
   SetInfoLevel(TRACE, 0);
   SetInfoHandler(TRACE, myInfoHandler);
-#---
 
 #---
 # Unbind temporary variables and functions
