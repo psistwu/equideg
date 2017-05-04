@@ -1192,7 +1192,7 @@
     return [ ];
   fi;
 
-  mul := ShallowCopy( b );
+  mul := StructuralCopy( b );
 
   # multiply the coefficient by the scalar term by term
   for term_mul in mul do
@@ -1206,13 +1206,13 @@
 #---
 
 #---
-#burnsideAddGxO2( b1, b2 ) add two elements b1, b2 in the Burnside ring
+#burnsideSubGxO2( b1, b2 ) subtract two elements b1, b2 in the Burnside ring
 #	induced by G x O(2)
 #---
   burnsideSubGxO2 := function( b1, b2 )
 
   # define local variable
-  local sub;		# summation of b1 and b2
+  local sub;		# subtraction of b1 and b2
 
   # join b1 and b2
   sub := Concatenation( StructuralCopy( b1 ), burnsideScalarMulGxO2( b2,-1 ) );
