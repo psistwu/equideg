@@ -204,8 +204,6 @@
   MakeReadWriteGlobal( "_irr_DN" );
   MakeReadWriteGlobal( "_ZN" );
   MakeReadWriteGlobal( "_GxDN" );
-  MakeReadWriteGlobal( "_CCs_GxDN" );
-  MakeReadWriteGlobal( "_CCSs_GxDN" );
   MakeReadWriteGlobal( "_irr_GxDN" );
   MakeReadWriteGlobal( "_Proj_to_G" );
   MakeReadWriteGlobal( "_Proj_to_DN" );
@@ -232,8 +230,12 @@
   _Embed_from_DN := Embedding( _GxDN, 2 );
 
   if ( detail = true ) then
+    MakeReadWriteGlobal( "_CCs_GxDN" );
+    MakeReadWriteGlobal( "_CCSs_GxDN" );
     _CCs_GxDN := ConjugacyClasses( _GxDN );
     _CCSs_GxDN := ConjugacyClassesSubgroups( _GxDN );
+    MakeReadOnlyGlobal( "_CCs_GxDN" );
+    MakeReadOnlyGlobal( "_CCSs_GxDN" );
   fi;
 
   # lock global variables
@@ -242,8 +244,6 @@
   MakeReadOnlyGlobal( "_irr_DN" );
   MakeReadOnlyGlobal( "_ZN" );
   MakeReadOnlyGlobal( "_GxDN" );
-  MakeReadOnlyGlobal( "_CCs_GxDN" );
-  MakeReadOnlyGlobal( "_CCSs_GxDN" );
   MakeReadOnlyGlobal( "_irr_GxDN" );
   MakeReadOnlyGlobal( "_Proj_to_G" );
   MakeReadOnlyGlobal( "_Proj_to_DN" );
@@ -1015,7 +1015,7 @@
   od;
 
   # sort the result
-  SortBy( b, v -> [ v[ 1 ][ 2 ],	# first by the mode of CCS
+  SortBy( b, v -> [-v[ 1 ][ 2 ],	# first by the mode of CCS
 		   -v[ 1 ][ 1 ] ] );	# then by the IDCCS 
 
   end;
@@ -1548,8 +1548,10 @@
 
   # basic degree associated to nonzero mode
   else
+    # collect all possible orbit types in the basic degree
     clist_idccs := PositionsProperty( _CCSs_GxO2, c -> not IsInfinity( c[ 8 ] ) and not ( c[ 4 ] in [ 3, 4 ] ) );
     Add( clist_idccs, Size( _CCSs_GxO2 ) );
+    # setup DN according to all possible orbit types
     N := 2 * Lcm( _CCSs_GxO2{ clist_idccs }[ 3 ][ 2 ] );
     setupDN( N, true );
     for chi_GxDN in _irr_GxDN do
@@ -1580,8 +1582,69 @@
   fi;
 
   bdeg := List( bdeg, t -> [ t[ 1 ], t[ 2 ]/_CCSs_GxO2[ t[ 1 ][ 1 ] ][ 8 ] ] );
+  burnsideSimplify( bdeg );
   return bdeg;
 
   end;
 #---
 
+#---
+# maximalOrbittypesGxO2( orbt_list ) determines maximal orbit types in
+#	the given list of orbit types
+#---
+  maximalOrbittypes := function( orbt_list )
+
+  local maxorbt_list,
+	i,
+	j,
+	orbti,
+	orbtj,
+	ccstypei,
+	ccstypej,
+	modei,
+	modej,
+	id_Li,
+	id_Lj,
+	Si,
+	Sj,
+	N;
+
+  maxorbt_list := StructuralCopy( orbt_list );
+
+  i := 1;
+  while i < Size( maxorbt_list ) do
+    orbti := maxorbt_list[ i ];
+    ccstypei := _CCSs_GxO2[ orbti[ 1 ] ];
+    modei := orbti[ 2 ];
+    id_Li := ccstypei[ 3 ];
+
+    j := i+1;
+    while j <= Size( maxorbt_list ) do
+      orbtj := maxorbt_list[ j ];
+      ccstypej := _CCSs_GxO2[ orbtj[ 1 ] ];
+      modej := orbtj[ 2 ];
+      id_Lj := ccstypej[ 3 ];
+
+      N := 2*Lcm( modei*id_Li[ 2 ], modej*id_Lj[ 2 ] );
+      setupDN( N, false );
+
+      Si := embedIntoGxDN( orbti );
+      Sj := embedIntoGxDN( orbtj );
+
+      if isSubgroupUptoConjugacy( _GxDN, Si, Sj ) then
+        Remove( maxorbt_list, j );
+        continue;
+      elif isSubgroupUptoConjugacy( _GxDN, Sj, Si ) then
+        Remove( maxorbt_list, i );
+        i := i-1;
+        break;
+      fi;
+      j := j+1;
+    od;
+    i := i+1;
+  od;
+
+  return maxorbt_list;
+
+  end;
+#---
