@@ -329,7 +329,7 @@
 ### function ###
 
 #---
-# pCyclicGroup( n ) creates permutational Z_n
+# pCyclicGroup( n ) creates permutational Zn
 #---
   InstallGlobalFunction( pCyclicGroup,
     function( n )
@@ -350,23 +350,23 @@
       gen := ( i, i+1 )*gen;
     od;
 
-    return Group( [ ( ), gen ] );
+    return Group( [ gen ] );
 
     end
   );
 #---
 
 #---
-# pDihedralGroup( n ) creates permutational D_n
+# pDihedralGroup( n ) creates permutational Dn
 #---
   InstallGlobalFunction( pDihedralGroup,
-    function(n)
+    function( n )
 
     # local variable(s)
     local i,		# index
           gen1, gen2;	# generators of Dn
 
-    # exclude the case n is not a positive integer
+    # return error if n is not a positive integer
     if not IsPosInt( n ) then
       Info( ERROR, MSGLEVEL, "n is not a positive integer." );
       Error( );
@@ -374,8 +374,8 @@
 
     # case 1: n = 1
     if ( n = 1 ) then
-      gen1 := ( 1, 2 );
-      gen2 := ( );
+      gen1 := ( );
+      gen2 := ( 1, 2 );
 
     # case 2: n = 2
     elif ( n = 2 ) then
@@ -385,16 +385,18 @@
     # case 3: n > 2
     else
       gen1 := ( );
-      for i in [ 1 .. Int( n/2 ) ] do
-        gen1 := ( i, n+1-i )*gen1;
+      for i in [ 1 .. n-1 ] do
+        gen1 := ( i, i+1 )*gen1;
       od;
 
       gen2 := ( );
-      for i in [ 1 .. n-1 ] do
-        gen2 := ( i, i+1 )*gen2;
+      for i in [ 1 .. Int( n/2 ) ] do
+        gen2 := ( i, n+1-i )*gen2;
       od;
     fi;
 
+    # the first generator corresponds to rotation
+    # the second generator corresponds to reflection
     return Group( [ gen1, gen2 ] );
 
     end

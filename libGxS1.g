@@ -39,12 +39,6 @@
   # name list of CCSs in G
   DeclareGlobalVariable( "_Name_CCSs_G" );
 
-  # name list of CCSs in S1
-  DeclareGlobalVariable( "_Name_CCSs_S1" );
-  MakeReadWriteGlobal( "_Name_CCSs_S1" );
-  _Name_CCSs_S1 := [ "Z_", "S1" ];
-  MakeReadOnlyGlobal( "_Name_CCSs_S1" );
-
   # the CCSs in GxS1
   DeclareGlobalVariable( "_CCSs_GxS1" );
 
@@ -230,9 +224,7 @@
   MakeReadOnlyGlobal( "_Embed_from_ZN" );
 
   # msglevel: verbose
-  if ( ValueOption( "msglevel" ) > 2 ) then
-    Print( "Done!\n\n" );
-  fi;
+  Print( "Done!\n\n" );
 
   end;
 #---
@@ -243,13 +235,24 @@
 #-----
 
 #---
-# factorGroupS1( id ) generates factor group in S1
+# factorGroup( id ) generates a factor group, it is either Zn or Dn.
 #---
-  factorGroupS1 := function( id )
+  factorGroup := function( id )
 
-  if IsPosInt( id ) then
-    # return Z_n
-    return pCyclicGroup( id );
+  # local variables
+  local type,	# type of the group
+	n;	# mode of the group
+
+  type := id[ 1 ];
+  n := id[ 2 ];
+
+  if ( type = 1 ) then
+    # cyclic group
+    return pCyclicGroup( n );
+
+  elif ( type = 2 ) then
+    # dihedral group
+    return pDihedralGroup( n );
 
   else
     # unknown type
@@ -260,12 +263,25 @@
 #---
 
 #---
-# idFactorGroupS1( L ) determines id of L
+# idFactorGroupS1( L ) determines id of given factor group
 #---
   idFactorGroupS1 := function( L )
 
-  # determine type of L
-  return Order( L );
+  if ( Size( GeneratorsOfGroup( L ) ) = 1 ) then
+    # if there is only one generator, then L is Zn
+    return [ 1, Order( L ) ];
+
+  elif ( Size( GeneratorsOfGroup( L ) ) = 2 ) then
+    # if there are two generators, then...
+
+    # check if L is isomorphic to dihedral group of the same order
+    if ( IdGroup( L ) = IdGroup( pDihedralGroup( Order( L ) / 2 ) ) ) then
+      return [ 2, Order( L ) / 2 ];
+    fi;
+
+  else
+    Error( "Type of L is known." );
+  fi;
 
   end;
 #---
@@ -279,11 +295,9 @@
   # define local variables
   local H,		# a subgroup in G
 	L,		# a factor group in S1
-	id_L,		# id of L
 	NH,		# normalizer of H
 	elmt_NH,	# element in the normalizer
-	conj_phi1,	# twisted phi1 in its domain
-	i, j;		# indexes
+	conj_phi1;	# twisted phi1 in its domain
 
   # extract H and L
   H := PreImage( phi1 );
@@ -312,10 +326,10 @@
 
   # case 3: L = Z_n, n>2
   for elmt_NH in AsList( NH ) do
-    # twist phi1 in its domain
+    # conjugate phi1 in its domain
     conj_phi1 := GroupHomomorphismByFunction( H, H, s -> s^elmt_NH, s -> s^( elmt_NH^-1 ) ) * phi1;
  
-      # phi1 and phi2 are conjugate if phi2 is equal to twisted phi1
+    # phi1 and phi2 are conjugate if phi2 is equal to any conjugate of phi1
     if ( conj_phi1 = phi2 ) then
       return true;
     fi;
@@ -382,13 +396,15 @@
   #		5. ID of ker(psi)
   #		6. list of phi:H->L
   #		7. ID of \phi^{-1}(<r>)
-  #		8. |W|
+  #		8. |W(S)/Tn| (Tn is the maximal torus in W(S))
   #
-  #	For 4 and 5, note that we can (closed) subgroups in S1 are
+  #	For 4 and 5, note that (closed) subgroups in O(2) are
   #	described in the following list.
   #
-  #		0: S1
-  #		n: Z_n
+  #		[ 1, 0 ]: S1
+  #		[ 1, n ]: Zn
+  #		[ 2, 0 ]: O(2)
+  #		[ 2, n ]: Dn
   #
   #	To specify a certain CCS in GxS1, we use a pair	of numbers:
   #
@@ -414,7 +430,7 @@
   # msglevel: error
   if not IsGroup( _G ) then
     Error( "Sorry <User Name Here>, I cannot let you do this." );
-    Error( "Please consider to run setupG first." );
+    Error( "Please consider running setupG() first." );
   fi;
 
   # msglevel: notice
@@ -451,8 +467,8 @@
       Print( "\tTrying L = Z_", j, " ...\n" );
 
       # Take L as a cyclic group
-      id_L := j;
-      L := factorGroupS1( id_L );
+      id_L := [ 1, j ];
+      L := factorGroup( id_L );
 
       # check if there is an epimorphism from H to L
       epi_over_auto := GQuotients( H, L );
@@ -469,34 +485,33 @@
 
         # classify epimorphisms by conjugation
         ccsphi := conjugacyClassesEpimorphisms( phi_list );
-        for k in [ 1 .. Size( ccsphi ) ] do
+        for ccphi in ccsphi do
           # store the ker(phi) and the conjugate epimorphisms
-          ccphi := ccsphi[ k ];
           ccs[ 6 ] := ccphi;
           ccs[ 2 ] := idCCS( _CCSs_G, Kernel( ccphi[ 1 ] ) );
           nccphi := Size( ccphi );
 
           # extract pre_r
-          if L.2 = Identity( L ) then
+          if L.1 = Identity( L ) then
             id_pre_r := 0;
           else
-            id_pre_r := idCCS( _CCSs_G, PreImage( ccphi[ 1 ], Subgroup( L, [ L.2 ] ) ) );
+            id_pre_r := idCCS( _CCSs_G, PreImage( ccphi[ 1 ], Subgroup( L, [ L.1 ] ) ) );
           fi;
           ccs[ 7 ] := id_pre_r;
 
-          # store type of K, type of ker(psi) and |W|
+          # store type of K, type of ker(psi) and |W(S)/Tn|
           # case 1-0: for any j
           # Z_jn/Z_n
-          ccs[ 4 ] := 1;
-          ccs[ 5 ] := 1;
+          ccs[ 4 ] := [ 1, j ];
+          ccs[ 5 ] := [ 1, 1 ];
           ccs[ 8 ] := [ 1, order_WH / nccphi ];
           Add( _CCSs_GxS1, ShallowCopy( ccs ) );
 
           # In addition, if L = Z_1
           if ( j = 1 ) then
             # S1/S1
-            ccs[ 4 ] := 0;
-            ccs[ 5 ] := 0;
+            ccs[ 4 ] := [ 1, 0 ];
+            ccs[ 5 ] := [ 1, 0 ];
             ccs[ 8 ] := [ 0, order_WH ];
             Add( _CCSs_GxS1, ShallowCopy( ccs ) );
           fi;
@@ -509,36 +524,33 @@
 
   od;
 
-  # drop phi^{-1}(r) if there is no need to keep this info
-  for i in [ 1 .. Size( _CCSs_GxS1 ) ] do
-    ccs := _CCSs_GxS1[ i ];
-    if ( i > 1 ) then
-      ccs_alt := _CCSs_GxS1[ i - 1 ];
-      if ( ccs{ [ 1 .. 5 ] } = ccs_alt{ [ 1 .. 5 ] } ) then
-        continue;
-      fi;
-    fi;
+# # drop phi^{-1}(r) if there is no need to keep this info
+# for i in [ 1 .. Size( _CCSs_GxS1 ) ] do
+#   ccs := _CCSs_GxS1[ i ];
+#   if ( i > 1 ) then
+#     ccs_alt := _CCSs_GxS1[ i - 1 ];
+#     if ( ccs{ [ 1 .. 5 ] } = ccs_alt{ [ 1 .. 5 ] } ) then
+#       continue;
+#     fi;
+#   fi;
 
-    if i < Size( _CCSs_GxS1 ) then
-      ccs_alt := _CCSs_GxS1[ i + 1 ];
-      if ( ccs{ [ 1 .. 5 ] } = ccs_alt{ [ 1 .. 5 ] } ) then
-        continue;
-      fi;
-    fi;
-    ccs[ 7 ] := 0;
-  od;
+#   if i < Size( _CCSs_GxS1 ) then
+#     ccs_alt := _CCSs_GxS1[ i + 1 ];
+#     if ( ccs{ [ 1 .. 5 ] } = ccs_alt{ [ 1 .. 5 ] } ) then
+#       continue;
+#     fi;
+#   fi;
+#   ccs[ 7 ] := 0;
+# od;
 
   # Sorting CCSs list
   # msglevel: verbose
-  if ( ValueOption( "msglevel" ) > 2 ) then
-    Print( "Sorting the List of CCSs in GxS1...\n\n" );
-  fi;
-  SortBy( _CCSs_GxS1, v -> [ v[ 4 ],		# first by id of K
-  			     v[ 5 ],		# second by id of ker_psi
-			     v[ 3 ],		# thrid by mode of L
-			     v[ 1 ],		# fourth by type of H
-			     v[ 2 ],		# fifth by ker_phi
-			     v[ 7 ] ] );	# sixth by pre_r
+  Print( "Sorting the List of CCSs in GxS1...\n\n" );
+  SortBy( _CCSs_GxS1, v -> [ v[ 5 ][ 2 ],	# first by mode
+  			     v[ 4 ][ 2 ],	# second by K
+			     v[ 3 ][ 2 ],	# thrid by L
+			     v[ 1 ],		# fourth by H
+			     v[ 2 ] ] );	# fifth by ker_phi
   
   # lock the global varaible _CCSs_GxS1
   MakeReadOnlyGlobal( "_CCSs_GxS1" );
@@ -555,20 +567,14 @@
 #-----
 
 #---
-# idSubgroupS1( K ) determine ID of K < ZN in O(2).
+# idSubgroupS1( K ) determine ID of K < ZN in S1
 #---
   idSubgroupS1 := function( K );
 
-  if not IsSubgroup( _ZN, K ) then
-    Error( "K is not a subgroup of D_", Order( _ZN ) / 2 );
-  elif ( K = _ZN ) then
-    return [ 4, 0 ];
-  elif ( K = _ZN ) then
-    return [ 3, 0 ];
-  elif IsSubset( _ZN, K ) then
-    return [ 1, Order( K ) ];
+  if ( K = _ZN ) then
+    return [ 1, 0 ];
   else
-    return [ 2, Order( K ) / 2 ];
+    return [ 1, Order( K ) ];
   fi;
 
   end;
@@ -579,19 +585,15 @@
 #---
   embedIntoZN := function( id_K )
 
-  # define local variable
+  # define local variable(s)
   local K;	# a subgroup in ZN
 
-  if ( id_K[ 1 ] = 1 ) and ( Order( _ZN ) > id_K[ 2 ] ) and ( Order( _ZN ) mod id_K[ 2 ] = 0 ) then
-    K := SubgroupNC( _ZN, [ Identity( _ZN ), _ZN.1^( Order( _ZN ) / id_K[ 2 ] ) ] );
-  elif ( id_K[ 1 ] = 2 ) and ( Order( _ZN ) > id_K[ 2 ] ) and ( Order( _ZN ) mod id_K[ 2 ] = 0 ) then
-    K := SubgroupNC( _ZN, [ _ZN.1, _ZN.2^( Order( _ZN ) / id_K[ 2 ] ) ] );
-  elif ( id_K[ 1 ] = 3 ) then
+  if ( id_K[ 2 ] = 0 ) then
     K := _ZN;
-  elif ( id_K[ 1 ] = 4 ) then
-    K := _ZN;
+  elif ( Order( _ZN ) > id_K[ 2 ] ) and ( Order( _ZN ) mod id_K[ 2 ] = 0 ) then
+    K := SubgroupNC( _ZN, [ _ZN.1^( Order( _ZN ) / id_K[ 2 ] ) ] );
   else
-    Error( "The input ID cannot be embedded into D_", Order( _ZN ) );
+    Error( "The input ID cannot be embedded into Z_", Order( _ZN ) );
   fi;
 
   return K;
@@ -606,11 +608,11 @@
   embedIntoGxZN := function( idccs )
 
   # define local variables
-  local ccs_GxS1,	# the CCS of G x S1 corresponds to the given id
+  local type_GxS1,	# the type of CCS of GxS1 corresponds to the given id
 	phi,		# the epimorphism from H to L
 	H,		# a subgroup in G
         h,		# an element in H
-        K,		# a subgroup in O(2)
+        K,		# a subgroup in S1
 	id_K,		# ID of K
 	k,		# an element in K
 	L,		# the factor group
@@ -627,22 +629,21 @@
   fi;
 
   # get the CCS
-  ccs_GxS1 := _CCSs_GxS1[ idccs[ 1 ] ];
+  type_GxS1 := _CCSs_GxS1[ idccs[ 1 ] ];
 
   # extract properties of the CCS
-  phi := ccs_GxS1[ 6 ][ 1 ];
+  phi := type_GxS1[ 6 ][ 1 ];
   H := PreImage( phi );
-  id_L := ccs_GxS1[ 3 ];
-  L := factorGroupS1( id_L );
-  id_ker_psi := [ ccs_GxS1[ 5 ], idccs[ 2 ] ];
-  id_K := [ ccs_GxS1[ 4 ], id_ker_psi[ 2 ]*id_L[ 2 ] ];
+  id_L := type_GxS1[ 3 ];
+  L := factorGroup( id_L );
+# L := Image( phi );
+  id_ker_psi := [ type_GxS1[ 5 ][ 1 ], idccs[ 2 ] ];
+  id_K := [ type_GxS1[ 4 ][ 1 ], type_GxS1[ 4 ][ 2 ]*idccs[ 2 ] ];
   K := embedIntoZN( id_K );
 
   # msglevel: verbose
-  if ( ValueOption( "msglevel" ) > 2 ) then
-    Print( "Embedding representative of CCS(ID = ", idccs, ") " );
-    Print( "in GxS1 into GxD_", Order( _ZN ) / 2, "... " );
-  fi;
+  Print( "Embedding representative of CCS(ID = ", idccs, ") " );
+  Print( "in GxS1 into GxZ_", Order( _ZN ), "... " );
 
   # define psi
   psi := GroupHomomorphismByImagesNC( K, L, GeneratorsOfGroup( K ), GeneratorsOfGroup( L ) );
@@ -657,9 +658,7 @@
   S := SubgroupNC( _GxZN, gen_S );
 
   # msglevel: verbose
-  if ( ValueOption( "msglevel" ) > 2 ) then
-    Print( "Done!\n\n" );
-  fi;
+  Print( "Done!\n\n" );
 
   return S;
 
@@ -674,7 +673,8 @@
 
   # define local variable
   local idccs,			# ID of CCS in G x O(2)
-	ccs_GxS1,		# a CCS in G x O(2)
+	mode,			# mode of CCS
+	type_GxS1,		# a CCS in G x O(2)
 	H,			# a subgroup in G
 	K,			# a subgroup in O(2) which is a dihedral group
 	id_K,			# ID of K
@@ -684,9 +684,7 @@
 	i;			# indexes
 
   # msglevel: verbose
-  if ( ValueOption( "msglevel" ) > 2 ) then
-    Print( "Identifying ID of CCS in GxO(2) to whom S belongs... " );
-  fi;
+  Print( "Identifying ID of CCS in GxO(2) to whom S belongs... " );
 
   # extract property of the CCS
   H := Image( _Proj_to_G, S );
@@ -694,33 +692,32 @@
   ker_psi := Image( _Proj_to_ZN, Intersection( S, Image( _Embed_from_ZN ) ) );
   id_K := idSubgroupS1( K );
   id_ker_psi := idSubgroupS1( ker_psi );
+  mode := id_ker_psi[ 2 ];
 
   # find ID of L
-  if ( id_K[ 2 ] > 0 ) and ( id_ker_psi[ 2 ] > 0 ) then
-    id_L := [ id_K[ 1 ]/id_ker_psi[ 1 ], id_K[ 2 ]/id_ker_psi[ 2 ] ];
-  elif ( id_K[ 2 ] = 0 ) and ( id_ker_psi[ 2 ] = 0 ) then
-    id_L := [ ( id_K[ 1 ] - 2 )/( id_ker_psi[ 1 ] - 2 ), 1 ];
+  if ( mode = 0 ) then
+    id_L := [ 1, 1 ];
+  elif ( mode > 0 ) then
+    id_L := [ 1, id_K[ 2 ]/mode ];
   else
     return fail;
   fi;
   
   # test which CCS in G x O(2) S belongs to
   for i in [ 1 .. Size( _CCSs_GxS1 ) ] do
-    ccs_GxS1 := _CCSs_GxS1[ i ];
+    type_GxS1 := _CCSs_GxS1[ i ];
 
-    if ( ccs_GxS1[ 4 ] = id_K[ 1 ] ) and	# match type of K
-       ( ccs_GxS1[ 5 ] = id_ker_psi[ 1 ] ) and	# match type of ker(psi)
-       ( id_L = ccs_GxS1[ 3 ] ) and		# match order of L
-       ( H in _CCSs_G[ ccs_GxS1[ 1 ] ] ) then	# match H
+    if ( type_GxS1[ 4 ][ 2 ]*mode = id_K[ 2 ] ) and		# match type of K
+       ( type_GxS1[ 5 ][ 2 ]*mode = id_ker_psi[ 2 ] ) and	# match type of ker(psi)
+       ( type_GxS1[ 3 ] = id_L ) and				# match order of L
+       ( H in _CCSs_G[ type_GxS1[ 1 ] ] ) then			# match H
 
       # set up the candidate idccs, embed and compare
-      idccs := [ i, id_ker_psi[ 2 ] ];
+      idccs := [ i, mode ];
       if IsConjugate( _GxZN, embedIntoGxZN( idccs ), S ) then
 
         # msglevel: verbose
-        if ( ValueOption( "msglevel" ) > 2 ) then
-          Print( "Done!\n\n" );
-        fi;
+        Print( "Done!\n\n" );
 
         return idccs;
 
@@ -759,8 +756,8 @@
       fi;
     od;
 
-    if (term1[ 2 ] = 0) then
-      Remove(b, i);
+    if ( term1[ 2 ] = 0 ) then
+      Remove( b, i );
     else
       i := i + 1;
     fi;
@@ -1010,101 +1007,111 @@
 #---
 # foldingDegGxS1( folding_number, deg ) applies folding on the given deg
 #---
-  foldingDegGxS1 := function( folding_number, deg )
+# foldingDegGxS1 := function( folding_number, deg )
 
-  # local variable
-  local term,
-	fdeg;
+# # local variable
+# local term,
+#       fdeg;
 
-  fdeg := [ ];
-  for term in deg do
-    Add( fdeg, [ foldingCCSGxS1( folding_number, term[ 1 ] ), term[ 2 ] ] );
-  od;
-  burnsideSimplify( fdeg );
-  return fdeg;
+# fdeg := [ ];
+# for term in deg do
+#   Add( fdeg, [ foldingCCSGxS1( folding_number, term[ 1 ] ), term[ 2 ] ] );
+# od;
+# burnsideSimplify( fdeg );
+# return fdeg;
 
-  end;
+# end;
 #---
 
 
 #-----
 # part 4: format output
 #-----
+#---
+# id2nameCCSO2( id ) converts an ID of CCS to a comprehensive name in O(2).
+#---
+  id2nameCCSO2 := function( id )
+
+  local type,	# type of subgroup
+	n;	# mode of subgroup
+
+  type := id[ 1 ];
+  n := id[ 2 ];
+
+  if ( type = 1 ) then
+    if ( n = 0 ) then
+      # S1
+      return "S1";
+    else
+      # Z_n
+      return Concatenation( "Z_", String( n ) );
+    fi;
+
+  elif ( type = 2 ) then
+    if ( n = 0 ) then
+      # O(2)
+      return "O(2)";
+    else
+      # D_n
+      return Concatenation( "D_", String( n ) );
+    fi;
+  fi;
+
+  end;
 
 #---
-# id2nameCCSGxS1( idccs ) convert an ID of CCS to
-#	a comprehensive name in GxO(2)
+# id2nameCCSGxS1( idccs ) convert an ID of CCS to a comprehensive name in GxS1
 #---
   id2nameCCSGxS1 := function( idccs )
 
   # define local variable
-  local ccs,		# CCS
-        id_L,		# ID of L
-	pre_r,		# phi^{-1}(<r>)
+  local type,		# type of CCS
+	mode,		# mode of CCS
 	name_H,		# name of H
 	name_ker_phi,	# name of ker(phi)
 	name_L,		# name of L
 	name_K,		# name of K
 	name_ker_psi;	# name of ker(psi)
 
-  if IsPosInt( idccs ) then
-    ccs := _CCSs_GxS1[ idccs ];
-  elif IsList( idccs ) then
-    ccs := _CCSs_GxS1[ idccs[ 1 ] ];
-  else
-    Error( "Unrecognizable ID of CCS in G x O(2)." );
-  fi;
-
-  # extract phi^{-1}(r)
-  pre_r := ccs[ 7 ];
+  # extract type and mode of CCS
+  type := _CCSs_GxS1[ idccs[ 1 ] ];
+  mode := idccs[ 2 ];
 
   # determine name of H and ker(phi)
-  name_H := _Name_CCSs_G[ ccs[ 1 ] ];
-  name_ker_phi := _Name_CCSs_G[ ccs[ 2 ] ];
+  name_H := _Name_CCSs_G[ type[ 1 ] ];
+  name_ker_phi := _Name_CCSs_G[ type[ 2 ] ];
 
   # determine name of L
-  if IsPosInt( ccs[ 3 ] ) then
-    name_L := "Z_";
-    Append( name_L, String( ccs[ 3 ] ) );
-  else
-    Error( "Unknown ID for L" );
-  fi;
+  name_L := id2nameCCSO2( type[ 3 ] );
 
-  # append the mode number when K = Z_n or D_n
-  if ( ccs[ 4 ] = 0 ) then
-    name_K := "S1";
-    name_ker_psi := "S1";
-  elif IsPosInt( ccs[ 4 ] ) then
-    name_K := "Z_";
-    name_ker_psi := "Z_";
-    # case 1: mode is not specified
-    if IsPosInt( idccs ) then
-      Append( name_ker_psi, "n" );
-      if ( ccs[ 3 ] > 1 ) then
-        Append( name_K, String( ccs[ 3 ] ) );
-      fi;
-      Append( name_K, "n" );
-
-    # case 2: mode is specified
-    elif IsList( idccs ) then
-      Append( name_ker_psi, String( idccs ) );
-      Append( name_K, String( ccs[ 3 ] * idccs[ 2 ] ) );
+  # determine name of K and ker(psi)
+  name_ker_psi := id2nameCCSO2( [ type[ 5 ][ 1 ], mode ] );
+  if IsInt( mode ) then
+    # when mode is given by an integer
+    name_K := id2nameCCSO2( [ type[ 4 ][ 1 ], type[ 4 ][ 2 ] * mode ] );
+  elif IsString( mode ) then
+    # when mode is give by a string
+    if ( type[ 4 ][ 2 ] = 1 ) then
+      name_K := id2nameCCSO2( [ type[ 4 ][ 1 ], mode ] );
+    elif ( type[ 4 ][ 2 ] > 1 ) then
+      name_K := id2nameCCSO2( [ type[ 4 ][ 1 ], Concatenation( String( type[ 4 ][ 2 ] ), mode ) ] );
     fi;
   fi;
 
-  return [ name_H, name_ker_phi, name_L, name_K, name_ker_psi, pre_r ];
+  return [ name_H, name_ker_phi, name_L, name_K, name_ker_psi ];
 
   end;
 #---
 
 #---
-# printCCSsGxS1( ) lists all the CCSs in G x O(2) in a comprehensive format.
+# printCCSsGxS1( ) lists all the CCSs in GxS1 in a comprehensive format.
 #---
   printCCSsGxS1 := function( )
 
   # define local variable
   local i,		# index
-	ccs,		# CCS in G x O(2)
+	type,		# CCS in G x O(2)
+	mode,		# mode of CCS
 	ccsname,	# name of the CCS
 	filename,	# output text file name
 	pbrno,		# line break number
@@ -1115,34 +1122,45 @@
     Error( "Please run conjugacyClassesSubgroupsGxS1( ) first." );
   fi;
 
-  # set up line break number, default: 20
+  # set up number of lines in each page, default: 20
   pbrno := ValueOption( "pbrno" );
   if ( pbrno = fail ) then
     pbrno := 20;
   fi;
 
-  # set up output stream, default: screen
+  # set up output stream
   filename := ValueOption( "filename" );
-  if not ( filename = fail ) then
-    output := OutputTextFile( filename, false );
-  else
+  if ( filename = fail ) then
+    # use screen output (default)
     output := OutputTextUser( );
+  else
+    # use file output
+    output := OutputTextFile( filename, false );
   fi;
 
-  # print all CCSs in G x O(2), one CCS per line
+  # print all CCSs in GxS1, one CCS per line
   for i in [ 1 .. Size( _CCSs_GxS1 ) ] do
-    ccsname := id2nameCCSGxS1( i );
-    ccs := _CCSs_GxS1[ i ];
+    type := _CCSs_GxS1[ i ];
+    # determine mode for each type of CCSs
+    if ( type[ 4 ][ 2 ] = 0 ) then
+      # type with zero mode
+      mode := 0;
+    else
+      # type with positive modes
+      mode := "n";
+    fi;
+    # get the name of the type of CCSs
+    ccsname := id2nameCCSGxS1( [ i, mode ] );
 
-    # print headings for every certain lines
+    # print headings for each page
     if ( i mod pbrno = 1 ) then
       AppendTo( output, "-----------------------------------------------------------------\n" );
-      AppendTo( output, "ID\tH\tker_phi\tL\tK\tker_psi\tpre_r\t|W|\n" );
+      AppendTo( output, "ID\tH\tker_phi\tL\tK\tker_psi\t|W|\n" );
       AppendTo( output, "-----------------------------------------------------------------\n" );
     fi;
 
     # print the CCS
-    AppendTo( output, i, "\t", ccsname[ 1 ], "\t", ccsname[ 2 ], "\t", ccsname[ 3 ], "\t", ccsname[ 4 ], "\t", ccsname[ 5 ], "\t", ccsname[ 6 ], "\t", ccs[ 8 ], "\n" );
+    AppendTo( output, i, "\t", ccsname[ 1 ], "\t", ccsname[ 2 ], "\t", ccsname[ 3 ], "\t", ccsname[ 4 ], "\t", ccsname[ 5 ], "\t", type[ 8 ], "\n" );
   od;
 
   # close the output stream
@@ -1195,7 +1213,7 @@
     ccs := _CCSs_GxS1[ i ];
 
     # find quotient group L
-    L := factorGroupS1( ccs[ 3 ] );
+    L := factorGroup( ccs[ 3 ] );
 
     # When Wyel group is infinite, use 0 represent the case
     if ( ccs[ 8 ] = infinity ) then
@@ -1221,7 +1239,7 @@
 #---
   idEmbed_G_GxS1 := function( id )
 
-  return [ Size( _CCSs_GxS1 ) - Size( _CCSs_G ) + id, 0 ];
+  return [ id, 0 ];
 
   end;
 #---
@@ -1257,67 +1275,45 @@
 
   # basic degree associated to zero mode
   if ( q = 0 ) then
-    # basic degree associated to zero mode +
-    if ( p > 0 ) then
-      for ko in Reversed( [ 1 .. Size( _CCSs_G ) ] ) do
-        L_ko := Representative( _CCSs_G[ ko ] );
-        n_ko := (-1)^DimensionOfFixedSet( chi_G, L_ko );
-        for term in bdeg do
-          k := term[ 1 ];
-          n_k := term[ 2 ];
-          L_k := Representative( _CCSs_G[ k ] );
-          n_ko := n_ko - nLHnumber( _G, L_k, L_ko ) * n_k;
-        od;
-        if not ( n_ko = 0 ) then
-          Add( bdeg, [ ko, n_ko ] );
-        fi;
+    for ko in Reversed( [ 1 .. Size( _CCSs_G ) ] ) do
+      L_ko := Representative( _CCSs_G[ ko ] );
+      n_ko := (-1)^DimensionOfFixedSet( chi_G, L_ko );
+      for term in bdeg do
+        k := term[ 1 ];
+        n_k := term[ 2 ];
+        L_k := Representative( _CCSs_G[ k ] );
+        n_ko := n_ko - nLHnumber( _G, L_k, L_ko ) * n_k;
       od;
-      bdeg := List( bdeg, t -> [ idEmbed_G_GxS1( t[ 1 ] ), t[ 2 ] ] );
-
-    # basic degree associated to zero mode -
-    elif ( p < 0 ) then
-      setupZN( 1, true );
-      for chi_GxZN in _irr_GxZN do
-        if ( List( _CCs_G, c -> chi_GxZN[ idCC( _CCs_GxZN, Image( _Embed_from_G, Representative( c ) ) ) ] ) = List( chi_G ) ) and ( List( Image( _Embed_from_ZN ), e -> chi_GxZN[ idCC( _CCs_GxZN, e ) ] ) = [ 1, -1 ] * DegreeOfCharacter( chi_G ) ) then
-          break;
-        fi;
-      od;
-      for L_ko in Reversed( List( _CCSs_GxZN, Representative ) ) do
-        n_ko := (-1)^DimensionOfFixedSet( chi_GxZN, L_ko );
-        for term in bdeg do
-          L_k := term[ 1 ];
-          n_k := term[ 2 ];
-          n_ko := n_ko - nLHnumber( _GxZN, L_k, L_ko ) * n_k;
-        od;
-        if not ( n_ko = 0 ) then
-          Add( bdeg, [ L_ko, n_ko ] );
-        fi;
-      od;
-      bdeg := List( bdeg, t -> [ idCCSGxZN( t[ 1 ] ), t[ 2 ] ] );
-    fi;
+      if not ( n_ko = 0 ) then
+        Add( bdeg, [ ko, n_ko ] );
+      fi;
+    od;
+    bdeg := List( bdeg, t -> [ idEmbed_G_GxS1( t[ 1 ] ), t[ 2 ] ] );
 
   # basic degree associated to nonzero mode
   else
     # collect all possible orbit types in the basic degree
-    clist_idccs := PositionsProperty( _CCSs_GxS1, c -> not IsInfinity( c[ 8 ] ) and not ( c[ 4 ] in [ 3, 4 ] ) );
-    Add( clist_idccs, Size( _CCSs_GxS1 ) );
+    clist_idccs := PositionsProperty( _CCSs_GxS1, c -> ( c[ 8 ][ 1 ] = 1 ) );
+    #Add( clist_idccs, idEmbed_G_GxS1( Size( _CCSs_G ) ) );
     # setup ZN according to all possible orbit types
-    N := 2 * Lcm( _CCSs_GxS1{ clist_idccs }[ 3 ][ 2 ] );
+    N := 2 * Lcm( _CCSs_GxS1{ clist_idccs }[ 4 ][ 2 ] );
     setupZN( N, true );
+    i := 0;
     for chi_GxZN in _irr_GxZN do
-      if ( List( _CCs_G, c -> chi_GxZN[ idCC( _CCs_GxZN, Image( _Embed_from_G, Representative( c ) ) ) ] ) = 2 * List( chi_G ) ) and ( List( GeneratorsOfGroup( _ZN ) , e -> chi_GxZN[ idCC( _CCs_GxZN, Image( _Embed_from_ZN, e ) ) ] ) = [ 0, E( N )+E( N )^( N-1 ) ] * DegreeOfCharacter( chi_G ) ) then
+      i := i + 1;
+      if ( List( _CCs_G, c -> chi_GxZN[ idCC( _CCs_GxZN, Image( _Embed_from_G, Representative( c ) ) ) ] ) = List( chi_G ) ) and ( List( GeneratorsOfGroup( _ZN ) , e -> chi_GxZN[ idCC( _CCs_GxZN, Image( _Embed_from_ZN, e ) ) ] ) = [ E( N ) ] * DegreeOfCharacter( chi_G ) ) then
         break;
       fi;
     od;
     for L_ko in Reversed( List( _CCSs_GxZN , Representative ) ) do
-      if not ( ( L_ko = _GxZN ) or ( idSubgroupS1( Image( _Proj_to_ZN, Intersection( L_ko, Image( _Embed_from_ZN ) ) ) )[2] in [ 0, 1 ] ) ) then
-        continue;
-      fi;
+#     if not ( idSubgroupS1( Image( _Proj_to_ZN, Intersection( L_ko, Image( _Embed_from_ZN ) ) ) )[2] = 1 ) then
+#       continue;
+#     fi;
       ko := idCCSGxZN( L_ko );
-      if ko = fail or not ( ko[1] in clist_idccs ) then
+      if ko = fail or not ( ( ko[ 1 ] in clist_idccs ) and ( ko[ 2 ] = 1 ) ) then
         continue;
       fi;
-      n_ko := ( -1 )^DimensionOfFixedSet( chi_GxZN, L_ko );
+      n_ko := DimensionOfFixedSet( chi_GxZN, L_ko );
       for term in bdeg do
         L_k := term[ 1 ];
         n_k := term[ 2 ];
@@ -1331,8 +1327,8 @@
     bdeg := List( bdeg, t -> [ [ t[ 1 ][ 1 ], t[ 1 ][ 2 ] * q ], t[ 2 ] ] );
   fi;
 
-  bdeg := List( bdeg, t -> [ t[ 1 ], t[ 2 ]/_CCSs_GxS1[ t[ 1 ][ 1 ] ][ 8 ] ] );
-  burnsideSimplify( bdeg );
+  bdeg := List( bdeg, t -> [ t[ 1 ], t[ 2 ]/_CCSs_GxS1[ t[ 1 ][ 1 ] ][ 8 ][ 2 ] ] );
+# burnsideSimplify( bdeg );
   return bdeg;
 
   end;
