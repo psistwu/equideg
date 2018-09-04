@@ -1,0 +1,26 @@
+digraph lattice {
+size = "6,6";
+"rt" [label="Dim", color=white];
+"rt" -> "s0" [color=white, arrowhead=none];
+"s0" [label="0", color=white];
+"s0" -> "s1" [color=white, arrowhead=none];
+"s1" [label="1", color=white];
+"s1" -> "s3" [color=white, arrowhead=none];
+"s3" [label="3", color=white];
+"1" [label="1", shape=square];
+{ rank=same; "s3" "1"; }
+"2" [label="3", shape=circle];
+{ rank=same; "s1" "2"; }
+"3" [label="4", shape=circle];
+{ rank=same; "s1" "3"; }
+"4" [label="7", shape=circle];
+{ rank=same; "s1" "4"; }
+"5" [label="11", shape=square];
+{ rank=same; "s0" "5"; }
+"2" -> "1" [arrowhead=none];
+"3" -> "1" [arrowhead=none];
+"4" -> "1" [arrowhead=none];
+"5" -> "2" [arrowhead=none];
+"5" -> "3" [arrowhead=none];
+"5" -> "4" [arrowhead=none];
+}

@@ -1,24 +1,20 @@
-# GAP: Burnside Ring Library #
+# # GAP: Burnside Ring Library
+#
+# This library provides functions for Burnside ring computation
+#
+# Author(s):
+# Haopin Wu <psistwu@outlook.com>
+#
+# Dependency:
+# => libBasic.g
+# => libGroup.g
+# => libOrbitType.g
+#
 
-### Synopsis ###
-#---
-# This library provides functions for Burnside ring
-#---
 
-### Author ###
-#---
-# Hao-pin Wu <hxw132130@utdallas.edu>
-#---
+# ## Declaration file
+  Read( Filename( GAPEL_PATH, "libBurnsideRing.gd" ) );
 
-### Dependency ###
-#---
-# => libBasicGroupTheory.g
-# => libSys.g
-#---
-
-### Declaration file ###
-  Read( Filename( GAPEL_DIR, "libBurnsideRing.gd" ) );
-
-### Implementation file ###
-  Read( Filename( GAPEL_DIR, "libBurnsideRing.gi" ) );
+# ## Implementation file
+  Read( Filename( GAPEL_PATH, "libBurnsideRing.gi" ) );
 

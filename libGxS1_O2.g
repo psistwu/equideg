@@ -1,12 +1,13 @@
 #-------
-# GxO2 GAP Library
+# GxS1_O2 GAP Library
 #-------
-# This library provides functions for determine
-# the conjugacy classes of subgroups(CCSs)
-# in G\times O(2) where G is a finite group.
-# Also it can perform the addition and
-# multiplication of the Burnside ring induced by
-# Gamma times O(2).
+# This library computes the basic degrees for
+# 	1) degree without free parameter
+#	2) twisted degree
+#	3) gradient degree
+# for groups of types GxS1 and GxO2.
+# Also, it supports the computation
+# of the corresponding Burnside ring/Euler ring.
 #-------
 
 #-----
@@ -16,17 +17,9 @@
 #---
 # dependent library
 #---
-  Read( Filename( GAPEL_DIR, "libSys.g" ) );
-  Read( Filename( GAPEL_DIR, "libBasicGroupTheory.g" ) );
-  Read( Filename( GAPEL_DIR, "libOrbitTypes.g" ) );
-#---
-
-#---
-# options
-#---
-  # set message level (2 in default)
-  # there are four message levels: 1->error, 2->notice, 3->verbose, 4->debug
-  PushOptions( rec( msglevel := 2 ) );
+# Read( Filename( GAPEL_PATH, "libSys.g" ) );
+# Read( Filename( GAPEL_PATH, "libBasicGroupTheory.g" ) );
+# Read( Filename( GAPEL_PATH, "libOrbitTypes.g" ) );
 #---
 
 #---
@@ -35,67 +28,14 @@
   # the finite group G
   DeclareGlobalVariable( "_G" );
 
-  # the list of irreducible G-representations
-  DeclareGlobalVariable( "_irr_G" );
-
-  # the CCs in G
-  DeclareGlobalVariable( "_CCs_G" );
-
-  # the CCSs in G
-  DeclareGlobalVariable( "_CCSs_G" );
-
-  # name list of CCSs in G
-  DeclareGlobalVariable( "_Name_CCSs_G" );
-
-  # name list of CCSs in O(2)
-  DeclareGlobalVariable( "_Name_CCSs_O2" );
-  MakeReadWriteGlobal( "_Name_CCSs_O2" );
-  _Name_CCSs_O2 := [ "Z_", "D_", "SO(2)", "O(2)" ];
-  MakeReadOnlyGlobal( "_Name_CCSs_O2" );
-
-  # the CCSs in GxO(2)
+  # the CCSs in GxO2
   DeclareGlobalVariable( "_CCSs_GxO2" );
 
-  # the history of DN
-  DeclareGlobalVariable( "_DN_History" );
-  MakeReadWriteGlobal( "_DN_History" );
-  _DN_History := [ ];
-  MakeReadOnlyGlobal( "_DN_History" );
+  # the CCSs in GxS1
+  DeclareGlobalVariable( "_CCSs_GxS1" );
 
-  # the dihedral group DN
-  DeclareGlobalVariable( "_DN" );
-
-  # the list of irreducible DN-representations
-  DeclareGlobalVariable( "_irr_DN" );
-
-  # the cyclic group ZN
-  DeclareGlobalVariable( "_ZN" );
-
-  # GxDN where the subgroup in GxO(2) will be embedded
-  DeclareGlobalVariable( "_GxDN" );
-
-  # CCSs of GxDN
-  DeclareGlobalVariable( "_CCSs_GxDN" );
-
-  # CCs of GxDN
-  DeclareGlobalVariable( "_CCs_GxDN" );
-
-  # the list of irreducible GxDN-representations
-  DeclareGlobalVariable( "_irr_GxDN" );
-
-  # the projection map from GxDN to G
-  DeclareGlobalVariable( "_Proj_to_G" );
-
-  # the projection map from GxDN to DN
-  DeclareGlobalVariable( "_Proj_to_DN" );
-
-  # the embedding map from G to GxDN (the other component would be identity)
-  DeclareGlobalVariable( "_Embed_from_G" );
-
-  # the embedding map from DN to GxDN (the other component would be identity)
-  DeclareGlobalVariable( "_Embed_from_DN" );
-#---
-
+  # the Cache of ZN/DN
+  DeclareGlobalVariable( "_ZN_DN_Cache" );
 
 #-----
 # part 1: setup
@@ -106,11 +46,10 @@
 #---
   setupG := function( G )
 
+  local j;	# index
+
   # msglevel: notice
-  if ( ValueOption( "msglevel" ) > 1 )  then
-    Print( "G = ", G, "\n" );
-    Print( "Setting up G... " );
-  fi;
+  Print( "Setting up G = ", G, ".... " );
 
   # check if the argument is a group
   # msglevel: error
@@ -120,77 +59,61 @@
 
   # unlock global variables
   MakeReadWriteGlobal( "_G" );
-  MakeReadWriteGlobal( "_irr_G" );
-  MakeReadWriteGlobal( "_CCs_G" );
-  MakeReadWriteGlobal( "_CCSs_G" );
-  MakeReadWriteGlobal( "_Name_CCSs_G" );
-  MakeReadWriteGlobal( "_DN_History" );
+  MakeReadWriteGlobal( "_ZN_DN_Cache" );
 
   # assign values
-  _G := G;
-  _irr_G := Irr( _G );
-  _CCs_G := ConjugacyClasses( _G );
-  _CCSs_G := ConjugacyClassesSubgroups( _G );
-  _Name_CCSs_G := [ 1 .. Size( _CCSs_G ) ];
-  _DN_History := [ ];
+  _G := G;;
+  Irr( _G );;
+  ConjugacyClasses( _G );;
+  ConjugacyClassesSubgroups( _G );;
+  _ZN_DN_Cache := [ [ ], [ ] ];;
 
   # lock global variables
   MakeReadOnlyGlobal( "_G" );
-  MakeReadOnlyGlobal( "_irr_G" );
-  MakeReadOnlyGlobal( "_CCs_G" );
-  MakeReadOnlyGlobal( "_CCSs_G" );
-  MakeReadOnlyGlobal( "_Name_CCSs_G" );
-  MakeReadOnlyGlobal( "_DN_History" );
+  MakeReadOnlyGlobal( "_ZN_DN_Cache" );
 
   # msglevel: notice
-  if ( ValueOption( "msglevel" ) > 1 ) then
-    Print( "Done!\n\n" );
-  fi;
-  
+  Print( "Done!\n\n" );
+
   end;
 #---
 
 #---
-# setupNameCCSsG( namelist ) sets up name list of CCSs in G
+# setName_CCSs_G( namelist ) sets up name list of CCSs in G
 #---
-  setNameCCSsG := function( namelist )
+  setName_CCSs_G := function( namelist )
+
+  local j;	# index
 
   # check if G is already assigned
-  if IsEmpty( _CCSs_G ) then
+  if IsEmpty( _G ) then
     Error( "Please run setupG first." );
   fi;
 
   # check if the length of name list matches the number of CCSs in G
-  if not ( Size( namelist ) = Size( _CCSs_G ) ) then
+  if not ( Size( namelist ) = Size( ConjugacyClassesSubgroups( _G ) ) ) then
     Error( "The length of name list does not match the number of CCSs in G." );
   fi;
 
-  # unlock global variables
-  MakeReadWriteGlobal( "_Name_CCSs_G" );
-  
   # assign values
-  _Name_CCSs_G := namelist;
-
-  # lock global variables
-  MakeReadOnlyGlobal( "_Name_CCSs_G" );
+  for j in [ 1 .. Size( ConjugacyClassesSubgroups( _G ) ) ] do
+    SetName( ConjugacyClassesSubgroups( _G )[ j ], namelist[ j ] );
+  od;
 
   end;
 #---
 
 #---
-# setupDN( N ) assigns a dihedral group to global variable _DN;
-#	G times DN to global variables _GxDN; also, it sets up the
-#	projections and embeddings of the direct product.
+# setupZNDN( id ) assigns ZN/DN to global variable _ZN_DN_Cache
 #---
-  setupDN := function( N, detail )
+  setupZNDN := function( id )
 
   # local variable
-  local DN;
+  local cache,	# cache
+	nameT,	# name of T
+	T;	# T
 
-  # msglevel: verbose
-  if ( ValueOption( "msglevel" ) > 2 ) then
-    Print( "Setting up D_", N, "... " );
-  fi;
+  cache := rec( );
 
   # check if the global variable _G is already bound
   # msglevel: error
@@ -198,57 +121,36 @@
     Error( "Global variable \"_G\" is not yet assigned!" );
   fi;
 
-  # unlock global variables
-  MakeReadWriteGlobal( "_DN_History" );
-  MakeReadWriteGlobal( "_DN" );
-  MakeReadWriteGlobal( "_irr_DN" );
-  MakeReadWriteGlobal( "_ZN" );
-  MakeReadWriteGlobal( "_GxDN" );
-  MakeReadWriteGlobal( "_irr_GxDN" );
-  MakeReadWriteGlobal( "_Proj_to_G" );
-  MakeReadWriteGlobal( "_Proj_to_DN" );
-  MakeReadWriteGlobal( "_Embed_from_G" );
-  MakeReadWriteGlobal( "_Embed_from_DN" );
-
-  if not IsBound( _DN_History[ N ] ) then
-    DN := pDihedralGroup( N );
-    _DN_History[ N ] := rec( );
-    _DN_History[ N ].DN := DN;
-    _DN_History[ N ].GxDN := DirectProduct( _G, DN );
-    _DN_History[ N ].ZN := SubgroupNC( DN, [ Identity( DN ), DN.2 ] );
+  if ( id[ 1 ] = 1 ) then
+    nameT := Concatenation( "Z_", String( id[ 2 ] ) );
+  elif ( id[ 1 ] = 2 ) then
+    nameT := Concatenation( "D_", String( id[ 2 ] ) );
+  else
+    Error( "Unknown id." );
   fi;
 
-  # assign values
-  _DN := _DN_History[ N ].DN;
-  _irr_DN := Irr( _DN );
-  _ZN := _DN_History[ N ].ZN;
-  _GxDN := _DN_History[ N ].GxDN;
-  _irr_GxDN := Irr( _GxDN );
-  _Proj_to_G := Projection( _GxDN, 1 );
-  _Proj_to_DN := Projection( _GxDN, 2 );
-  _Embed_from_G := Embedding( _GxDN, 1 );
-  _Embed_from_DN := Embedding( _GxDN, 2 );
+  # msglevel: verbose
+  Print( "Setting up ", nameT, ".... " );
 
-  if ( detail = true ) then
-    MakeReadWriteGlobal( "_CCs_GxDN" );
-    MakeReadWriteGlobal( "_CCSs_GxDN" );
-    _CCs_GxDN := ConjugacyClasses( _GxDN );
-    _CCSs_GxDN := ConjugacyClassesSubgroups( _GxDN );
-    MakeReadOnlyGlobal( "_CCs_GxDN" );
-    MakeReadOnlyGlobal( "_CCSs_GxDN" );
+  if not IsBound( _ZN_DN_Cache[ id[ 1 ] ][ id[ 2 ] ] ) then
+    if ( id[ 1 ] = 1 ) then
+      T := pCyclicGroup( id[ 2 ]);
+    elif ( id[ 1 ] = 2 ) then
+      T := pDihedralGroup( id[ 2 ]);
+    fi;
+    cache.T := T;
+    cache.nameT := nameT;
+    cache.GxT := DirectProduct( _G, T );
+
+    # unlock global variables
+    MakeReadWriteGlobal( "_ZN_DN_Cache" );
+
+    # write to the cache
+    _ZN_DN_Cache[ id[ 1 ] ][ id[ 2 ] ] := cache;
+
+    # lock global variables
+    MakeReadOnlyGlobal( "_ZN_DN_Cache" );
   fi;
-
-  # lock global variables
-  MakeReadOnlyGlobal( "_DN_History" );
-  MakeReadOnlyGlobal( "_DN" );
-  MakeReadOnlyGlobal( "_irr_DN" );
-  MakeReadOnlyGlobal( "_ZN" );
-  MakeReadOnlyGlobal( "_GxDN" );
-  MakeReadOnlyGlobal( "_irr_GxDN" );
-  MakeReadOnlyGlobal( "_Proj_to_G" );
-  MakeReadOnlyGlobal( "_Proj_to_DN" );
-  MakeReadOnlyGlobal( "_Embed_from_G" );
-  MakeReadOnlyGlobal( "_Embed_from_DN" );
 
   # msglevel: verbose
   if ( ValueOption( "msglevel" ) > 2 ) then
@@ -264,62 +166,115 @@
 #-----
 
 #---
-# factorGroupO2( id ) generates factor group in O(2)
+# factorGroup( id ) generates a factor group, it is either Zn or Dn.
 #---
-  factorGroupO2 := function( id )
+  factorGroup := function( id )
 
   # local variables
-  local d;	# the dihedral group
+  local type,	# type of the group
+	n;	# mode of the group
 
-  # generate D_n
-  d := pDihedralGroup( id[ 2 ] );
+  type := id[ 1 ];
+  n := id[ 2 ];
 
-  # return Z_n
-  if ( id[ 1 ] = 1 ) then
-    return SubgroupNC( d, [ Identity( d ), d.2 ] );
+  if ( type = 1 ) then
+    # cyclic group
+    return pCyclicGroup( n );
 
-  # return D_n
-  elif ( id[ 1 ] = 2 ) then
-    return d;
+  elif ( type = 2 ) then
+    # dihedral group
+    return pDihedralGroup( n );
 
-  # unknown type
   else
-    Error( "Unknown type of factor group." );
+    # unknown type
+    Error( "Invalid ID for factor groups." );
   fi;
 
   end;
 #---
 
 #---
-# idFactorGroupO2( L ) determines id of L
+# idFactorGroup( L ) determines id of given factor group
 #---
-  idFactorGroupO2 := function( L )
+  idFactorGroup := function( L )
 
-  # determine type of L
-  if ( Order( L ) = 2 ) then
-    # determine that L is Z_2 or D_1
-    if ( L = factorGroupO2( [ 1, 2 ] ) ) then
-      return [ 1, 2 ];
-    elif ( L = factorGroupO2( [ 2, 1 ] ) ) then
-      return [ 2, 1 ];
-    fi;
-
-  elif ( IdGroup( L ) = IdGroup( CyclicGroup( Order( L ) ) ) ) then
+  if ( Size( GeneratorsOfGroup( L ) ) = 1 ) then
+    # if there is only one generator, then L is Zn
     return [ 1, Order( L ) ];
 
-  elif ( IdGroup( L ) = IdGroup( DihedralGroup( Order( L ) ) ) ) then
-    return [ 2, Order( L ) / 2 ];
+  elif ( Size( GeneratorsOfGroup( L ) ) = 2 ) then
+    # if there are two generators, then...
+
+    # check if L is isomorphic to dihedral group of the same order
+    if ( IdGroup( L ) = IdGroup( pDihedralGroup( Order( L ) / 2 ) ) ) then
+      return [ 2, Order( L ) / 2 ];
+    fi;
 
   else
-    Error( "L is not of type Z_n nor D_n." );
+    Error( "Unknown type." );
   fi;
+
+  end;
+#---
+
+#---
+# isConjugateEpimorphismsGxS1( phi1, phi2 ) determines whether two
+#	epimorphisms phi1 and phi2 are conjugate to each other in GxS1.
+#---
+  isConjugateEpimorphismsGxS1 := function( phi1, phi2 )
+
+  # define local variables
+  local H,		# a subgroup in G
+	L,		# a factor group in S1
+	NH,		# normalizer of H
+	elmt_NH,	# element in the normalizer
+	conj_phi1;	# twisted phi1 in its domain
+
+  # extract H and L
+  H := PreImage( phi1 );
+  L := Image( phi1 );
+
+  # check if phi1 and phi2 have the same domain and codomain
+  if not ( ( PreImage( phi2 ) = H ) and ( Image( phi2 ) = L ) ) then
+    return false;
+  fi;
+
+  # case 1: L = Z_1
+  if ( Order( L ) = 1 ) then
+    return true;
+  fi;
+
+  # find NH
+  NH := Normalizer( _G, H );
+
+  # case 2: L = Z_2
+  if ( Order( L ) = 2 ) then
+    # they are conjugate if their kernels are conjugate
+    if IsConjugate( NH, Kernel( phi1 ), Kernel( phi2 ) ) then
+      return true;
+    fi;
+  fi;
+
+  # case 3: L = Z_n, n>2
+  for elmt_NH in AsList( NH ) do
+    # conjugate phi1 in its domain
+    conj_phi1 := GroupHomomorphismByFunction( H, H, s -> s^elmt_NH, s -> s^( elmt_NH^-1 ) ) * phi1;
+ 
+    # phi1 and phi2 are conjugate if phi2 is equal to any conjugate of phi1
+    if ( conj_phi1 = phi2 ) then
+      return true;
+    fi;
+  od;
+
+  # if all attempts fail, return false
+  return false;
 
   end;
 #---
 
 #---
 # isConjugateEpimorphismsGxO2( phi1, phi2 ) determines whether two
-#	epimorphisms phi1 and phi2 are conjugate to each other in GxO(2).
+#	epimorphisms phi1 and phi2 are conjugate to each other in GxO2.
 #---
   isConjugateEpimorphismsGxO2 := function( phi1, phi2 )
 
@@ -333,9 +288,10 @@
 	conj_phi1_conj,	# twisted phi1 in both its domain and codomain
 	i, j;		# indexes
 
-  # extract H and L
+  # extract H, L and id of L
   H := PreImage( phi1 );
   L := Image( phi1 );
+  id_L := idFactorGroup(L);
 
   # check if phi1 and phi2 have the same domain and codomain
   if not ( ( PreImage( phi2 ) = H ) and ( Image( phi2 ) = L ) ) then
@@ -357,10 +313,6 @@
       return true;
     fi;
   fi;
-
-  # get id of L and reconstruct L by its id
-  id_L := idFactorGroupO2(L);
-  L := factorGroupO2(id_L);
 
   # case 3: L = Z_n, n>2
   if ( id_L[ 1 ] = 1 ) then
@@ -388,7 +340,7 @@
       for i in [ -1, 1 ] do
         for j in [ 0 .. id_L[ 2 ] - 1 ] do
           # and also, twist phi1 in its codomain
-          conj_phi1_conj := conj_phi1*GroupHomomorphismByImagesNC( L, L, [ L.1, L.2 ], [ L.1*L.2^j, L.2^i ] );
+          conj_phi1_conj := conj_phi1*GroupHomomorphismByImagesNC( L, L, [ L.1, L.2 ], [ L.1^i, L.2*L.1^j ] );
 
           # phi1 and phi2 are conjugate if phi2 is equal to twisted phi1
           if ( conj_phi1_conj = phi2 ) then

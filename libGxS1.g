@@ -16,9 +16,9 @@
 #---
 # dependent library
 #---
-  Read( Filename( GAPEL_DIR, "libSys.g" ) );
-  Read( Filename( GAPEL_DIR, "libBasicGroupTheory.g" ) );
-  Read( Filename( GAPEL_DIR, "libOrbitTypes.g" ) );
+  Read( Filename( GAPEL_PATH, "libSys.g" ) );
+  Read( Filename( GAPEL_PATH, "libBasicGroupTheory.g" ) );
+  Read( Filename( GAPEL_PATH, "libOrbitTypes.g" ) );
 #---
 
 #---
@@ -642,8 +642,8 @@
   K := embedIntoZN( id_K );
 
   # msglevel: verbose
-  Print( "Embedding representative of CCS(ID = ", idccs, ") " );
-  Print( "in GxS1 into GxZ_", Order( _ZN ), "... " );
+# Print( "Embedding representative of CCS(ID = ", idccs, ") " );
+# Print( "in GxS1 into GxZ_", Order( _ZN ), "... " );
 
   # define psi
   psi := GroupHomomorphismByImagesNC( K, L, GeneratorsOfGroup( K ), GeneratorsOfGroup( L ) );
@@ -658,7 +658,7 @@
   S := SubgroupNC( _GxZN, gen_S );
 
   # msglevel: verbose
-  Print( "Done!\n\n" );
+# Print( "Done!\n\n" );
 
   return S;
 
@@ -684,7 +684,7 @@
 	i;			# indexes
 
   # msglevel: verbose
-  Print( "Identifying ID of CCS in GxO(2) to whom S belongs... " );
+# Print( "Identifying ID of CCS in GxO(2) to whom S belongs... " );
 
   # extract property of the CCS
   H := Image( _Proj_to_G, S );
@@ -717,7 +717,7 @@
       if IsConjugate( _GxZN, embedIntoGxZN( idccs ), S ) then
 
         # msglevel: verbose
-        Print( "Done!\n\n" );
+#       Print( "Done!\n\n" );
 
         return idccs;
 
@@ -1314,6 +1314,7 @@
         continue;
       fi;
       n_ko := DimensionOfFixedSet( chi_GxZN, L_ko );
+#     Print( ko, "\t", n_ko, "\n" );
       for term in bdeg do
         L_k := term[ 1 ];
         n_k := term[ 2 ];

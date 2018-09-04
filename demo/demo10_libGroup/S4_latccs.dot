@@ -1,0 +1,59 @@
+digraph lattice {
+size = "6,6";
+"rt" [label="Order", color=white];
+"rt" -> "s24" [color=white, arrowhead=none];
+"s24" [label="24", color=white];
+"s24" -> "s12" [color=white, arrowhead=none];
+"s12" [label="12", color=white];
+"s12" -> "s8" [color=white, arrowhead=none];
+"s8" [label="8", color=white];
+"s8" -> "s6" [color=white, arrowhead=none];
+"s6" [label="6", color=white];
+"s6" -> "s4" [color=white, arrowhead=none];
+"s4" [label="4", color=white];
+"s4" -> "s3" [color=white, arrowhead=none];
+"s3" [label="3", color=white];
+"s3" -> "s2" [color=white, arrowhead=none];
+"s2" [label="2", color=white];
+"s2" -> "s1" [color=white, arrowhead=none];
+"s1" [label="1", color=white];
+"1" [label="1", shape=square];
+{ rank=same; "s1" "1"; }
+"2" [label="2", shape=circle];
+{ rank=same; "s2" "2"; }
+"3" [label="3", shape=circle];
+{ rank=same; "s2" "3"; }
+"4" [label="4", shape=circle];
+{ rank=same; "s3" "4"; }
+"5" [label="5", shape=square];
+{ rank=same; "s4" "5"; }
+"6" [label="6", shape=circle];
+{ rank=same; "s4" "6"; }
+"7" [label="7", shape=circle];
+{ rank=same; "s4" "7"; }
+"8" [label="8", shape=circle];
+{ rank=same; "s6" "8"; }
+"9" [label="9", shape=circle];
+{ rank=same; "s8" "9"; }
+"10" [label="10", shape=square];
+{ rank=same; "s12" "10"; }
+"11" [label="11", shape=square];
+{ rank=same; "s24" "11"; }
+"2" -> "1" [arrowhead=none];
+"3" -> "1" [arrowhead=none];
+"4" -> "1" [arrowhead=none];
+"5" -> "2" [arrowhead=none];
+"6" -> "2" [arrowhead=none];
+"6" -> "3" [arrowhead=none];
+"7" -> "2" [arrowhead=none];
+"8" -> "3" [arrowhead=none];
+"8" -> "4" [arrowhead=none];
+"9" -> "5" [arrowhead=none];
+"9" -> "6" [arrowhead=none];
+"9" -> "7" [arrowhead=none];
+"10" -> "4" [arrowhead=none];
+"10" -> "5" [arrowhead=none];
+"11" -> "8" [arrowhead=none];
+"11" -> "9" [arrowhead=none];
+"11" -> "10" [arrowhead=none];
+}

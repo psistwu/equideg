@@ -1,25 +1,21 @@
-# GAP: Representation and Character Theory Library #
-
-### Synopsis ###
-#---
+# # GAP: Representation and Character Theory Library
+#
+# Synopsis:
 # This library provides functions for representation and character theory.
-#---
-
-### Author ###
-#---
-# Hao-pin Wu <hxw132130@utdallas.edu>
-#---
-
-### Dependency ###
-  LoadPackage( "repsn" );
-#---
-# => libBasicGroupTheory.g
+#
+# Author(s):
+# Haopin Wu <psistwu@outlook.com>
+#
+# Dependency:
+# => libGroupTheory.g
 # => libSys.g
-#---
+  LoadPackage( "repsn" );
+#
 
-### Declaration file ###
-  Read( Filename( GAPEL_DIR, "libRepsnCharTheory.gd" ) );
 
-### Implementation file ###
-  Read( Filename( GAPEL_DIR, "libRepsnCharTheory.gi" ) );
+# ## Declaration file
+  Read( Filename( GAPEL_PATH, "libRepsnCharTheory.gd" ) );
+
+# ## Implementation file
+  Read( Filename( GAPEL_PATH, "libRepsnCharTheory.gi" ) );
 
