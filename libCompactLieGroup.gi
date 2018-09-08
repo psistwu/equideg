@@ -10,37 +10,31 @@
 # ### constructor(s)
 # ***
   InstallMethod( NewCompactLieGroup,
-    "return a compact lie group",
-    [ IsGroup and IsOrthogonalGroupOverRealRep and IsSpecialOrthogonalGroupOverRealRep, IsPosInt ],
-    function( filt, d )
+    "return a compact Lie group",
+    [ IsOrthogonalGroupOverReal and IsSpecialOrthogonalGroupOverReal and IsCompactLieGroupRep, IsPosInt ],
+    function( filter, d )
       local one,                # identity of (special) orthogonal group
             fam,                # family of element
             collfam,            # family of (sub)group
             grp,                # (special) orthogonal group
             i, j, k;            # indices
 
-      # the d-by-d identity matrix
-      # which is the identity of the (special) orthoganal group
+      # generate the identity of the (special) orthogonal group
+      # which is a d-by-d identity matrix
       one := One( List( [ 1 .. d ], i -> List( [ 1 .. d ], j -> 0 ) ) );
 
       # define families
-      # family of element
       fam := FamilyObj( one );
-      # family of (sub)group
       collfam := CollectionsFamily( fam );
 
       # objectify the (special) orthogonal group
-      grp := Objectify( NewType( collfam, filt ), rec() );
+      grp := Objectify( NewType( collfam, filter ), rec() );
 
       # setup properties of the (special) orthogonal group
-      # identity
-      SetOneImmutable( grp, one );
-      # dimension of the (special) orthogonal group
-      SetDimension( grp, d*(d-1)/2 );
-      # dimension of matrices in the (special) orthogonal group
-      SetDimensionOfMatrixGroup( grp, d );
-      # order of the (special) orthogonal group
-      SetOrder( grp, infinity );
+      SetOneImmutable( grp, one );            # identity
+      SetDimension( grp, d*(d-1)/2 );         # dimension of the (special) orthogonal group
+      SetDimensionOfMatrixGroup( grp, d );    # dimension of matrices in the (special) orthogonal group
+      SetIsFinite( grp, false );              # order of the (special) orthogonal group
 
       return grp;
     end
@@ -50,236 +44,205 @@
   InstallMethod( OrthogonalGroupOverReal,
     "generate an orthogonal group over real numbers",
     [ IsPosInt ],
-    d -> NewCompactLieGroup( IsGroup and IsOrthogonalGroupOverRealRep, d )
+    function( d )
+      local grp,              # the orthogonal group
+            fam,              # the family of (sub)group
+            collfam,          # the family of CCS
+            collcollfam,      # the family of CCS list
+            cat,              # the category of (sub)group
+            collcat,          # the category of CCS
+            collcollcat,      # the category of CCS list
+            ccs_list;         # the CCS list
+
+      # objectify the group
+      grp := NewCompactLieGroup( IsOrthogonalGroupOverReal and IsCompactLieGroupRep, d );
+
+      # setup families
+      fam := FamilyObj( grp );
+      collfam := CollectionsFamily( fam );
+      collcollfam := CollectionsFamily( collfam );
+      cat := IsGroup;
+      collcat := CategoryCollections( cat );
+      collcollcat := CategoryCollections( collcat );
+
+      # setup the CCS list
+      ccs_list := Objectify( NewType( collcollfam, IsOrthogonalGroupOverRealCCSs and collcollcat and IsCompactLieGroupCCSsRep ), rec( ) );
+
+      SetUnderlyingGroup( ccs_list, grp );
+      SetIsFinite( ccs_list, false );
+      SetConjugacyClassesSubgroups( grp, ccs_list );
+
+      return grp;
+    end
   );
 
 # ***
   InstallMethod( SpecialOrthogonalGroupOverReal,
     "generate a special orthogonal group over real numbers",
     [ IsPosInt ],
-    d -> NewCompactLieGroup( IsGroup and IsSpecialOrthogonalGroupOverRealRep, d )
-  );
+    function( d )
+      local grp,              # the orthogonal group
+            fam,              # the family of (sub)group
+            collfam,          # the family of CCS
+            collcollfam,      # the family of CCS list
+            cat,              # the category of (sub)group
+            collcat,          # the category of CCS
+            collcollcat,      # the category of CCS list
+            ccs_list;         # the CCS list
 
+      # objectify the group
+      grp := NewCompactLieGroup( IsSpecialOrthogonalGroupOverReal and IsCompactLieGroupRep, d );
 
-# ### attribute(s)
-# ***
-  InstallMethod( ConjugacyClassesSubgroups,
-    "CCS list of O(n)",
-    [ IsGroup and IsOrthogonalGroupOverRealRep ],
-    function( grp )
-      local d,                  # dimension of matrices in the Lie group
-            fam,                # family of (sub)group
-            collfam,            # family of CCS
-            collcollfam,        # family of CCS list
-            cat,                # category of sub(group)
-            collcat,            # category of CCS
-            collcollcat,        # category of CCS list
-            ccs_list;           # list of CCS
-
-      d := DimensionOfMatrixGroup( grp );
+      # setup families
       fam := FamilyObj( grp );
       collfam := CollectionsFamily( fam );
       collcollfam := CollectionsFamily( collfam );
-
       cat := IsGroup;
       collcat := CategoryCollections( cat );
       collcollcat := CategoryCollections( collcat );
 
-      ccs_list := Objectify( NewType( collcollfam, IsCompactLieGroupCCSsRep and collcollcat ), rec( Group := grp ) );
+      # setup the CCS list
+      ccs_list := Objectify( NewType( collcollfam, IsSpecialOrthogonalGroupOverRealCCSs and collcollcat and IsCompactLieGroupCCSsRep ), rec( ) );
 
-      if ( d = 2 ) then
-        SetEnumerator( ccs_list, EnumeratorByFunctions( collfam, rec(
-          ElementNumber := function( e, n )
-            local ccs,                # ccs in ccs_list
-                  subg,               # representative of ccs
-                  normalizer,         # normalizer of subg
-                  k;                  # Fourier mode
+      SetUnderlyingGroup( ccs_list, grp );
+      SetIsFinite( ccs_list, false );
+      SetConjugacyClassesSubgroups( grp, ccs_list );
 
-            ccs := Objectify( NewType( collfam, IsCompactLieGroupCCSRep and collcat ), rec( ) );
-            if ( n = 1 ) then
-              subg := SpecialOrthogonalGroupOverReal( 2 );
-
-              # setup the normalizer of subg
-              normalizer := grp;
-            elif ( n = 2 ) then
-              subg := OrthogonalGroupOverReal( 2 );
-
-              # setup the normalizer of subg
-              normalizer := grp;
-            elif IsOddInt( n ) then
-              k := (n-1)/2;
-              subg := mCyclicGroup( k );
-
-              # setup the normalizer of subg
-              normalizer := grp;
-            elif IsEvenInt( n ) then
-              k := (n-2)/2;
-              subg := mDihedralGroup( k );
-
-              # setup the normalizer of subg
-              normalizer := mDihedralGroup( 2*k );
-            fi;
-
-            SetParentAttr( subg, grp );
-            SetRepresentative( ccs, subg );
-            SetActingDomain( ccs, grp );
-            SetStabilizerOfExternalSet( ccs, normalizer );
-
-            return ccs;
-          end,
-
-          NumberElement := function( e, ccs )
-            local subg,
-                  ord;
-
-            # check family
-            if not IsIdenticalObj( FamilyObj( ccs ), collfam ) then
-              return fail;
-            fi;
-
-            # check category and representation
-            if not ( IsConjugacyClassSubgroupsRep and collcat )( ccs ) then
-              return fail;
-            fi;
-
-            # check if the given CCS is indeed a CCS of grp
-            if not IsIdenticalObj( ActingDomain( ccs ), grp ) then
-              return fail;
-            fi;
-
-            subg := Representative( ccs );
-            ord := Order( subg );
-
-            if ( ord = infinity ) then
-              if ( Representative( ccs ) = SpecialOrthogonalGroupOverReal( 2 ) ) then
-                return 1;
-              elif ( Representative( ccs ) = OrthogonalGroupOverReal( 2 ) ) then
-                return 2;
-              fi;
-            elif ( subg = mCyclicGroup( ord ) ) then
-              return 2*ord+1;
-            elif ( subg = mDihedralGroup( ord/2 ) ) then
-              return ord+2;
-            else
-              return fail;
-            fi;
-          end,
-
-          Length := e -> infinity
-        ) ) );
-      fi;
-
-      return ccs_list;
+      return grp;
     end
   );
 
-# ***
-  InstallMethod( ConjugacyClassesSubgroups,
-    "CCS list of SO(n)",
-    [ IsGroup and IsSpecialOrthogonalGroupOverRealRep ],
-    function( grp )
-      local d,                  # dimension of matrices in the Lie group
-            fam,                # family of (sub)group
-            collfam,            # family of CCS
-            collcollfam,        # family of CCS list
-            cat,                # category of sub(group)
-            collcat,            # category of CCS
-            collcollcat,        # category of CCS list
-            ccs_list;           # list of CCS
 
+# ### operation(s)
+# ***
+  InstallMethod( \[\],
+    "Element access of CCS list of O(2)",
+    [ IsOrthogonalGroupOverRealCCSs and IsCompactLieGroupCCSsRep, IsPosInt ],
+    function( ccs_list, n )
+      local d,            # dimension of the matrices in the group
+            grp,          # the orthogonal group
+            ccs,          # CCS
+            subg,         # representative of the CCS
+            fam,          # family of (sub)group
+            collfam,      # family of CCS
+            cat,          # category of (sub)group
+            collcat,      # category of CCS
+            normalizer,   # normalizer of subg
+            k;            # fourier mode
+
+      grp := UnderlyingGroup( ccs_list );
       d := DimensionOfMatrixGroup( grp );
       fam := FamilyObj( grp );
       collfam := CollectionsFamily( fam );
-      collcollfam := CollectionsFamily( collfam );
-
       cat := IsGroup;
       collcat := CategoryCollections( cat );
-      collcollcat := CategoryCollections( collcat );
-
-      ccs_list := Objectify( NewType( collcollfam, IsCompactLieGroupCCSsRep and collcollcat ), rec( Group := grp ) );
+      ccs := Objectify( NewType( collfam, collcat and IsConjugacyClassSubgroupsRep ), rec( ) );
 
       if ( d = 2 ) then
-        SetEnumerator( ccs_list, EnumeratorByFunctions( collfam, rec(
-          ElementNumber := function( e, n )
-            local ccs,                # ccs in ccs_list
-                  subg,               # representative of ccs
-                  normalizer,         # normalizer of subg
-                  k;                  # Fourier mode
-
-            ccs := Objectify( NewType( collfam, IsCompactLieGroupCCSRep and collcat ), rec( ) );
-            if ( n = 1 ) then
-              subg := SpecialOrthogonalGroupOverReal( 2 );
-
-              # setup the normalizer of subg
-              normalizer := grp;
-            else
-              k := n-1;
-              subg := mCyclicGroup( k );
-
-              # setup the normalizer of subg
-              normalizer := grp;
-            fi;
-
-            SetParentAttr( subg, grp );
-            SetRepresentative( ccs, subg );
-            SetActingDomain( ccs, grp );
-            SetStabilizerOfExternalSet( ccs, normalizer );
-
-            return ccs;
-          end,
-
-          NumberElement := function( e, ccs )
-            local subg,
-                  ord;
-
-            # check family
-            if not IsIdenticalObj( FamilyObj( ccs ), collfam ) then
-              return fail;
-            fi;
-
-            # check category and representation
-            if not ( IsConjugacyClassSubgroupsRep and collcat )( ccs ) then
-              return fail;
-            fi;
-
-            # check if the given CCS is indeed a CCS of grp
-            if not IsIdenticalObj( ActingDomain( ccs ), grp ) then
-              return fail;
-            fi;
-
-            subg := Representative( ccs );
-            ord := Order( subg );
-
-            if ( ord = infinity ) then
-              if ( Representative( ccs ) = SpecialOrthogonalGroupOverReal( 2 ) ) then
-                return 1;
-              fi;
-            elif ( subg = mCyclicGroup( ord ) ) then
-              return ord+1;
-            else
-              return fail;
-            fi;
-          end,
-
-          Length := e -> infinity
-        ) ) );
+        if ( n = 1 ) then
+          subg := SpecialOrthogonalGroupOverReal( 2 );
+          normalizer := grp;
+        elif ( n = 2 ) then
+          subg := OrthogonalGroupOverReal( 2 );
+          normalizer := grp;
+        elif IsOddInt( n ) then
+          k := (n-1)/2;
+          subg := mCyclicGroup( k );
+          normalizer := grp;
+        elif IsEvenInt( n ) then
+          k := (n-2)/2;
+          subg := mDihedralGroup( k );
+          normalizer := mDihedralGroup( 2*k );
+        fi;
+      else
+        TryNextMethod( );
       fi;
 
-      return ccs_list;
+      SetParentAttr( subg, grp );
+      SetRepresentative( ccs, subg );
+      SetActingDomain( ccs, grp );
+      SetStabilizerOfExternalSet( ccs, normalizer );
+
+      return ccs;
     end
   );
 
-
-# ### binary relation(s)
 # ***
-  InstallMethod( \=,
-    "equality of compact Lie groups",
-    [ IsGroup and IsCompactLieGroupRep, IsGroup and IsCompactLieGroupRep ],
-    function( grp1, grp2 )
-      if ( IsOrthogonalGroupOverRealRep( grp1 ) and IsOrthogonalGroupOverRealRep( grp2 ) ) then
-        return ( DimensionOfMatrixGroup( grp1 ) = DimensionOfMatrixGroup( grp2 ) );
-      elif ( IsSpecialOrthogonalGroupOverRealRep( grp1 ) and IsSpecialOrthogonalGroupOverRealRep( grp2 ) ) then
-        return ( DimensionOfMatrixGroup( grp1 ) = DimensionOfMatrixGroup( grp2 ) );
+  InstallMethod( \[\],
+    "Element access of CCS list of O(2)",
+    [ IsSpecialOrthogonalGroupOverRealCCSs and IsCompactLieGroupCCSsRep, IsPosInt ],
+    function( ccs_list, n )
+      local d,            # dimension of the matrices in the group
+            grp,          # the orthogonal group
+            ccs,          # CCS
+            subg,         # representative of the CCS
+            fam,          # family of (sub)group
+            collfam,      # family of CCS
+            cat,          # category of (sub)group
+            collcat,      # category of CCS
+            normalizer,   # normalizer of subg
+            k;            # fourier mode
+
+      grp := UnderlyingGroup( ccs_list );
+      d := DimensionOfMatrixGroup( grp );
+      fam := FamilyObj( grp );
+      collfam := CollectionsFamily( fam );
+      cat := IsGroup;
+      collcat := CategoryCollections( cat );
+      ccs := Objectify( NewType( collfam, collcat and IsConjugacyClassSubgroupsRep ), rec( ) );
+
+      if ( d = 2 ) then
+        if ( n = 1 ) then
+          subg := SpecialOrthogonalGroupOverReal( 2 );
+          normalizer := grp;
+        else
+          k := n-1;
+          subg := mCyclicGroup( k );
+          normalizer := grp;
+        fi;
+      else
+        TryNextMethod( );
+      fi;
+
+      SetParentAttr( subg, grp );
+      SetRepresentative( ccs, subg );
+      SetActingDomain( ccs, grp );
+      SetStabilizerOfExternalSet( ccs, normalizer );
+
+      return ccs;
+    end
+  );
+
+# ***
+  InstallMethod( IdCCS,
+    "CCS accessor by Id",
+    [ IsCompactLieGroupCCSsRep, IsList ],
+    function( ccs_list, id )
+      if not ( Size( id ) = 2 ) then
+        TryNextMethod( );
+      fi;
+
+      if IsOrthogonalGroupOverRealCCSs( ccs_list ) and ( id[ 1 ] in [ 1, 2 ] ) then
+        return ccs_list[ id[ 1 ] + 2*id[ 2 ] ];
+      elif IsSpecialOrthogonalGroupOverRealCCSs( ccs_list ) and ( id[ 1 ] = 1 ) then
+        if id[ 1 ] = 1 then
+          return ccs_list[ 1 + id[ 2 ] ];
+        else
+          return fail;
+        fi;
+      else
+        return fail;
+      fi;
+    end
+  );
+
+# ***
+  InstallMethod( \in,
+    "Membership test for O(n)",
+    [ IsObject, IsOrthogonalGroupOverReal ],
+    function( obj, grp )
+      if IsIdenticalObj( CollectionsFamily( FamilyObj( obj ) ), FamilyObj( grp ) ) and ( TransposedMat( obj ) * obj = One( grp ) ) then
+        return true;
       else
         return false;
       fi;
@@ -287,22 +250,47 @@
   );
 
 # ***
-  InstallOtherMethod( \=,
-    "equality of CCSs of compact Lie groups",
-    IsIdenticalObj,
-    [ IsCollection and IsCompactLieGroupCCSRep, IsCollection and IsCompactLieGroupCCSRep ],
-    function( ccs1, ccs2 )
-      return ( ActingDomain( ccs1 ) = ActingDomain( ccs2 ) ) and
-          ( Representative( ccs1 ) = Representative( ccs2 ) );
+  InstallMethod( \in,
+    "Membership test for SO(n)",
+    [ IsObject, IsSpecialOrthogonalGroupOverReal ],
+    function( obj, grp )
+      if IsIdenticalObj( CollectionsFamily( FamilyObj( obj ) ), FamilyObj( grp ) ) and ( TransposedMat( obj ) * obj = One( grp ) ) and ( Determinant( obj ) = 1 ) then
+        return true;
+      else
+        return false;
+      fi;
     end
   );
+
+# ???
+# InstallMethod( Position,
+#   "Position for CCS list of a compact Lie group",
+#   [ IsCompactLieGroupCCSsRep, IsObject ],
+#   function( ccs_list, ccs )
+#     local grp1,
+#           grp2;
+
+#     Print( "hi\n" );
+
+#     if not IsIdenticalObj( FamilyObj( ccs ), ElementsFamily( FamilyObj( ccs_list ) ) ) then
+#       return fail;
+#     fi;
+
+#     if not IsConjugacyClassSubgroupsRep( ccs ) then
+#       return fail;
+#     fi;
+
+#     grp1 := UnderlyingGroup( ccs_list );
+#     grp2 := ActingDomain( ccs );
+#   end
+# );
 
 
 # ### print, view and display
 # ***
   InstallMethod( PrintString,
     "print string of orthogonal groups",
-    [ IsGroup and IsOrthogonalGroupOverRealRep ],
+    [ IsOrthogonalGroupOverReal ],
     function( grp )
       local d;    # dimension of matrices
 
@@ -314,7 +302,7 @@
 # ***
   InstallMethod( PrintObj,
     "print orthogonal groups",
-    [ IsGroup and IsOrthogonalGroupOverRealRep ],
+    [ IsOrthogonalGroupOverReal ],
     10,
     function( grp )
       Print( PrintString( grp ) );
@@ -324,7 +312,7 @@
 # ***
   InstallMethod( ViewString,
     "view string of orthogonal groups",
-    [ IsGroup and IsOrthogonalGroupOverRealRep ],
+    [ IsOrthogonalGroupOverReal ],
     function( grp )
       local d;        # dimension of matrices
 
@@ -336,7 +324,7 @@
 # ***
   InstallMethod( ViewObj,
     "print orthogonal groups",
-    [ IsGroup and IsOrthogonalGroupOverRealRep ],
+    [ IsOrthogonalGroupOverReal ],
     10,
     function( grp )
       Print( ViewString( grp ) );
@@ -346,7 +334,7 @@
 # ***
   InstallMethod( DisplayString,
     "display string of orthogonal groups",
-    [ IsGroup and IsOrthogonalGroupOverRealRep ],
+    [ IsOrthogonalGroupOverReal ],
     function( grp )
       local d;        # dimension of matrices
 
@@ -358,7 +346,7 @@
 # ***
   InstallMethod( Display,
     "display orthogonal groups",
-    [ IsGroup and IsOrthogonalGroupOverRealRep ],
+    [ IsOrthogonalGroupOverReal ],
     function( grp )
       Print( DisplayString( grp ) );
     end
@@ -367,7 +355,7 @@
 # ***
   InstallMethod( PrintString,
     "print string of special orthogonal groups",
-    [ IsGroup and IsSpecialOrthogonalGroupOverRealRep ],
+    [ IsSpecialOrthogonalGroupOverReal ],
     function( grp )
       local d;    # dimension of matrices
 
@@ -379,7 +367,7 @@
 # ***
   InstallMethod( PrintObj,
     "print special orthogonal groups",
-    [ IsGroup and IsSpecialOrthogonalGroupOverRealRep ],
+    [ IsSpecialOrthogonalGroupOverReal ],
     10,
     function( grp )
       Print( PrintString( grp ) );
@@ -389,7 +377,7 @@
 # ***
   InstallMethod( ViewString,
     "view string of special orthogonal groups",
-    [ IsGroup and IsSpecialOrthogonalGroupOverRealRep ],
+    [ IsSpecialOrthogonalGroupOverReal ],
     function( grp )
       local d;    # dimension of matrices
 
@@ -401,7 +389,7 @@
 # ***
   InstallMethod( ViewObj,
     "view special orthogonal groups",
-    [ IsGroup and IsSpecialOrthogonalGroupOverRealRep ],
+    [ IsSpecialOrthogonalGroupOverReal ],
     10,
     function( grp )
       Print( ViewString( grp ) );
@@ -411,7 +399,7 @@
 # ***
   InstallMethod( DisplayString,
     "display string of orthogonal groups",
-    [ IsGroup and IsSpecialOrthogonalGroupOverRealRep ],
+    [ IsSpecialOrthogonalGroupOverReal ],
     function( grp )
       local d;        # dimension of matrices
 
@@ -423,7 +411,7 @@
 # ***
   InstallMethod( Display,
     "display orthogonal groups",
-    [ IsGroup and IsSpecialOrthogonalGroupOverRealRep ],
+    [ IsSpecialOrthogonalGroupOverReal ],
     function( grp )
       Print( DisplayString( grp ) );
     end
@@ -436,7 +424,7 @@
     function( ccs_list )
       local grp;
 
-      grp := ccs_list!.Group;
+      grp := UnderlyingGroup( ccs_list );
       return Concatenation( "ConjugacyClassesSubgroups( ", PrintString(grp), " )" );
     end
   );
@@ -457,7 +445,7 @@
     function( ccs_list )
       local grp;
 
-      grp := ccs_list!.Group;
+      grp := UnderlyingGroup( ccs_list );
       return Concatenation( "CCSs( ", ViewString(grp), " )" );
     end
   );

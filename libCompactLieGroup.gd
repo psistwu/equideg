@@ -7,11 +7,15 @@
 #
 
 
+# ### category(s)
+  DeclareCategory( "IsOrthogonalGroupOverReal", IsGroup );
+  DeclareCategory( "IsSpecialOrthogonalGroupOverReal", IsGroup );
+  DeclareCategory( "IsOrthogonalGroupOverRealCCSs", IsCollection );
+  DeclareCategory( "IsSpecialOrthogonalGroupOverRealCCSs", IsCollection );
+
+
 # ### representation(s)
   DeclareRepresentation( "IsCompactLieGroupRep", IsComponentObjectRep and IsAttributeStoringRep, [ ] );
-  DeclareRepresentation( "IsOrthogonalGroupOverRealRep", IsCompactLieGroupRep, [ ] );
-  DeclareRepresentation( "IsSpecialOrthogonalGroupOverRealRep", IsCompactLieGroupRep, [ ] );
-  DeclareRepresentation( "IsCompactLieGroupCCSRep", IsComponentObjectRep and IsAttributeStoringRep and IsConjugacyClassSubgroupsRep, [ ] );
   DeclareRepresentation( "IsCompactLieGroupCCSsRep", IsComponentObjectRep and IsAttributeStoringRep, [ ] );
 
 
@@ -19,7 +23,14 @@
   DeclareConstructor( "NewCompactLieGroup", [ IsCompactLieGroupRep, IsPosInt ] );
 
 
+# ### attribute(s)
+  DeclareAttribute( "UnderlyingGroup", IsCompactLieGroupCCSsRep );
+
+
 # ### operation(s)
   DeclareOperation( "OrthogonalGroupOverReal", [ IsPosInt ] );
   DeclareOperation( "SpecialOrthogonalGroupOverReal", [ IsPosInt ] );
+  DeclareOperation( "\[\]", [ IsCompactLieGroupCCSsRep, IsPosInt ] );
+  DeclareOperation( "IdCCS", [ IsCompactLieGroupCCSsRep, IsList ] );
+# DeclareOperation( "Position", [ IsCompactLieGroupCCSsRep, IsObject ] );
 
