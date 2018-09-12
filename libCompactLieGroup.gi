@@ -52,6 +52,7 @@
             cat,              # the category of (sub)group
             collcat,          # the category of CCS
             collcollcat,      # the category of CCS list
+            prop,             # properties of the group
             ccs_list;         # the CCS list
 
       # objectify the group
@@ -65,11 +66,13 @@
       collcat := CategoryCollections( cat );
       collcollcat := CategoryCollections( collcat );
 
-      # setup the CCS list
+      # setup property(s) and attribute(s) of the CCS list
       ccs_list := Objectify( NewType( collcollfam, IsOrthogonalGroupOverRealCCSs and collcollcat and IsCompactLieGroupCCSsRep ), rec( ) );
-
       SetUnderlyingGroup( ccs_list, grp );
       SetIsFinite( ccs_list, false );
+
+      # setup property(s) and attribute(s) of the group
+      SetIsAbelian( grp, false );
       SetConjugacyClassesSubgroups( grp, ccs_list );
 
       return grp;
@@ -101,11 +104,13 @@
       collcat := CategoryCollections( cat );
       collcollcat := CategoryCollections( collcat );
 
-      # setup the CCS list
+      # setup property(s) and attribute(s) of the CCS list
       ccs_list := Objectify( NewType( collcollfam, IsSpecialOrthogonalGroupOverRealCCSs and collcollcat and IsCompactLieGroupCCSsRep ), rec( ) );
-
       SetUnderlyingGroup( ccs_list, grp );
       SetIsFinite( ccs_list, false );
+
+      # setup property(s) and attribute(s) of the group
+      SetIsAbelian( grp, true );
       SetConjugacyClassesSubgroups( grp, ccs_list );
 
       return grp;
@@ -128,6 +133,7 @@
             cat,          # category of (sub)group
             collcat,      # category of CCS
             normalizer,   # normalizer of subg
+            id,           # id of CCS
             k;            # fourier mode
 
       grp := UnderlyingGroup( ccs_list );
@@ -142,17 +148,21 @@
         if ( n = 1 ) then
           subg := SpecialOrthogonalGroupOverReal( 2 );
           normalizer := grp;
+          id := [ 1, 0 ];
         elif ( n = 2 ) then
           subg := OrthogonalGroupOverReal( 2 );
           normalizer := grp;
+          id := [ 2, 0 ];
         elif IsOddInt( n ) then
           k := (n-1)/2;
           subg := mCyclicGroup( k );
           normalizer := grp;
+          id := [ 1, k ];
         elif IsEvenInt( n ) then
           k := (n-2)/2;
           subg := mDihedralGroup( k );
           normalizer := mDihedralGroup( 2*k );
+          id := [ 2, k ];
         fi;
       else
         TryNextMethod( );
@@ -162,6 +172,7 @@
       SetRepresentative( ccs, subg );
       SetActingDomain( ccs, grp );
       SetStabilizerOfExternalSet( ccs, normalizer );
+      SetIdCCS( ccs, id );
 
       return ccs;
     end
@@ -181,6 +192,7 @@
             cat,          # category of (sub)group
             collcat,      # category of CCS
             normalizer,   # normalizer of subg
+            id,           # id of CCS
             k;            # fourier mode
 
       grp := UnderlyingGroup( ccs_list );
@@ -195,10 +207,12 @@
         if ( n = 1 ) then
           subg := SpecialOrthogonalGroupOverReal( 2 );
           normalizer := grp;
+          id := [ 1, 0 ];
         else
           k := n-1;
           subg := mCyclicGroup( k );
           normalizer := grp;
+          id := [ 1, k ];
         fi;
       else
         TryNextMethod( );
@@ -208,28 +222,24 @@
       SetRepresentative( ccs, subg );
       SetActingDomain( ccs, grp );
       SetStabilizerOfExternalSet( ccs, normalizer );
+      SetIdCCS( ccs, id );
 
       return ccs;
     end
   );
 
 # ***
-  InstallMethod( IdCCS,
-    "CCS accessor by Id",
+  InstallMethod( CCSId,
+    "CCS by Id",
     [ IsCompactLieGroupCCSsRep, IsList ],
     function( ccs_list, id )
-      if not ( Size( id ) = 2 ) then
-        TryNextMethod( );
-      fi;
+      local grp;        # the underlying group
 
-      if IsOrthogonalGroupOverRealCCSs( ccs_list ) and ( id[ 1 ] in [ 1, 2 ] ) then
+      grp := UnderlyingGroup( ccs_list );
+      if IsOrthogonalGroupOverRealCCSs( ccs_list ) and ( DimensionOfMatrixGroup( grp ) = 2 ) and ( id[ 1 ] in [ 1, 2 ] ) then
         return ccs_list[ id[ 1 ] + 2*id[ 2 ] ];
-      elif IsSpecialOrthogonalGroupOverRealCCSs( ccs_list ) and ( id[ 1 ] = 1 ) then
-        if id[ 1 ] = 1 then
-          return ccs_list[ 1 + id[ 2 ] ];
-        else
-          return fail;
-        fi;
+      elif IsSpecialOrthogonalGroupOverRealCCSs( ccs_list ) and ( DimensionOfMatrixGroup( grp ) = 2 ) and ( id[ 1 ] = 1 ) then
+        return ccs_list[ 1 + id[ 2 ] ];
       else
         return fail;
       fi;
@@ -288,7 +298,7 @@
 
 # ### print, view and display
 # ***
-  InstallMethod( PrintString,
+  InstallMethod( String,
     "print string of orthogonal groups",
     [ IsOrthogonalGroupOverReal ],
     function( grp )
@@ -305,7 +315,7 @@
     [ IsOrthogonalGroupOverReal ],
     10,
     function( grp )
-      Print( PrintString( grp ) );
+      Print( String( grp ) );
     end
   );
 
@@ -353,7 +363,7 @@
   );
 
 # ***
-  InstallMethod( PrintString,
+  InstallMethod( String,
     "print string of special orthogonal groups",
     [ IsSpecialOrthogonalGroupOverReal ],
     function( grp )
@@ -370,7 +380,7 @@
     [ IsSpecialOrthogonalGroupOverReal ],
     10,
     function( grp )
-      Print( PrintString( grp ) );
+      Print( String( grp ) );
     end
   );
 

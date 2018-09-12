@@ -25,12 +25,13 @@
 
 # ### attribute(s)
   DeclareAttribute( "UnderlyingGroup", IsCompactLieGroupCCSsRep );
+  DeclareAttribute( "IdCCS", IsConjugacyClassSubgroupsRep );
 
 
 # ### operation(s)
   DeclareOperation( "OrthogonalGroupOverReal", [ IsPosInt ] );
   DeclareOperation( "SpecialOrthogonalGroupOverReal", [ IsPosInt ] );
   DeclareOperation( "\[\]", [ IsCompactLieGroupCCSsRep, IsPosInt ] );
-  DeclareOperation( "IdCCS", [ IsCompactLieGroupCCSsRep, IsList ] );
+  DeclareOperation( "CCSId", [ IsCompactLieGroupCCSsRep, IsList ] );
 # DeclareOperation( "Position", [ IsCompactLieGroupCCSsRep, IsObject ] );
 
