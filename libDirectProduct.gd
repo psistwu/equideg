@@ -17,5 +17,5 @@
 
 # ## operation(s)
   DeclareOperation( "DirectProductDecomposition",
-      [ IsGroup, IsMultiplicativeElementWithInverse and IsAssociativeElement ] );
+      [ IsGroup, IsMultiplicativeElementWithInverse ] );
   DeclareOperation( "AmalgamationNotation", [ IsConjugacyClassSubgroupsRep ] );

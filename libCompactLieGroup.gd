@@ -8,30 +8,33 @@
 
 
 # ### category(s)
-  DeclareCategory( "IsOrthogonalGroupOverReal", IsGroup );
-  DeclareCategory( "IsSpecialOrthogonalGroupOverReal", IsGroup );
-  DeclareCategory( "IsOrthogonalGroupOverRealCCSs", IsCollection );
-  DeclareCategory( "IsSpecialOrthogonalGroupOverRealCCSs", IsCollection );
+  DeclareCategory( "IsCompactLieGroup", IsGroup );
+  DeclareCategory( "IsOrthogonalGroupOverReal", IsCompactLieGroup and IsMatrixGroup );
+  DeclareCategory( "IsSpecialOrthogonalGroupOverReal", IsCompactLieGroup and IsMatrixGroup );
 
 
 # ### representation(s)
   DeclareRepresentation( "IsCompactLieGroupRep", IsComponentObjectRep and IsAttributeStoringRep, [ ] );
+  DeclareRepresentation( "IsCompactLieGroupCCSRep", IsComponentObjectRep and IsAttributeStoringRep and IsConjugacyClassSubgroupsRep, [ ] );
   DeclareRepresentation( "IsCompactLieGroupCCSsRep", IsComponentObjectRep and IsAttributeStoringRep, [ ] );
 
 
 # ### constructor(s)
-  DeclareConstructor( "NewCompactLieGroup", [ IsCompactLieGroupRep, IsPosInt ] );
+  DeclareConstructor( "NewCompactLieGroup", [ IsCompactLieGroup and IsCompactLieGroupRep, IsPosInt ] );
 
 
 # ### attribute(s)
   DeclareAttribute( "UnderlyingGroup", IsCompactLieGroupCCSsRep );
-  DeclareAttribute( "IdCCS", IsConjugacyClassSubgroupsRep );
+  DeclareAttribute( "IdCCS", IsCompactLieGroupCCSRep );
+  DeclareAttribute( "CCSTypes", IsCompactLieGroupCCSsRep );
+  DeclareAttribute( "CCSId", IsCompactLieGroupCCSsRep );
 
 
 # ### operation(s)
   DeclareOperation( "OrthogonalGroupOverReal", [ IsPosInt ] );
   DeclareOperation( "SpecialOrthogonalGroupOverReal", [ IsPosInt ] );
-  DeclareOperation( "\[\]", [ IsCompactLieGroupCCSsRep, IsPosInt ] );
-  DeclareOperation( "CCSId", [ IsCompactLieGroupCCSsRep, IsList ] );
-# DeclareOperation( "Position", [ IsCompactLieGroupCCSsRep, IsObject ] );
+
+
+# ### global function(s)
+  DeclareGlobalFunction( "CCSTypesFiltered" );
 

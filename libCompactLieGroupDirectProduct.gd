@@ -8,12 +8,15 @@
 
 
 # ### category(s)
-  DeclareCategory( "IsDirectProductWithCompactLieGroup", IsGroup );
+  DeclareCategory( "IsDirectProductWithCompactLieGroup", IsCompactLieGroup );
   DeclareCategory( "IsDirectProductWithOrthogonalGroupOverReal", IsDirectProductWithCompactLieGroup );
   DeclareCategory( "IsDirectProductWithSpecialOrthogonalGroupOverReal", IsDirectProductWithCompactLieGroup );
 
 
 # ### representation(s)
+  DeclareRepresentation( "IsDirectProductWithCompactLieGroupRep", IsComponentObjectRep and IsAttributeStoringRep, [ ] );
+  DeclareRepresentation( "IsDirectProductWithCompactLieGroupCCSRep", IsCompactLieGroupCCSRep and IsComponentObjectRep and IsAttributeStoringRep, [ ] );
+# DeclareRepresentation( "IsDirectProductWithCompactLieGroupCCSsRep", IsCompactLieGroupCCSsRep and IsComponentObjectRep and IsAttributeStoringRep, [ ] );
 
 
 # ### constructor(s)
@@ -23,4 +26,7 @@
 
 
 # ### operation(s)
-# DeclareOperation( "DirectProductOp", [ IsList, IsOrthogonalGroupOverReal ] );
+
+
+# ### global function(s)
+

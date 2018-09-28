@@ -204,7 +204,7 @@
 # ***
   InstallMethod( DirectProductDecomposition,
     "direct product decomposition of a group element",
-    [ IsGroup, IsMultiplicativeElementWithInverse and IsAssociativeElement ],
+    [ IsGroup, IsMultiplicativeElementWithInverse ],
     function( grp, elm )
       local d,        # number of groups involved in the direct product
             proj,     # projection

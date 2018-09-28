@@ -56,10 +56,7 @@
     "return order of weyl group",
     [ IsGroup and HasParentAttr ],
     function( subgrp )
-      local grp;        # the parent group
-
-      grp := ParentAttr( subgrp );
-      return Order( Normalizer( grp, subgrp ) ) / Order( subgrp );
+      return Order( NormalizerInParent( subgrp ) ) / Order( subgrp );
     end
   );
 
