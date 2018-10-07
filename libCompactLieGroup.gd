@@ -21,13 +21,18 @@
 
 # ### constructor(s)
   DeclareConstructor( "NewCompactLieGroup", [ IsCompactLieGroup and IsCompactLieGroupRep, IsPosInt ] );
+  DeclareConstructor( "NewCCS", [ IsCompactLieGroupCCSRep, IsRecord, IsInt ] );
 
 
 # ### attribute(s)
   DeclareAttribute( "UnderlyingGroup", IsCompactLieGroupCCSsRep );
   DeclareAttribute( "IdCCS", IsCompactLieGroupCCSRep );
-  DeclareAttribute( "CCSTypes", IsCompactLieGroupCCSsRep );
+  DeclareAttribute( "CCSClasses", IsCompactLieGroupCCSsRep );
   DeclareAttribute( "CCSId", IsCompactLieGroupCCSsRep );
+
+
+# ### property(s)
+  DeclareProperty( "IsZeroModeCCS", IsCompactLieGroupCCSRep );
 
 
 # ### operation(s)

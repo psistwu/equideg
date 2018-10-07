@@ -13,17 +13,17 @@
   InstallOtherMethod( ConjugacyClassSubgroups,
     "return the CCS containing the given subgroup",
     [ IsGroup and HasParentAttr ],
-    function( subgrp )
+    function( subg )
       local grp,	    # the parent group
             ccs_list,	# conjugacy classes of subgroups of g
-            c;		    # conjugacy class of subgroups which contains h
+            ccs;        # conjugacy class of subgroups which contains h
 
-      grp := ParentAttr( subgrp );
+      grp := ParentAttr( subg );
       ccs_list := ConjugacyClassesSubgroups( grp );
 
-      for c in ccs_list do
-        if ( subgrp in c ) then
-          return c;
+      for ccs in ccs_list do
+        if ( subg in ccs ) then
+          return ccs;
         fi;
       od;
     end
@@ -31,7 +31,7 @@
 
 # ***
   InstallMethod( \<,
-    "the partial order on conjugacy classes of subgroups",
+    "the partial order of conjugacy classes of subgroups of a finite group",
     [ IsConjugacyClassSubgroupsRep, IsConjugacyClassSubgroupsRep ],
     function( ccs1, ccs2 )
 
@@ -39,10 +39,14 @@
       local s1,		# subgroup in c1
             s2;		# subgroup in c2
 
+      s1 := Representative( ccs1 );
       s2 := Representative( ccs2 );
+      if not IsZero( Order( s2 ) mod Order( s1 ) ) then
+        return false;
+      fi;
 
       for s1 in ccs1 do
-        if IsSubgroup( s2, s1 ) then
+        if IsSubset( s2, s1 ) then
           return true;
         fi;
       od;
@@ -55,8 +59,8 @@
   InstallMethod( OrderOfWeylGroup,
     "return order of weyl group",
     [ IsGroup and HasParentAttr ],
-    function( subgrp )
-      return Order( NormalizerInParent( subgrp ) ) / Order( subgrp );
+    function( subg )
+      return Order( NormalizerInParent( subg ) ) / Order( subg );
     end
   );
 
@@ -64,8 +68,8 @@
   InstallMethod( OrderOfWeylGroup,
     "return order of weyl group",
     [ IsConjugacyClassSubgroupsRep ],
-    function( Csubgrp )
-      return OrderOfWeylGroup( Representative( Csubgrp ) );
+    function( ccs )
+      return Order( StabilizerOfExternalSet( ccs ) ) / Order( Representative( ccs ) );
     end
   );
 
@@ -77,24 +81,22 @@
     [ IsGroup and HasParentAttr, IsGroup and HasParentAttr ],
     function( L, H )
       local G,		# the parent group
-            cH,		# subgroups conjugate to H
+            HH,		# subgroup conjugate to H
             nLH;	# n(L,H)
 
-      G := ParentAttr( L );
-      if not ( G = ParentAttr( H ) ) then
+      if not ( ParentAttr( L ) = ParentAttr( H ) ) then
         Error( "L and H need to have the same parent group." );
+      fi;
+
+      if not IsZero( Order( H ) mod Order( L ) ) then
+        return 0;
       fi;
 
       nLH := 0;
 
-      # nLH = 0 if |L| does not divide |H|
-      if not ( Order( H ) mod Order( L ) = 0 ) then
-        return nLH;
-      fi;
-
-      for cH in ConjugacyClassSubgroups( H ) do
-        if IsSubset( cH, L ) then
-          nLH := nLH + 1;
+      for HH in ConjugacyClassSubgroups( H ) do
+        if IsSubset( HH, L ) then
+          nLH := nLH+1;
         fi;
       od;
 
@@ -105,9 +107,26 @@
 # ***
   InstallMethod( nLHnumber,
     "return n(L,H)",
+    IsIdenticalObj,
     [ IsConjugacyClassSubgroupsRep, IsConjugacyClassSubgroupsRep ],
-    function( CL, CH )
-      return nLHnumber( Representative( CL ), Representative( CH ) );
+    function( ccs1, ccs2 )
+      local nLH,         # n(L,H)
+            L, H;
+
+      L := Representative( ccs1 );
+      H := Representative( ccs2 );
+      if not IsZero( Order( H ) mod Order( L ) ) then
+        return 0;
+      fi;
+
+      nLH := 0;
+      for H in ccs2 do
+        if IsSubset( H, L ) then
+          nLH := nLH+1;
+        fi;
+      od;
+
+      return nLH;
     end
   );
 

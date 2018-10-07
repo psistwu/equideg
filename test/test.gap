@@ -11,23 +11,23 @@
   MakeReadOnlyGlobal( "LIB_LIST" );
   Read( "../preload.gap" );
 
-# ## Test 1: binary relation
-  G := SymmetricGroup( 4 );
-  H := Representative( ConjugacyClassesSubgroups( G )[ 11 ] );
-  NH := NormalizerInParent( H );
-  L := pDihedralGroup( 3 );
-  NL := pDihedralGroup( 6 );
-  L := Image( Representative( IsomorphicSubgroups( NL, L ) ) );
-  NHxNL := DirectProduct( NH, NL );
-  quos := GQuotients( H, L );
-  auts := AllAutomorphisms( L );
-  epis := Flat( List( quos, quo -> List( auts, aut -> quo*aut ) ) );
-  OnSourceAndRange := function( epi, g )
-    local dg;
+# universal setup
+  g := SymmetricGroup( 4 );
+  ccss := ConjugacyClassesSubgroups( g );
 
-    dg := DirectProductDecomposition( NHxNL, g );
+# ## test 2
+  ccs1 := ccss[ 5 ];
+  ccs2 := ccss[ 2 ];
 
-    return ConjugatorAutomorphismNC( H, Inverse( dg[1] ) )*epi*ConjugatorAutomorphismNC( L, dg[2] );
-  end;
-  g := Random( NHxNL );
-  epi := Random( epis );
+# ## test 1 (archived)
+# for i in [ 1 .. Size( ccss ) ] do
+#   ccs1 := ccss[ i ];
+#   subg1 := Representative( ccs1 );
+#   for j in [ 1 .. i-1 ] do
+#     ccs2 := ccss[ j ];
+#     subg2 := Representative( ccs2 );
+#     flag := ( ( ccs1 > ccs2 ) and IsSubgroup( subg1, subg2 ) ) or
+#             not ( ( ccs1 > ccs2 ) or IsSubgroup( subg1, subg2 ) );
+#     Print( flag, "\n" );
+#   od;
+# od;

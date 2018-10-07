@@ -199,7 +199,6 @@
   );
 
 
-
 # ## operation(s)
 # ***
   InstallMethod( DirectProductDecomposition,

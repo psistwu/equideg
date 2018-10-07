@@ -19,7 +19,9 @@
   o2 := OrthogonalGroupOverReal( 2 );
   ccss_o2 := ConjugacyClassesSubgroups( o2 );
   ccsid_o2 := CCSId( ccss_o2 );
-  ccs_o2 := ccsid_o2( [ 2, 3 ] );
+  ccs1_o2 := ccsid_o2( [ 2, 3 ] );
+  ccs2_o2 := ccsid_o2( [ 1, 1 ] );
+  ccs3_o2 := ccsid_o2( [ 1, 0 ] );
   Print( "Done!\n" );
 
   # SO(2)
