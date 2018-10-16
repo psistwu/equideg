@@ -16,6 +16,7 @@
 # ### representation(s)
   DeclareRepresentation( "IsDirectProductWithCompactLieGroupRep", IsComponentObjectRep and IsAttributeStoringRep, [ ] );
   DeclareRepresentation( "IsDirectProductWithCompactLieGroupCCSRep", IsCompactLieGroupCCSRep and IsComponentObjectRep and IsAttributeStoringRep, [ ] );
+  DeclareRepresentation( "IsDirectProductWithCompactLieGroupCCSsRep", IsCompactLieGroupCCSsRep and IsComponentObjectRep and IsAttributeStoringRep, [ ] );
 
 
 # ### constructor(s)

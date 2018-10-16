@@ -28,6 +28,7 @@
   DeclareAttribute( "UnderlyingGroup", IsCompactLieGroupCCSsRep );
   DeclareAttribute( "IdCCS", IsCompactLieGroupCCSRep );
   DeclareAttribute( "CCSClasses", IsCompactLieGroupCCSsRep );
+  DeclareAttribute( "CCSClassesFiltered", IsCompactLieGroupCCSsRep );
   DeclareAttribute( "CCSId", IsCompactLieGroupCCSsRep );
 
 

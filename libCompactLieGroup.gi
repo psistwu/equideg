@@ -79,7 +79,7 @@
       local d,
             ccs,
             subg,
-            normailizer,
+            normalizer,
             fam_ccs,
             cat_ccs;
 
@@ -115,7 +115,7 @@
       # objectify the CCS
       fam_ccs := CollectionsFamily( FamilyObj( ccs_class.group ) );
       cat_ccs := CategoryCollections( IsMatrixGroup );
-      ccs := Objectify( NewType( fam_ccs, cat_ccs and IsCompactLieGroupCCSRep ), rec( ) );
+      ccs := Objectify( NewType( fam_ccs, cat_ccs and filter ), rec( ) );
 
       # setup attributes of CCS
       SetParentAttr( subg, ccs_class.group );
@@ -145,8 +145,7 @@
             cat_ccs,
             cat_ccss,
             ccss,
-            make_ccs_classes,
-            ccs_id;
+            make_ccs_classes;
 
       # it works only for O(2)
       d := DimensionOfMatrixGroup( grp );
@@ -203,41 +202,6 @@
       end;
       SetCCSClasses( ccss, make_ccs_classes( ) );
 
-      # setup CCSId
-      ccs_id := function( id )
-        local ccs_class;
-
-        if not ( Size( id ) = 2 ) then
-          return fail;
-        fi;
-
-        if IsZero( id[ 2 ] ) and IsInt( id[ 2 ] ) then
-          ccs_info := CCSTypesFiltered( ccss, rec( term := "zero_mode" ) )[ id[ 1 ] ];
-        elif IsPosInt( id[ 2 ] ) then
-          ccs_info := CCSTypesFiltered( ccss, rec( term := "nonzero_mode" ) )[ id [ 1 ] ];
-          if ( id[ 1 ] = 1 ) then
-            subg := mCyclicGroup( id[ 2 ] );
-          elif ( id[ 1 ] = 2 ) then
-            subg := mDihedralGroup( id[ 2 ] );
-          fi;
-          is_zero_mode_ccs := false;
-        else
-          return fail;
-        fi;
-
-        ccs := Objectify( NewType( fam_ccs, cat_ccs and IsCompactLieGroupCCSRep ), rec( ) );
-        SetParentAttr( subg, grp );
-        SetOrderOfWeylGroup( subg, ccs_info.order_of_weyl_group );
-        SetIsZeroModeCCS( ccs, is_zero_mode_ccs );
-        SetIdCCS( ccs, id );
-        SetRepresentative( ccs, subg );
-        SetActingDomain( ccs, grp );
-        SetOrderOfWeylGroup( ccs, ccs_info.order_of_weyl_group );
-
-        return ccs;
-      end;
-      SetCCSId( ccss, ccs_id );
-
       return ccss;
     end
   );
@@ -253,8 +217,7 @@
             cat_ccs,
             cat_ccss,
             ccss,
-            make_ccs_types,
-            ccs_id;
+            make_ccs_classes;
 
       # it works only for SO(2)
       d := DimensionOfMatrixGroup( grp );
@@ -274,64 +237,80 @@
       SetIsFinite( ccss, false );
 
       # setup CCS types
-      make_ccs_types := function( )
-        local ccs_types;
+      make_ccs_classes := function( )
+        local ccs_classes;
 
-        ccs_types := [ ];
+        ccs_classes := [ ];
         # add SO(2)
-        Add( ccs_types, rec(
+        Add( ccs_classes, rec(
+          group := grp,
           is_zero_mode := true,
           type := 1,
           order_of_weyl_group := [ 1, 0 ],
         ) );
         # add Z_m
-        Add( ccs_types, rec(
+        Add( ccs_classes, rec(
+          group := grp,
           is_zero_mode := false,
           type := 1,
           order_of_weyl_group := [ 1, 1 ],
         ) );
 
-        return ccs_types;
+        return ccs_classes;
       end;
-      SetCCSTypes( ccss, make_ccs_types( ) );
-
-      # setup CCSId
-      ccs_id := function( id )
-        local ccs,
-              subg,
-              ccs_info,
-              is_zero_mode_ccs;
-
-        if not ( Size( id ) = 2 ) then
-          return fail;
-        fi;
-
-        if IsZero( id[ 2 ] ) and IsInt( id[ 2 ] ) then
-          ccs_info := CCSTypesFiltered( ccss, rec( term := "zero_mode" ) )[ id[ 1 ] ];
-          subg := grp;
-          is_zero_mode_ccs := true;
-        elif IsPosInt( id[ 2 ] ) then
-          ccs_info := CCSTypesFiltered( ccss, rec( term := "nonzero_mode" ) )[ id [ 1 ] ];
-          subg := mCyclicGroup( id[ 2 ] );
-          is_zero_mode_ccs := false;
-        else
-          return fail;
-        fi;
-
-        ccs := Objectify( NewType( fam_ccs, cat_ccs and IsCompactLieGroupCCSRep ), rec( ) );
-        SetParentAttr( subg, grp );
-        SetOrderOfWeylGroup( subg, ccs_info.order_of_weyl_group );
-        SetIsZeroModeCCS( ccs, is_zero_mode_ccs );
-        SetIdCCS( ccs, id );
-        SetRepresentative( ccs, subg );
-        SetActingDomain( ccs, grp );
-        SetOrderOfWeylGroup( ccs, ccs_info.order_of_weyl_group );
-
-        return ccs;
-      end;
-      SetCCSId( ccss, ccs_id );
+      SetCCSClasses( ccss, make_ccs_classes( ) );
 
       return ccss;
+    end
+  );
+
+# ***
+  InstallMethod( CCSClassesFiltered,
+    "return a function which gives a filtered CCS classes",
+    [ IsCompactLieGroupCCSsRep ],
+    ccss -> function( args... )
+      local nu,
+            term,
+            d,
+            mode,
+            ccs_classes;
+
+      ccs_classes := CCSClasses( ccss );
+      nu := 0;
+
+      while not IsEmpty( args ) do
+        term := Remove( args, 1 );
+        nu := nu+1;
+
+        if ( term = "nonzero_mode" ) then
+          ccs_classes := Filtered( ccs_classes, cl -> not cl.is_zero_mode );
+          mode := 1;
+        elif ( term = "zero_mode" ) then
+          ccs_classes := Filtered( ccs_classes, cl -> cl.is_zero_mode );
+          mode := 0;
+        elif ( term = "with_m-dim_weyl_group" ) then
+          d := Remove( args, 1 );
+          if not IsInt( d ) or ( d < 0 ) then
+            Error( "Valid dimension is required for ", nu, "-th filter term." );
+          fi;
+          ccs_classes := Filtered( ccs_classes, cl -> ( cl.order_of_weyl_group[ 2 ] = d ) );
+        else
+          Error( nu, "-th filter term is invalid." );
+        fi;
+      od;
+
+      Sort( ccs_classes,
+        function( cl1, cl2 )
+          local ccs1, ccs2;
+
+          ccs1 := NewCCS( IsCompactLieGroupCCSRep, cl1, mode );
+          ccs2 := NewCCS( IsCompactLieGroupCCSRep, cl2, mode );
+
+          return ccs1 < ccs2;
+        end
+      );
+
+      return ccs_classes;
     end
   );
 
@@ -340,17 +319,24 @@
     "return CCSId attribute of a compact Lie group CCS list",
     [ IsCompactLieGroupCCSsRep ],
     ccss -> function( id )
-      local ccs_class;
+      local ccs_class,
+            ccs_classes_filtered,
+            ccs;
+
+      ccs_classes_filtered := CCSClassesFiltered( ccss );
 
       if ( id[ 2 ] = 0 ) then
-        ccs_class := CCSClassesFiltered( ccss, rec( term := "zero_mode" ) )[ id[ 1 ] ];
+        ccs_class := ccs_classes_filtered( "zero_mode" )[ id[ 1 ] ];
       elif IsPosInt( id[ 2 ] ) then
-        ccs_class := CCSClassesFiltered( ccss, rec( term := "nonzero_mode" ) )[ id[ 1 ] ];
+        ccs_class := ccs_classes_filtered( "nonzero_mode" )[ id[ 1 ] ];
       else
         return fail;
       fi;
 
-      return NewCCS( , ccs_class, id[ 2 ] );
+      ccs := NewCCS( IsCompactLieGroupCCSRep, ccs_class, id[ 2 ] );
+      SetIdCCS( ccs, id );
+
+      return ccs;
     end
   );
 
@@ -467,9 +453,7 @@
     IsIdenticalObj,
     [ IsCompactLieGroupCCSRep, IsCompactLieGroupCCSRep ],
     function( ccs1, ccs2 )
-      local nLH;
-
-      return IsPosInt( nLHnumber( ccs1,ccs2 ) ) or IsInfinity( nLHnumber( ccs1,;
+      return nLHnumber( ccs1, ccs2 ) > 0;
     end
   );
 
@@ -504,29 +488,6 @@
 
 
 # ## global function(s)
-# ***
-  InstallGlobalFunction( CCSTypesFiltered,
-    function( ccss_grp, filters... )
-      local ccs_types,
-            filter;
-
-      ccs_types := CCSTypes( ccss_grp );
-
-      for filter in filters do
-        if ( filter.term = "nonzero_mode" ) then
-          ccs_types := Filtered( ccs_types, t -> not t.is_zero_mode );
-        elif ( filter.term = "zero_mode" ) then
-          ccs_types := Filtered( ccs_types, t -> t.is_zero_mode );
-        elif ( filter.term = "with_k_dim_weyl_group" ) then
-          ccs_types := Filtered( ccs_types, t -> ( t.order_of_weyl_group[ 2 ] = filter.dim ) );
-        else
-          Error( "Invalid filter type" );
-        fi;
-      od;
-
-      return ccs_types;
-    end
-  );
 
 
 # ### print, view and display
