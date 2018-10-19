@@ -8,26 +8,14 @@
 
 
 # ### category(s)
-  DeclareCategory( "IsDirectProductWithCompactLieGroup", IsCompactLieGroup );
-  DeclareCategory( "IsDirectProductWithOrthogonalGroupOverReal", IsDirectProductWithCompactLieGroup );
-  DeclareCategory( "IsDirectProductWithSpecialOrthogonalGroupOverReal", IsDirectProductWithCompactLieGroup );
+  DeclareCategory( "IsDirectProductWithECLG", IsCompactLieGroup );
 
 
 # ### representation(s)
-  DeclareRepresentation( "IsDirectProductWithCompactLieGroupRep", IsComponentObjectRep and IsAttributeStoringRep, [ ] );
-  DeclareRepresentation( "IsDirectProductWithCompactLieGroupCCSRep", IsCompactLieGroupCCSRep and IsComponentObjectRep and IsAttributeStoringRep, [ ] );
-  DeclareRepresentation( "IsDirectProductWithCompactLieGroupCCSsRep", IsCompactLieGroupCCSsRep and IsComponentObjectRep and IsAttributeStoringRep, [ ] );
-
-
-# ### constructor(s)
+  DeclareRepresentation( "IsDirectProductWithECLGCCSRep", IsCompactLieGroupCCSRep, [ ] );
+  DeclareRepresentation( "IsDirectProductWithECLGCCSsRep", IsCompactLieGroupCCSsRep, [ ] );
 
 
 # ### attribute(s)
-  DeclareAttribute( "GoursatInfo", IsDirectProductWithCompactLieGroupCCSRep );
-
-
-# ### operation(s)
-
-
-# ### global function(s)
+  DeclareAttribute( "GoursatInfo", IsDirectProductWithECLGCCSRep );
 

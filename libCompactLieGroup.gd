@@ -7,24 +7,30 @@
 #
 
 
+# ### GlobalVariable
+  DeclareGlobalVariable( "WORKABLE_ECLGs", "list of fully-functional ECLGs" );
+
+
 # ### category(s)
   DeclareCategory( "IsCompactLieGroup", IsGroup );
-  DeclareCategory( "IsOrthogonalGroupOverReal", IsCompactLieGroup and IsMatrixGroup );
-  DeclareCategory( "IsSpecialOrthogonalGroupOverReal", IsCompactLieGroup and IsMatrixGroup );
+  DeclareCategory( "IsElementaryCompactLieGroup", IsCompactLieGroup );
 
 
 # ### representation(s)
   DeclareRepresentation( "IsCompactLieGroupRep", IsComponentObjectRep and IsAttributeStoringRep, [ ] );
   DeclareRepresentation( "IsCompactLieGroupCCSRep", IsComponentObjectRep and IsAttributeStoringRep and IsConjugacyClassSubgroupsRep, [ ] );
   DeclareRepresentation( "IsCompactLieGroupCCSsRep", IsComponentObjectRep and IsAttributeStoringRep, [ ] );
+  DeclareRepresentation( "IsElementaryCompactLieGroupCCSRep", IsCompactLieGroupCCSRep, [ ] );
+  DeclareRepresentation( "IsElementaryCompactLieGroupCCSsRep", IsCompactLieGroupCCSsRep, [ ] );
 
 
 # ### constructor(s)
-  DeclareConstructor( "NewCompactLieGroup", [ IsCompactLieGroup and IsCompactLieGroupRep, IsPosInt ] );
-  DeclareConstructor( "NewCCS", [ IsCompactLieGroupCCSRep, IsRecord, IsInt ] );
+  DeclareConstructor( "NewElementaryCompactLieGroup", [ IsGroup, IsPosInt ] );
+  DeclareConstructor( "NewCCS", [ IsCompactLieGroupCCSsRep, IsRecord, IsInt ] );
 
 
 # ### attribute(s)
+  DeclareAttribute( "IdECLG", IsElementaryCompactLieGroup );
   DeclareAttribute( "UnderlyingGroup", IsCompactLieGroupCCSsRep );
   DeclareAttribute( "IdCCS", IsCompactLieGroupCCSRep );
   DeclareAttribute( "CCSClasses", IsCompactLieGroupCCSsRep );
@@ -39,8 +45,5 @@
 # ### operation(s)
   DeclareOperation( "OrthogonalGroupOverReal", [ IsPosInt ] );
   DeclareOperation( "SpecialOrthogonalGroupOverReal", [ IsPosInt ] );
-
-
-# ### global function(s)
-  DeclareGlobalFunction( "CCSTypesFiltered" );
+  DeclareOperation( "ECLGId", [ IsList ] );
 

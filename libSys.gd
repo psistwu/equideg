@@ -7,6 +7,10 @@
 #
 
 
-# ### function(s) ###
+# ### Global Variable(s)
+  INFO_LEVEL := 1;
+
+
+# ### Global Function(s)
   # clean all user-defined variables
   DeclareGlobalFunction( "Clean" );

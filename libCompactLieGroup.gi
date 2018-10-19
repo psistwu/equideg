@@ -9,31 +9,29 @@
 
 # ### constructor(s)
 # ***
-  InstallMethod( NewCompactLieGroup,
-    "return a compact Lie group",
-    [ IsOrthogonalGroupOverReal and IsSpecialOrthogonalGroupOverReal and IsCompactLieGroupRep, IsPosInt ],
+  InstallOtherMethod( NewElementaryCompactLieGroup,
+    "constructor of a matrix-ECLG",
+    [ IsElementaryCompactLieGroup and IsMatrixGroup and IsCompactLieGroupRep, IsPosInt ],
     function( filter, d )
-      local one,                # identity of (special) orthogonal group
-            fam_grp,            # family of the group
-            grp;                # (special) orthogonal group
+      local one,          # identity of the ECLG
+            fam_eclg,     # family of the ECLG
+            eclg;         # elementary compact Lie group
 
-      # generate the identity of the (special) orthogonal group
-      # which is a d-by-d identity matrix
+      # generate the identity of the ECLG (a d-by-d identity matrix)
       one := One( List( [ 1 .. d ], i -> List( [ 1 .. d ], j -> 0 ) ) );
 
       # define the family of the group
-      fam_grp := CollectionsFamily( FamilyObj( one ) );
+      fam_eclg := CollectionsFamily( FamilyObj( one ) );
 
       # objectify the (special) orthogonal group
-      grp := Objectify( NewType( fam_grp, filter ), rec() );
+      eclg := Objectify( NewType( fam_eclg, filter ), rec() );
 
       # setup properties of the (special) orthogonal group
-      SetOneImmutable( grp, one );            # identity
-      SetDimension( grp, d*(d-1)/2 );         # dimension of the (special) orthogonal group
-      SetDimensionOfMatrixGroup( grp, d );    # dimension of matrices in the (special) orthogonal group
-      SetIsFinite( grp, false );              # order of the (special) orthogonal group
+      SetIsFinite( eclg, false );
+      SetOneImmutable( eclg, one );
+      SetDimensionOfMatrixGroup( eclg, d );
 
-      return grp;
+      return eclg;
     end
   );
 
@@ -42,15 +40,17 @@
     "generate an orthogonal group over real numbers",
     [ IsPosInt ],
     function( d )
-      local grp;              # the orthogonal group
+      local eclg;              # the orthogonal group
 
       # objectify the group
-      grp := NewCompactLieGroup( IsOrthogonalGroupOverReal and IsCompactLieGroupRep, d );
+      eclg := NewElementaryCompactLieGroup( IsElementaryCompactLieGroup and IsMatrixGroup and IsCompactLieGroupRep, d );
 
       # setup property(s) and attribute(s) of the group
-      SetIsAbelian( grp, false );
+      SetIsAbelian( eclg, false );
+      SetDimension( eclg, d*(d-1)/2 );
+      SetIdECLG( eclg, [ 2, d*(d-1)/2 ] );
 
-      return grp;
+      return eclg;
     end
   );
 
@@ -59,77 +59,115 @@
     "generate a special orthogonal group over real numbers",
     [ IsPosInt ],
     function( d )
-      local grp;              # the special orthogonal group
+      local eclg;              # the special orthogonal group
 
       # objectify the group
-      grp := NewCompactLieGroup( IsSpecialOrthogonalGroupOverReal and IsCompactLieGroupRep, d );
+      eclg := NewElementaryCompactLieGroup( IsElementaryCompactLieGroup and IsMatrixGroup and IsCompactLieGroupRep, d );
 
       # setup property(s) and attribute(s) of the group
-      SetIsAbelian( grp, true );
+      SetIsAbelian( eclg, true );
+      SetDimension( eclg, d*(d-1)/2 );
+      SetIdECLG( eclg, [ 1, d*(d-1)/2 ] );
 
-      return grp;
+      return eclg;
+    end
+  );
+
+# ***
+  InstallMethod( ECLGId,
+    "generate elementary compact Lie group of given ID",
+    [ IsList ],
+    function( id )
+      local eclg;
+
+      if ( id = [ 1, 1 ] ) then
+        eclg := SpecialOrthogonalGroupOverReal( 2 );
+      elif ( id = [ 2, 1 ] ) then
+        eclg := OrthogonalGroupOverReal( 2 );
+      else
+        Info( InfoWarning, INFO_LEVEL, "Unrecognizable ID for ECLG." );
+        return fail;
+      fi;
+      # SetIdECLG( eclg, id );
+
+      return eclg;
     end
   );
 
 # ***
   InstallMethod( NewCCS,
-    "return a CCS of a compact Lie group",
-    [ IsCompactLieGroupCCSRep, IsRecord, IsInt ],
+    "CCS constructor of SO(2) or O(2)",
+    [ IsElementaryCompactLieGroupCCSsRep, IsRecord, IsInt ],
     function( filter, ccs_class, mode )
-      local d,
+      local eclg,
             ccs,
             subg,
-            normalizer,
             fam_ccs,
+            rep_ccs,
             cat_ccs;
+
+      if not ( ccs_class.group in WORKABLE_ECLGs ) then
+        TryNextMethod( );
+      fi;
 
       if ( mode < 0 ) or ( ccs_class.is_zero_mode <> ( mode = 0 ) ) then
         Error( "Illegel mode for the selected CCS class." );
       fi;
 
-      d := DimensionOfMatrixGroup( ccs_class.group );
-
       # find representative subgroup and its normalizer
-      if ccs_class.is_zero_mode then
-        if ( ccs_class.type = 1 ) then
-          subg := SpecialOrthogonalGroupOverReal( d );
-          normalizer := ccs_class.group;
-        elif ( ccs_class.type = 2 ) then
-          subg := OrthogonalGroupOverReal( d );
-          normalizer := ccs_class.group;
-        else
-          return fail;
-        fi;
+      if ( ccs_class.id = [ 1, 0 ] ) then
+        subg := ECLGId( [ 1, 1 ] );
+      elif ( ccs_class.id = [ 2, 0 ] ) then
+        subg := ECLGId( [ 2, 1 ] );
+      elif ( ccs_class.id = [ 1, 1 ] ) then
+        subg := mCyclicGroup( mode );
+      elif ( ccs_class.id = [ 2, 1 ] ) then
+        subg := mDihedralGroup( mode );
       else
-        if ( ccs_class.type = 1 ) then
-          subg := mCyclicGroup( mode );
-          normalizer := ccs_class.group;
-        elif ( ccs_class.type = 2 ) then
-          subg := mDihedralGroup( mode );
-          normalizer := mDihedralGroup( 2*mode );
-        else
-          return fail;
-        fi;
+        return fail;
       fi;
 
       # objectify the CCS
       fam_ccs := CollectionsFamily( FamilyObj( ccs_class.group ) );
       cat_ccs := CategoryCollections( IsMatrixGroup );
-      ccs := Objectify( NewType( fam_ccs, cat_ccs and filter ), rec( ) );
+      rep_ccs := IsElementaryCompactLieGroupCCSRep;
+      ccs := Objectify( NewType( fam_ccs, cat_ccs and rep_ccs ), rec( ) );
 
       # setup attributes of CCS
       SetParentAttr( subg, ccs_class.group );
-      SetNormalizerInParent( subg, normalizer );
       SetOrderOfWeylGroup( subg, ccs_class.order_of_weyl_group );
       SetIsZeroModeCCS( ccs, ccs_class.is_zero_mode );
       SetActingDomain( ccs, ccs_class.group );
-      SetStabilizerOfExternalSet( ccs, normalizer );
       SetOrderOfWeylGroup( ccs, ccs_class.order_of_weyl_group );
       SetRepresentative( ccs, subg );
-      SetIdCCS( ccs, [ ccs_class.type, mode ] );
+      SetIdCCS( ccs, [ ccs_class.id[ 1 ], mode ] );
 
       return ccs;
     end
+  );
+
+# ***
+  InstallOtherMethod( NewCCS,
+    "CCS constructor of CLG",
+    [ IsElementaryCompactLieGroupCCSsRep, IsRecord ],
+    function( filter, ccs_class )
+      local mode;
+
+      if ccs_class.is_zero_mode then
+        mode := 0;
+      else
+        mode := 1;
+      fi;
+
+      return NewCCS( filter, ccs_class, mode );
+    end
+  );
+
+
+# ### GlobalVariable(s)
+  InstallValue( WORKABLE_ECLGs, [
+    ECLGId( [ 1, 1 ] ),
+    ECLGId( [ 2, 1 ] ) ]
   );
 
 
@@ -137,124 +175,89 @@
 # ***
   InstallMethod( ConjugacyClassesSubgroups,
     "CCSs of O(2)",
-    [ IsOrthogonalGroupOverReal and IsCompactLieGroupRep ],
-    function( grp )
-      local d,
-            fam_ccs,
-            fam_ccss,
-            cat_ccs,
-            cat_ccss,
-            ccss,
-            make_ccs_classes;
+    [ IsElementaryCompactLieGroup and IsCompactLieGroupRep ],
+    function( eclg )
+      local fam_ccss,          # family of CCSs
+            cat_ccss,          # category of CCSs
+            rep_ccss,          # representation of CCSs
+            ccss,              # CCSs
+            make_ccs_classes;  # procedure generating CCS classes
 
-      # it works only for O(2)
-      d := DimensionOfMatrixGroup( grp );
-      if not ( d = 2 ) then
+      # it works only for workable eclgs, i.e., SO(2) and O(2) for the time being
+      if not ( eclg in WORKABLE_ECLGs ) then
         TryNextMethod( );
       fi;
 
       # define families and collections
-      fam_ccs := CollectionsFamily( FamilyObj( grp ) );
-      fam_ccss := CollectionsFamily( fam_ccs );
-      cat_ccs := CategoryCollections( IsMatrixGroup );
-      cat_ccss := CategoryCollections( cat_ccs );
+      fam_ccss := CollectionsFamily( CollectionsFamily( FamilyObj( eclg ) ) );
+      cat_ccss := CategoryCollections( CategoryCollections( IsMatrixGroup ) );
+      rep_ccss := IsElementaryCompactLieGroupCCSsRep;
 
       # objectify CCSs of the group
-      ccss := Objectify( NewType( fam_ccss, cat_ccss and IsCompactLieGroupCCSsRep ), rec( ) );
-      SetUnderlyingGroup( ccss, grp );
+      ccss := Objectify( NewType( fam_ccss, cat_ccss and rep_ccss ), rec( ) );
+      SetUnderlyingGroup( ccss, eclg );
       SetIsFinite( ccss, false );
 
-      # setup CCS classes
+      # generate CCS classes
       make_ccs_classes := function( )
         local ccs_classes;
 
         ccs_classes := [ ];
-        # add SO(2)
-        Add( ccs_classes, rec(
-          group := grp,
-          is_zero_mode := true,
-          type := 1,
-          order_of_weyl_group := [ 2, 0 ],
-        ) );
-        # add O(2)
-        Add( ccs_classes, rec(
-          group := grp,
-          is_zero_mode := true,
-          type := 2,
-          order_of_weyl_group := [ 1, 0 ],
-        ) );
-        # add Z_m
-        Add( ccs_classes, rec(
-          group := grp,
-          is_zero_mode := false,
-          type := 1,
-          order_of_weyl_group := [ 2, 1 ],
-        ) );
-        # add D_m
-        Add( ccs_classes, rec(
-          group := grp,
-          is_zero_mode := false,
-          type := 2,
-          order_of_weyl_group := [ 2, 0 ],
-        ) );
+        if ( IdECLG( eclg ) = [ 1, 1 ] ) then
+          # add SO(2)
+          Add( ccs_classes, rec(
+            group := eclg,
+            is_zero_mode := true,
+            id := [ 1, 0 ],
+            order_of_weyl_group := [ 1, 0 ],
+          ) );
+          # add Z_m
+          Add( ccs_classes, rec(
+            group := eclg,
+            is_zero_mode := false,
+            id := [ 1, 1 ],
+            order_of_weyl_group := [ 1, 1 ],
+          ) );
+        elif ( IdECLG( eclg ) = [ 2, 1 ] ) then
+          # add SO(2)
+          Add( ccs_classes, rec(
+            group := eclg,
+            is_zero_mode := true,
+            id := [ 1, 0 ],
+            order_of_weyl_group := [ 2, 0 ],
+          ) );
+          # add O(2)
+          Add( ccs_classes, rec(
+            group := eclg,
+            is_zero_mode := true,
+            id := [ 2, 0 ],
+            order_of_weyl_group := [ 1, 0 ],
+          ) );
+          # add Z_m
+          Add( ccs_classes, rec(
+            group := eclg,
+            is_zero_mode := false,
+            id := [ 1, 1 ],
+            order_of_weyl_group := [ 2, 1 ],
+          ) );
+          # add D_m
+          Add( ccs_classes, rec(
+            group := eclg,
+            is_zero_mode := false,
+            id := [ 2, 1 ],
+            order_of_weyl_group := [ 2, 0 ],
+          ) );
+        fi;
 
-        return ccs_classes;
-      end;
-      SetCCSClasses( ccss, make_ccs_classes( ) );
+        # sort ccs_classes
+        Sort( ccs_classes, function( cl1, cl2 )
+          local ccs1, ccs2;
 
-      return ccss;
-    end
-  );
+          ccs1 := NewCCS( rep_ccss, cl1 );
+          ccs2 := NewCCS( rep_ccss, cl2 );
 
-# ***
-  InstallMethod( ConjugacyClassesSubgroups,
-    "CCSs of SO(2)",
-    [ IsSpecialOrthogonalGroupOverReal and IsCompactLieGroupRep ],
-    function( grp )
-      local d,
-            fam_ccs,
-            fam_ccss,
-            cat_ccs,
-            cat_ccss,
-            ccss,
-            make_ccs_classes;
-
-      # it works only for SO(2)
-      d := DimensionOfMatrixGroup( grp );
-      if not ( d = 2 ) then
-        TryNextMethod( );
-      fi;
-
-      # define families and collections
-      fam_ccs := CollectionsFamily( FamilyObj( grp ) );
-      fam_ccss := CollectionsFamily( fam_ccs );
-      cat_ccs := CategoryCollections( IsMatrixGroup );
-      cat_ccss := CategoryCollections( cat_ccs );
-
-      # objectify CCSs of the group
-      ccss := Objectify( NewType( fam_ccss, cat_ccss and IsCompactLieGroupCCSsRep ), rec( ) );
-      SetUnderlyingGroup( ccss, grp );
-      SetIsFinite( ccss, false );
-
-      # setup CCS types
-      make_ccs_classes := function( )
-        local ccs_classes;
-
-        ccs_classes := [ ];
-        # add SO(2)
-        Add( ccs_classes, rec(
-          group := grp,
-          is_zero_mode := true,
-          type := 1,
-          order_of_weyl_group := [ 1, 0 ],
-        ) );
-        # add Z_m
-        Add( ccs_classes, rec(
-          group := grp,
-          is_zero_mode := false,
-          type := 1,
-          order_of_weyl_group := [ 1, 1 ],
-        ) );
+          return ccs1 < ccs2;
+        end );
 
         return ccs_classes;
       end;
@@ -269,48 +272,35 @@
     "return a function which gives a filtered CCS classes",
     [ IsCompactLieGroupCCSsRep ],
     ccss -> function( args... )
-      local nu,
+      local arg_count,
             term,
             d,
-            mode,
-            ccs_classes;
+            filtered_ccs_classes;
 
-      ccs_classes := CCSClasses( ccss );
-      nu := 0;
+      filtered_ccs_classes := CCSClasses( ccss );
+      arg_count := 0;
 
       while not IsEmpty( args ) do
         term := Remove( args, 1 );
-        nu := nu+1;
+        arg_count := arg_count+1;
 
         if ( term = "nonzero_mode" ) then
-          ccs_classes := Filtered( ccs_classes, cl -> not cl.is_zero_mode );
-          mode := 1;
+          filtered_ccs_classes := Filtered( filtered_ccs_classes, cl -> not cl.is_zero_mode );
         elif ( term = "zero_mode" ) then
-          ccs_classes := Filtered( ccs_classes, cl -> cl.is_zero_mode );
-          mode := 0;
+          filtered_ccs_classes := Filtered( filtered_ccs_classes, cl -> cl.is_zero_mode );
         elif ( term = "with_m-dim_weyl_group" ) then
           d := Remove( args, 1 );
+          arg_count := arg_count+1;
           if not IsInt( d ) or ( d < 0 ) then
-            Error( "Valid dimension is required for ", nu, "-th filter term." );
+            Error( "Dimension for ", arg_count, "-th term is invalid." );
           fi;
-          ccs_classes := Filtered( ccs_classes, cl -> ( cl.order_of_weyl_group[ 2 ] = d ) );
+          filtered_ccs_classes := Filtered( filtered_ccs_classes, cl -> ( cl.order_of_weyl_group[ 2 ] = d ) );
         else
-          Error( nu, "-th filter term is invalid." );
+          Error( arg_count, "-th term is invalid." );
         fi;
       od;
 
-      Sort( ccs_classes,
-        function( cl1, cl2 )
-          local ccs1, ccs2;
-
-          ccs1 := NewCCS( IsCompactLieGroupCCSRep, cl1, mode );
-          ccs2 := NewCCS( IsCompactLieGroupCCSRep, cl2, mode );
-
-          return ccs1 < ccs2;
-        end
-      );
-
-      return ccs_classes;
+      return filtered_ccs_classes;
     end
   );
 
@@ -319,7 +309,8 @@
     "return CCSId attribute of a compact Lie group CCS list",
     [ IsCompactLieGroupCCSsRep ],
     ccss -> function( id )
-      local ccs_class,
+      local rep_ccss,
+            ccs_class,
             ccs_classes_filtered,
             ccs;
 
@@ -333,20 +324,40 @@
         return fail;
       fi;
 
-      ccs := NewCCS( IsCompactLieGroupCCSRep, ccs_class, id[ 2 ] );
-      SetIdCCS( ccs, id );
+      # extract representation of the given CCSs
+      rep_ccss := EvalString( Remove( ShallowCopy( RepresentationsOfObject( ccss ) ) ) );
+
+      ccs := NewCCS( rep_ccss, ccs_class, id[ 2 ] );
+      #SetIdCCS( ccs, id );
 
       return ccs;
     end
   );
 
 # ### Operation(s)
+# #### for ECLG
+# ***
+  InstallMethod( \=,
+    "equivalence relation of ECLGs",
+    [ IsElementaryCompactLieGroup, IsElementaryCompactLieGroup ],
+    function( eclg1, eclg2 )
+      return IdECLG( eclg1 ) = IdECLG( eclg2 );
+    end
+  );
+
 # ***
   InstallMethod( \in,
-    "Membership test for O(n)",
-    [ IsObject, IsOrthogonalGroupOverReal ],
-    function( obj, grp )
-      if IsIdenticalObj( CollectionsFamily( FamilyObj( obj ) ), FamilyObj( grp ) ) and ( TransposedMat( obj ) * obj = One( grp ) ) then
+    "Membership test for SO(n)",
+    [ IsObject, IsElementaryCompactLieGroup and IsMatrixGroup ],
+    function( obj, eclg )
+      local d;
+
+      d := DimensionOfMatrixGroup( eclg );
+      if not ( eclg = SpecialOrthogonalGroupOverReal( d ) ) then
+        TryNextMethod( );
+      fi;
+
+      if IsIdenticalObj( CollectionsFamily( FamilyObj( obj ) ), FamilyObj( eclg ) ) and ( TransposedMat( obj ) * obj = One( eclg ) ) and ( Determinant( obj ) = 1 ) then
         return true;
       else
         return false;
@@ -356,10 +367,17 @@
 
 # ***
   InstallMethod( \in,
-    "Membership test for SO(n)",
-    [ IsObject, IsSpecialOrthogonalGroupOverReal ],
-    function( obj, grp )
-      if IsIdenticalObj( CollectionsFamily( FamilyObj( obj ) ), FamilyObj( grp ) ) and ( TransposedMat( obj ) * obj = One( grp ) ) and ( Determinant( obj ) = 1 ) then
+    "Membership test for O(n)",
+    [ IsObject, IsElementaryCompactLieGroup and IsMatrixGroup ],
+    function( obj, eclg )
+      local d;
+
+      d := DimensionOfMatrixGroup( eclg );
+      if not ( eclg = OrthogonalGroupOverReal( d ) ) then
+        TryNextMethod( );
+      fi;
+
+      if IsIdenticalObj( CollectionsFamily( FamilyObj( obj ) ), FamilyObj( eclg ) ) and ( TransposedMat( obj ) * obj = One( eclg ) ) then
         return true;
       else
         return false;
@@ -369,18 +387,17 @@
 
 # ***
   InstallMethod( IsSubset,
-    "Test if a finite group is a subgroup of a compact Lie group",
-    IsIdenticalObj,
-    [ IsCompactLieGroup, IsGroup ],
-    function( grp, subg )
+    "Test if a finite group is a subgroup of a ECLG",
+    [ IsElementaryCompactLieGroup, IsGroup ],
+    function( eclg, grp )
       local elmt;
 
-      if not IsFinite( subg ) then
+      if not IsFinite( grp ) then
         TryNextMethod( );
       fi;
 
-      for elmt in List( subg ) do
-        if not ( elmt in grp ) then
+      for elmt in List( grp ) do
+        if not ( elmt in eclg ) then
           return false;
         fi;
       od;
@@ -391,10 +408,9 @@
 
 # ***
   InstallMethod( IsSubset,
-    "Test if a compact Lie group is a subgroup of a finite group",
-    IsIdenticalObj,
-    [ IsGroup, IsCompactLieGroup ],
-    function( grp, subg )
+    "Test if an ECLG is a subgroup of a finite group",
+    [ IsGroup, IsElementaryCompactLieGroup ],
+    function( grp, eclg )
       if IsFinite( grp ) then
         return false;
       else
@@ -405,68 +421,49 @@
 
 # ***
   InstallMethod( IsSubset,
-    "Test if a compact Lie group is a subset of another compact Lie group",
-    IsIdenticalObj,
-    [ IsOrthogonalGroupOverReal, IsSpecialOrthogonalGroupOverReal ],
-    function( on, son )
-      return ( DimensionOfMatrixGroup( on ) = DimensionOfMatrixGroup( son ) );
+    "Test if an ECLG is a subset of another ECLG",
+    [ IsElementaryCompactLieGroup, IsElementaryCompactLieGroup ],
+    function( eclg1, eclg2 )
+      # one should change the rule when adding more ECLGs into the library
+      return IsZero( IdECLG( eclg1 ) mod IdECLG( eclg2 ) );
     end
   );
 
-# ***
-  InstallMethod( IsSubset,
-    "Test if a compact Lie group is a subset of another compact Lie group",
-    IsIdenticalObj,
-    [ IsSpecialOrthogonalGroupOverReal, IsSpecialOrthogonalGroupOverReal ],
-    function( on, son )
-      return ( DimensionOfMatrixGroup( on ) = DimensionOfMatrixGroup( son ) );
-    end
-  );
-
-# ***
-  InstallMethod( IsSubset,
-    "Test if a compact Lie group is a subset of another compact Lie group",
-    IsIdenticalObj,
-    [ IsOrthogonalGroupOverReal, IsOrthogonalGroupOverReal ],
-    function( on, son )
-      return ( DimensionOfMatrixGroup( on ) = DimensionOfMatrixGroup( son ) );
-    end
-  );
-
+# #### for CCS of ECLG
 # ***
   InstallMethod( \=,
-    "the equivalence relation of the conjugacy classes of subgroups of a compact Lie group",
+    "the equivalence relation of CCSs of ECLG",
     IsIdenticalObj,
     [ IsCompactLieGroupCCSRep, IsCompactLieGroupCCSRep ],
     function( ccs1, ccs2 )
       if not ( ActingDomain( ccs1 ) = ActingDomain( ccs2 ) ) then
         return false;
       else
-        return IdCCS( ccs1 ) = IdCCS( ccs2 );
+        return ( IdCCS( ccs1 ) = IdCCS( ccs2 ) );
       fi;
     end
   );
 
 # ***
-  InstallMethod( \<,
-    "the partial order oe the conjugacy classes of subgroups of a compact Lie group",
-    IsIdenticalObj,
-    [ IsCompactLieGroupCCSRep, IsCompactLieGroupCCSRep ],
-    function( ccs1, ccs2 )
-      return nLHnumber( ccs1, ccs2 ) > 0;
-    end
-  );
-
-# ***
   InstallMethod( nLHnumber,
-    "return n(L,H) number for subgroups of compact Lie group",
+    "return n(L,H) number for CCSs of ECLG",
     IsIdenticalObj,
-    [ IsCompactLieGroupCCSRep, IsCompactLieGroupCCSRep ],
+    [ IsElementaryCompactLieGroupCCSRep, IsElementaryCompactLieGroupCCSRep ],
     function( ccs1, ccs2 )
-      local id1, id2;
+      local eclg,            # underlying group of ccs1 and ccs2
+            workable_clg,   # workable group list
+            is_supported,   # flag indicating whether the underlying group is supported
+            id1, id2;       # IDs of ccs1 and ccs2
 
-      if not ( ActingDomain( ccs1 ) = ActingDomain( ccs2 ) ) then
-        Error( "ccs1 and ccs2 must be from the same group.");
+      eclg := ActingDomain( ccs1 );
+      if not ( eclg = ActingDomain( ccs2 ) ) then
+        Error( "ccs1 and ccs2 must be from the same ECLG." );
+      fi;
+
+      is_supported := false;
+      if not ( eclg in WORKABLE_ECLGs ) then
+        Info( InfoWarning, INFO_LEVEL, "The underlying group of the CCSs is not supported." );
+        return fail;
       fi;
 
       id1 := IdCCS( ccs1 );
@@ -486,150 +483,110 @@
     end
   );
 
+# ***
+  InstallMethod( \<,
+    "the partial order oe the conjugacy classes of subgroups of a compact Lie group",
+    IsIdenticalObj,
+    [ IsCompactLieGroupCCSRep, IsCompactLieGroupCCSRep ],
+    function( ccs1, ccs2 )
+      return ( nLHnumber( ccs1, ccs2 ) > 0 );
+    end
+  );
 
-# ## global function(s)
 
-
-# ### print, view and display
+# ### Print, View and Display
+# #### for ECLG
 # ***
   InstallMethod( String,
-    "print string of orthogonal groups",
-    [ IsOrthogonalGroupOverReal ],
-    function( grp )
-      local d;    # dimension of matrices
+    "string of ECLG",
+    [ IsElementaryCompactLieGroup ],
+    function( eclg )
+      local string;
 
-      d := String( DimensionOfMatrixGroup( grp ) );
-      return Concatenation( "OrthogonalGroupOverReal(", d, ")" );
+      if ( IdECLG( eclg ) = [ 1, 1 ] ) then
+        string := "SpecialOrthogonalOverReal( 2 )";
+      elif ( IdECLG( eclg ) = [ 2, 1 ] ) then
+        string := "OrthogonalGroupOverReal( 2 )";
+      fi;
+
+      return string;
     end
   );
 
 # ***
   InstallMethod( PrintObj,
-    "print orthogonal groups",
-    [ IsOrthogonalGroupOverReal ],
+    "print ECLG",
+    [ IsElementaryCompactLieGroup ],
     10,
-    function( grp )
-      Print( String( grp ) );
+    function( eclg )
+      Print( String( eclg ) );
     end
   );
 
 # ***
   InstallMethod( ViewString,
-    "view string of orthogonal groups",
-    [ IsOrthogonalGroupOverReal ],
-    function( grp )
-      local d;        # dimension of matrices
+    "view string of ECLG",
+    [ IsElementaryCompactLieGroup ],
+    function( eclg )
+      local string;
 
-      d := String( DimensionOfMatrixGroup( grp ) );
-      return Concatenation( "O(", d, ")" );
+      if ( IdECLG( eclg ) = [ 1, 1 ] ) then
+        string := "SO(2,R)";
+      elif ( IdECLG( eclg ) = [ 2, 1 ] ) then
+        string := "O(2,R)";
+      fi;
+
+      return string;
     end
   );
 
 # ***
   InstallMethod( ViewObj,
-    "print orthogonal groups",
-    [ IsOrthogonalGroupOverReal ],
+    "view ECLG",
+    [ IsElementaryCompactLieGroup ],
     10,
-    function( grp )
-      Print( ViewString( grp ) );
+    function( eclg )
+      Print( ViewString( eclg ) );
     end
   );
 
 # ***
   InstallMethod( DisplayString,
-    "display string of orthogonal groups",
-    [ IsOrthogonalGroupOverReal ],
-    function( grp )
-      local d;        # dimension of matrices
+    "display string of ECLG",
+    [ IsElementaryCompactLieGroup ],
+    function( eclg )
+      local string;
 
-      d := String( DimensionOfMatrixGroup( grp ) );
-      return Concatenation( "<group of ", d, "x", d, " orthogonal matrices over real>" );
+      if ( IdECLG( eclg ) = [ 1, 1 ] ) then
+        string := "<group of 2x2 special orthogonal matrices over real>";
+      elif ( IdECLG( eclg ) = [ 2, 1 ] ) then
+        string := "<group of 2x2 orthogonal matrices over real>";
+      fi;
+
+      return string;
     end
   );
 
 # ***
   InstallMethod( Display,
-    "display orthogonal groups",
-    [ IsOrthogonalGroupOverReal ],
-    function( grp )
-      Print( DisplayString( grp ) );
-    end
-  );
-
-# ***
-  InstallMethod( String,
-    "print string of special orthogonal groups",
-    [ IsSpecialOrthogonalGroupOverReal ],
-    function( grp )
-      local d;    # dimension of matrices
-
-      d := String( DimensionOfMatrixGroup( grp ) );
-      return Concatenation( "SpecialOrthogonalGroupOverReal(", d, ")" );
-    end
-  );
-
-# ***
-  InstallMethod( PrintObj,
-    "print special orthogonal groups",
-    [ IsSpecialOrthogonalGroupOverReal ],
+    "display ECLG",
+    [ IsElementaryCompactLieGroup ],
     10,
-    function( grp )
-      Print( String( grp ) );
+    function( eclg )
+      Print( DisplayString( eclg ) );
     end
   );
 
-# ***
-  InstallMethod( ViewString,
-    "view string of special orthogonal groups",
-    [ IsSpecialOrthogonalGroupOverReal ],
-    function( grp )
-      local d;    # dimension of matrices
-
-      d := String( DimensionOfMatrixGroup( grp ) );
-      return Concatenation( "SO(", d, ")" );
-    end
-  );
-
-# ***
-  InstallMethod( ViewObj,
-    "view special orthogonal groups",
-    [ IsSpecialOrthogonalGroupOverReal ],
-    10,
-    function( grp )
-      Print( ViewString( grp ) );
-    end
-  );
-
-# ***
-  InstallMethod( DisplayString,
-    "display string of orthogonal groups",
-    [ IsSpecialOrthogonalGroupOverReal ],
-    function( grp )
-      local d;        # dimension of matrices
-
-      d := String( DimensionOfMatrixGroup( grp ) );
-      return Concatenation( "<group of ", d, "x", d, " special orthogonal matrices over real>" );
-    end
-  );
-
-# ***
-  InstallMethod( Display,
-    "display orthogonal groups",
-    [ IsSpecialOrthogonalGroupOverReal ],
-    function( grp )
-      Print( DisplayString( grp ) );
-    end
-  );
-
+# #### for CCSs of ECLG
 # ***
   InstallMethod( PrintString,
-    "print string of CCS list of compact Lie group",
+    "print string of CCS list of clg",
     [ IsCollection and IsCompactLieGroupCCSsRep ],
-    function( ccs_list )
-      local grp;
+    function( ccss )
+      local clg;
 
-      grp := UnderlyingGroup( ccs_list );
-      return Concatenation( "ConjugacyClassesSubgroups( ", String(grp), " )" );
+      clg := UnderlyingGroup( ccss );
+      return Concatenation( "ConjugacyClassesSubgroups( ", String( clg ), " )" );
     end
   );
 
@@ -637,20 +594,20 @@
   InstallMethod( PrintObj,
     "print CCS list of compact Lie group",
     [ IsCollection and IsCompactLieGroupCCSsRep ],
-    function( ccs_list )
-      Print( PrintString( ccs_list ) );
+    function( ccss )
+      Print( PrintString( ccss ) );
     end
   );
 
 # ***
   InstallMethod( ViewString,
-    "view string of CCS list of compact Lie group",
+    "view string of CCS list of CLG",
     [ IsCollection and IsCompactLieGroupCCSsRep ],
-    function( ccs_list )
-      local grp;
+    function( ccss )
+      local clg;
 
-      grp := UnderlyingGroup( ccs_list );
-      return Concatenation( "CCSs( ", ViewString(grp), " )" );
+      clg := UnderlyingGroup( ccss );
+      return Concatenation( "CCSs( ", ViewString( clg ), " )" );
     end
   );
 
@@ -658,8 +615,8 @@
   InstallMethod( ViewObj,
     "view CCS list of compact Lie group",
     [ IsCollection and IsCompactLieGroupCCSsRep ],
-    function( ccs_list )
-      Print( ViewString( ccs_list ) );
+    function( ccss )
+      Print( ViewString( ccss ) );
     end
   );
 
