@@ -106,7 +106,7 @@
             rep_ccs,
             cat_ccs;
 
-      if not ( ccs_class.group in WORKABLE_ECLGs ) then
+      if not ( IdECLG( ccs_class.group ) in [ [ 1, 1 ], [ 2, 1 ] ] ) then
         TryNextMethod( );
       fi;
 
@@ -164,13 +164,6 @@
   );
 
 
-# ### GlobalVariable(s)
-  InstallValue( WORKABLE_ECLGs, [
-    ECLGId( [ 1, 1 ] ),
-    ECLGId( [ 2, 1 ] ) ]
-  );
-
-
 # ### Attribute(s)
 # ***
   InstallMethod( ConjugacyClassesSubgroups,
@@ -183,8 +176,8 @@
             ccss,              # CCSs
             make_ccs_classes;  # procedure generating CCS classes
 
-      # it works only for workable eclgs, i.e., SO(2) and O(2) for the time being
-      if not ( eclg in WORKABLE_ECLGs ) then
+      # it works only for SO(2) and O(2)
+      if not ( IdECLG( eclg ) in [ [ 1, 1 ], [ 2, 1 ] ] ) then
         TryNextMethod( );
       fi;
 
@@ -328,7 +321,7 @@
       rep_ccss := EvalString( Remove( ShallowCopy( RepresentationsOfObject( ccss ) ) ) );
 
       ccs := NewCCS( rep_ccss, ccs_class, id[ 2 ] );
-      #SetIdCCS( ccs, id );
+      SetIdCCS( ccs, id );
 
       return ccs;
     end
@@ -461,7 +454,7 @@
       fi;
 
       is_supported := false;
-      if not ( eclg in WORKABLE_ECLGs ) then
+      if not ( IdECLG( eclg ) in [ [ 1, 1 ], [ 2, 1 ] ] ) then
         Info( InfoWarning, INFO_LEVEL, "The underlying group of the CCSs is not supported." );
         return fail;
       fi;
@@ -489,7 +482,7 @@
     IsIdenticalObj,
     [ IsCompactLieGroupCCSRep, IsCompactLieGroupCCSRep ],
     function( ccs1, ccs2 )
-      return ( nLHnumber( ccs1, ccs2 ) > 0 );
+      return not ( nLHnumber( ccs2, ccs1 ) > 0 );
     end
   );
 

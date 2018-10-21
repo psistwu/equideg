@@ -10,14 +10,15 @@
 # ***
   InstallMethod( NewCCS,
     "CCS constructor of DPwCLG",
-    [ IsDirectProductWithCompactLieGroupCCSRep, IsRecord, IsInt ],
+    [ IsDirectProductWithECLGCCSsRep, IsRecord, IsInt ],
     function( filter, ccs_class, mode )
       local fam_ccs,            # family of CCS
             cat_ccs,            # category of CCS
+            rep_ccs,            # representation of CCS
             ccs,                # the CCS
             dpinfo,             # direct product info
-            clg,                # the CLG component of the group
-            ccss_clg,           # CCS list of the CLG component
+            eclg,               # the ECLG component of the group
+            ccss_eclg,          # CCS list of the ECLG component
             subg,               # a representative of CCS
             phi,                # an epimorphism from H to L
             psi,                # an epimorphism from K to L
@@ -34,27 +35,33 @@
         Error( "Illegel mode for the selected CCS class." );
       fi;
 
+      # extract the direct product info
+      dpinfo := DirectProductInfo( ccs_class.group );
+
+      # it works only when the ECLG component is SO(2) or O(2)
+      if not ( IdECLG( dpinfo.eclg ) in [ [ 1, 1 ], [ 2, 1 ] ] ) then
+        TryNextMethod( );
+      fi;
+
       # objectify the CCS
       fam_ccs := CollectionsFamily( FamilyObj( ccs_class.group ) );
       cat_ccs := CategoryCollections( IsGroup );
-      ccs := Objectify( NewType( fam_ccs, cat_ccs and filter ), rec( ) );
+      rep_ccs := IsDirectProductWithECLGCCSRep;
+      ccs := Objectify( NewType( fam_ccs, cat_ccs and rep_ccs ), rec( ) );
 
-      # extract the CLG component of the group
-      dpinfo := DirectProductInfo( ccs_class.grp );
-      clg := dpinfo.clg;
-      ccss_clg := ConjugacyClassesSubgroups( clg );
-
-      # extract cH, cK, H, ZH, L and K
+      # extract ccss_eclg, cH, cK, H, ZH, L and K
+      ccss_eclg := ConjugacyClassesSubgroups( dpinfo.eclg );
       cH := ccs_class.cH;
       phi := Representative( ccs_class.phi_list );
       H := Source( phi );
       ZH := Kernel( phi );
       L := Range( phi );
       idK := [ ccs_class.idK[ 1 ], ccs_class.idK[ 2 ]*mode ];
-      cK := CCSId( ccss_clg )( idK );
+      cK := CCSId( ccss_eclg )( idK );
       K := Representative( cK );
 
       # generate the representative of CCS
+      # for CCS of zero mode
       if ccs_class.is_zero_mode then
         if ( Size( L ) = 1 ) then
           subg := DirectProduct( K, H );
@@ -63,8 +70,9 @@
         else
           subg := Objectify( NewType( FamilyObj( ccs_class.group ), IsGroup ), rec( ) );
           psi := GroupHomomorphismByFunction( K, L, elmt -> L.2^( ( 1-DeterminantMat( elmt ) )/2 ), false, elmt -> DiagonalMat( [ 1, (-1)^( Order( elmt )-1 ) ] ) );
-          SetKernelOfMultiplicativeGeneralMapping( psi, Representative( CCSId( ccss_clg )( [ 1, 0 ] ) ) );
+          SetKernelOfMultiplicativeGeneralMapping( psi, Representative( CCSId( ccss_eclg )( [ 1, 0 ] ) ) );
         fi;
+      # for CCS of non-zero mode
       else
         # setup homomorphism from K to L
         gens_L := GeneratorsOfGroup( L );
@@ -109,43 +117,61 @@
     end
   );
 
+# ***
+  InstallOtherMethod( NewCCS,
+    "CCS constructor of CLG",
+    [ IsDirectProductWithECLGCCSsRep, IsRecord ],
+    function( filter, ccs_class )
+      local mode;
+
+      if ccs_class.is_zero_mode then
+        mode := 0;
+      else
+        mode := 1;
+      fi;
+
+      return NewCCS( filter, ccs_class, mode );
+    end
+  );
+
 
 # ### Attribute(s)
 # ***
   InstallMethod( ConjugacyClassesSubgroups,
-    "return CCS list of direct product with O(2)",
-    [ IsDirectProductWithOrthogonalGroupOverReal ],
+    "return CCS list of direct product with ECLG",
+    [ IsDirectProductWithECLG ],
     function( grp )
-      local d,                   # dimension of matrices in the group
-            fam_ccss,            # family of CCSs of the group
+      local fam_ccss,            # family of CCSs of the group
             cat_ccss,            # category of CCSs of the group
-            clg,                 # O(2) component of the group
+            rep_ccss,            # representation of CCSs of the group
+            eclg,                # ECLG component of the group
             gamma,               # gamma component of the group
             ccss_grp,            # CCS list of the group
             ccss_gamma,          # CCS list of gamma
-            ccss_clg,            # CCS list of O(2)
+            ccss_eclg,           # CCS list of O(2)
             dpinfo,              # direct product info of the group
             make_ccs_classes;    # procedure generating List of CCS types
 
       # Extract gamma component and O(2) component
       dpinfo := DirectProductInfo( grp );
-      clg := dpinfo.clg;
+      eclg := dpinfo.eclg;
       gamma := dpinfo.gamma;
 
-      # it only works for groups of type Gamma x O(2)
-      if not ( DimensionOfMatrixGroup( clg ) = 2 ) then
+      # it only works for when the ECLG components is O(2) or SO(2)
+      if not ( IdECLG( eclg ) in [ [ 1, 1 ], [ 2, 1 ] ] ) then
         TryNextMethod( );
       fi;
 
       # setup families and categories
       fam_ccss := CollectionsFamily( CollectionsFamily( FamilyObj( grp ) ) );
       cat_ccss := CategoryCollections( CategoryCollections( IsGroup ) );
+      rep_ccss := IsDirectProductWithECLGCCSsRep;
 
       # objectify CCSs of the group
-      ccss_clg := ConjugacyClassesSubgroups( clg );
+      ccss_eclg := ConjugacyClassesSubgroups( eclg );
       ccss_gamma := ConjugacyClassesSubgroups( gamma );
-      ccss_grp := Objectify( NewType( fam_ccss, cat_ccss and IsDirectProductWithCompactLieGroupCCSsRep ),
-          rec( ccss_gamma := ccss_gamma, ccss_clg := ccss_clg ) );
+      ccss_grp := Objectify( NewType( fam_ccss, cat_ccss and rep_ccss ),
+          rec( ccss_gamma := ccss_gamma, ccss_eclg := ccss_eclg ) );
       SetUnderlyingGroup( ccss_grp, grp );
       SetIsFinite( ccss_grp, false );
 
@@ -166,7 +192,6 @@
               actfunc,                  # acting function
               ccs_phis,                 # conjugacy classes of epimorphisms
               cc_phis,                  # a conjugacy class of epimorphisms
-              order_of_weyl_group,      # the order of Weyl group
               i, j, k;                  # indices
 
         ccs_classes := [ ];
@@ -221,57 +246,83 @@
               # L = Z_1
               if ( k = 1 ) then
                 # case 1: K = ZK = SO(2)
-                ccs_class.idK := [ 1, 0 ];
-                ccs_class.idZK := [ 1, 0 ];
-                ccs_class.is_zero_mode := true;
-                ccs_class.order_of_weyl_group := [ 2*OrderOfWeylGroup( H ), 0 ];
-                Add( ccs_classes, ShallowCopy( ccs_class ) );
+                if ( IdECLG( eclg ) in [ [ 1, 1 ], [ 2, 1 ] ] ) then
+                  ccs_class.idK := [ 1, 0 ];
+                  ccs_class.idZK := [ 1, 0 ];
+                  ccs_class.is_zero_mode := true;
+                  if ( IdECLG( eclg ) = [ 1, 1 ] ) then
+                    ccs_class.order_of_weyl_group := [ OrderOfWeylGroup( H ), 0 ];
+                  elif ( IdECLG( eclg ) = [ 2, 1 ] ) then
+                    ccs_class.order_of_weyl_group := [ 2*OrderOfWeylGroup( H ), 0 ];
+                  fi;
+                  Add( ccs_classes, ShallowCopy( ccs_class ) );
+                fi;
 
                 # case 2: K = ZK = O(2)
-                ccs_class.idK := [ 2, 0 ];
-                ccs_class.idZK := [ 2, 0 ];
-                ccs_class.is_zero_mode := true;
-                ccs_class.order_of_weyl_group := [ OrderOfWeylGroup( H ), 0 ];
-                Add( ccs_classes, ShallowCopy( ccs_class ) );
+                if ( IdECLG( eclg ) in [ [ 2, 1 ] ] ) then
+                  ccs_class.idK := [ 2, 0 ];
+                  ccs_class.idZK := [ 2, 0 ];
+                  ccs_class.is_zero_mode := true;
+                  ccs_class.order_of_weyl_group := [ OrderOfWeylGroup( H ), 0 ];
+                  Add( ccs_classes, ShallowCopy( ccs_class ) );
+                fi;
 
                 # case 3: K = ZK = Z_m
-                ccs_class.idK := [ 1, 1 ];
-                ccs_class.idZK := [ 1, 1 ];
-                ccs_class.is_zero_mode := false;
-                ccs_class.order_of_weyl_group := [ 2*OrderOfWeylGroup( H ), 1 ];
-                Add( ccs_classes, ShallowCopy( ccs_class ) );
+                if ( IdECLG( eclg ) in [ [ 1, 1 ], [ 2, 1 ] ] ) then
+                  ccs_class.idK := [ 1, 1 ];
+                  ccs_class.idZK := [ 1, 1 ];
+                  ccs_class.is_zero_mode := false;
+                  if ( IdECLG( eclg ) = [ 1, 1 ] ) then
+                    ccs_class.order_of_weyl_group := [ OrderOfWeylGroup( H ), 1 ];
+                  elif ( IdECLG( eclg ) = [ 2, 1 ] ) then
+                    ccs_class.order_of_weyl_group := [ 2*OrderOfWeylGroup( H ), 1 ];
+                  fi;
+                  Add( ccs_classes, ShallowCopy( ccs_class ) );
+                fi;
 
                 # case 4: K = ZK = D_m
-                ccs_class.idK := [ 2, 1 ];
-                ccs_class.idZK := [ 2, 1 ];
-                ccs_class.is_zero_mode := false;
-                ccs_class.order_of_weyl_group := [ 2*OrderOfWeylGroup( H ), 0 ];
-                Add( ccs_classes, ShallowCopy( ccs_class ) );
+                if ( IdECLG( eclg ) in [ [ 2, 1 ] ] ) then
+                  ccs_class.idK := [ 2, 1 ];
+                  ccs_class.idZK := [ 2, 1 ];
+                  ccs_class.is_zero_mode := false;
+                  ccs_class.order_of_weyl_group := [ 2*OrderOfWeylGroup( H ), 0 ];
+                  Add( ccs_classes, ShallowCopy( ccs_class ) );
+                fi;
 
               # L = Z_2
               elif ( k = 2 ) then
                 # case 1: K = Z_2m, ZK = Z_m
-                ccs_class.idK := [ 1, 2 ];
-                ccs_class.idZK := [ 1, 1 ];
-                ccs_class.is_zero_mode := false;
-                ccs_class.order_of_weyl_group := [ 2*OrderOfWeylGroup( H )/Size( cc_phis ), 1 ];
-                Add( ccs_classes, ShallowCopy( ccs_class ) );
+                if ( IdECLG( eclg ) in [ [ 1, 1 ], [ 2, 1 ] ] ) then
+                  ccs_class.idK := [ 1, 2 ];
+                  ccs_class.idZK := [ 1, 1 ];
+                  ccs_class.is_zero_mode := false;
+                  if ( IdECLG( eclg ) = [ 1, 1 ] ) then
+                    ccs_class.order_of_weyl_group := [ OrderOfWeylGroup( H )/Size( cc_phis ), 1 ];
+                  elif ( IdECLG( eclg ) = [ 2, 1 ] ) then
+                    ccs_class.order_of_weyl_group := [ 2*OrderOfWeylGroup( H )/Size( cc_phis ), 1 ];
+                  fi;
+                  Add( ccs_classes, ShallowCopy( ccs_class ) );
+                fi;
 
-                # case 2: K = Z_2m, ZK = Z_m
-                ccs_class.idK := [ 2, 2 ];
-                ccs_class.idZK := [ 2, 1 ];
-                ccs_class.is_zero_mode := false;
-                ccs_class.order_of_weyl_group := [ 2*OrderOfWeylGroup( H )/Size( cc_phis ), 0 ];
-                Add( ccs_classes, ShallowCopy( ccs_class ) );
+                # case 2: K = D_2m, ZK = D_m
+                if ( IdECLG( eclg ) in [ [ 2, 1 ] ] ) then
+                  ccs_class.idK := [ 2, 2 ];
+                  ccs_class.idZK := [ 2, 1 ];
+                  ccs_class.is_zero_mode := false;
+                  ccs_class.order_of_weyl_group := [ 2*OrderOfWeylGroup( H )/Size( cc_phis ), 0 ];
+                  Add( ccs_classes, ShallowCopy( ccs_class ) );
+                fi;
 
               # L = Z_k, k>=3
               else
                 # case 1: K = Z_km, ZK = Z_m
-                ccs_class.idK := [ 1, k ];
-                ccs_class.idZK := [ 1, 1 ];
-                ccs_class.is_zero_mode := false;
-                ccs_class.order_of_weyl_group := [ 2*OrderOfWeylGroup( H )/Size( cc_phis ), 1 ];
-                Add( ccs_classes, ShallowCopy( ccs_class ) );
+                if ( IdECLG( eclg ) in [ [ 1, 1 ], [ 2, 1 ] ] ) then
+                  ccs_class.idK := [ 1, k ];
+                  ccs_class.idZK := [ 1, 1 ];
+                  ccs_class.is_zero_mode := false;
+                  ccs_class.order_of_weyl_group := [ 2*OrderOfWeylGroup( H )/Size( cc_phis ), 1 ];
+                  Add( ccs_classes, ShallowCopy( ccs_class ) );
+                fi;
               fi;
             od;
           od;
@@ -324,31 +375,47 @@
               # L = D_1
               if ( k = 1 ) then
                 # case 1: K = O(2), ZK = SO(2)
-                ccs_class.idK := [ 2, 0 ];
-                ccs_class.idZK := [ 1, 0 ];
-                ccs_class.is_zero_mode := true;
-                ccs_class.order_of_weyl_group := [ 2*OrderOfWeylGroup( H )/Size( cc_phis ), 0 ];
-                Add( ccs_classes, ShallowCopy( ccs_class ) );
+                if ( IdECLG( eclg ) in [ [ 2, 1 ] ] ) then
+                  ccs_class.idK := [ 2, 0 ];
+                  ccs_class.idZK := [ 1, 0 ];
+                  ccs_class.is_zero_mode := true;
+                  ccs_class.order_of_weyl_group := [ 2*OrderOfWeylGroup( H )/Size( cc_phis ), 0 ];
+                  Add( ccs_classes, ShallowCopy( ccs_class ) );
+                fi;
 
                 # case 2: K = D_m, ZK = Z_m
-                ccs_class.idK := [ 2, 1 ];
-                ccs_class.idZK := [ 1, 1 ];
-                ccs_class.is_zero_mode := false;
-                ccs_class.order_of_weyl_group := [ 4*OrderOfWeylGroup( H )/Size( cc_phis ), 0 ];
-                Add( ccs_classes, ShallowCopy( ccs_class ) );
+                if ( IdECLG( eclg ) in [ [ 2, 1 ] ] ) then
+                  ccs_class.idK := [ 2, 1 ];
+                  ccs_class.idZK := [ 1, 1 ];
+                  ccs_class.is_zero_mode := false;
+                  ccs_class.order_of_weyl_group := [ 4*OrderOfWeylGroup( H )/Size( cc_phis ), 0 ];
+                  Add( ccs_classes, ShallowCopy( ccs_class ) );
+                fi;
 
               # L = D_k, k>=2
               else
                 # case 1: K = D_km, Z_m
-                ccs_class.idK := [ 2, k ];
-                ccs_class.idZK := [ 1, 1 ];
-                ccs_class.is_zero_mode := false;
-                ccs_class.order_of_weyl_group := [ 4*j*OrderOfWeylGroup( H )/Size( cc_phis ), 0 ];
-                Add( ccs_classes, ShallowCopy( ccs_class ) );
+                if ( IdECLG( eclg ) in [ [ 2, 1 ] ] ) then
+                  ccs_class.idK := [ 2, k ];
+                  ccs_class.idZK := [ 1, 1 ];
+                  ccs_class.is_zero_mode := false;
+                  ccs_class.order_of_weyl_group := [ 4*j*OrderOfWeylGroup( H )/Size( cc_phis ), 0 ];
+                  Add( ccs_classes, ShallowCopy( ccs_class ) );
+                fi;
               fi;
             od;
           od;
         od;
+
+        # sort ccs_classes
+        Sort( ccs_classes, function( cl1, cl2 )
+          local ccs1, ccs2;
+
+          ccs1 := NewCCS( rep_ccss, cl1 );
+          ccs2 := NewCCS( rep_ccss, cl2 );
+
+          return ccs1 < ccs2;
+        end );
 
         return ccs_classes;
       end;
@@ -358,232 +425,69 @@
     end
   );
 
-# ***
-# InstallMethod( ConjugacyClassesSubgroups,
-#   "return CCS list of direct product with SO(2)",
-#   [ IsDirectProductWithSpecialOrthogonalGroupOverReal ],
-#   function( grp )
-#     local d,                            # dimension of matrices in the group
-#           fam_ccs,                      # family of CCS of the group
-#           fam_ccss,                     # family of CCSs of the group
-#           cat_ccs,                      # category of CCS of the group
-#           cat_ccss,                     # category of CCSs of the group
-#           clg,                          # SO(2) component of the group
-#           gamma,                        # gamma component of the group
-#           ccss_grp,                     # CCS list of the group
-#           ccss_gamma,                   # CCS list of gamma
-#           ccss_clg,                     # CCS list of SO(2)
-#           dpinfo,                       # direct product info of the group
-#           make_ccs_types,               # procedure generating List of CCS types
-#           ccs_id;                       # function CCSId
-
-#     # Extract gamma component and SO(2) component
-#     dpinfo := DirectProductInfo( grp );
-#     clg := dpinfo.clg;
-#     gamma := dpinfo.gamma;
-
-#     # it only works for groups of type Gamma x O(2)
-#     if not ( DimensionOfMatrixGroup( clg ) = 2 ) then
-#       TryNextMethod( );
-#     fi;
-
-#     # setup families and categories
-#     fam_ccs := CollectionsFamily( FamilyObj( grp ) );
-#     fam_ccss := CollectionsFamily( fam_ccs );
-#     cat_ccs := CategoryCollections( IsGroup );
-#     cat_ccss := CategoryCollections( cat_ccs );
-
-#     # objectify CCSs of the group
-#     ccss_clg := ConjugacyClassesSubgroups( clg );
-#     ccss_gamma := ConjugacyClassesSubgroups( gamma );
-#     ccss_grp := Objectify( NewType( fam_ccss, cat_ccss and IsCompactLieGroupCCSsRep ), rec( ccss_gamma := ccss_gamma, ccss_clg := ccss_clg ) );
-#     SetUnderlyingGroup( ccss_grp, grp );
-#     SetIsFinite( ccss_grp, false );
-
-#     # setup CCS types
-#     make_ccs_types := function( )
-#       local ccs_types,                    # CCS types of the group
-#             ccs_type,                     # CCS type of the group
-#             L,                            # a factor group
-#             H,                            # a subgroup of gamma
-#             cH,                           # the CCS contains H
-#             NH,                           # the normalizer of H w.r.t. gamma
-#             phis,                         # all epimorphisms from H to L
-#             actfunc,                      # acting function
-#             ccs_phis,                     # conjugacy classes of epimorphisms
-#             cc_phis,                      # a conjugacy class of epimorphisms
-#             order_of_weyl_group,          # the order of Weyl group
-#             i, j, k;                      # indices
-
-#       ccs_types := [ ];
-#       ccs_type := rec( );
-
-#       for cH in ccss_gamma do
-#         # take a representative from a given CCS
-#         ccs_type.cH := cH;
-#         H := Representative( cH );
-
-#         # when L is a cyclic group
-#         for k in DivisorsInt( Size( H ) ) do
-#           L := pCyclicGroup( k );
-#           ccs_type.idL := [ 1, k ];
-
-#           # find all epimorphisms from H to L
-#           phis := GQuotients( H, L );
-#           if IsEmpty( phis ) then
-#             continue;
-#           fi;
-#           phis := Flat( List( phis, e -> List( AllAutomorphisms( L ), a -> e*a ) ) );
-
-#           # Take NH to be the normalizer of H
-#           NH := NormalizerInParent( H );
-
-#           # define NH action on phis
-#           actfunc := function( phi, g )
-#             local aut_H;
-
-#             aut_H := ConjugatorAutomorphism( H, Inverse( g ) );
-
-#             return aut_H*phi;
-#           end;
-
-#           # divide epimorphisms into conjugacy classes
-#           ccs_phis := Orbits( NH, phis, actfunc );
-
-#           for cc_phis in ccs_phis do
-#             ccs_type.phi_list := cc_phis;
-#             ccs_type.idZH := PositionProperty( ccss_gamma, ccs -> Kernel( Representative( cc_phis ) ) in ccs );
-
-#             # L = Z_1
-#             if ( k = 1 ) then
-#               # case 1: K = ZK = SO(2)
-#               ccs_type.idK := [ 1, 0 ];
-#               ccs_type.idZK := [ 1, 0 ];
-#               ccs_type.is_zero_mode := true;
-#               ccs_type.order_of_weyl_group := [ OrderOfWeylGroup( H ), 0 ];
-#               Add( ccs_types, ShallowCopy( ccs_type ) );
-
-#               # case 3: K = ZK = Z_m
-#               ccs_type.idK := [ 1, 1 ];
-#               ccs_type.idZK := [ 1, 1 ];
-#               ccs_type.is_zero_mode := false;
-#               ccs_type.order_of_weyl_group := [ OrderOfWeylGroup( H ), 1 ];
-#               Add( ccs_types, ShallowCopy( ccs_type ) );
-
-#             # L = Z_k, k>=2
-#             else
-#               # case 1: K = Z_km, ZK = Z_m
-#               ccs_type.idK := [ 1, k ];
-#               ccs_type.idZK := [ 1, 1 ];
-#               ccs_type.is_zero_mode := false;
-#               ccs_type.order_of_weyl_group := [ OrderOfWeylGroup( H )/Size( cc_phis ), 1 ];
-#               Add( ccs_types, ShallowCopy( ccs_type ) );
-#             fi;
-#           od;
-#         od;
-#       od;
-
-#       return ccs_types;
-#     end;
-#     SetCCSTypes( ccss_grp, make_ccs_types( ) );
-
-#     return ccss_grp;
-#   end
-# );
-
-# ***
-  InstallMethod( CCSId,
-    "return CCSId attribute of a compact Lie group CCS list",
-    [ IsDirectProductWithCompactLieGroupCCSsRep ],
-    ccss -> function( id )
-      local ccs_class,
-            ccs_classes_filtered,
-            ccs;
-
-      ccs_classes_filtered := CCSClassesFiltered( ccss );
-
-      if ( id[ 2 ] = 0 ) then
-        ccs_class := ccs_classes_filtered( "zero_mode" )[ id[ 1 ] ];
-      elif IsPosInt( id[ 2 ] ) then
-        ccs_class := ccs_classes_filtered( "nonzero_mode" )[ id[ 1 ] ];
-      else
-        return fail;
-      fi;
-
-      ccs := NewCCS( IsDirectProductWithCompactLieGroupCCSRep, ccs_class, id[ 2 ] );
-      SetIdCCS( ccs, id );
-
-      return ccs;
-    end
-  );
-
 
 # ### Operation(s)
 # ***
   InstallMethod( DirectProductOp,
-    "Operation for direct product of CLG and a finite group",
-    [ IsList, IsCompactLieGroup ],
-    function( list, clg )
-      local gamma_cpnts,                 # the list of all finite group components
-            gamma,                       # the direct product of all finite group components
-            gamma_clg,                   # the product group
-            gamma_cpnts_elmt_fam_list,   # list of elements family of each group in the group list
-            cat_gamma_clg,               # the category of the direct product
-            fam_gamma_clg;               # the family of the direct product
+    "Operation for direct product of ECLG and a finite group",
+    [ IsList, IsElementaryCompactLieGroup ],
+    function( list, eclg )
+      local gamma_cpnts,      # the list of all finite group components
+            gamma,            # the direct product of all finite group components
+            grp,              # the direct product
+            fam_elmt_list,    # list of elements family of each group in the group list
+            fam_grp,          # family of the direct product
+            cat_grp,          # category of the direct product
+            rep_grp;          # representation of the direct product
 
       gamma_cpnts := ShallowCopy( list );
       Remove( gamma_cpnts, 1 );
 
-      # all but the first component of the direct product should be fininte
+      # It works only when all but the first component are fininte
       if not ForAll( gamma_cpnts, IsFinite ) then
         TryNextMethod( );
       fi;
 
-      # determine the category of the direct product
-      if IsOrthogonalGroupOverReal( clg ) then
-        cat_gamma_clg := IsDirectProductWithOrthogonalGroupOverReal;
-      elif IsSpecialOrthogonalGroupOverReal( clg ) then
-        cat_gamma_clg := IsDirectProductWithSpecialOrthogonalGroupOverReal;
-      else
-        TryNextMethod( );
-      fi;
+      # determine family, category and representation of the direct product
+      fam_elmt_list := List( list, cpnt -> ElementsFamily( FamilyObj( cpnt ) ) );
+      fam_grp := CollectionsFamily( DirectProductElementsFamily( fam_elmt_list ) );
+      cat_grp := IsDirectProductWithECLG;
+      rep_grp := IsCompactLieGroupRep;
 
-      # generate direct product of all finite groups in the list
+      # objectify the direct product
+      grp := Objectify( NewType( fam_grp, cat_grp and rep_grp ), rec( ) );
+
+      # take the direct product of all finite groups in the list
       gamma := DirectProduct( gamma_cpnts );
 
-      # generate direct product with CLG
-      gamma_cpnts_elmt_fam_list := List( list, cpnt -> ElementsFamily( FamilyObj( cpnt ) ) );
-      fam_gamma_clg := CollectionsFamily( DirectProductElementsFamily( gamma_cpnts_elmt_fam_list ) );
-      gamma_clg := Objectify( NewType( fam_gamma_clg, IsDirectProductWithOrthogonalGroupOverReal and IsDirectProductWithCompactLieGroupRep ), rec( ) );
-
       # setup property(s) and attribute(s) of the product group
-      SetDirectProductInfo( gamma_clg, rec(
+      SetDirectProductInfo( grp, rec(
           gamma := gamma,
-          clg := clg,
+          eclg := eclg,
           groups := list,
           embeddings := [ ],
           projections := [ ]
       ) );
-      SetOneImmutable( gamma_clg, DirectProductElement( List( list, One ) ) );
-      SetDimension( gamma_clg, Dimension( clg ) );
+      SetOneImmutable( grp, DirectProductElement( List( list, One ) ) );
+      SetDimension( grp, Dimension( eclg ) );
 
-      return gamma_clg;
+      return grp;
     end
   );
 
 # ***
   InstallMethod( Projection,
-    "projection of direct product with a compact Lie group",
-    [ IsDirectProductWithCompactLieGroup, IsPosInt ],
+    "projection of direct product with ECLG",
+    [ IsDirectProductWithECLG, IsPosInt ],
     function( grp, ind )
-      local proj,
-            proj1,
-            dpinfo;
+      local proj,      # projection from the direct product to its component
+            proj1,     # projection from gamma to its component
+            dpinfo;    # direct product info
 
       dpinfo := DirectProductInfo( grp );
 
       if ( ind = 1 ) then
-        proj := GroupHomomorphismByFunction( grp, dpinfo.clg, elmt -> elmt[ 1 ] );
+        proj := GroupHomomorphismByFunction( grp, dpinfo.eclg, elmt -> elmt[ 1 ] );
       else
         proj1 := Projection( dpinfo.gamma, ind-1 );
         proj := GroupHomomorphismByFunction( grp, dpinfo.groups[ ind ], elmt -> Image( proj1, elmt[ 2 ] ) );
@@ -596,22 +500,22 @@
 
 # ***
   InstallMethod( Embedding,
-    "embedding of direct product with a compact Lie group",
-    [ IsDirectProductWithCompactLieGroup, IsPosInt ],
+    "embedding of direct product with ECLG",
+    [ IsDirectProductWithECLG, IsPosInt ],
     function( grp, ind )
-      local embed,
-            embed1,
-            dpinfo;
+      local embed,     # embedding to the direct product from its component
+            embed1,    # embedding to gamma from its component
+            dpinfo;    # direct product info
 
       dpinfo := DirectProductInfo( grp );
 
       if ( ind = 1 ) then
-        embed := GroupHomomorphismByFunction( dpinfo.clg, grp, elmt -> DirectProductElement( [ elmt, One( dpinfo.gamma ) ] ) );
-        SetImagesSource( embed, DirectProduct( dpinfo.clg, Group( One( dpinfo.gamma ) ) ) );
+        embed := GroupHomomorphismByFunction( dpinfo.eclg, grp, elmt -> DirectProductElement( [ elmt, One( dpinfo.gamma ) ] ) );
+        SetImagesSource( embed, DirectProduct( dpinfo.eclg, Group( One( dpinfo.gamma ) ) ) );
       else
         embed1 := Embedding( dpinfo.gamma, ind-1 );
-        embed := GroupHomomorphismByFunction( dpinfo.gamma, grp, elmt -> DirectProductElement( [ One( dpinfo.clg ), Image( embed1, elmt ) ] ) );
-        SetImagesSource( embed, DirectProduct( Group( One( dpinfo.clg ) ), Image( embed1 ) ) );
+        embed := GroupHomomorphismByFunction( dpinfo.gamma, grp, elmt -> DirectProductElement( [ One( dpinfo.eclg ), Image( embed1, elmt ) ] ) );
+        SetImagesSource( embed, DirectProduct( Group( One( dpinfo.eclg ) ), Image( embed1 ) ) );
       fi;
 
       return embed;
@@ -620,13 +524,13 @@
 
 # ***
   InstallMethod( nLHnumber,
-    "n(L,H) number for CCSs of GxCL",
+    "n(L,H) number for CCSs of GxECLG",
     IsIdenticalObj,
-    [ IsDirectProductWithCompactLieGroupCCSRep, IsDirectProductWithCompactLieGroupCCSRep ],
+    [ IsDirectProductWithECLGCCSRep, IsDirectProductWithECLGCCSRep ],
     function( ccs1, ccs2 )
       local gamma,
             nLH_gamma,
-            nLH_clg,
+            nLH_eclg,
             info1, info2,
             H1, ZH1, L1, K1, ZK1, phi1,
             H2, HH2, L2, K2, ZK2, phi2,
@@ -653,8 +557,8 @@
       ZK2 := Kernel( info2.psi );
       L2 := Range( info2.psi );
 
-      nLH_clg := nLHnumber( info1.cK, info2.cK );
-      if IsZero( nLH_clg ) then
+      nLH_eclg := nLHnumber( info1.cK, info2.cK );
+      if IsZero( nLH_eclg ) then
         return 0;
       elif not IsSubset( ZK2, ZK1 ) then
         return 0;
@@ -678,24 +582,23 @@
           nLH := nLH+1;
         od;
       fi;
-      nLH := nLH_gamma*nLH_clg*nLH;
+      nLH := nLH_gamma*nLH_eclg*nLH;
 
       return nLH;
     end
   );
 
+
 # ### Print, View and Display
   InstallMethod( String,
-    "print string of direct product with Lie group",
-    [ IsDirectProductWithCompactLieGroup ],
+    "string of direct product with ECLG",
+    [ IsDirectProductWithECLG ],
     function( grp )
-      local info,            # direct product info
-            g,               # direct product component
+      local g,               # direct product component
             str;             # return string
 
       str := "DirectProduct(";
-      info := DirectProductInfo( grp );
-      for g in info.groups do
+      for g in DirectProductInfo( grp ).groups do
         Append( str, " " );
         Append( str, String( g ) );
         Append( str, "," );
@@ -709,8 +612,8 @@
 
 # ***
   InstallMethod( PrintObj,
-    "print direct product with compact Lie group",
-    [ IsDirectProductWithCompactLieGroup ],
+    "print direct product with ECLG",
+    [ IsDirectProductWithECLG ],
     function( grp )
       Print( String( grp ) );
     end
@@ -718,16 +621,14 @@
 
 # ***
   InstallMethod( ViewString,
-    "view string of direct product with compact Lie group",
-    [ IsDirectProductWithCompactLieGroup ],
+    "view string of direct product with ECLG",
+    [ IsDirectProductWithECLG ],
     function( grp )
-      local info,            # direct product info
-            g,               # direct product component
+      local g,               # direct product component
             str;             # return string
 
       str := "DirectProduct(";
-      info := DirectProductInfo( grp );
-      for g in info.groups do
+      for g in DirectProductInfo( grp ).groups do
         Append( str, " " );
         Append( str, ViewString( g ) );
         Append( str, "," );
@@ -741,8 +642,8 @@
 
 # ***
   InstallMethod( ViewObj,
-    "view direct product with comapct Lie group",
-    [ IsDirectProductWithCompactLieGroup ],
+    "view direct product with ECLG",
+    [ IsDirectProductWithECLG ],
     function( grp )
       Print( ViewString( grp ) );
     end
