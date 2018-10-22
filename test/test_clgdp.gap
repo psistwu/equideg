@@ -59,6 +59,11 @@
   ccss_g := ConjugacyClassesSubgroups( g );
   Print( "Done!\n" );
 
+  ccs_g_list0 := [ ];
+  for c in CCSClasses( ccss_g ) do
+    Add( ccs_g_list0, NewCCS( IsDirectProductWithECLGCCSsRep, c ) );
+  od;
+
   ccs_g_list1 := [ ];
   for i in [ 1 .. Size( CCSClassesFiltered( ccss_g )( "nonzero_mode" ) ) ] do
     Add( ccs_g_list1, CCSId( ccss_g )( [ i, 1 ] ) );

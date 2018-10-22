@@ -7,21 +7,27 @@
 #
 
 
-# ## part 1: Lattice
-# ### representation(s)
+# ## Part 1: Lattice
+# ### Representation(s)
   DeclareRepresentation( "IsLatticeRep", IsComponentObjectRep and IsAttributeStoringRep, [ ] );
 
 
-# ### constructor(s)
+# ### Constructor(s)
   DeclareConstructor( "Lattice", [ IsLatticeRep, IsHomogeneousList ] );
 
 
-# ### attribute(s)
+# ### Attribute(s)
   DeclareAttribute( "MaximalSubElementsLattice", IsCollection and IsLatticeRep );
   # The next attribute is yet to be implemented.
   DeclareAttribute( "MinimalSupElementsLattice", IsCollection and IsLatticeRep );
 
 
-# ### operation(s)
+# ### Operation(s)
   DeclareOperation( "DotFileLattice", [ IsLatticeRep, IsString ] );
+
+
+
+# ## Part 2: Poset
+# ### Operation(s)
+  DeclareOperation( "TopologicalSort", [ IsList and IsMutable, IsFunction ] );
 

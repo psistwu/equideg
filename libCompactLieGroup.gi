@@ -482,7 +482,8 @@
     IsIdenticalObj,
     [ IsCompactLieGroupCCSRep, IsCompactLieGroupCCSRep ],
     function( ccs1, ccs2 )
-      return not ( nLHnumber( ccs2, ccs1 ) > 0 );
+      Print( "Hi.\n" );
+      return ( nLHnumber( ccs1, ccs2 ) < 0 );
     end
   );
 

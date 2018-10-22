@@ -7,8 +7,8 @@
 #
 
 
-# ## part 1: Lattice
-# ### constructor(s)
+# ## Part 1: Lattice
+# ### Constructor(s)
 # ***
   InstallMethod( Lattice,
     "constructing the lattice of a sorted list",
@@ -29,7 +29,7 @@
   );
 
 
-# ### attribute(s)
+# ### Attribute(s)
 # ***
   InstallMethod( MaximalSubElementsLattice,
     "return indices of maximal sub-elements of each element in the lattice",
@@ -70,7 +70,7 @@
   );
 
 
-# ### operation(s)
+# ### Operation(s)
 # ***
   InstallMethod( DotFileLattice,
     "generate the dot file for the lattice of CCSs",
@@ -140,6 +140,73 @@
 
       AppendTo( outstream, "}" );
       CloseStream( outstream );
+    end
+  );
+
+
+
+# ## Part 2: Poset
+# ### Operation(s)
+# ***
+  InstallMethod( TopologicalSort,
+    "topological sort a poset",
+    [ IsList and IsMutable, IsFunction ],
+    function( list, lt )
+      local E,
+            S,
+            v, vv,
+            i,
+            slist;
+
+      # find all (directed) edges
+      E := [ ];
+      for v in list do
+        for vv in list do
+          if not IsIdenticalObj( v, vv ) and lt( v, vv ) then
+            Add( E, [ v, vv ] );
+          fi;
+        od;
+      od;
+
+      # find all start nodes
+      S := [ ];
+      for v in list do
+        if ForAll( E, e -> not IsIdenticalObj( v, e[ 2 ] ) ) then
+          Add( S, v );
+        fi;
+      od;
+
+      slist := [ ];
+      while not IsEmpty( S ) do
+        v := Remove( S );
+        Add( slist, v );
+
+        i := PositionProperty( E, e -> IsIdenticalObj( e[ 1 ], v ) );
+        while ( i <> fail ) do
+          vv := Remove( E, i )[ 2 ];
+          if ForAll( E, e -> not IsIdenticalObj( e[ 2 ], vv ) ) then
+            Add( S, vv );
+          fi;
+
+          i := PositionProperty( E, e -> IsIdenticalObj( e[ 1 ], v ) );
+        od;
+      od;
+
+      if IsEmpty( E ) then
+        list{ [ 1 .. Size( list ) ] } := slist;
+      else
+        Info( InfoWarning, INFO_LEVEL, "The given list is not a poset." );
+        return fail;
+      fi;
+    end
+  );
+
+# ***
+  InstallOtherMethod( TopologicalSort,
+    "topological sort a poset",
+    [ IsList and IsMutable ],
+    function( list )
+      TopologicalSort( list, \< );
     end
   );
 
