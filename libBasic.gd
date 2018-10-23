@@ -30,4 +30,5 @@
 # ## Part 2: Poset
 # ### Operation(s)
   DeclareOperation( "TopologicalSort", [ IsList and IsMutable, IsFunction ] );
+  DeclareOperation( "IsSortedPoset", [ IsList, IsFunction ] );
 

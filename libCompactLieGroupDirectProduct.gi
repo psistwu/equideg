@@ -179,6 +179,8 @@
       make_ccs_classes := function( )
         local ccs_classes,              # CCS classes of the group
               ccs_class,                # CCS class of the group
+              ccs_pairs,                # list of CCSs
+              perm,                     # sorting permutation
               L,                        # a factor group
               NL,                       # the normalizer of L w.r.t. O(2)
               LL,                       # L embedded in NL
@@ -408,16 +410,10 @@
         od;
 
         # sort ccs_classes
-        Sort( ccs_classes, function( cl1, cl2 )
-          local ccs1, ccs2;
+        ccs_pairs := List( ccs_classes, cl -> [ NewCCS( rep_ccss, cl ), cl ] );
+        TopologicalSort( ccs_pairs );
 
-          ccs1 := NewCCS( rep_ccss, cl1 );
-          ccs2 := NewCCS( rep_ccss, cl2 );
-
-          return ccs1 < ccs2;
-        end );
-
-        return ccs_classes;
+        return List( ccs_pairs, cp -> cp[ 2 ] );
       end;
       SetCCSClasses( ccss_grp, make_ccs_classes( ) );
 
@@ -519,6 +515,16 @@
       fi;
 
       return embed;
+    end
+  );
+
+# ***
+  InstallMethod( \=,
+    "equivalence relation of CCSs of DPwECLG",
+    IsIdenticalObj,
+    [ IsDirectProductWithECLGCCSRep, IsDirectProductWithECLGCCSRep ],
+    function( ccs1, ccs2 )
+      return ( ActingDomain( ccs1 ) = ActingDomain( ccs2 ) ) and ( GoursatInfo( ccs1 ) = GoursatInfo( ccs2 ) );
     end
   );
 

@@ -148,8 +148,33 @@
 # ## Part 2: Poset
 # ### Operation(s)
 # ***
+  InstallMethod( IsSortedPoset,
+    "check whether a list is topological sorted with specified order",
+    [ IsList, IsFunction ],
+    function( list, lt )
+      local i, j;
+
+      for i in [ 1 .. Size( list ) ] do
+        if ForAny( [ i+1 .. Size( list ) ], j -> lt( list[ j ], list[ i ] ) ) then
+          return false;
+        fi;
+      od;
+      return true;
+    end
+  );
+
+# ***
+  InstallOtherMethod( IsSortedPoset,
+    "check whether a list is topological sorted with default order",
+    [ IsList ],
+    function( list )
+      return IsSortedPoset( list, \< );
+    end
+  );
+
+# ***
   InstallMethod( TopologicalSort,
-    "topological sort a poset",
+    "topological sort a poset with specified order",
     [ IsList and IsMutable, IsFunction ],
     function( list, lt )
       local E,
@@ -203,7 +228,7 @@
 
 # ***
   InstallOtherMethod( TopologicalSort,
-    "topological sort a poset",
+    "topological sort a poset with default order",
     [ IsList and IsMutable ],
     function( list )
       TopologicalSort( list, \< );

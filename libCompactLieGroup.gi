@@ -50,6 +50,13 @@
       SetDimension( eclg, d*(d-1)/2 );
       SetIdECLG( eclg, [ 2, d*(d-1)/2 ] );
 
+      # the follow clause is an ad hoc approach for
+      # comparing epimorphisms from O(2) to a finite group
+      # certainly, the given set does not generate O(2)
+      if ( d = 2 ) then
+        SetGeneratorsOfGroup( eclg, [ [ [ 0, -1 ],[ 1, 0 ] ], [ [ 1, 0 ], [ 0, -1 ] ] ] );
+      fi;
+
       return eclg;
     end
   );
@@ -68,6 +75,13 @@
       SetIsAbelian( eclg, true );
       SetDimension( eclg, d*(d-1)/2 );
       SetIdECLG( eclg, [ 1, d*(d-1)/2 ] );
+
+      # the follow clause is an ad hoc approach for
+      # comparing epimorphisms from O(2) to a finite group
+      # certainly, the given set does not generate SO(2)
+      if ( d = 2 ) then
+        SetGeneratorsOfGroup( eclg, [ [ [ 0, -1 ],[ 1, 0 ] ] ] );
+      fi;
 
       return eclg;
     end
@@ -140,7 +154,6 @@
       SetActingDomain( ccs, ccs_class.group );
       SetOrderOfWeylGroup( ccs, ccs_class.order_of_weyl_group );
       SetRepresentative( ccs, subg );
-      SetIdCCS( ccs, [ ccs_class.id[ 1 ], mode ] );
 
       return ccs;
     end
@@ -193,7 +206,9 @@
 
       # generate CCS classes
       make_ccs_classes := function( )
-        local ccs_classes;
+        local ccs_list,          # list of CCSs
+              perm,              # sorting permutation
+              ccs_classes;
 
         ccs_classes := [ ];
         if ( IdECLG( eclg ) = [ 1, 1 ] ) then
@@ -243,16 +258,10 @@
         fi;
 
         # sort ccs_classes
-        Sort( ccs_classes, function( cl1, cl2 )
-          local ccs1, ccs2;
+        ccs_list := List( ccs_classes, cl -> NewCCS( rep_ccss, cl ) );
+        perm := SortingPerm( ccs_list );
 
-          ccs1 := NewCCS( rep_ccss, cl1 );
-          ccs2 := NewCCS( rep_ccss, cl2 );
-
-          return ccs1 < ccs2;
-        end );
-
-        return ccs_classes;
+        return Permuted( ccs_classes, perm );
       end;
       SetCCSClasses( ccss, make_ccs_classes( ) );
 
@@ -429,11 +438,8 @@
     IsIdenticalObj,
     [ IsCompactLieGroupCCSRep, IsCompactLieGroupCCSRep ],
     function( ccs1, ccs2 )
-      if not ( ActingDomain( ccs1 ) = ActingDomain( ccs2 ) ) then
-        return false;
-      else
-        return ( IdCCS( ccs1 ) = IdCCS( ccs2 ) );
-      fi;
+      return ( ActingDomain( ccs1 ) = ActingDomain( ccs2 ) ) and
+      ( Representative( ccs1 ) = Representative( ccs2 ) );
     end
   );
 
@@ -443,10 +449,11 @@
     IsIdenticalObj,
     [ IsElementaryCompactLieGroupCCSRep, IsElementaryCompactLieGroupCCSRep ],
     function( ccs1, ccs2 )
-      local eclg,            # underlying group of ccs1 and ccs2
+      local eclg,           # underlying group of ccs1 and ccs2
             workable_clg,   # workable group list
             is_supported,   # flag indicating whether the underlying group is supported
-            id1, id2;       # IDs of ccs1 and ccs2
+            subg1, subg2,   # representatives
+            k;              # the reflection
 
       eclg := ActingDomain( ccs1 );
       if not ( eclg = ActingDomain( ccs2 ) ) then
@@ -459,13 +466,12 @@
         return fail;
       fi;
 
-      id1 := IdCCS( ccs1 );
-      id2 := IdCCS( ccs2 );
+      subg1 := Representative( ccs1 );
+      subg2 := Representative( ccs2 );
 
-      if IsZero( id1[ 2 ] ) and IsZero( id2[ 2 ] ) and ( id1[ 1 ] <= id2[ 1 ] ) then
-        return 1;
-      elif IsPosInt( id1[ 2 ] ) and IsZero( id2 mod id1 ) then
-        if ( id1[ 1 ] = 1 ) and ( id2[ 1 ] = 2 ) and IsPosInt( id2[ 2 ] ) then
+      if IsSubset( subg2, subg1 ) then
+        k := [ [ 1, 0 ], [ 0, -1 ] ];
+        if ( k in subg2 ) and not ( k in subg1 ) then
           return infinity;
         else
           return 1;
@@ -482,8 +488,7 @@
     IsIdenticalObj,
     [ IsCompactLieGroupCCSRep, IsCompactLieGroupCCSRep ],
     function( ccs1, ccs2 )
-      Print( "Hi.\n" );
-      return ( nLHnumber( ccs1, ccs2 ) < 0 );
+      return ( nLHnumber( ccs1, ccs2 ) > 0 );
     end
   );
 
@@ -521,6 +526,7 @@
   InstallMethod( ViewString,
     "view string of ECLG",
     [ IsElementaryCompactLieGroup ],
+    10,
     function( eclg )
       local string;
 

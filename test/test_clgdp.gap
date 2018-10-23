@@ -80,3 +80,19 @@
   Print( "Generating CCSs of S4xSO(2).... " );
   ccss_h := ConjugacyClassesSubgroups( h );
   Print( "Done!\n" );
+
+  ccs_h_list0 := [ ];
+  for c in CCSClasses( ccss_h ) do
+    Add( ccs_h_list0, NewCCS( IsDirectProductWithECLGCCSsRep, c ) );
+  od;
+
+  ccs_h_list1 := [ ];
+  for i in [ 1 .. Size( CCSClassesFiltered( ccss_h )( "nonzero_mode" ) ) ] do
+    Add( ccs_h_list1, CCSId( ccss_h )( [ i, 1 ] ) );
+  od;
+
+  ccs_h_list2 := [ ];
+  for i in [ 1 .. Size( CCSClassesFiltered( ccss_h )( "zero_mode" ) ) ] do
+    Add( ccs_h_list2, CCSId( ccss_h )( [ i, 0 ] ) );
+  od;
+
