@@ -21,3 +21,5 @@
 # ## I/O
 # ### Operation(s)
   DeclareOperation( "PEncStr", [ IsString ] );
+  DeclareOperation( "BEncStr", [ IsString ] );
+  DeclareOperation( "AEncStr", [ IsString ] );

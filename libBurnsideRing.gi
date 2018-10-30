@@ -19,7 +19,7 @@
   InstallMethod( ToSparseList,
     "convert a Burnside ring element to a sparse list",
     [ IsBurnsideRingElement and IsBurnsideRingBySmallGroupElementRep ],
-    e -> List( [ 1 .. Length( e ) ], k -> [ e!.CCSIndices[ k ], e!.coefficients[ k ] ] )
+    e -> List( [ 1 .. Length( e ) ], k -> [ e!.CCSIndices[ k ], e!.Coefficients[ k ] ] )
   );
 
 # ***
@@ -34,7 +34,7 @@
       fam := FamilyObj( e );
       dim := fam!.DIMENSION;
       list := ZeroOp( [ 1 .. dim ] );
-      list{ e!.CCSIndices } := e!.coefficients;
+      list{ e!.CCSIndices } := e!.Coefficients;
 
       return list;
     end
@@ -50,23 +50,32 @@
       local i,        # index
             coeff,    # coefficient
             ccsind,   # index of CCS
+            ccss,     # CCSs of the underlying group
+            ccs_name, # name of CCS
             str;      # name string
 
-      str := "<";
+      ccss := FamilyObj( e )!.CCSs;
+      str := "";
       for i in [ 1 .. Length( e ) ] do
-        coeff := e!.coefficients[ i ];
+        coeff := e!.Coefficients[ i ];
         ccsind := e!.CCSIndices[ i ];
+
+        # determine the name of CCS
+        if HasName( ccss[ ccsind ] ) then
+          ccs_name := Name( ccss[ ccsind ] );
+        else
+          ccs_name := String( ccsind );
+        fi;
+
+        # append coefficient and name of CCS
         if ( i > 1 ) and ( coeff > 0 ) then
           Append( str, "+" );
         fi;
         Append( str, String( coeff ) );
-        Append( str, "(" );
-        Append( str, String( ccsind ) );
-        Append( str, ")" );
+        Append( str, PEncStr( ccs_name ) );
       od;
-      Append( str, ">" );
 
-      return str;
+      return AEncStr( str );
     end
   );
 
@@ -107,7 +116,7 @@
     [ IsBurnsideRingElement and IsBurnsideRingBySmallGroupElementRep,
       IsBurnsideRingElement and IsBurnsideRingBySmallGroupElementRep ],
     function( a, b )
-      return ( a!.CCSIndices = b!.CCSIndices ) and ( a!.coefficients = b!.coefficients );
+      return ( a!.CCSIndices = b!.CCSIndices ) and ( a!.Coefficients = b!.Coefficients );
     end
   );
 
@@ -123,7 +132,7 @@
       return Objectify(
         NewType( fam, IsBurnsideRingElement and IsBurnsideRingBySmallGroupElementRep ),
         rec( CCSIndices := [ ],
-             coefficients := [ ] )
+             Coefficients := [ ] )
       );
     end
   );
@@ -141,7 +150,7 @@
 
       return Objectify(
         NewType( fam, IsBurnsideRingElement and IsBurnsideRingBySmallGroupElementRep ),
-        rec( CCSIndices := [ dim ], coefficients := [ 1 ] )
+        rec( CCSIndices := [ dim ], Coefficients := [ 1 ] )
       );
     end
   );
@@ -158,7 +167,7 @@
       return Objectify(
         NewType( fam, IsBurnsideRingElement and IsBurnsideRingBySmallGroupElementRep ),
         rec( CCSIndices := a!.CCSIndices,
-             coefficients := -a!.coefficients )
+             Coefficients := -a!.Coefficients )
       );
     end
   );
@@ -184,7 +193,7 @@
       return Objectify(
         NewType( fam, IsBurnsideRingElement and IsBurnsideRingBySmallGroupElementRep ),
         rec( CCSIndices := sum_ccs_index_list,
-             coefficients := sum_coefficient_list )
+             Coefficients := sum_coefficient_list )
       );
     end
   );
@@ -200,7 +209,7 @@
 
       return Objectify(
         NewType( fam, IsBurnsideRingElement and IsBurnsideRingBySmallGroupElementRep ),
-        rec( CCSIndices := a!.CCSIndices, coefficients := r*a!.coefficients )
+        rec( CCSIndices := a!.CCSIndices, Coefficients := r*a!.Coefficients )
       );
     end
   );
@@ -266,8 +275,8 @@
         for i in [ 1 .. Length( a ) ] do
           for j in [ 1 .. Length( b ) ] do
             prod := prod +
-                a!.coefficients[ i ]*
-                b!.coefficients[ j ]*
+                a!.Coefficients[ i ]*
+                b!.Coefficients[ j ]*
                 ( basis[ a!.CCSIndices[ i ] ]*
                 basis[ b!.CCSIndices[ j ] ] );
           od;
@@ -403,7 +412,7 @@
       for i in [ 1 .. d ] do
         Add( basis, Objectify(
           NewType( elemfam, elemfil ),
-          rec( CCSIndices := [ i ], coefficients := [ 1 ] ) )
+          rec( CCSIndices := [ i ], Coefficients := [ 1 ] ) )
         );
       od;
 
@@ -412,7 +421,7 @@
       SetIsWholeFamily( ring, true );
       SetZeroImmutable( ring, Objectify(
         NewType( elemfam, elemfil ),
-        rec( CCSIndices := [ ], coefficients := [ ] ) )
+        rec( CCSIndices := [ ], Coefficients := [ ] ) )
       );
       SetOneImmutable( ring, basis[ d ] );
 

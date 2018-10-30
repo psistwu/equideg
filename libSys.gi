@@ -30,10 +30,29 @@
 
 # ## I/O
 # ### Operation(s)
+# ***
   InstallMethod( PEncStr,
     "return string enclosed by parantheses",
     [ IsString ],
     function( str )
       return Concatenation( "(", str, ")" );
+    end
+  );
+
+# ***
+  InstallMethod( BEncStr,
+    "return string enclosed by parantheses",
+    [ IsString ],
+    function( str )
+      return Concatenation( "[", str, "]" );
+    end
+  );
+
+# ***
+  InstallMethod( AEncStr,
+    "return string enclosed by parantheses",
+    [ IsString ],
+    function( str )
+      return Concatenation( "<", str, ">" );
     end
   );
