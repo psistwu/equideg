@@ -7,15 +7,22 @@
 #
 
 
-# ## attribute(s)
-  DeclareAttribute( "DirectProductComponents", IsGroup );
-  DeclareAttribute( "SubgroupDirectProductInfo", IsGroup and HasParentAttr );
-  DeclareAttribute( "AmalgamationQuadruple", IsConjugacyClassSubgroupsRep );
-  DeclareAttribute( "DirectProductDecomposition", IsConjugacyClassGroupRep );
-  DeclareAttribute( "DirectProductDecomposition", IsCharacter );
+# ## Attribute(s)
+  DeclareAttribute( "DirectProductComponents",
+      IsGroup );
+  DeclareAttribute( "GoursatInfo",
+      IsGroup and HasParentAttr );
+  DeclareAttribute( "DirectProductDecomposition",
+      IsConjugacyClassGroupRep );
+  DeclareAttribute( "DirectProductDecomposition",
+      IsCharacter );
 
 
-# ## operation(s)
+# ## Operation(s)
   DeclareOperation( "DirectProductDecomposition",
       [ IsGroup, IsMultiplicativeElementWithInverse ] );
-  DeclareOperation( "AmalgamationNotation", [ IsConjugacyClassSubgroupsRep ] );
+  DeclareOperation( "AmalgamationSymbol",
+      [ IsConjugacyClassSubgroupsRep ] );
+  DeclareOperation( "LaTeXAmalgamationSymbol",
+      [ IsConjugacyClassSubgroupsRep ] );
+

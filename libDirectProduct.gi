@@ -10,7 +10,7 @@
 # ## attribute(s)
 # ***
   InstallMethod( DirectProductComponents,
-    "return list of direct product components",
+    "return the list of direct product components of a group",
     [ IsGroup ],
     function( grp )
       if HasDirectProductInfo( grp ) then
@@ -22,8 +22,8 @@
   );
 
 # ***
-  InstallMethod( SubgroupDirectProductInfo,
-    "return the direct product info of a subgroup, i.e., subg=H1(Z1,L,Z2)H2",
+  InstallMethod( GoursatInfo,
+    "return the Goursat info of a subgroup",
     [ IsGroup and HasParentAttr ],
     function( subg )
       local grp,		 # the parent group grp=grp1xgrp2
@@ -31,87 +31,90 @@
 	        proj2,		 # projection to grp2
 	        embed1,		 # embedding from grp1
 	        embed2,		 # embedding from grp2
-	        H1, H2,      # projection of the subg to grp1 and grp2
-            Z1, Z2,      # kernels of the homomorphisms from H1 and H2 to L
-            dis_gens_h1, # generators of H1 which determine the homomorphism
-            i, j,        # indices
-            sproj1,      # restricted projection1 to subg
-            dis_elms;    # elements in subg which determin the homomorphism
+	        h1, h2,      # projection of the subg to grp1 and grp2
+            z1, z2,      # kernels of the homomorphisms from H1 and H2 to L
+            z,           # direct product of Z1 and Z2
+            cosets,      # generators of H1 which determine the homomorphism
+            sproj1;      # restricted projection1 to subg
 
+      # take the parent group
       grp := ParentAttr( subg );
 
+      # the procedure works only when
+      # the parent group is direct product of two groups
       if not ( Size( DirectProductComponents( grp ) ) = 2 ) then
         Error( "It has to be a subgroup of the direct product of TWO groups!" );
       fi;
 
+      # in addition, the procedure works only when
+      # all direct product components of the parent group are finite
+      if not ForAll( DirectProductInfo( grp ).groups, IsFinite ) then
+        TryNextMethod( );
+      fi;
+
+      # take the projections and embeddings
       proj1 := Projection( grp, 1 );
       proj2 := Projection( grp, 2 );
       embed1 := Embedding( grp, 1 );
       embed2 := Embedding( grp, 2 );
 
-      H1 := Image( proj1, subg );
-      Z1 := Image( proj1, Intersection( Image( embed1 ), subg ) );
-      H2 := Image( proj2, subg );
-      Z2 := Image( proj2, Intersection( Image( embed2 ), subg ) );
-
-      dis_gens_h1 := Difference( GeneratorsOfGroup( H1 ), Z1 );
-      i := 1;
-      while ( i <= Size( dis_gens_h1 ) ) do
-        j := i+1;
-        while ( j <= Size( dis_gens_h1 ) ) do
-          if ( dis_gens_h1[ i ]/dis_gens_h1[ j ] in Z1 ) then
-            Remove( dis_gens_h1, j );
-          else
-            j := j+1;
-          fi;
-        od;
-        i := i+1;
-      od;
+      # take essential subgroups
+      h1 := Image( proj1, subg );
+      z1 := Image( proj1, Intersection( Image( embed1 ), subg ) );
+      h2 := Image( proj2, subg );
+      z2 := Image( proj2, Intersection( Image( embed2 ), subg ) );
 
       sproj1 := RestrictedMapping( proj1, subg );
-      dis_elms := List( dis_gens_h1, e -> Representative( PreImages( sproj1, e ) ) );
+      cosets := RightCosets( subg, PreImages( sproj1, z1 ) );
 
-      return rec( Quadruple := [ H1, Z1, Z2, H2 ],
-                  DiscriminantElements := dis_elms );
+      return rec( quadruple := [ h1, z1, z2, h2 ],
+                  cosets := cosets );
     end
   );
 
 # ***
-  InstallMethod( AmalgamationQuadruple,
-    "return the amalgamation quadruple of a CCS of direct product of two groups",
-    [ IsConjugacyClassSubgroupsRep ],
-    function( c )
-      local subg,                                 # subgroup
-            grp,                                  # group
-            grp1, grp2,                           # direct product components of grp
-            ccs_list1, ccs_list2,                 # CCSs of grp1 and grp2
-            cH1, cH2, cZ1, cZ2,                   # CCS of H1, H2, Z1 and Z2
-            ind_cH1, ind_cH2, ind_cZ1, ind_cZ2;   # indices of cH1, cH2, cZ1, cZ2
+# InstallMethod( AmalgamationQuadruple,
+#   "return the amalgamation quadruple of a CCS of direct product of two groups",
+#   [ IsConjugacyClassSubgroupsRep ],
+#   function( c )
+#     local subg,                                 # subgroup
+#           grp,                                  # group
+#           grp1, grp2,                           # direct product components of grp
+#           ccs_list1, ccs_list2,                 # CCSs of grp1 and grp2
+#           cH1, cH2, cZ1, cZ2,                   # CCS of H1, H2, Z1 and Z2
+#           ind_cH1, ind_cH2, ind_cZ1, ind_cZ2;   # indices of cH1, cH2, cZ1, cZ2
 
-      subg := Representative( c );
-      grp := ParentAttr( subg );
-      if not ( Size( DirectProductComponents( grp ) ) = 2 ) then
-        Error( "It has to be a CCS of the direct product of TWO groups." );
-      fi;
+#     subg := Representative( c );
+#     grp := ParentAttr( subg );
 
-      grp1 := DirectProductInfo( grp ).groups[ 1 ];
-      grp2 := DirectProductInfo( grp ).groups[ 2 ];
-      ccs_list1 := ConjugacyClassesSubgroups( grp1 );
-      ccs_list2 := ConjugacyClassesSubgroups( grp2 );
+#     if HasDirectProductInfo( grp ) then
+#     elif ( Size( DirectProductInfo( grp ).groups ) = 2 ) then
+#     else
+#       Error( "It has to be a CCS of the direct product of TWO groups." );
+#     fi;
 
-      cH1 := ConjugacyClassSubgroups( SubgroupDirectProductInfo( subg ).Quadruple[ 1 ] );
-      cZ1 := ConjugacyClassSubgroups( SubgroupDirectProductInfo( subg ).Quadruple[ 2 ] );
-      cZ2 := ConjugacyClassSubgroups( SubgroupDirectProductInfo( subg ).Quadruple[ 3 ] );
-      cH2 := ConjugacyClassSubgroups( SubgroupDirectProductInfo( subg ).Quadruple[ 4 ] );
+#     if not ForAll( DirectProductInfo( grp ).groups, IsFinite ) then
+#       TryNextMethod( );
+#     fi;
 
-      ind_cH1 := Position( ccs_list1, cH1 );
-      ind_cZ1 := Position( ccs_list1, cZ1 );
-      ind_cZ2 := Position( ccs_list2, cZ2 );
-      ind_cH2 := Position( ccs_list2, cH2 );
+#     grp1 := DirectProductInfo( grp ).groups[ 1 ];
+#     grp2 := DirectProductInfo( grp ).groups[ 2 ];
+#     ccs_list1 := ConjugacyClassesSubgroups( grp1 );
+#     ccs_list2 := ConjugacyClassesSubgroups( grp2 );
 
-      return [ ind_cH1, ind_cZ1, ind_cZ2, ind_cH2 ];
-    end
-  );
+#     cH1 := ConjugacyClassSubgroups( GoursatInfo( subg ).Quadruple[ 1 ] );
+#     cZ1 := ConjugacyClassSubgroups( SubgroupDirectProductInfo( subg ).Quadruple[ 2 ] );
+#     cZ2 := ConjugacyClassSubgroups( SubgroupDirectProductInfo( subg ).Quadruple[ 3 ] );
+#     cH2 := ConjugacyClassSubgroups( SubgroupDirectProductInfo( subg ).Quadruple[ 4 ] );
+
+#     ind_cH1 := Position( ccs_list1, cH1 );
+#     ind_cZ1 := Position( ccs_list1, cZ1 );
+#     ind_cZ2 := Position( ccs_list2, cZ2 );
+#     ind_cH2 := Position( ccs_list2, cH2 );
+
+#     return [ ind_cH1, ind_cZ1, ind_cZ2, ind_cH2 ];
+#   end
+# );
 
 # ***
   InstallMethod( DirectProductDecomposition,
@@ -119,82 +122,77 @@
     [ IsConjugacyClassGroupRep ],
     function( cc )
       local grp,                  # group
-            grp_comp,             # direct product component of grp
-            grp_comp_list,        # list of direct product components of grp
-            elm,                  # representative of cc
-            elm_comp,             # direct product component of elm
-            elm_comp_list,        # list of direct product components of elm
-            cc_comp,              # direct product component of cc
-            cc_comp_list,         # list of direct product components of cc
+            grp_dpcpnts,          # list of direct product components of grp
+            elmt,                 # representative of cc
+            elmt_dpcpnts,         # list of direct product components of elm
+            cc_dpcpnt,            # direct product component of cc
+            cc_dpcpnts,           # list of direct product components of cc
             i;                    # index
 
       grp := ActingDomain( cc );
-      grp_comp_list := DirectProductComponents( grp );
-      elm := Representative( cc );
-      elm_comp_list := DirectProductDecomposition( grp, elm );
-      cc_comp_list := [ ];
-      for i in [ 1 .. Size( grp_comp_list ) ] do
-        cc_comp := ConjugacyClass( grp_comp_list[ i ], elm_comp_list[ i ] );
-        Add( cc_comp_list, cc_comp );
+      grp_dpcpnts := DirectProductComponents( grp );
+      elmt := Representative( cc );
+      elmt_dpcpnts := DirectProductDecomposition( grp, elmt );
+      cc_dpcpnts := [ ];
+      for i in [ 1 .. Size( grp_dpcpnts ) ] do
+        cc_dpcpnt := ConjugacyClass( grp_dpcpnts[ i ], elmt_dpcpnts[ i ] );
+        Add( cc_dpcpnts, cc_dpcpnt );
       od;
 
-      return cc_comp_list;
+      return cc_dpcpnts;
     end
   );
 
-# !!!
+#
   InstallMethod( DirectProductDecomposition,
     "direct product decomposition of a irredicible character of a group",
     [ IsCharacter ],
-    function( char )
-      local grp,                  # group
-            grp_comp,             # direct product component of grp
-            grp_comp_list,        # list of direct product components of grp
-            grp_cc_list,
-            grp_comps_irr_list,
-            grp_Cgen_list,
-            grp_Cgens_comp_list,
-            grp_Cgens_comp_ind_list,
-            grp_Cgen_ind_list,
-            grp_comps_cc_list,
-            char_comp1,
-            char_comp2,
-            flag,
-            d,
-            i, j, k;              # index
+    function( chi )
+      local grp,                # group
+            grp_dpcpnt,         # direct product component of grp
+            grp_dpcpnts,        # list of direct product components of grp
+            grp_CCs,            # conjugacy classes of grp
+            d,                  # number of direct product components
+            embed,              # embedding from grp to its direct product component
+            grp_dpcpnt_CCs,     # CCs of a direct product component of grp
+            grp_dpcpnt_CCreps,  # CC representatives of the above
+            grp_CC_list,        # CC list in grp corresponding to CCs of its direct product component
+            grp_CCindex_list,   # CC index list of the above
+            res_chi,            # restricted character of chi
+            psi,                # irreducible character of a direct product component of grp
+            chi_dpcpnts,        # direct product decomposition of chi
+            i;                  # index
 
-      if not IsIrreducibleCharacter( char ) then
+      if not IsIrreducibleCharacter( chi ) then
         Error( "char must be irreducible." );
       fi;
-      grp := UnderlyingGroup( char );
-      grp_comp_list := DirectProductComponents( grp );
-      d := Size( grp_comp_list );
-      if ( d = 1 ) then
-        return [ char ];
-      fi;
 
-      grp_cc_list := ConjugacyClasses( grp );
-      grp_Cgen_list := List( GeneratorsOfGroup( grp ), elm -> ConjugacyClass( grp, elm ) );
-      grp_Cgen_ind_list := List( grp_Cgen_list, c -> Position( grp_cc_list, c ) );
-      grp_comps_cc_list := List( grp_comp_list, grp_comp -> ConjugacyClasses( grp_comp ) );
-      grp_Cgens_comp_list := List( grp_Cgen_list, c -> DirectProductDecomposition( c ) );
-      grp_Cgens_comp_ind_list := List( grp_Cgens_comp_list,
-          grp_Ccomp_list -> List( [ 1 .. d ], i -> Position( grp_comps_cc_list[ i ], grp_Ccomp_list[ i ] ) ) );
-      grp_comps_irr_list := List( grp_comp_list, grp_comp -> Irr( grp_comp ) );
-      for char_comp1 in grp_comps_irr_list[ 1 ] do
-        for char_comp2 in grp_comps_irr_list[ 2 ] do
-          flag := true;
-          for k in [ 1 .. Size( grp_Cgen_list ) ] do
-            if not ( List( char )[ grp_Cgen_ind_list[ k ] ] = List( char_comp1 )[ grp_Cgens_comp_ind_list[ k ][ 1 ] ] * List( char_comp2 )[ grp_Cgens_comp_ind_list[ k ][ 2 ] ] ) then
-              flag := false;
-              break;
-            fi;
-          od;
-          if flag then
-            return [ char_comp1, char_comp2 ];
+      grp := UnderlyingGroup( chi );
+      grp_dpcpnts := DirectProductComponents( grp );
+      d := Size( grp_dpcpnts );
+      if ( d = 1 ) then
+        return [ chi ];
+      fi;
+      grp_CCs := ConjugacyClasses( grp );
+
+      chi_dpcpnts := [ ];
+      for i in [ 1 .. d ] do
+        grp_dpcpnt := grp_dpcpnts[ i ];
+        embed := Embedding( grp, i );
+        grp_dpcpnt_CCs := ConjugacyClasses( grp_dpcpnt );
+        grp_dpcpnt_CCreps := List( grp_dpcpnt_CCs, cc -> Representative( cc ) );
+        grp_CC_list := List( grp_dpcpnt_CCreps, e -> ConjugacyClass( grp, Image( embed, e ) ) );
+        grp_CCindex_list := List( grp_CC_list, cc -> Position( grp_CCs, cc ) );
+        res_chi := ClassFunction( grp_dpcpnt, chi{ grp_CCindex_list } );
+        for psi in Irr( grp_dpcpnt ) do
+          if ScalarProduct( res_chi, psi ) > 0 then
+            Add( chi_dpcpnts, psi );
+            break;
           fi;
         od;
       od;
+
+      return chi_dpcpnts;
     end
   );
 
@@ -204,25 +202,25 @@
   InstallMethod( DirectProductDecomposition,
     "direct product decomposition of a group element",
     [ IsGroup, IsMultiplicativeElementWithInverse ],
-    function( grp, elm )
+    function( grp, elmt )
       local d,        # number of groups involved in the direct product
             proj,     # projection
             i,        # index
             decomp;   # the decomposition
 
-      if not ( elm in grp ) then
+      if not ( elmt in grp ) then
         Error( "The given element has to be in the given group.");
       fi;
 
       d := Size( DirectProductComponents( grp ) );
 
       if ( d = 1 ) then
-        decomp := [ elm ];
+        decomp := [ elmt ];
       else
         decomp := [ ];
         for i in [ 1 .. d ] do
           proj := Projection( grp, i );
-          Add( decomp, Image( proj, elm ) );
+          Add( decomp, Image( proj, elmt ) );
         od;
       fi;
 
@@ -231,53 +229,60 @@
   );
 
 # ***
-  InstallMethod( AmalgamationNotation,
-    "return the amalgamation notation of a CCS of direct product of two groups",
+  InstallMethod( AmalgamationSymbol,
+    "return the amalgamation symbol of a CCS of direct product of two groups",
     [ IsConjugacyClassSubgroupsRep ],
     function( c )
-      local grp,                    # group
-            quadruple,              # amalgamation quadruple
-            grp1, grp2,             # direct product components of grp
-            ccs_list1, ccs_list2,   # CCSs of grp1 and grp2
-            cH1_name, cH2_name,     # names of cH1 and cH2
-            cZ1_name, cZ2_name;     # names of cZ1 and cZ2
+      local grp,            # group
+            subg,           # representative of c
+            subg_ginfo,     # Goursat info of subg
+            quad,           # Goursat quadruple of c
+            symbol,         # the returning symbol
+            cc,             # conjugacy class of subgroups
+            ccs_name_list;  # name list of CCSs
 
-      grp := ParentAttr( Representative( c ) );
+      grp := ActingDomain( c );
       if not ( Size( DirectProductComponents( grp ) ) = 2 ) then
         Error( "It has to be a CCS of the direct product of TWO groups." );
       fi;
 
-      quadruple := AmalgamationQuadruple( c );
-      grp1 := DirectProductInfo( grp ).groups[ 1 ];
-      grp2 := DirectProductInfo( grp ).groups[ 2 ];
-      ccs_list1 := ConjugacyClassesSubgroups( grp1 );
-      ccs_list2 := ConjugacyClassesSubgroups( grp2 );
+      subg := Representative( c );
+      subg_ginfo := GoursatInfo( subg );
+      quad := List( subg_ginfo.quadruple, s -> ConjugacyClassSubgroups( s ) );
 
-      if HasName( ccs_list1[ quadruple[ 1 ] ] ) then
-        cH1_name := Name( ccs_list1[ quadruple[ 1 ] ] );
-      else
-        cH1_name := String( quadruple[ 1 ] );
-      fi;
+      ccs_name_list := [ ];
+      for cc in quad do
+        if HasName( cc ) then
+          Add( ccs_name_list, Name( cc ) );
+        else
+          Add( ccs_name_list, String( Position( ConjugacyClassesSubgroups( ActingDomain( cc ) ), cc ) ) );
+        fi;
+      od;
 
-      if HasName( ccs_list1[ quadruple[ 2 ] ] ) then
-        cZ1_name := Name( ccs_list1[ quadruple[ 2 ] ] );
-      else
-        cZ1_name := String( quadruple[ 2 ] );
-      fi;
-
-      if HasName( ccs_list2[ quadruple[ 3 ] ] ) then
-        cZ2_name := Name( ccs_list2[ quadruple[ 3 ] ] );
-      else
-        cZ2_name := String( quadruple[ 3 ] );
-      fi;
-
-      if HasName( ccs_list2[ quadruple[ 4 ] ] ) then
-        cH2_name := Name( ccs_list2[ quadruple[ 4 ] ] );
-      else
-        cH2_name := String( quadruple[ 4 ] );
-      fi;
-
-      return Concatenation( "(", cH1_name, "[", cZ1_name, ",", cZ2_name, "]", cH2_name, ")" );
+      return Concatenation( "(", ccs_name_list[ 1 ], "[", ccs_name_list[ 2 ], "|", ccs_name_list[ 3 ], "]", ccs_name_list[ 4 ], ")\n" );
     end
   );
 
+# ***
+  InstallMethod( LaTeXAmalgamationSymbol,
+    "return LaTeX amalgamation symbol of a CCS",
+    [ IsConjugacyClassSubgroupsRep ],
+    function( c )
+      local grp,
+            subg,
+            subg_ginfo,
+            ccs_latex_list;
+
+      grp := ActingDomain( c );
+      if not ( Size( DirectProductComponents( grp ) ) = 2 ) then
+        Error( "This procedure only works for CCS of direct product of TWO groups!" );
+      fi;
+
+      subg := Representative( c );
+      subg_ginfo := GoursatInfo( subg );
+      ccs_latex_list := List( subg_ginfo.quadruple,
+          s -> LaTeXString( ConjugacyClassSubgroups( s ) ) );
+
+      return Concatenation( "\\amal{", ccs_latex_list[ 1 ], "}{", ccs_latex_list[ 2 ], "}{}{", ccs_latex_list[ 3 ], "}{", ccs_latex_list[ 4 ], "}" );
+    end
+  );

@@ -5,10 +5,13 @@
 # Author(s):
 # Haopin Wu <psistwu@outlook.com>
 #
+# Dependency:
+# => libSys
+#
 
 
 # ## Declaration
-  Read( Filename( GAPEL_PATH, "libBasic.gd" ) );
+  Read( Filename( GAPEL_PATH, "libBasicMath.gd" ) );
 
 # ## Implementation
-  Read( Filename( GAPEL_PATH, "libBasic.gi" ) );
+  Read( Filename( GAPEL_PATH, "libBasicMath.gi" ) );

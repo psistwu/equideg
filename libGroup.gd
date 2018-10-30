@@ -11,10 +11,9 @@
 # ### attribute(s)
   # ConjugacyClassSubgroups( subg ) returns the CCS which contains subg
   DeclareAttribute( "ConjugacyClassSubgroups", IsGroup and HasParentAttr );
-
-  # order Of Weyl group
   DeclareAttribute( "OrderOfWeylGroup", IsGroup and HasParentAttr );
   DeclareAttribute( "OrderOfWeylGroup", IsConjugacyClassSubgroupsRep );
+  DeclareAttribute( "LaTeXString", IsConjugacyClassSubgroupsRep );
 
 
 # ### operation(s)

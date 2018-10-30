@@ -5,7 +5,7 @@
 #
 
   # preload
-  LIB_LIST := [ "Sys", "Basic", "Group", "OrbitType" ];
+  LIB_LIST := [ "Sys", "BasicMath", "Group", "OrbitType" ];
   MakeReadOnlyGlobal( "LIB_LIST" );
   Read( "../preload.gap" );
 

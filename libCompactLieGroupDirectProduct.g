@@ -6,10 +6,11 @@
 # Haopin Wu <psistwu@outlook.com>
 #
 # Dependency:
-# => libBasic.g
-# => libGroup.g
-# => libCompactLieGroup.g
-# => libDirectProduct.g
+# => libSys
+# => libBasicMath
+# => libGroup
+# => libCompactLieGroup
+# => libDirectProduct
 #
 
 

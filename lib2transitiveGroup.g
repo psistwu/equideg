@@ -8,8 +8,9 @@
 # Haopin Wu <psistwu@outlook.com>
 #
 # Dependency:
-# => libGroupTheory.g
-# => libSys.g
+# => libSys
+# => libBasicMath
+# => libGroup
 #
 
 

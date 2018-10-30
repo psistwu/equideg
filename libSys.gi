@@ -6,7 +6,8 @@
 # Haopin Wu <psistwu@outlook.com>
 #
 
-# ### function(s)
+# ## Exception Handling
+# ### Function(s)
   # clean all user defined variables
   InstallGlobalFunction( Clean,
     function( )
@@ -22,5 +23,17 @@
       od;
 
       Print( "Done!\n\n" );
+    end
+  );
+
+
+
+# ## I/O
+# ### Operation(s)
+  InstallMethod( PEncStr,
+    "return string enclosed by parantheses",
+    [ IsString ],
+    function( str )
+      return Concatenation( "(", str, ")" );
     end
   );
