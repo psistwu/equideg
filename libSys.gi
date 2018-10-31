@@ -6,9 +6,9 @@
 # Haopin Wu <psistwu@outlook.com>
 #
 
-# ## Exception Handling
-# ### Function(s)
-  # clean all user defined variables
+# ## Part 1: I/O
+# ### Global Function(s)
+# ***
   InstallGlobalFunction( Clean,
     function( )
       local gvar_name;    # name of a global variable
@@ -26,9 +26,36 @@
     end
   );
 
+# ***
+  InstallGlobalFunction( ListF,
+    function ( args... )
+      local num,
+            func,
+            len,
+            i,
+            argsin;
+
+      func := Remove( args );
+      num := Length( args );
+      len := Length( args[1] );
+
+      if not IsFunction( func ) then
+        Error( "Last argument must be a function" );
+      elif ForAny( args,
+          function ( a )
+            return not IsList( a ) or Length( a ) <> len;
+          end ) then
+        Error( "<arg1>, ..., <argn> must be lists of the same length" );
+      fi;
+
+      for i in [ 1 .. len ] do
+        argsin := List( args, arg -> arg[ i ] );
+        CallFuncListWrap( func, argsin );
+      od;
+    end
+  );
 
 
-# ## I/O
 # ### Operation(s)
 # ***
   InstallMethod( PEncStr,
@@ -56,3 +83,21 @@
       return Concatenation( "<", str, ">" );
     end
   );
+
+# ***
+  InstallMethod( LaTeXTypesetting,
+    "return LaTeX typesetting of an object",
+    [ IsObject ],
+    function( obj )
+      if HasLaTeXString( obj ) then
+        return LaTeXString( obj );
+      else
+        Info( InfoWarning, INFO_LEVEL, "LaTeXString of the object is not defined." );
+        return "";
+      fi;
+    end
+  );
+
+
+
+# ## Part 2: Exception Handling

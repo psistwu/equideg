@@ -6,39 +6,32 @@
 # Haopin Wu <psistwu@outlook.com>
 #
 
-
-# ## part 1: general tools
+# ## Part 1: General Tools
 # ### attribute(s)
-  # ConjugacyClassSubgroups( subg ) returns the CCS which contains subg
   DeclareAttribute( "ConjugacyClassSubgroups", IsGroup and HasParentAttr );
   DeclareAttribute( "OrderOfWeylGroup", IsGroup and HasParentAttr );
   DeclareAttribute( "OrderOfWeylGroup", IsConjugacyClassSubgroupsRep );
-  DeclareAttribute( "LaTeXString", IsConjugacyClassSubgroupsRep );
 
 
-# ### operation(s)
-  # nLHnumber( L, H ) returns the number of subgroups conjugate to H which contain L
-  DeclareOperation( "nLHnumber", [ IsGroup and HasParentAttr, IsGroup and HasParentAttr ] );
-  DeclareOperation( "nLHnumber", [ IsConjugacyClassSubgroupsRep, IsConjugacyClassSubgroupsRep ] );
-
-  # pCyclicGroup( n ) generates permutational Z_n
+# ### Operation(s)
+  DeclareOperation( "nLHnumber",
+      [ IsGroup and HasParentAttr, IsGroup and HasParentAttr ] );
+  DeclareOperation( "nLHnumber",
+      [ IsConjugacyClassSubgroupsRep, IsConjugacyClassSubgroupsRep ] );
   DeclareOperation( "pCyclicGroup", [ IsPosInt ] );
-
-  # mCyclicGroup( n ) generates Z_n as a matrix group
   DeclareOperation( "mCyclicGroup", [ IsPosInt ] );
-
-  # pDihedralGroup( n ) generates permutational D_n
   DeclareOperation( "pDihedralGroup", [ IsPosInt ] );
-
-  # mDihedralGroup( n ) generates D_n as a matrix group
   DeclareOperation( "mDihedralGroup", [ IsPosInt ] );
 
 
-# ## part 2: lattice of conjugacy classes of subgroups
+
+# ## Part 2: Lattice of Conjugacy Classes of Subgroups
 # ### representation(s)
   DeclareRepresentation( "IsLatticeCCSsRep", IsLatticeRep, [ ] );
 
-# ### attribute(s)
+
+# ### Attribute(s)
   DeclareAttribute( "LatticeCCSs", IsGroup );
   DeclareAttribute( "ConjugacyClassesSubgroups", IsLatticeCCSsRep );
   DeclareAttribute( "LatticeSubgroups", IsLatticeCCSsRep );
+

@@ -264,10 +264,11 @@
   );
 
 # ***
-  InstallMethod( LaTeXAmalgamationSymbol,
-    "return LaTeX amalgamation symbol of a CCS",
-    [ IsConjugacyClassSubgroupsRep ],
-    function( c )
+  InstallOtherMethod( LaTeXTypesetting,
+    "return LaTeX typesetting of a CCS",
+    [ IsConjugacyClassSubgroupsRep, IsString ],
+    1,
+    function( c, subscript )
       local grp,
             subg,
             subg_ginfo,
@@ -275,7 +276,7 @@
 
       grp := ActingDomain( c );
       if not ( Size( DirectProductComponents( grp ) ) = 2 ) then
-        Error( "This procedure only works for CCS of direct product of TWO groups!" );
+        TryNextMethod( );
       fi;
 
       subg := Representative( c );
@@ -283,6 +284,27 @@
       ccs_latex_list := List( subg_ginfo.quadruple,
           s -> LaTeXString( ConjugacyClassSubgroups( s ) ) );
 
-      return Concatenation( "\\amal{", ccs_latex_list[ 1 ], "}{", ccs_latex_list[ 2 ], "}{}{", ccs_latex_list[ 3 ], "}{", ccs_latex_list[ 4 ], "}" );
+      return Concatenation( "\\amal{", ccs_latex_list[ 1 ], "}{", ccs_latex_list[ 2 ], "}{", subscript, "}{", ccs_latex_list[ 3 ], "}{", ccs_latex_list[ 4 ], "}" );
+    end
+  );
+
+# ***
+  InstallOtherMethod( LaTeXTypesetting,
+    "return LaTeX typesetting of a CCS",
+    [ IsConjugacyClassSubgroupsRep ],
+    1,
+    function( c )
+      local grp;
+
+      if HasLaTeXString( c ) then
+        return LaTeXString( c );
+      fi;
+
+      grp := ActingDomain( c );
+      if not ( Size( DirectProductComponents( grp ) ) = 2 ) then
+        TryNextMethod( );
+      fi;
+
+      return LaTeXTypesetting( c, "" );
     end
   );

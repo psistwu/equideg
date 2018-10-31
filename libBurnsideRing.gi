@@ -43,73 +43,6 @@
 
 # ### operation(s)
 # ***
-  InstallMethod( String,
-    "string of a Burnside ring element",
-    [ IsBurnsideRingElement ],
-    function( e )
-      local i,        # index
-            coeff,    # coefficient
-            ccsind,   # index of CCS
-            ccss,     # CCSs of the underlying group
-            ccs_name, # name of CCS
-            str;      # name string
-
-      ccss := FamilyObj( e )!.CCSs;
-      str := "";
-      for i in [ 1 .. Length( e ) ] do
-        coeff := e!.Coefficients[ i ];
-        ccsind := e!.CCSIndices[ i ];
-
-        # determine the name of CCS
-        if HasName( ccss[ ccsind ] ) then
-          ccs_name := Name( ccss[ ccsind ] );
-        else
-          ccs_name := String( ccsind );
-        fi;
-
-        # append coefficient and name of CCS
-        if ( i > 1 ) and ( coeff > 0 ) then
-          Append( str, "+" );
-        fi;
-        Append( str, String( coeff ) );
-        Append( str, PEncStr( ccs_name ) );
-      od;
-
-      return AEncStr( str );
-    end
-  );
-
-# ***
-  InstallMethod( ViewString,
-    "view string of a Burnside ring element",
-    [ IsBurnsideRingElement ],
-    function( e )
-      local fam,      # the family of Burnside ring elements
-            ring;     # the Burnside ring
-
-      fam := FamilyObj( e );
-      ring := fam!.BurnsideRing;
-
-      return Concatenation( String( e ), " in ", ViewString( ring ) );
-    end
-  );
-
-# ***
-  InstallMethod( PrintString,
-    "print string of a Burnside ring element",
-    [ IsBurnsideRingElement ],
-    function( e )
-      local fam,      # the family of Burnside ring elements
-            ring;     # the Burnside ring
-
-      fam := FamilyObj( e );
-      ring := fam!.BurnsideRing;
-
-      return Concatenation( String( e ), " in ", PrintString( ring ) );
-    end
-  );
-
-# ***
   InstallMethod( \=,
     "identical relation in a Burnside ring",
     IsIdenticalObj,
@@ -288,91 +221,111 @@
   );
 
 
-# ### function(s)
-# %%%
-# InstallGlobalFunction( TwoListsToIndex,
-#   function( ind_max, ind_list, coefficient_list )
-#     local n, ind_list_repeated, enumint, ind, ind_min, ind_count, count, i, j, k;
+# ### Print, View and Display
+# ***
+  InstallMethod( String,
+    "string of a Burnside ring element",
+    [ IsBurnsideRingElement ],
+    function( e )
+      local i,        # index
+            coeff,    # coefficient
+            ccsind,   # index of CCS
+            ccss,     # CCSs of the underlying group
+            ccs_name, # name of CCS
+            str;      # name string
 
-#     enumint := Enumerator( Integers );
-#     ind_list_repeated := [ ];
-#     for i in [ 1 .. Length( ind_list ) ] do
-#       ind := ind_list[ i ];
-#       count := Position( enumint, coefficient_list[ i ] ) - 1;
-#       for j in [ 1 .. count ] do
-#         Add( ind_list_repeated, ind );
-#       od;
-#     od;
-#     ind_min := 1;
-#     ind_count := Length( ind_list_repeated );
+      ccss := FamilyObj( e )!.CCSs;
+      str := "";
+      for i in [ 1 .. Length( e ) ] do
+        coeff := e!.Coefficients[ i ];
+        ccsind := e!.CCSIndices[ i ];
 
-#     n := Binomial( ind_max+ind_count-1, ind_count-1 );
-#     for ind in ind_list_repeated do
-#       ind_count := ind_count-1;
-#       for i in [ ind_min .. ind-1 ] do
-#         n := n + Binomial( ind_max-i+ind_count, ind_count );
-#       od;
-#       ind_min := ind;
-#     od;
-#     return n+1;
-#   end
-# );
+        # determine the name of CCS
+        if HasName( ccss[ ccsind ] ) then
+          ccs_name := Name( ccss[ ccsind ] );
+        else
+          ccs_name := String( ccsind );
+        fi;
 
-# %%%
-# InstallGlobalFunction( IndexToTwoLists,
-#   function( ind_max, n )
-#     local ind_list, coefficient_list, sgn, count, enumint, ind_count, ind, ind_min;
+        # append coefficient and name of CCS
+        if ( i > 1 ) and ( coeff > 0 ) then
+          Append( str, "+" );
+        fi;
+        Append( str, String( coeff ) );
+        Append( str, PEncStr( ccs_name ) );
+      od;
 
-#     ind_list := [ ];
-#     coefficient_list := [ ];
-#     enumint := Enumerator( Integers );
-#     sgn := 1;
+      return AEncStr( str );
+    end
+  );
 
-#     ind_count := -1;
-#     while ( n > 0 ) do
-#       ind_count := ind_count+1;
-#       n := n - Binomial( ind_max-1+ind_count, ind_count );
-#     od;
+# ***
+  InstallMethod( ViewString,
+    "view string of a Burnside ring element",
+    [ IsBurnsideRingElement ],
+    function( e )
+      local fam,      # the family of Burnside ring elements
+            ring;     # the Burnside ring
 
-#     while ( ind_count > 0 ) do
-#       ind_count := ind_count-1;
-#       if ( sgn = 1 ) then
-#         ind := ind_max+1;
-#         while ( n <= 0 ) do
-#           ind := ind-1;
-#           n := n + Binomial( ind_max-ind+ind_count, ind_count );
-#         od;
-#       elif ( sgn = -1 ) then
-#         ind := ind_min-1;
-#         while ( n > 0 ) do
-#           ind := ind+1;
-#           n := n - Binomial( ind_max-ind+ind_count, ind_count );
-#         od;
-#       fi;
+      fam := FamilyObj( e );
+      ring := fam!.BurnsideRing;
 
-#       if not IsBound( ind_min ) then
-#         ind_min := ind;
-#         count := 1;
-#       elif ( ind = ind_min ) then
-#         count := count+1;
-#       elif ( ind > ind_min ) then
-#         Add( ind_list, ind_min );
-#         Add( coefficient_list, enumint[ count+1 ] );
-#         ind_min := ind;
-#         count := 1;
-#       fi;
+      return Concatenation( String( e ), " in ", ViewString( ring ) );
+    end
+  );
 
-#       sgn := -sgn;
-#     od;
+# ***
+  InstallMethod( PrintString,
+    "print string of a Burnside ring element",
+    [ IsBurnsideRingElement ],
+    function( e )
+      local fam,      # the family of Burnside ring elements
+            ring;     # the Burnside ring
 
-#     if IsBound( ind_min ) then
-#       Add( ind_list, ind_min );
-#       Add( coefficient_list, enumint[ count+1 ] );
-#     fi;
+      fam := FamilyObj( e );
+      ring := fam!.BurnsideRing;
 
-#     return rec( ind_list := ind_list, coefficient_list := coefficient_list );
-#   end
-# );
+      return Concatenation( String( e ), " in ", PrintString( ring ) );
+    end
+  );
+
+# ***
+  InstallMethod( LaTeXTypesetting,
+    "return LaTeX typesetting of an element in the Burnside ring",
+    [ IsBurnsideRingElement ],
+    function( e )
+      local i,        # index
+            coeff,    # coefficient
+            ccsind,   # index of CCS
+            ccss,     # CCSs of the underlying group
+            ccs_name, # name of CCS
+            str;      # name string
+
+      ccss := FamilyObj( e )!.CCSs;
+      str := "";
+      for i in [ 1 .. Length( e ) ] do
+        coeff := e!.Coefficients[ i ];
+        ccsind := e!.CCSIndices[ i ];
+
+        # determine the name of CCS
+        if HasLaTeXString( ccss[ ccsind ] ) then
+          ccs_name := LaTeXString( ccss[ ccsind ] );
+        else
+          ccs_name := String( ccsind );
+        fi;
+
+        # append coefficient and name of CCS
+        if ( i > 1 ) and ( coeff > 0 ) then
+          Append( str, "+" );
+        fi;
+        Append( str, String( coeff ) );
+        Append( str, PEncStr( ccs_name ) );
+      od;
+
+      return str;
+    end
+  );
+
 
 
 # ## Part 2: Burnside ring
@@ -406,8 +359,6 @@
       ring := Objectify( NewType( CollectionsFamily( elemfam ), filter ), rec( ) );
       elemfam!.BurnsideRing := ring;
       SetDimension( ring, d );
-#     enumring := Enumerator( ring );
-#     basis := enumring{ [ 2 .. d+1 ] };
       basis := [ ];
       for i in [ 1 .. d ] do
         Add( basis, Objectify(
@@ -446,30 +397,8 @@
     grp -> NewBurnsideRing( IsBurnsideRing and IsBurnsideRingBySmallGroupRep, grp )
   );
 
-# %%%
-# InstallMethod( Enumerator,
-#   "enumerator of a Burnside ring by a small group",
-#   [ IsBurnsideRing and IsBurnsideRingBySmallGroupRep ],
-#   ring -> EnumeratorByFunctions( ring,
-#     rec(
-#       ElementNumber := function( e, n )
-#         local fam, two_lists;
-#         fam := ElementsFamily( FamilyObj( ring ) );
-#         two_lists := IndexToTwoLists( Dimension( ring ), n );
-#         return Objectify( NewType( fam, IsBurnsideRingElement and IsBurnsideRingBySmallGroupElementRep ), rec( ccs_list := two_lists.ind_list, coefficient_list := two_lists.coefficient_list ) );
-#       end,
 
-#       NumberElement := function( e, x )
-#         return TwoListsToIndex( Dimension( ring ), x!.ccs_list, x!.coefficient_list );
-#       end,
-
-#       Length := e -> infinity
-#     )
-#   )
-# );
-
-
-# ## operation(s)
+# ## Print, View and Display
 # ***
   InstallMethod( ViewString,
     "view string of a Burnside ring",

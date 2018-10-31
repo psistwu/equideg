@@ -1,4 +1,4 @@
-# # GAP: Extended System Library #
+# # GAP: Extended System Library
 #
 # Declaration file of libSys.g
 #
@@ -6,20 +6,26 @@
 # Hao-pin Wu <psistwu@outlook.com>
 #
 
-
-# ## Exception Handling
-# ### Global Variable(s)
-  INFO_LEVEL := 1;
+# ## Part 1: I/O
+# ### Attribute(s)
+  DeclareAttribute( "LaTeXString", IsObject );
 
 
 # ### Global Function(s)
-  # clean all user-defined variables
-  DeclareGlobalFunction( "Clean" );
+  DeclareGlobalFunction( "Clean", "clean all user-defined variables" );
+  DeclareGlobalFunction( "ListF",
+      "procedure which applies function on each component of the given list" );
 
 
-
-# ## I/O
 # ### Operation(s)
   DeclareOperation( "PEncStr", [ IsString ] );
   DeclareOperation( "BEncStr", [ IsString ] );
   DeclareOperation( "AEncStr", [ IsString ] );
+  DeclareOperation( "LaTeXTypesetting", [ IsObject ] );
+
+
+
+# ## Part 2: Exception Handling
+# ### Global Variable(s)
+  INFO_LEVEL := 1;
+

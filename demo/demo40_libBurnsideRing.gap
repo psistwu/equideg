@@ -19,19 +19,11 @@
   basis := Basis( brng );
   Print( "Done!\n\n" );
 
-  # setup names of all CCSs of grp1 (S4)
-  Print( "Setup names for CCSs of grp1 (S4).... " );
-  SetName( ccss[ 1 ], "Z1" );
-  SetName( ccss[ 2 ], "Z2" );
-  SetName( ccss[ 3 ], "D1" );
-  SetName( ccss[ 4 ], "Z3" );
-  SetName( ccss[ 5 ], "V4" );
-  SetName( ccss[ 6 ], "D2" );
-  SetName( ccss[ 7 ], "Z4" );
-  SetName( ccss[ 8 ], "D3" );
-  SetName( ccss[ 9 ], "D4" );
-  SetName( ccss[ 10 ], "A4" );
-  SetName( ccss[ 11 ], "S4" );
+  # setup names of all CCSs of grp (S4)
+  Print( "Setup names for CCSs of grp (S4).... " );
+  ccss_names := [ "Z1", "Z2", "D1", "Z3", "V4", "D2",
+      "Z4", "D3", "D4", "A4", "S4" ];
+  ListF( ccss, ccss_names, SetName );
   Print( "Done!\n" );
 
   Print( "Compute Basic degree of each S4-irreducible representation.... " );
@@ -49,3 +41,20 @@
   for bdeg in bdeg_list do
     Print( bdeg^2, "\n" );
   od;
+  Print( "\n\n" );
+
+# ## Demo 2: generate LaTeX typesetting for Burnside ring elements
+  Print( "=== Demo 2 ===\n" );
+
+  # setup LaTeX names of all CCSs of grp1 (S4)
+  Print( "Setup LaTeX typesettings for CCSs of grp1 (S4).... " );
+  latex_names := [ "\\mathbb{Z}_1", "\\mathbb{Z}_2", "D_1", "\\mathbb{Z}_3",
+      "V_4", "D_2", "\\mathbb{Z}_4", "D_3", "D_4", "A_4", "S_4" ];
+  ListF( ccss, latex_names, SetLaTeXString );
+  Print( "Done!\n" );
+
+  # print LaTeX Typesettings for all basic degrees
+  Print( "LaTeX Typesettings for all basic degrees:\n" );
+  Print( List( bdeg_list, LaTeXTypesetting ) );
+
+

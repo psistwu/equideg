@@ -8,45 +8,47 @@
 
 
 # ## Part 1: Burnside Ring Element
-# ### category(s)
-  DeclareCategory( "IsBurnsideRingElement", IsRingElementWithOne and IsExtLElement );
+# ### Category(s)
+  DeclareCategory( "IsBurnsideRingElement",
+      IsRingElementWithOne and IsExtLElement );
 
 
-# ### representation(s)
-  DeclareRepresentation( "IsBurnsideRingBySmallGroupElementRep", IsComponentObjectRep and IsAttributeStoringRep, [ "CCSIndices", "coefficients" ] );
+# ### Representation(s)
+  DeclareRepresentation( "IsBurnsideRingBySmallGroupElementRep",
+      IsComponentObjectRep and IsAttributeStoringRep,
+      [ "CCSIndices", "coefficients" ] );
 
 
-# ### attribute(s)
+# ### Attribute(s)
   DeclareAttribute( "Length", IsBurnsideRingElement );
   DeclareAttribute( "ToDenseList", IsBurnsideRingElement );
   DeclareAttribute( "ToSparseList", IsBurnsideRingElement );
 
 
-# ### function(s)
-# %%%
-# DeclareGlobalFunction( "DuoListsToIndex" );
-# DeclareGlobalFunction( "IndexToDuoLists" );
-
 
 # ## Part 2: Brunside Ring
-# ### category(s)
-  DeclareCategory( "IsBurnsideRing", CategoryCollections( IsBurnsideRingElement ) and IsRingWithOne and IsFreeLeftModule );
+# ### Category(s)
+  DeclareCategory( "IsBurnsideRing",
+      CategoryCollections( IsBurnsideRingElement ) and IsRingWithOne and IsFreeLeftModule );
 
 
-# ### representation(s)
-  DeclareRepresentation( "IsBurnsideRingBySmallGroupRep", IsComponentObjectRep and IsAttributeStoringRep, [ ] );
+# ### Representation(s)
+  DeclareRepresentation( "IsBurnsideRingBySmallGroupRep",
+      IsComponentObjectRep and IsAttributeStoringRep, [ ] );
 
 
-# ### constructor(s)
-  DeclareConstructor( "NewBurnsideRing", [ IsBurnsideRing, IsGroup ] );
+# ### Constructor(s)
+  DeclareConstructor( "NewBurnsideRing",
+      [ IsBurnsideRing, IsGroup ] );
 
 
-# ### attribute(s)
+# ### Attribute(s)
   DeclareAttribute( "BurnsideRing", IsGroup );
   DeclareAttribute( "UnderlyingGroup", IsBurnsideRing );
 
 
+
 # ## Part 3: Other Aspects
-# ### attribute(s)
+# ### Attribute(s)
   DeclareAttribute( "BasicDegree", IsCharacter );
 

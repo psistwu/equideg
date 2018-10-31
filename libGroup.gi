@@ -7,8 +7,8 @@
 #
 
 
-# ## part 1: general tools
-# ### attribute(s)
+# ## Part 1: General Tools
+# ### Attribute(s)
 # ***
   InstallOtherMethod( ConjugacyClassSubgroups,
     "return the CCS containing the given subgroup",
@@ -223,8 +223,8 @@
   );
 
 
-# ## part 2: lattice of conjugacy classes of subgroups
-# ### constructor(s)
+# ## Part 2: Lattice of Conjugacy Classes of Subgroups
+# ### Constructor(s)
 # ***
   InstallMethod( Lattice,
     "constructing the lattice of a sorted list",
@@ -262,7 +262,7 @@
   );
 
 
-# ### attribute(s)
+# ### Attribute(s)
 # ***
   InstallMethod( LatticeCCSs,
     "return lattice of CCSs of G",
@@ -289,7 +289,7 @@
   );
 
 
-# ### print, view and display
+# ### Print, View and Display
 # ***
   InstallMethod( PrintString,
     "print string for lattice of CCSs",
@@ -307,3 +307,4 @@
       return Concatenation( "<CCS lattice of ", ViewString( lat!.group ), ", ", String( Size( ConjugacyClassesSubgroups( lat ) ) ), " classes>" );
     end
   );
+

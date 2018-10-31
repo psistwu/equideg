@@ -8,21 +8,15 @@
 
 
 # ## Attribute(s)
-  DeclareAttribute( "DirectProductComponents",
-      IsGroup );
-  DeclareAttribute( "GoursatInfo",
-      IsGroup and HasParentAttr );
-  DeclareAttribute( "DirectProductDecomposition",
-      IsConjugacyClassGroupRep );
-  DeclareAttribute( "DirectProductDecomposition",
-      IsCharacter );
+  DeclareAttribute( "DirectProductComponents", IsGroup );
+  DeclareAttribute( "GoursatInfo", IsGroup and HasParentAttr );
+  DeclareAttribute( "DirectProductDecomposition", IsConjugacyClassGroupRep );
+  DeclareAttribute( "DirectProductDecomposition", IsCharacter );
 
 
 # ## Operation(s)
   DeclareOperation( "DirectProductDecomposition",
       [ IsGroup, IsMultiplicativeElementWithInverse ] );
   DeclareOperation( "AmalgamationSymbol",
-      [ IsConjugacyClassSubgroupsRep ] );
-  DeclareOperation( "LaTeXAmalgamationSymbol",
       [ IsConjugacyClassSubgroupsRep ] );
 
