@@ -9,11 +9,10 @@
   MakeReadOnlyGlobal( "LIB_LIST" );
   Read( "../preload.gap" );
 
+# ## Setup
+  Print( "=== Setup ===\n" );
   # setup direct product of S4 and D3 and compute the CCSs
-  Print( "Setting up....\n" );
-  Print( "grp1 = S4....\n" );
-  Print( "grp2 = D3....\n" );
-  Print( "grp = S4xD3....\n" );
+  Print( "Take grp1 = S4, grp2 = D3 and grp = S4xD3.... " );
   grp1 := SymmetricGroup( 4 );
   grp2 := pDihedralGroup( 3 );
   grp := DirectProduct( grp1, grp2 );

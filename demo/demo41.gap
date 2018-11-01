@@ -1,4 +1,5 @@
-# # libDirectProduct demo
+# # demo41
+# Create latex file about CCSs of D3xD3xZ2
 #
 # Author(s):
 # Haopin Wu <psistwu@outlook.com>

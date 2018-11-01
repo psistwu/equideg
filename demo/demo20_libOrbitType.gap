@@ -10,12 +10,21 @@
   Read( "../preload.gap" );
 
 
-# ## Demo 1: generate lattices of orbit types of all irreducible $(S_4)$-representations
-  Print( "=== Demo 1 ===\n" );
+# ## Setup
+  Print( "=== Setup ===\n" );
+  Print( "Take grp = S4 and take its CCSs and irreducible representations.... " );
   grp := SymmetricGroup( 4 );
-  ccs_list := ConjugacyClassesSubgroups( grp );
-  irr_list := Irr( grp );
+  ccss := ConjugacyClassesSubgroups( grp );
+  irr := Irr( grp );
+  Print( "Done!\n\n\n" );
+
+
+# ## Demo 1: generate orbit type lattices for all irreducible representations
+  Print( "=== Demo 1 ===\n" );
+  Print( "Compute orbit type lattice of all irreducible representations.... " );
   lat_list := List( irr_list, irr -> LatticeOrbitTypes( irr ) );
+  Print( "Done!\n" );
+
   for i in [ 1 .. Size( irr_list ) ] do
     Print( "Generating dot file for the ", i ,"-th S4-irreducible representation.... " );
     dotfile := Concatenation( "demo20_libOrbitType/S4_irr", String( i ), "_latorbt.dot" );
