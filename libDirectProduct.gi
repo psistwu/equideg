@@ -259,7 +259,7 @@
         fi;
       od;
 
-      return Concatenation( "(", ccs_name_list[ 1 ], "[", ccs_name_list[ 2 ], "|", ccs_name_list[ 3 ], "]", ccs_name_list[ 4 ], ")\n" );
+      return Concatenation( ccs_name_list[ 1 ], "[", ccs_name_list[ 2 ], "|", ccs_name_list[ 3 ], "]", ccs_name_list[ 4 ] );
     end
   );
 

@@ -1,0 +1,60 @@
+  \documentclass[11pt]{article}
+
+  \usepackage{amssymb,amsmath,amsfonts}
+  \usepackage[top=1cm,bottom=1cm,left=2cm,right=2cm]{geometry}
+  \usepackage{tabularx}
+  \usepackage{mathtools}
+  \usepackage{booktabs}
+  \usepackage{graphicx}
+
+  \newcommand{\amal}[5]{#1\prescript{#2}{}{\underset{#3}{\times}}^{#4}#5}
+  \newcolumntype{C}{>{\centering\arraybackslash}X}
+
+  \pagestyle{empty}
+
+  \begin{document}
+  \begin{table}
+    \centering
+    \begin{tabularx}{.6\textwidth}{@{}|c|C||c|C|@{}}
+      \toprule
+      Number & Name & Number & Name \\
+      \midrule
+      $1$ & $\amal{\mathbb{Z}_1}{\mathbb{Z}_1}{}{\mathbb{Z}_1}{\mathbb{Z}_1}$ & $2$ & $\amal{\mathbb{Z}_1}{\mathbb{Z}_1}{}{\mathbb{Z}_1^p}{\mathbb{Z}_1^p}$ \\
+      $3$ & $\amal{D_1}{\mathbb{Z}_1}{}{\mathbb{Z}_1}{D_1}$ & $4$ & $\amal{D_1}{\mathbb{Z}_1}{}{\mathbb{Z}_1}{D_1^z}$ \\
+      $5$ & $\amal{D_1}{\mathbb{Z}_1}{}{\mathbb{Z}_1}{\mathbb{Z}_1^p}$ & $6$ & $\amal{D_1}{D_1}{}{\mathbb{Z}_1}{\mathbb{Z}_1}$ \\
+      $7$ & $\amal{\mathbb{Z}_1}{\mathbb{Z}_1}{}{D_1^z}{D_1^z}$ & $8$ & $\amal{\mathbb{Z}_1}{\mathbb{Z}_1}{}{D_1}{D_1}$ \\
+      $9$ & $\amal{\mathbb{Z}_3}{\mathbb{Z}_3}{}{\mathbb{Z}_1}{\mathbb{Z}_1}$ & $10$ & $\amal{\mathbb{Z}_3}{\mathbb{Z}_1}{}{\mathbb{Z}_1}{\mathbb{Z}_3}$ \\
+      $11$ & $\amal{\mathbb{Z}_1}{\mathbb{Z}_1}{}{\mathbb{Z}_3}{\mathbb{Z}_3}$ & $12$ & $\amal{\mathbb{Z}_1}{\mathbb{Z}_1}{}{D_1^p}{D_1^p}$ \\
+      $13$ & $\amal{D_1}{\mathbb{Z}_1}{}{D_1}{D_1^p}$ & $14$ & $\amal{D_1}{\mathbb{Z}_1}{}{D_1^z}{D_1^p}$ \\
+      $15$ & $\amal{D_1}{\mathbb{Z}_1}{}{\mathbb{Z}_1^p}{D_1^p}$ & $16$ & $\amal{D_1}{D_1}{}{D_1^z}{D_1^z}$ \\
+      $17$ & $\amal{D_1}{D_1}{}{\mathbb{Z}_1^p}{\mathbb{Z}_1^p}$ & $18$ & $\amal{D_1}{D_1}{}{D_1}{D_1}$ \\
+      $19$ & $\amal{\mathbb{Z}_3}{\mathbb{Z}_1}{}{\mathbb{Z}_1^p}{\mathbb{Z}_3^p}$ & $20$ & $\amal{\mathbb{Z}_1}{\mathbb{Z}_1}{}{\mathbb{Z}_3^p}{\mathbb{Z}_3^p}$ \\
+      $21$ & $\amal{\mathbb{Z}_3}{\mathbb{Z}_3}{}{D_1}{D_1}$ & $22$ & $\amal{\mathbb{Z}_1}{\mathbb{Z}_1}{}{D_3}{D_3}$ \\
+      $23$ & $\amal{\mathbb{Z}_3}{\mathbb{Z}_3}{}{D_1^z}{D_1^z}$ & $24$ & $\amal{\mathbb{Z}_1}{\mathbb{Z}_1}{}{D_3^z}{D_3^z}$ \\
+      $25$ & $\amal{\mathbb{Z}_3}{\mathbb{Z}_3}{}{\mathbb{Z}_1^p}{\mathbb{Z}_1^p}$ & $26$ & $\amal{D_3}{D_3}{}{\mathbb{Z}_1}{\mathbb{Z}_1}$ \\
+      $27$ & $\amal{D_1}{D_1}{}{\mathbb{Z}_3}{\mathbb{Z}_3}$ & $28$ & $\amal{D_3}{\mathbb{Z}_1}{}{\mathbb{Z}_1}{D_3^z}$ \\
+      $29$ & $\amal{D_3}{\mathbb{Z}_3}{}{\mathbb{Z}_1}{D_1}$ & $30$ & $\amal{D_1}{\mathbb{Z}_1}{}{\mathbb{Z}_3}{D_3}$ \\
+      $31$ & $\amal{D_3}{\mathbb{Z}_1}{}{\mathbb{Z}_1}{D_3}$ & $32$ & $\amal{D_3}{\mathbb{Z}_3}{}{\mathbb{Z}_1}{D_1^z}$ \\
+      $33$ & $\amal{D_3}{\mathbb{Z}_3}{}{\mathbb{Z}_1}{\mathbb{Z}_1^p}$ & $34$ & $\amal{D_1}{\mathbb{Z}_1}{}{\mathbb{Z}_3}{\mathbb{Z}_3^p}$ \\
+      $35$ & $\amal{D_1}{\mathbb{Z}_1}{}{\mathbb{Z}_3}{D_3^z}$ & $36$ & $\amal{D_1}{D_1}{}{D_1^p}{D_1^p}$ \\
+      $37$ & $\amal{\mathbb{Z}_3}{\mathbb{Z}_3}{}{\mathbb{Z}_3}{\mathbb{Z}_3}$ & $38$ & $\amal{D_1}{D_1}{}{D_3^z}{D_3^z}$ \\
+      $39$ & $\amal{D_3}{\mathbb{Z}_3}{}{D_1^z}{D_1^p}$ & $40$ & $\amal{D_3}{\mathbb{Z}_1}{}{\mathbb{Z}_1^p}{D_3^p}$ \\
+      $41$ & $\amal{D_1}{\mathbb{Z}_1}{}{\mathbb{Z}_3^p}{D_3^p}$ & $42$ & $\amal{D_3}{\mathbb{Z}_3}{}{\mathbb{Z}_1^p}{D_1^p}$ \\
+      $43$ & $\amal{D_3}{D_3}{}{D_1}{D_1}$ & $44$ & $\amal{D_1}{D_1}{}{D_3}{D_3}$ \\
+      $45$ & $\amal{D_1}{\mathbb{Z}_1}{}{D_3}{D_3^p}$ & $46$ & $\amal{D_3}{\mathbb{Z}_3}{}{D_1}{D_1^p}$ \\
+      $47$ & $\amal{D_3}{D_3}{}{\mathbb{Z}_1^p}{\mathbb{Z}_1^p}$ & $48$ & $\amal{D_1}{D_1}{}{\mathbb{Z}_3^p}{\mathbb{Z}_3^p}$ \\
+      $49$ & $\amal{\mathbb{Z}_1}{\mathbb{Z}_1}{}{D_3^p}{D_3^p}$ & $50$ & $\amal{\mathbb{Z}_3}{\mathbb{Z}_3}{}{D_1^p}{D_1^p}$ \\
+      $51$ & $\amal{D_3}{D_3}{}{D_1^z}{D_1^z}$ & $52$ & $\amal{D_1}{\mathbb{Z}_1}{}{D_3^z}{D_3^p}$ \\
+      $53$ & $\amal{\mathbb{Z}_3}{\mathbb{Z}_3}{}{D_3^z}{D_3^z}$ & $54$ & $\amal{D_3}{D_3}{}{\mathbb{Z}_3}{\mathbb{Z}_3}$ \\
+      $55$ & $\amal{\mathbb{Z}_3}{\mathbb{Z}_3}{}{D_3}{D_3}$ & $56$ & $\amal{D_3}{\mathbb{Z}_3}{}{\mathbb{Z}_3}{\mathbb{Z}_3^p}$ \\
+      $57$ & $\amal{\mathbb{Z}_3}{\mathbb{Z}_3}{}{\mathbb{Z}_3^p}{\mathbb{Z}_3^p}$ & $58$ & $\amal{D_3}{\mathbb{Z}_3}{}{\mathbb{Z}_3}{D_3}$ \\
+      $59$ & $\amal{D_3}{\mathbb{Z}_3}{}{\mathbb{Z}_3}{D_3^z}$ & $60$ & $\amal{D_1}{D_1}{}{D_3^p}{D_3^p}$ \\
+      $61$ & $\amal{D_3}{D_3}{}{D_1^p}{D_1^p}$ & $62$ & $\amal{\mathbb{Z}_3}{\mathbb{Z}_3}{}{D_3^p}{D_3^p}$ \\
+      $63$ & $\amal{D_3}{D_3}{}{D_3^z}{D_3^z}$ & $64$ & $\amal{D_3}{\mathbb{Z}_3}{}{D_3}{D_3^p}$ \\
+      $65$ & $\amal{D_3}{D_3}{}{\mathbb{Z}_3^p}{\mathbb{Z}_3^p}$ & $66$ & $\amal{D_3}{\mathbb{Z}_3}{}{\mathbb{Z}_3^p}{D_3^p}$ \\
+      $67$ & $\amal{D_3}{D_3}{}{D_3}{D_3}$ & $68$ & $\amal{D_3}{\mathbb{Z}_3}{}{D_3^z}{D_3^p}$ \\
+      $69$ & $\amal{D_3}{D_3}{}{D_3^p}{D_3^p}$ & & \\
+      \bottomrule
+    \end{tabularx}
+  \end{table}
+  \end{document}

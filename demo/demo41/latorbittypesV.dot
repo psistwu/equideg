@@ -1,0 +1,105 @@
+digraph lattice {
+size = "6,6";
+"rt" [label="Dim", color=white];
+"rt" -> "s0" [color=white, arrowhead=none];
+"s0" [label="0", color=white];
+"s0" -> "s1" [color=white, arrowhead=none];
+"s1" [label="1", color=white];
+"s1" -> "s2" [color=white, arrowhead=none];
+"s2" [label="2", color=white];
+"s2" -> "s3" [color=white, arrowhead=none];
+"s3" [label="3", color=white];
+"s3" -> "s4" [color=white, arrowhead=none];
+"s4" [label="4", color=white];
+"s4" -> "s5" [color=white, arrowhead=none];
+"s5" [label="5", color=white];
+"s5" -> "s6" [color=white, arrowhead=none];
+"s6" [label="6", color=white];
+"s6" -> "s9" [color=white, arrowhead=none];
+"s9" [label="9", color=white];
+"1" [label="1", shape=square];
+{ rank=same; "s9" "1"; }
+"2" [label="3", shape=circle];
+{ rank=same; "s5" "2"; }
+"3" [label="4", shape=circle];
+{ rank=same; "s4" "3"; }
+"4" [label="5", shape=circle];
+{ rank=same; "s3" "4"; }
+"5" [label="6", shape=circle];
+{ rank=same; "s6" "5"; }
+"6" [label="7", shape=circle];
+{ rank=same; "s3" "6"; }
+"7" [label="8", shape=circle];
+{ rank=same; "s6" "7"; }
+"8" [label="10", shape=circle];
+{ rank=same; "s3" "8"; }
+"9" [label="13", shape=circle];
+{ rank=same; "s2" "9"; }
+"10" [label="14", shape=circle];
+{ rank=same; "s1" "10"; }
+"11" [label="16", shape=circle];
+{ rank=same; "s2" "11"; }
+"12" [label="18", shape=circle];
+{ rank=same; "s4" "12"; }
+"13" [label="22", shape=square];
+{ rank=same; "s3" "13"; }
+"14" [label="26", shape=square];
+{ rank=same; "s3" "14"; }
+"15" [label="28", shape=circle];
+{ rank=same; "s1" "15"; }
+"16" [label="31", shape=circle];
+{ rank=same; "s2" "16"; }
+"17" [label="43", shape=circle];
+{ rank=same; "s2" "17"; }
+"18" [label="44", shape=circle];
+{ rank=same; "s2" "18"; }
+"19" [label="45", shape=circle];
+{ rank=same; "s1" "19"; }
+"20" [label="51", shape=circle];
+{ rank=same; "s1" "20"; }
+"21" [label="67", shape=square];
+{ rank=same; "s1" "21"; }
+"22" [label="69", shape=square];
+{ rank=same; "s0" "22"; }
+"2" -> "1" [arrowhead=none];
+"3" -> "1" [arrowhead=none];
+"4" -> "1" [arrowhead=none];
+"5" -> "1" [arrowhead=none];
+"6" -> "1" [arrowhead=none];
+"7" -> "1" [arrowhead=none];
+"8" -> "1" [arrowhead=none];
+"9" -> "3" [arrowhead=none];
+"9" -> "4" [arrowhead=none];
+"9" -> "7" [arrowhead=none];
+"10" -> "2" [arrowhead=none];
+"10" -> "4" [arrowhead=none];
+"10" -> "6" [arrowhead=none];
+"11" -> "3" [arrowhead=none];
+"11" -> "5" [arrowhead=none];
+"11" -> "6" [arrowhead=none];
+"12" -> "2" [arrowhead=none];
+"12" -> "5" [arrowhead=none];
+"12" -> "7" [arrowhead=none];
+"13" -> "7" [arrowhead=none];
+"14" -> "5" [arrowhead=none];
+"15" -> "3" [arrowhead=none];
+"15" -> "8" [arrowhead=none];
+"16" -> "2" [arrowhead=none];
+"16" -> "8" [arrowhead=none];
+"17" -> "12" [arrowhead=none];
+"17" -> "14" [arrowhead=none];
+"18" -> "12" [arrowhead=none];
+"18" -> "13" [arrowhead=none];
+"19" -> "9" [arrowhead=none];
+"19" -> "13" [arrowhead=none];
+"20" -> "11" [arrowhead=none];
+"20" -> "14" [arrowhead=none];
+"21" -> "16" [arrowhead=none];
+"21" -> "17" [arrowhead=none];
+"21" -> "18" [arrowhead=none];
+"22" -> "10" [arrowhead=none];
+"22" -> "15" [arrowhead=none];
+"22" -> "19" [arrowhead=none];
+"22" -> "20" [arrowhead=none];
+"22" -> "21" [arrowhead=none];
+}
