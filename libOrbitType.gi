@@ -101,6 +101,19 @@
   );
 
 # ***
+  InstallMethod( MaximalOrbitTypes,
+    "return ccs indices of maximal orbit types of the given representation",
+    [ IsCharacter ],
+    function( chi )
+      local maxsub;
+
+      maxsub := ShallowCopy( MaximalSubElementsLattice( LatticeOrbitTypes( chi ) ) );
+
+      return OrbitTypes( chi ){ Remove( maxsub ) };
+    end
+  );
+
+# ***
   InstallMethod( AlphaCharacteristic,
     "return Alpha-characteristic of the representation",
     [ IsCharacter ],

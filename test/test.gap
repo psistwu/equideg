@@ -7,11 +7,14 @@
 #
 
   # preload
-  LIB_LIST := [ "Sys", "BasicMath" ];
+  LIB_LIST := [ "Sys", "BasicMath", "Group", "OrbitType", "BurnsideRing" ];
   MakeReadOnlyGlobal( "LIB_LIST" );
   Read( "../preload.gap" );
 
-  # generate a set and its power set
-  S := [ 1, 2, 3 ];
-  P := Combinations( S );
-  SS := [ 1, 9, 4, 2, 5 ];
+  grp := pDihedralGroup( 4 );
+  ccs_list := ConjugacyClassesSubgroups( grp );
+  cc_list := ConjugacyClasses( grp );
+  chtbl := CharacterTable( grp );
+  ccs_names := [ "Z1", "Z2", "D1", "T1", "D2", "Z4", "T2", "D4" ];
+  ListF( ccs_list, ccs_names, SetName );
+  bdeg_list := List( Irr( grp ), BasicDegree );

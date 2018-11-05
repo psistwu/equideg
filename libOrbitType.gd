@@ -13,6 +13,7 @@
 
 # ### attribute(s)
   DeclareAttribute( "OrbitTypes", IsCharacter );
+  DeclareAttribute( "MaximalOrbitTypes", IsCharacter );
   DeclareAttribute( "LatticeOrbitTypes", IsCharacter );
   DeclareAttribute( "AlphaCharacteristic", IsCharacter );
 
