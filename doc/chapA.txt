@@ -1,0 +1,41 @@
+  
+  [1XA [33X[0;0YUtilities[133X[101X
+  
+  [33X[0;0YHere, we list utilities which are used throughout the package.[133X
+  
+  
+  [1XA.1 [33X[0;0YEquiDeg Info Class[133X[101X
+  
+  [1XA.1-1 INFO_LEVEL_EquiDeg[101X
+  
+  [33X[1;0Y[29X[2XINFO_LEVEL_EquiDeg[102X[32X global variable[133X
+  
+  [33X[0;0Yis  the  info level regarding the usage of [2XInfo[102X ([14XReference: Info[114X) throughout
+  the  package;  its  default  value  is 1. Since higher value results in more
+  detailed feedback, one can increase the value for debugging purpose.[133X
+  
+  [1XA.1-2 InfoEquiDeg[101X
+  
+  [33X[1;0Y[29X[2XInfoEquiDeg[102X[32X info class[133X
+  
+  [33X[0;0Yis  the default info class throughout the package. Its default info level is
+  1.[133X
+  
+  
+  [1XA.2 [33X[0;0YLaTeX Typesettings[133X[101X
+  
+  [1XA.2-1 LaTeXString[101X
+  
+  [33X[1;0Y[29X[2XLaTeXString[102X( [3Xobj[103X ) [32X attribute[133X
+  
+  [33X[0;0Ystores  the LaTeX representation of an object. This attribute is supposed to
+  be assigned manually.[133X
+  
+  [1XA.2-2 LaTeXTypesetting[101X
+  
+  [33X[1;0Y[29X[2XLaTeXTypesetting[102X( [3Xobj[103X ) [32X attribute[133X
+  
+  [33X[0;0Yreturns  the  LaTeX  typesetting  of  an object. In default, it simply calls
+  [2XLaTeXString[102X  ([14XA.2-1[114X).  However,  it  may  behave  differently for objects of
+  different categories.[133X
+  

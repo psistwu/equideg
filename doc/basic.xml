@@ -1,0 +1,24 @@
+<!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
+<!-- %%									  -->
+<!-- %W  utils.xml	GAP Package `EquiDeg'			Haopin Wu -->
+<!-- %%									  -->
+<!-- %Y  Copyright (C) 2017-2018, Haopin Wu				  -->
+<!-- %Y  Department of Mathematics, National Tsing Hua University, Taiwan -->
+<!-- %%									  -->
+
+<Chapter Label="ch:basic"><Heading>Basic Math Procedures</Heading>
+We will explain basic math procedures in this package.
+<Section><Heading>Poset</Heading>
+<#Include Label="IsSortedPoset">
+<#Include Label="TopologicalSort">
+</Section>
+<Section><Heading>Lattice</Heading>
+<#Include Label="IsLatticeRep">
+<#Include Label="Lattice">
+<#Include Label="MinSupAndMaxSub">
+</Section>
+</Chapter>
+
+<!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
+<!-- %%									  -->
+<!-- %E  basic.xml . . . . . . . . . . . . . . . . . . . . . .  ends here -->

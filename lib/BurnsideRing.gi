@@ -252,10 +252,10 @@
           Append( str, "+" );
         fi;
         Append( str, String( coeff ) );
-        Append( str, PEncStr( ccs_name ) );
+        Append( str, StringFormatted("({})", ccs_name ) );
       od;
 
-      return AEncStr( str );
+      return StringFormatted("<{}>", str );
     end
   );
 
@@ -319,7 +319,7 @@
           Append( str, "+" );
         fi;
         Append( str, String( coeff ) );
-        Append( str, PEncStr( ccs_name ) );
+        Append( str, StringFormatted("({})", ccs_name ) );
       od;
 
       return str;

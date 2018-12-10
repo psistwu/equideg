@@ -6,12 +6,18 @@
 #Y  Department of Mathematics, National Tsing Hua University, Taiwan
 ##
 
-# Read the implementation files
-ReadPackage( "EquiDeg", "gap/Sys.gi" );
-ReadPackage( "EquiDeg", "gap/BasicMath.gi" );
-ReadPackage( "EquiDeg", "gap/Group.gi" );
-ReadPackage( "EquiDeg", "gap/CompactLieGroup.gi" );
-ReadPackage( "EquiDeg", "gap/DirectProduct.gi" );
-ReadPackage( "EquiDeg", "gap/CompactLieGroupDirectProduct.gi" );
-ReadPackage( "EquiDeg", "gap/OrbitType.gi" );
-ReadPackage( "EquiDeg", "gap/BurnsideRing.gi" );
+#############################################################################
+##
+#R  Read the implementation files
+##
+ReadPackage( "EquiDeg", "lib/Utils.gi" );
+ReadPackage( "EquiDeg", "lib/Basic.gi" );
+ReadPackage( "EquiDeg", "lib/OrbitType.gi" );
+ReadPackage( "EquiDeg", "lib/CompactLieGroup.gi" );
+ReadPackage( "EquiDeg", "lib/DirectProduct1.gi" );
+ReadPackage( "EquiDeg", "lib/DirectProduct2.gi" );
+ReadPackage( "EquiDeg", "lib/BurnsideRing.gi" );
+
+#############################################################################
+##
+#E  read.g . . . . . . . . . . . . . . . . . . . . . . . . . . . .  ends here

@@ -1,0 +1,38 @@
+  
+  [1X2 [33X[0;0YBasic Math Procedures[133X[101X
+  
+  [33X[0;0YWe will explain basic math procedures in this package.[133X
+  
+  
+  [1X2.1 [33X[0;0YPoset[133X[101X
+  
+  [1X2.1-1 IsSortedPoset[101X
+  
+  [33X[1;0Y[29X[2XIsSortedPoset[102X( [3Xlist[103X[, [3Xfunc[103X] ) [32X operation[133X
+  
+  [33X[0;0Ychecks  whether  [3Xlist[103X  is  a  sorted poset. It uses either the partial order
+  specified by [3Xfunc[103X, or the default one [10X\<[110X when [3Xfunc[103X is not given.[133X
+  
+  [1X2.1-2 TopologicalSort[101X
+  
+  [33X[1;0Y[29X[2XTopologicalSort[102X( [3Xlist[103X[, [3Xfunc[103X] ) [32X operation[133X
+  
+  [33X[0;0Yperforms  topological  sort  on  [3Xlist[103X.  It  uses  either  the  partial order
+  specified by [3Xfunc[103X, or the default one [10X\<[110X when [3Xfunc[103X is not given.[133X
+  
+  
+  [1X2.2 [33X[0;0YLattice[133X[101X
+  
+  [1X2.2-1 IsLatticeRep[101X
+  
+  [33X[1;0Y[29X[2XIsLatticeRep[102X[32X Representation[133X
+  
+  [1X2.2-2 Lattice[101X
+  
+  [33X[1;0Y[29X[2XLattice[102X( [3XIsLatticeRep[103X, [3Xlist[103X ) [32X constructor[133X
+  
+  [1X2.2-3 MaximalSubElementsLattice[101X
+  
+  [33X[1;0Y[29X[2XMaximalSubElementsLattice[102X( [3Xlat[103X ) [32X attribute[133X
+  [33X[1;0Y[29X[2XMinimalSupElementsLattice[102X( [3Xlat[103X ) [32X attribute[133X
+  

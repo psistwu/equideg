@@ -1,0 +1,64 @@
+  
+  
+                                    [1X[5XEquiDeg[105X[101X
+  
+  
+                  [1XA [5XGAP[105X Package for Equivariant Degree Theory[101X
+  
+  
+                                  Version 0.1
+  
+  
+                                30 November 2018
+  
+  
+                                   Haopin Wu
+  
+  
+  
+  Haopin Wu
+      Email:    [7Xmailto:psistwu@outlook.com[107X
+      Homepage: [7Xhttp://psistwu.sdf.org[107X
+  
+  -------------------------------------------------------
+  [1XCopyright[101X
+  [33X[0;0Y© 2017-2018 by Haopin Wu[133X
+  
+  [33X[0;0Y[5XEquiDeg[105X  package  is free software; you can redistribute it and/or modify it
+  under     the     terms     of    the    GNU    General    Public    License
+  ([7Xhttp://www.fsf.org/licenses/gpl.html[107X)  as  published  by  the Free Software
+  Foundation;  either  version 2 of the License, or (at your option) any later
+  version.[133X
+  
+  
+  -------------------------------------------------------
+  [1XAcknowledgements[101X
+  [33X[0;0YWe  appreciate  very  much  all  past  and  future comments, suggestions and
+  contributions  to  this  package and its documentation provided by [5XGAP[105X users
+  and developers.[133X
+  
+  
+  -------------------------------------------------------
+  
+  
+  [1XContents (EquiDeg)[101X
+  
+  1 [33X[0;0YIntroduction[133X
+  2 [33X[0;0YBasic Math Procedures[133X
+    2.1 [33X[0;0YPoset[133X
+      2.1-1 IsSortedPoset
+      2.1-2 TopologicalSort
+    2.2 [33X[0;0YLattice[133X
+      2.2-1 IsLatticeRep
+      2.2-2 Lattice
+      2.2-3 MaximalSubElementsLattice
+  A [33X[0;0YUtilities[133X
+    A.1 [33X[0;0YEquiDeg Info Class[133X
+      A.1-1 INFO_LEVEL_EquiDeg
+      A.1-2 InfoEquiDeg
+    A.2 [33X[0;0YLaTeX Typesettings[133X
+      A.2-1 LaTeXString
+      A.2-2 LaTeXTypesetting
+  
+  
+  [32X

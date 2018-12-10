@@ -99,7 +99,7 @@
       elif ( id = [ 2, 1 ] ) then
         eclg := OrthogonalGroupOverReal( 2 );
       else
-        Info( InfoWarning, INFO_LEVEL, "Unrecognizable ID for ECLG." );
+        Info( InfoEquiDeg, INFO_LEVEL_EquiDeg, "Unrecognizable ID for ECLG." );
         return fail;
       fi;
       # SetIdECLG( eclg, id );
@@ -462,7 +462,7 @@
 
       is_supported := false;
       if not ( IdECLG( eclg ) in [ [ 1, 1 ], [ 2, 1 ] ] ) then
-        Info( InfoWarning, INFO_LEVEL, "The underlying group of the CCSs is not supported." );
+        Info( InfoEquiDeg, INFO_LEVEL_EquiDeg, "The underlying group of the CCSs is not supported." );
         return fail;
       fi;
 

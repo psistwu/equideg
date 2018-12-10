@@ -6,41 +6,6 @@
 # Hao-pin Wu <psistwu@outlook.com>
 #
 
-
-# ### constructor(s)
-# ***
-  InstallMethod( Lattice,
-    "constructing the lattice of a sorted list",
-    [ IsLatticeOrbitTypesRep, IsHomogeneousList ],
-    function( filter, orbittype_list )
-      local c,                # a conjugacy class of subgroups
-            node_shape_list;  # define the node shape of each CCS in the lattice diagram
-                              # normal subgroups -> squares
-                              # other subgroups -> circles
-
-      node_shape_list := [ ];
-      for c in orbittype_list do
-        if ( Size( c ) = 1 ) then
-          Add( node_shape_list, "square" );
-        else
-          Add( node_shape_list, "circle" );
-        fi;
-      od;
-
-      return Objectify(
-        NewType( FamilyObj( orbittype_list ), IsCollection and filter ),
-        rec(
-          sortedList := orbittype_list,
-          rankType := "Dim",
-          nodeShapes := node_shape_list,
-          isRankReversed := false
-        )
-      );
-    end
-  );
-
-
-
 # ### attribute(s)
 # ***
   InstallMethod( OrbitTypes,

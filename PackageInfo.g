@@ -1,6 +1,6 @@
 #############################################################################
 ##  
-##  PackageInfo.g for the package `Example'                         Haopin Wu
+##  PackageInfo.g for the package `EquiDeg'                         Haopin Wu
 ##
 ##
 ##
@@ -80,7 +80,7 @@ SetPackageInfo( rec(
   ),
 
   PackageDoc := rec(
-    BookName  := "Example",
+    BookName  := "EquiDeg",
     ArchiveURLSubset := [ "doc" ],
     HTMLStart := "doc/chap0.html",
     PDFFile   := "doc/manual.pdf",

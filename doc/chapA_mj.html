@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<title>GAP (EquiDeg) - Appendix A: Utilities</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="GAPDoc2HTML" />
+<link rel="stylesheet" type="text/css" href="manual.css" />
+<script src="manual.js" type="text/javascript"></script>
+<script type="text/javascript">overwriteStyle();</script>
+</head>
+<body class="chapA"  onload="jscontent()">
+
+
+<div class="chlinktop"><span class="chlink1">Goto Chapter: </span><a href="chap0_mj.html">Top</a>  <a href="chap1_mj.html">1</a>  <a href="chap2_mj.html">2</a>  <a href="chapA_mj.html">A</a>  <a href="chapInd_mj.html">Ind</a>  </div>
+
+<div class="chlinkprevnexttop">&nbsp;<a href="chap0_mj.html">[Top of Book]</a>&nbsp;  <a href="chap0_mj.html#contents">[Contents]</a>&nbsp;  &nbsp;<a href="chap2_mj.html">[Previous Chapter]</a>&nbsp;  &nbsp;<a href="chapInd_mj.html">[Next Chapter]</a>&nbsp;  </div>
+
+<p id="mathjaxlink" class="pcenter"><a href="chapA.html">[MathJax off]</a></p>
+<p><a id="X7DFC90B87DC503A1" name="X7DFC90B87DC503A1"></a></p>
+<div class="ChapSects"><a href="chapA_mj.html#X7DFC90B87DC503A1">A <span class="Heading">Utilities</span></a>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chapA_mj.html#X82990AE587C7AA78">A.1 <span class="Heading">EquiDeg Info Class</span></a>
+</span>
+<div class="ContSSBlock">
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chapA_mj.html#X803F9EA37BBB875F">A.1-1 INFO_LEVEL_EquiDeg</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chapA_mj.html#X795C35687F251D34">A.1-2 InfoEquiDeg</a></span>
+</div></div>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chapA_mj.html#X827F971383CC7746">A.2 <span class="Heading">LaTeX Typesettings</span></a>
+</span>
+<div class="ContSSBlock">
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chapA_mj.html#X81CFC38C82E0D642">A.2-1 LaTeXString</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chapA_mj.html#X7EFDF2337B312A0A">A.2-2 LaTeXTypesetting</a></span>
+</div></div>
+</div>
+
+<h3>A <span class="Heading">Utilities</span></h3>
+
+<p>Here, we list utilities which are used throughout the package.</p>
+
+<p><a id="X82990AE587C7AA78" name="X82990AE587C7AA78"></a></p>
+
+<h4>A.1 <span class="Heading">EquiDeg Info Class</span></h4>
+
+<p><a id="X803F9EA37BBB875F" name="X803F9EA37BBB875F"></a></p>
+
+<h5>A.1-1 INFO_LEVEL_EquiDeg</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; INFO_LEVEL_EquiDeg</code></td><td class="tdright">(&nbsp;global variable&nbsp;)</td></tr></table></div>
+<p>is the info level regarding the usage of <code class="func">Info</code> (<a href="../../../doc/ref/chap7_mj.html#X864E4B6886E2697D"><span class="RefLink">Reference: Info</span></a>) throughout the package; its default value is 1. Since higher value results in more detailed feedback, one can increase the value for debugging purpose.</p>
+
+<p><a id="X795C35687F251D34" name="X795C35687F251D34"></a></p>
+
+<h5>A.1-2 InfoEquiDeg</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; InfoEquiDeg</code></td><td class="tdright">(&nbsp;info class&nbsp;)</td></tr></table></div>
+<p>is the default info class throughout the package. Its default info level is 1.</p>
+
+<p><a id="X827F971383CC7746" name="X827F971383CC7746"></a></p>
+
+<h4>A.2 <span class="Heading">LaTeX Typesettings</span></h4>
+
+<p><a id="X81CFC38C82E0D642" name="X81CFC38C82E0D642"></a></p>
+
+<h5>A.2-1 LaTeXString</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; LaTeXString</code>( <var class="Arg">obj</var> )</td><td class="tdright">(&nbsp;attribute&nbsp;)</td></tr></table></div>
+<p>stores the LaTeX representation of an object. This attribute is supposed to be assigned manually.</p>
+
+<p><a id="X7EFDF2337B312A0A" name="X7EFDF2337B312A0A"></a></p>
+
+<h5>A.2-2 LaTeXTypesetting</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; LaTeXTypesetting</code>( <var class="Arg">obj</var> )</td><td class="tdright">(&nbsp;attribute&nbsp;)</td></tr></table></div>
+<p>returns the LaTeX typesetting of an object. In default, it simply calls <code class="func">LaTeXString</code> (<a href="chapA_mj.html#X81CFC38C82E0D642"><span class="RefLink">A.2-1</span></a>). However, it may behave differently for objects of different categories.</p>
+
+
+<div class="chlinkprevnextbot">&nbsp;<a href="chap0_mj.html">[Top of Book]</a>&nbsp;  <a href="chap0_mj.html#contents">[Contents]</a>&nbsp;  &nbsp;<a href="chap2_mj.html">[Previous Chapter]</a>&nbsp;  &nbsp;<a href="chapInd_mj.html">[Next Chapter]</a>&nbsp;  </div>
+
+
+<div class="chlinkbot"><span class="chlink1">Goto Chapter: </span><a href="chap0_mj.html">Top</a>  <a href="chap1_mj.html">1</a>  <a href="chap2_mj.html">2</a>  <a href="chapA_mj.html">A</a>  <a href="chapInd_mj.html">Ind</a>  </div>
+
+<hr />
+<p class="foot">generated by <a href="http://www.math.rwth-aachen.de/~Frank.Luebeck/GAPDoc">GAPDoc2HTML</a></p>
+</body>
+</html>
