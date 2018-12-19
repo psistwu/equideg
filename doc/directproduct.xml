@@ -1,16 +1,19 @@
 <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
 <!-- %%									  -->
-<!-- %W  intro.xml	GAP Package `EquiDeg'			Haopin Wu -->
+<!-- %W  directproduct.xml	GAP Package `EquiDeg'		Haopin Wu -->
 <!-- %%									  -->
 <!-- %Y  Copyright (C) 2017-2018, Haopin Wu				  -->
 <!-- %Y  Department of Mathematics, National Tsing Hua University, Taiwan -->
 <!-- %%									  -->
 
-<Chapter Label="ch:intro"><Heading>Introduction</Heading>
-The main purpose of the &EquiDeg; package is to
+<Chapter Label="ch:directproduct"><Heading>Direct Product</Heading>
+<Section><Heading>Dirct Product of two finite groups</Heading>
+</Section>
+<Section><Heading>Dirct Product of two finite groups</Heading>
+</Section>
 </Chapter>
 
 
 <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
 <!-- %%									  -->
-<!-- %E  intro.xml . . . . . . . . . . . . . . . . . . . . . .  ends here -->
+<!-- %E  directproduct.xml . . . . . . . . . . . . . . . . . .  ends here -->

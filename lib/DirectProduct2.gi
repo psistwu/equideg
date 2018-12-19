@@ -411,7 +411,7 @@
 
         # sort ccs_classes
         ccs_pairs := List( ccs_classes, cl -> [ NewCCS( rep_ccss, cl ), cl ] );
-        TopologicalSort( ccs_pairs );
+        PSort( ccs_pairs );
 
         return List( ccs_pairs, cp -> cp[ 2 ] );
       end;

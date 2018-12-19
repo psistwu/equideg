@@ -1,14 +1,18 @@
-# # GAP: Compact Lie Group Library
-#
-# Implementation file of libCompactLieGroup.g
-#
-# Author:
-# Haopin Wu <psistwu@outlook.com>
-#
+#############################################################################
+##
+#W  CompactLieGroup.gd	GAP Package `EquiDeg'			    Haopin Wu
+##
+#Y  Copyright (C) 2017-2018, Haopin Wu
+#Y  Department of Mathematics, National Tsing Hua University, Taiwan
+##
+##  This file contains declarations for compact Lie group.
+##
 
-
-# ### constructor(s)
-# ***
+#############################################################################
+##
+#U  NewElementaryCompactLieGroup( IsElementaryCompactLieGroup and
+#U      IsMatrixGroup and IsCompactLieGroupRep, <d> )
+##
   InstallOtherMethod( NewElementaryCompactLieGroup,
     "constructor of a matrix-ECLG",
     [ IsElementaryCompactLieGroup and IsMatrixGroup and IsCompactLieGroupRep, IsPosInt ],
@@ -35,7 +39,10 @@
     end
   );
 
-# ***
+#############################################################################
+##
+#F  OrthogonalGroupOverReal( <d> )
+##
   InstallMethod( OrthogonalGroupOverReal,
     "generate an orthogonal group over real numbers",
     [ IsPosInt ],
@@ -61,7 +68,10 @@
     end
   );
 
-# ***
+#############################################################################
+##
+#F  SpecialOrthogonalGroupOverReal( <d> )
+##
   InstallMethod( SpecialOrthogonalGroupOverReal,
     "generate a special orthogonal group over real numbers",
     [ IsPosInt ],
@@ -69,7 +79,8 @@
       local eclg;              # the special orthogonal group
 
       # objectify the group
-      eclg := NewElementaryCompactLieGroup( IsElementaryCompactLieGroup and IsMatrixGroup and IsCompactLieGroupRep, d );
+      eclg := NewElementaryCompactLieGroup( IsElementaryCompactLieGroup
+          and IsMatrixGroup and IsCompactLieGroupRep, d );
 
       # setup property(s) and attribute(s) of the group
       SetIsAbelian( eclg, true );
@@ -87,7 +98,10 @@
     end
   );
 
-# ***
+#############################################################################
+##
+#F  ECLGId( <id> )
+##
   InstallMethod( ECLGId,
     "generate elementary compact Lie group of given ID",
     [ IsList ],
@@ -108,7 +122,10 @@
     end
   );
 
-# ***
+#############################################################################
+##
+#U  NewCCS( IsCompactLieGroupCCSsRep, <rec>, <n> )
+##
   InstallMethod( NewCCS,
     "CCS constructor of SO(2) or O(2)",
     [ IsElementaryCompactLieGroupCCSsRep, IsRecord, IsInt ],
@@ -159,9 +176,12 @@
     end
   );
 
-# ***
+#############################################################################
+##
+#U  NewCCS( IsElementaryCompactLieGroupCCSsRep, <rec>, <n> )
+##
   InstallOtherMethod( NewCCS,
-    "CCS constructor of CLG",
+    "CCS constructor of ECLG",
     [ IsElementaryCompactLieGroupCCSsRep, IsRecord ],
     function( filter, ccs_class )
       local mode;
@@ -176,9 +196,10 @@
     end
   );
 
-
-# ### Attribute(s)
-# ***
+#############################################################################
+##
+#A  ConjugacyClassesSubgroups( <eclg> )
+##
   InstallMethod( ConjugacyClassesSubgroups,
     "CCSs of O(2)",
     [ IsElementaryCompactLieGroup and IsCompactLieGroupRep ],
@@ -269,7 +290,10 @@
     end
   );
 
-# ***
+#############################################################################
+##
+#A  CCSClassesFiltered( <ccss_clg> )
+##
   InstallMethod( CCSClassesFiltered,
     "return a function which gives a filtered CCS classes",
     [ IsCompactLieGroupCCSsRep ],
@@ -306,7 +330,10 @@
     end
   );
 
-# ***
+#############################################################################
+##
+#A  CCSId( <ccss_clg> )
+##
   InstallMethod( CCSId,
     "return CCSId attribute of a compact Lie group CCS list",
     [ IsCompactLieGroupCCSsRep ],
@@ -336,9 +363,10 @@
     end
   );
 
-# ### Operation(s)
-# #### for ECLG
-# ***
+#############################################################################
+##
+#O  \=( <eclg1>, <eclg2> )
+##
   InstallMethod( \=,
     "equivalence relation of ECLGs",
     [ IsElementaryCompactLieGroup, IsElementaryCompactLieGroup ],
@@ -347,7 +375,10 @@
     end
   );
 
-# ***
+#############################################################################
+##
+#O  \in( <obj>, SO(n) )
+##
   InstallMethod( \in,
     "Membership test for SO(n)",
     [ IsObject, IsElementaryCompactLieGroup and IsMatrixGroup ],
@@ -359,7 +390,9 @@
         TryNextMethod( );
       fi;
 
-      if IsIdenticalObj( CollectionsFamily( FamilyObj( obj ) ), FamilyObj( eclg ) ) and ( TransposedMat( obj ) * obj = One( eclg ) ) and ( Determinant( obj ) = 1 ) then
+      if IsIdenticalObj( CollectionsFamily( FamilyObj( obj ) ),
+          FamilyObj( eclg ) ) and ( TransposedMat( obj ) * obj
+          = One( eclg ) ) and ( Determinant( obj ) = 1 ) then
         return true;
       else
         return false;
@@ -367,7 +400,10 @@
     end
   );
 
-# ***
+#############################################################################
+##
+#O  \in( <obj>, O(n) )
+##
   InstallMethod( \in,
     "Membership test for O(n)",
     [ IsObject, IsElementaryCompactLieGroup and IsMatrixGroup ],
@@ -379,7 +415,9 @@
         TryNextMethod( );
       fi;
 
-      if IsIdenticalObj( CollectionsFamily( FamilyObj( obj ) ), FamilyObj( eclg ) ) and ( TransposedMat( obj ) * obj = One( eclg ) ) then
+      if IsIdenticalObj( CollectionsFamily( FamilyObj( obj ) ),
+          FamilyObj( eclg ) ) and ( TransposedMat( obj ) * obj
+          = One( eclg ) ) then
         return true;
       else
         return false;
@@ -387,7 +425,10 @@
     end
   );
 
-# ***
+#############################################################################
+##
+#O  IsSubset( <eclg>, <grp> )
+##
   InstallMethod( IsSubset,
     "Test if a finite group is a subgroup of a ECLG",
     [ IsElementaryCompactLieGroup, IsGroup ],
@@ -408,7 +449,10 @@
     end
   );
 
-# ***
+#############################################################################
+##
+#O  IsSubset( <grp>, <eclg> )
+##
   InstallMethod( IsSubset,
     "Test if an ECLG is a subgroup of a finite group",
     [ IsGroup, IsElementaryCompactLieGroup ],
@@ -421,7 +465,10 @@
     end
   );
 
-# ***
+#############################################################################
+##
+#O  IsSubset( <eclg>, <eclg> )
+##
   InstallMethod( IsSubset,
     "Test if an ECLG is a subset of another ECLG",
     [ IsElementaryCompactLieGroup, IsElementaryCompactLieGroup ],
@@ -431,8 +478,10 @@
     end
   );
 
-# #### for CCS of ECLG
-# ***
+#############################################################################
+##
+#O  \=( <ccs1_eclg>, <ccs2_eclg> )
+##
   InstallMethod( \=,
     "the equivalence relation of CCSs of ECLG",
     IsIdenticalObj,
@@ -443,7 +492,10 @@
     end
   );
 
-# ***
+#############################################################################
+##
+#O  nLHnumber( <ccs1_eclg>, <ccs2_eclg> )
+##
   InstallMethod( nLHnumber,
     "return n(L,H) number for CCSs of ECLG",
     IsIdenticalObj,
@@ -451,7 +503,8 @@
     function( ccs1, ccs2 )
       local eclg,           # underlying group of ccs1 and ccs2
             workable_clg,   # workable group list
-            is_supported,   # flag indicating whether the underlying group is supported
+            is_supported,   # flag indicating whether the underlying group
+                            # is supported
             subg1, subg2,   # representatives
             k;              # the reflection
 
@@ -482,7 +535,10 @@
     end
   );
 
-# ***
+#############################################################################
+##
+#O  \<( <ccs1_clg>, <ccs2_clg> )
+##
   InstallMethod( \<,
     "the partial order oe the conjugacy classes of subgroups of a compact Lie group",
     IsIdenticalObj,
@@ -492,10 +548,10 @@
     end
   );
 
-
-# ### Print, View and Display
-# #### for ECLG
-# ***
+#############################################################################
+##
+#A  String( <eclg> )
+##
   InstallMethod( String,
     "string of ECLG",
     [ IsElementaryCompactLieGroup ],
@@ -512,7 +568,10 @@
     end
   );
 
-# ***
+#############################################################################
+##
+#O  PrintObj( <eclg> )
+##
   InstallMethod( PrintObj,
     "print ECLG",
     [ IsElementaryCompactLieGroup ],
@@ -522,7 +581,10 @@
     end
   );
 
-# ***
+#############################################################################
+##
+#A  ViewString( <eclg> )
+##
   InstallMethod( ViewString,
     "view string of ECLG",
     [ IsElementaryCompactLieGroup ],
@@ -540,7 +602,10 @@
     end
   );
 
-# ***
+#############################################################################
+##
+#O  ViewObj( <eclg> )
+##
   InstallMethod( ViewObj,
     "view ECLG",
     [ IsElementaryCompactLieGroup ],
@@ -550,7 +615,10 @@
     end
   );
 
-# ***
+#############################################################################
+##
+#A  DisplayString( <eclg> )
+##
   InstallMethod( DisplayString,
     "display string of ECLG",
     [ IsElementaryCompactLieGroup ],
@@ -567,7 +635,10 @@
     end
   );
 
-# ***
+#############################################################################
+##
+#O  Display( <eclg> )
+##
   InstallMethod( Display,
     "display ECLG",
     [ IsElementaryCompactLieGroup ],
@@ -577,8 +648,10 @@
     end
   );
 
-# #### for CCSs of ECLG
-# ***
+#############################################################################
+##
+#A  PrintString( <ccss_clg> )
+##
   InstallMethod( PrintString,
     "print string of CCS list of clg",
     [ IsCollection and IsCompactLieGroupCCSsRep ],
@@ -590,7 +663,10 @@
     end
   );
 
-# ***
+#############################################################################
+##
+#O  PrintObj( <ccss_cclg> )
+##
   InstallMethod( PrintObj,
     "print CCS list of compact Lie group",
     [ IsCollection and IsCompactLieGroupCCSsRep ],
@@ -599,7 +675,10 @@
     end
   );
 
-# ***
+#############################################################################
+##
+#A  ViewString( <ccss_clg> )
+##
   InstallMethod( ViewString,
     "view string of CCS list of CLG",
     [ IsCollection and IsCompactLieGroupCCSsRep ],
@@ -611,7 +690,10 @@
     end
   );
 
-# ***
+#############################################################################
+##
+#A  ViewObj( <ccss_clg> )
+##
   InstallMethod( ViewObj,
     "view CCS list of compact Lie group",
     [ IsCollection and IsCompactLieGroupCCSsRep ],
@@ -620,3 +702,7 @@
     end
   );
 
+
+#############################################################################
+##
+#E  CompactLieGroup.gi . . . . . . . . . . . . . . . . . . . . . .  ends here

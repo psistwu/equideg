@@ -11,7 +11,8 @@
 #R  Read the implementation files
 ##
 ReadPackage( "EquiDeg", "lib/Utils.gi" );
-ReadPackage( "EquiDeg", "lib/Basic.gi" );
+ReadPackage( "EquiDeg", "lib/Lattice.gi" );
+ReadPackage( "EquiDeg", "lib/Group.gi" );
 ReadPackage( "EquiDeg", "lib/OrbitType.gi" );
 ReadPackage( "EquiDeg", "lib/CompactLieGroup.gi" );
 ReadPackage( "EquiDeg", "lib/DirectProduct1.gi" );

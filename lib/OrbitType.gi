@@ -1,13 +1,17 @@
-# # GAP: Orbit Types Library
-#
-# Implementation file of libOrbitType.g
-#
-# Author:
-# Hao-pin Wu <psistwu@outlook.com>
-#
+#############################################################################
+##
+#W  OrbitType.gi	GAP Package `EquiDeg' 			    Haopin Wu
+##
+#Y  Copyright (C) 2017-2018, Haopin Wu
+#Y  Department of Mathematics, National Tsing Hua University, Taiwan
+##
+##  This file contains implementations for procedure related to orbit types.
+##
 
-# ### attribute(s)
-# ***
+#############################################################################
+##
+#A  OrbitTypes( <chi> )
+##
   InstallMethod( OrbitTypes,
     "return indices of orbit types of the representation",
     [ IsCharacter ],
@@ -41,7 +45,45 @@
     end
   );
 
-# ***
+#############################################################################
+##
+#U  NewLattice( <filter>, <list> )
+##
+# InstallMethod( NewLattice,
+#   "constructing the lattice of a sorted list",
+#   [ IsLatticeOrbitTypesRep, IsHomogeneousList ],
+#   function( filter, orbittype_list )
+#     local c,                # a conjugacy class of subgroups
+#           node_shape_list;  # define the node shape of
+#                             # each CCS in the lattice diagram
+#                             # normal subgroups -> squares
+#                             # other subgroups -> circles
+
+#     node_shape_list := [ ];
+#     for c in orbittype_list do
+#       if ( Size( c ) = 1 ) then
+#         Add( node_shape_list, "square" );
+#       else
+#         Add( node_shape_list, "circle" );
+#       fi;
+#     od;
+
+#     return Objectify(
+#       NewType( FamilyObj( orbittype_list ), IsCollection and filter ),
+#       rec(
+#         sortedList := orbittype_list,
+#         rankType := "Dim",
+#         nodeShapes := node_shape_list,
+#         isRankReversed := false
+#       )
+#     );
+#   end
+# );
+
+#############################################################################
+##
+#A  LatticeOrbitTypes( <chi> )
+##
   InstallMethod( LatticeOrbitTypes,
     "return lattice of orbit types of the given character",
     [ IsCharacter ],
@@ -57,7 +99,7 @@
       ccs_list := ConjugacyClassesSubgroups( grp );
       orbittype_index_list := OrbitTypes( chi );
       orbittype_list := ccs_list{ orbittype_index_list };
-      lat := Lattice( IsLatticeOrbitTypesRep, orbittype_list );
+      lat := NewLattice( IsLatticeOrbitTypesRep, orbittype_list );
       lat!.ranks := List( orbittype_list, o -> DimensionOfFixedSet( chi, o ) );
       lat!.nodeLabels := orbittype_index_list;
 
@@ -65,7 +107,10 @@
     end
   );
 
-# ***
+#############################################################################
+##
+#A  MaximalOrbitTypes( <chi> )
+##
   InstallMethod( MaximalOrbitTypes,
     "return ccs indices of maximal orbit types of the given representation",
     [ IsCharacter ],
@@ -78,7 +123,10 @@
     end
   );
 
-# ***
+#############################################################################
+##
+#A  AlphaCharacteristic( <chi> )
+##
   InstallMethod( AlphaCharacteristic,
     "return Alpha-characteristic of the representation",
     [ IsCharacter ],
@@ -106,10 +154,10 @@
     end
   );
 
-
-
-# ### property(s)
-# ***
+#############################################################################
+##
+#P  IsAGroup( <grp> )
+##
   InstallMethod( IsAGroup,
     "check whether the given group is an A-group",
     [ IsGroup ],
@@ -124,10 +172,10 @@
     end
   );
 
-
-
-# ### operation(s)
-# ***
+#############################################################################
+##
+#O  DimensionOfFixedSet( <chi>, <subg> )
+##
   InstallMethod( DimensionOfFixedSet,
     "return the dimension of fixed set for given character and subgroup",
     [ IsCharacter, IsGroup and IsFinite ],
@@ -148,7 +196,10 @@
     end
   );
 
-# ***
+#############################################################################
+##
+#O  DimensionOfFixedSet( <chi>, <ccsubg> )
+##
   InstallMethod( DimensionOfFixedSet,
     "return the dimension of fixed set for given character and CCS",
     [ IsCharacter, IsConjugacyClassSubgroupsRep ],
@@ -158,3 +209,6 @@
   );
 
 
+#############################################################################
+##
+#E  OrbitType.gi . . . . . . . . . . . . . . . . . . . . . . . . .  ends here

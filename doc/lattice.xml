@@ -1,0 +1,27 @@
+<!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
+<!-- %%									  -->
+<!-- %W  lattice.xml		GAP Package `EquiDeg'		Haopin Wu -->
+<!-- %%									  -->
+<!-- %Y  Copyright (C) 2017-2018, Haopin Wu				  -->
+<!-- %Y  Department of Mathematics, National Tsing Hua University, Taiwan -->
+<!-- %%									  -->
+
+<Chapter Label="ch:lattice"><Heading>Poset and Lattice</Heading>
+We will explain basic math procedures in this package.
+<Section><Heading>Poset</Heading>
+<#Include Label="IsPSortedList">
+<#Include Label="PSort">
+<#Include Label="PSortedList">
+</Section>
+<Section><Heading>Lattice</Heading>
+<#Include Label="IsLatticeRep">
+<#Include Label="NewLattice">
+<#Include Label="MaximalSubElementsLattice">
+<#Include Label="DotFileLattice">
+</Section>
+</Chapter>
+
+
+<!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
+<!-- %%									  -->
+<!-- %E  lattice.xml . . . . . . . . . . . . . . . . . . . . .  ends here -->

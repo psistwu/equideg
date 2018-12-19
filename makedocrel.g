@@ -8,9 +8,10 @@ MakeGAPDocDoc( "doc",     # path to the directory containing the main file
                           # list of (probably source code) files relative 
                           # to path which contain pieces of documentation 
                           # which must be included in the document
-               [ "../PackageInfo.g", "../lib/Utils.gd", "../lib/Basic.gd",
+               [ "../PackageInfo.g",
+                 "../lib/Utils.gd", "../lib/Lattice.gd", "../lib/Group.gd",
                  "../lib/OrbitType.gd", "../lib/CompactLieGroup.gd",
-                 "../lib/DirectProduct1.gd", "../lib/DirectProdict2.gd",
+                 "../lib/DirectProduct1.gd", "../lib/DirectProduct2.gd",
                  "../lib/BurnsideRing.gd" ], 
                "EquiDeg", # the name of the book used by GAP's online help
                "../../..",# optional: relative path to the main GAP root 

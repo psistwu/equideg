@@ -1,0 +1,27 @@
+<!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
+<!-- %%									  -->
+<!-- %W  group.xml		GAP Package `EquiDeg'		Haopin Wu -->
+<!-- %%									  -->
+<!-- %Y  Copyright (C) 2017-2018, Haopin Wu				  -->
+<!-- %Y  Department of Mathematics, National Tsing Hua University, Taiwan -->
+<!-- %%									  -->
+
+<Chapter Label="ch:group"><Heading>Group</Heading>
+<Section><Heading>Basic Groups</Heading>
+<#Include Label="pCyclicGroup">
+<#Include Label="mCyclicGroup">
+<#Include Label="pDihedralGroup">
+<#Include Label="mDihedralGroup">
+</Section>
+<Section><Heading>Group Theory</Heading>
+<#Include Label="LessThan">
+<#Include Label="OrderOfWeylGroup">
+<#Include Label="nLHnumber">
+<#Include Label="LatticeCCSs">
+</Section>
+</Chapter>
+
+
+<!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
+<!-- %%									  -->
+<!-- %E  group.xml . . . . . . . . . . . . . . . . . . . . . .  ends here -->

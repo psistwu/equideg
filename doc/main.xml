@@ -1,3 +1,11 @@
+<!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
+<!-- %%									  -->
+<!-- %W  main.xml	GAP Package `EquiDeg'			Haopin Wu -->
+<!-- %%									  -->
+<!-- %Y  Copyright (C) 2017-2018, Haopin Wu				  -->
+<!-- %Y  Department of Mathematics, National Tsing Hua University, Taiwan -->
+<!-- %%									  -->
+
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!-- Reading PKGVERSIONDATA chunk from the PackageInfo.g file -->
@@ -42,7 +50,12 @@
 <Body>
 
 <#Include SYSTEM "intro.xml">
-<#Include SYSTEM "basic.xml">
+<#Include SYSTEM "lattice.xml">
+<#Include SYSTEM "group.xml">
+<#Include SYSTEM "orbittype.xml">
+<#Include SYSTEM "compactliegroup.xml">
+<#Include SYSTEM "directproduct.xml">
+<#Include SYSTEM "burnsidering.xml">
 
 </Body>
 
@@ -52,5 +65,7 @@
 
 </Book>
 
-<!-- ==================================================================== -->
 
+<!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
+<!-- %%									  -->
+<!-- %E  main.xml . . . . . . . . . . . . . . . . . . . . . . . ends here -->

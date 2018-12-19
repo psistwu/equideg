@@ -50,8 +50,10 @@
 #O  DimensionOfFixedSet( <chi>, <ccsubg> )
 ##
   DeclareOperation( "DimensionOfFixedSet", [ IsCharacter, IsGroup ] );
-  DeclareOperation( "DimensionOfFixedSet", [ IsCharacter, IsConjugacyClassSubgroupsRep] );
+  DeclareOperation( "DimensionOfFixedSet",
+      [ IsCharacter, IsConjugacyClassSubgroupsRep] );
+
 
 #############################################################################
 ##
-#E  LatticeAndOrbitType.gd . . . . . . . . . . . . . . . . . . . .  ends here
+#E  OrbitType.gd . . . . . . . . . . . . . . . . . . . . . . . . .  ends here
