@@ -5,33 +5,63 @@
 #Y  Copyright (C) 2017-2018, Haopin Wu
 #Y  Department of Mathematics, National Tsing Hua University, Taiwan
 ##
-##  This file contains declarations for procedures related to lattice.
+##  This file contains declarations of procedures related to lattice.
 ##
 ##  Todo:
-##    1. Make <IsPSortedList> a property instead of a operation.
-##       In exchange, add operation <IsPSortedListBy>.
-##    2. Add property <IsPoset>, which is synonym for
-##       <IsPSortedList and IsDuplicateFreeList>.
 ##
 
 ##  Part 1: Poset
 
 #############################################################################
 ##
-#O  IsPSortedList( <list>[, <func>] )
+#O  IsPSortedListBy( <list>, <func> )
 ##
-##  <#GAPDoc Label="IsPSortedList">
+##  <#GAPDoc Label="IsPSortedListBy">
 ##  <ManSection>
-##  <Oper Name="IsPSortedList" Arg="list[, func]"/>
+##  <Oper Name="IsPSortedListBy" Arg="list, func"/>
 ##  <Description>
 ##    checks whether <A>list</A> is a sorted
-##    with respect to partial order <A>func</A>,
-##    or <C>&bslash;&lt;</C> if <A>func</A> is not given.
+##    with respect to partial order <A>func</A>.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareOperation( "IsPSortedList", [ IsHomogeneousList, IsFunction ] );
+  DeclareOperation( "IsPSortedListBy", [ IsHomogeneousList, IsFunction ] );
+
+#############################################################################
+##
+#P  IsPSortedList( <list> )
+##
+##  <#GAPDoc Label="IsPSortedList">
+##  <ManSection>
+##  <Prop Name="IsPSortedList" Arg="list"/>
+##  <Description>
+##    checks whether <A>list</A> is a sorted
+##    with respect to partial order <C>&bslash;&lt;</C>.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+  DeclareProperty( "IsPSortedList", IsHomogeneousList );
+
+#############################################################################
+##
+#P  IsPoset( <list> )
+##
+##  <#GAPDoc Label="IsPoset">
+##  <ManSection>
+##  <Prop Name="IsPoset" Arg="list"/>
+##  <Description>
+##    checks whether <A>list</A> is a poset, i.e.,
+##    a non-repeating homogeneous list sorted
+##    with respect to partial order <C>&bslash;&lt;</C>.
+##    In other words, it is a synonym for
+##    <C>IsPSortedList and IsDuplicateFree</C>.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+  DeclareProperty( "IsPoset", IsHomogeneousList );
 
 #############################################################################
 ##
@@ -107,12 +137,12 @@
 ##    <Mark><C>node_labels</C></Mark>
 ##    <Item>
 ##      A list of node labels for elements in the poset.
-##      The order of the list corresponds to that of <C>slist</C>.
+##      The order of the list corresponds to that of <C>poset</C>.
 ##    </Item>
 ##    <Mark><C>node_shapes</C></Mark>
 ##    <Item>
 ##      A list of node shapes for elements in the poset.
-##      The order of the list corresponds to that of <C>slist</C>.
+##      The order of the list corresponds to that of <C>poset</C>.
 ##    </Item>
 ##    <Mark><C>rank_type</C></Mark>
 ##    <Item>
@@ -125,7 +155,7 @@
 ##    <Mark><C>ranks</C></Mark>
 ##    <Item>
 ##      A list of rank for elements in the poset.
-##      The order of the list corresponds to that of <C>slist</C>.
+##      The order of the list corresponds to that of <C>poset</C>.
 ##    </Item>
 ##    <Mark><C>is_rank_reversed</C></Mark>
 ##    <Item>
@@ -147,15 +177,30 @@
 
 #############################################################################
 ##
+#A  Poset( <lat> )
+##
+##  <#GAPDoc Label="Poset">
+##  <ManSection>
+##  <Attr Name="Poset" Arg="lat"/>
+##  <Description>
+##    returns the underlying poset of <A>lat</A>.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+  DeclareAttribute( "Poset", IsLatticeRep );
+
+#############################################################################
+##
 #A  MaximalSubElementsLattice( <lat> )
 ##
 ##  <#GAPDoc Label="MaximalSubElementsLattice">
 ##  <ManSection>
 ##  <Attr Name="MaximalSubElementsLattice" Arg="lat"/>
 ##  <Description>
-##    For a lattice <A>lat</A>, this attribute contains the
-##    list of maximal sub-elements, which is a list of indices
-##    corresponding to <C>Enumerator( <A>lat</A> )</C>.
+##    For lattice <A>lat</A>, this attribute contains the
+##    list of maximal sub-elements, which is described by
+##    indices corresponding to <A>lat!.poset</A>.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
@@ -173,7 +218,7 @@
 ##  <Description>
 ##    For a lattice <A>lat</A>, this attribute contains the
 ##    list of minimal sup-elements, which is a list of indices
-##    corresponding to <C>Enumerator( <A>lat</A> )</C>.
+##    corresponding to <A>lat!.silst</A>.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
@@ -193,7 +238,7 @@
 ##    lattice <A>lat</A> in file <A>filename</A>.
 ##    The output is in <C>.dot</C> format.
 ##    For details and information about this format,
-##    please see <URL>http://www.graphviz.org</URL>.
+##    please see <URL>https://www.graphviz.org</URL>.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>

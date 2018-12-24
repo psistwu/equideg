@@ -275,7 +275,7 @@
 
       lat := NewLattice( IsLatticeCCSsRep,
         rec(
-          slist := ccs_list,
+          poset := ccs_list,
           node_labels := [ 1 .. Size( ccs_list ) ],
           node_shapes := node_shape_list,
           rank_type := "Order",

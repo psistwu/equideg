@@ -5,16 +5,16 @@
 #Y  Copyright (C) 2017-2018, Haopin Wu
 #Y  Department of Mathematics, National Tsing Hua University, Taiwan
 ##
-##  This file contains implementations for procedures related to lattice.
+##  This file contains implementations of procedures related to lattice.
 ##
 
 ##  Part 1: Poset
 
 #############################################################################
 ##
-#O  IsPSortedList( <list>, <func> )
+#O  IsPSortedListBy( <list>, <func> )
 ##
-  InstallMethod( IsPSortedList,
+  InstallMethod( IsPSortedListBy,
     "check whether <list> is sorted with respect to partial order <func>",
     [ IsHomogeneousList, IsFunction ],
     function( list, func )
@@ -32,14 +32,22 @@
 
 #############################################################################
 ##
-#O  IsPSortedList( <list> )
+#P  IsPSortedList( <list> )
 ##
-  InstallOtherMethod( IsPSortedList,
+  InstallMethod( IsPSortedList,
     "checks whether <list> is sorted with respect to partial order \<",
     [ IsHomogeneousList ],
-    function( list )
-      return IsPSortedList( list, \< );
-    end
+    list -> IsPSortedListBy( list, \< )
+  );
+
+#############################################################################
+##
+#P  IsPSortedList( <list> )
+##
+  InstallMethod( IsPoset,
+    "checks whether <list> is a poset with respect to partial order \<",
+    [ IsHomogeneousList ],
+    list -> IsPSortedList( list ) and IsDuplicateFree( list )
   );
 
 #############################################################################
@@ -148,24 +156,24 @@
     [ IsLatticeRep and IsLatticeCCSsRep and IsLatticeOrbitTypesRep,
       IsRecord ],
     function( filter, r )
-      local n;		# the size of the poset
+      local n,		# the size of the poset
+            lat;	# the lattice
 
       # check the components in <r>
-      if not ( IsHomogeneousList( r.slist ) and
-          IsSortedList( r.slist ) ) then
-        Error( "<r.slist> must be a sorted homogeneous list." );
+      if not IsPoset( r.poset ) then
+        Error( "<r.poset> must be a poset." );
       fi;
 
-      n := Size( r.slist );
+      n := Size( r.poset );
 
       if not ( IsHomogeneousList( r.node_labels ) and
           Size( r.node_labels ) = n ) then
-        Error( "<r.node_labels> must be a list having the same size as <r.slist>." );
+        Error( "<r.node_labels> must be a list having the same size as <r.poset>." );
       fi;
 
       if not ( IsHomogeneousList( r.node_shapes ) and
           Size( r.node_shapes ) = n ) then
-        Error( "<r.node_shapes> must be a list having the same size as <r.slist>." );
+        Error( "<r.node_shapes> must be a list having the same size as <r.poset>." );
       fi;
 
       if not IsString( r.rank_type ) then
@@ -174,7 +182,7 @@
 
       if not ( IsHomogeneousList( r.ranks ) and
           Size( r.ranks ) = n ) then
-        Error( "<r.ranks> must be a list having the same size as <r.slist>." );
+        Error( "<r.ranks> must be a list having the same size as <r.poset>." );
       fi;
 
       if not IsBool( r.is_rank_reversed ) then
@@ -182,11 +190,23 @@
       fi;
 
       # generate the lattice object
-      return Objectify(
-        NewType( FamilyObj( r.slist ), IsCollection and filter ),
+      lat := Objectify(
+        NewType( FamilyObj( r.poset ), IsCollection and filter ),
         r
       );
+
+      return lat;
     end
+  );
+
+#############################################################################
+##
+#A  Poset( <lat> )
+##
+  InstallMethod( Poset,
+    "returns poset of a lattice",
+    [ IsLatticeRep ],
+    lat -> lat!.poset
   );
 
 #############################################################################
@@ -198,21 +218,21 @@
     [ IsCollection and IsLatticeRep ],
     function( lat )
       local i, j,		# indices
-            slist,		# sorted list
+            poset,		# poset
             subs,		# sub-elements
             maxsub_list;	# return value
 
       # extract the sorted list
-      slist := Enumerator( lat );
+      poset := Poset( lat );
 
       # initialize maxsub_list;
       maxsub_list := [ ];
 
       # find sub-elements of each element
-      for i in Reversed( [ 1 .. Size( slist ) ] ) do
+      for i in Reversed( [ 1 .. Size( poset ) ] ) do
         Add( maxsub_list, [ ], 1 );
         for j in [ 1 .. i-1 ] do
-          if ( slist[ j ] < slist[ i ] ) then
+          if ( poset[ j ] < poset[ i ] ) then
             Add( maxsub_list[ 1 ], j );
           fi;
         od;
@@ -239,8 +259,7 @@
     "generate the dot file of <lat>",
     [ IsCollection and IsLatticeRep, IsString ],
     function( lat, file )
-      local slist,
-            maxsub_list,
+      local maxsub_list,
             outstream,
             legend_list,
             rank,
@@ -250,7 +269,6 @@
             i, j;
 
       # extract information form the lattice
-      slist := EnumeratorSorted( lat );
       maxsub_list := MaximalSubElementsLattice( lat );
       outstream := OutputTextFile( file, false );
 
@@ -259,13 +277,13 @@
       AppendTo( outstream, "size = \"6,6\";\n" );
 
       # put the legend of ranks on the left-hand side
-      if lat!.isRankReversed then
+      if lat!.is_rank_reversed then
         legend_list := Reversed( Set( lat!.ranks ) );
       else
         legend_list := Set( lat!.ranks );
       fi;
       AppendTo( outstream,
-          "\"rt\" [label=\"", lat!.rankType, "\", color=white];\n");
+          "\"rt\" [label=\"", lat!.rank_type, "\", color=white];\n");
       AppendTo( outstream, "\"rt\" -> ");
       for i in [ 1 .. Size( legend_list ) ] do
         rank := String( legend_list[ i ] );
@@ -279,9 +297,9 @@
       od;
 
       # put nodes of elements
-      for i in [ 1 .. Size( slist ) ] do
-        node_label := lat!.nodeLabels[ i ];
-        node_shape := lat!.nodeShapes[ i ];
+      for i in [ 1 .. Size( Poset( lat ) ) ] do
+        node_label := lat!.node_labels[ i ];
+        node_shape := lat!.node_shapes[ i ];
         AppendTo( outstream,
             "\"", i, "\" [label=\"", node_label, "\", shape=",
             node_shape, "];\n" );

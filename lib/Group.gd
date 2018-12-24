@@ -176,13 +176,14 @@
 ##  <ManSection>
 ##  <Attr Name="LatticeCCSs" Arg="grp"/>
 ##  <Description>
-##    This attribute contains lattice of CCSs.
-##    One can use
+##    This attribute contains lattice of CCSs of <A>grp</A>.
+##    Its return object <C>lat</C> admits attribute
 ##    <Ref Attr="ConjugacyClassesSubgroups" BookName="Reference"/>
-##    or <Ref Attr="Enumerator" BookName="Reference"/>
-##    to retrive the underlying CCS list.
-##    and use <Ref Oper="DotFileLattice"/> to
-##    generate <C>.dot</C> files.
+##    for retriving the underlying CCS list.
+##    In addition, one can call <Ref Oper="DotFileLattice"/>
+##    on <C>lat</C> to export <C>.dot</C> files,
+##    which can be later converted
+##    into <C>.eps</C> or <C>.pdf</C> files.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>

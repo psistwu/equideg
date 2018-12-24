@@ -5,18 +5,38 @@
 #Y  Copyright (C) 2017-2018, Haopin Wu
 #Y  Department of Mathematics, National Tsing Hua University, Taiwan
 ##
-##  This file contains declarations for compact Lie group.
+##  This file contains declarations for procedures related to
+##  compact Lie group.
 ##
 
 #############################################################################
 ##
 #C  IsCompactLieGroup
 ##
+##  <#GAPDoc Label="IsCompactLieGroup">
+##  <ManSection>
+##  <Filt Name="IsCompcatLieGroup" Type="category"/>
+##  <Description>
+##    This is the category of compact Lie group.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
   DeclareCategory( "IsCompactLieGroup", IsGroup );
 
 #############################################################################
 ##
 #C  IsElementaryCompactLieGroup
+##
+##  <#GAPDoc Label="IsElementaryCompactLieGroup">
+##  <ManSection>
+##  <Filt Name="IsElementaryCompcatLieGroup" Type="category"/>
+##  <Description>
+##    This is the category of elementary compact Lie group,
+##    including SO(2), O(2) and other
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 ##
   DeclareCategory( "IsElementaryCompactLieGroup", IsCompactLieGroup );
 
