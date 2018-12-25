@@ -8,6 +8,7 @@
 ##  This file contains declarations of procedures related to lattice.
 ##
 ##  Todo:
+##    1. Fix the naming of components.
 ##
 
 ##  Part 1: Poset

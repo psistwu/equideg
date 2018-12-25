@@ -8,6 +8,15 @@
 
 <Chapter Label="ch:orbittype"><Heading>Orbit Type</Heading>
 <Section><Heading>Orbit Type</Heading>
+<#Include Label="IsLatticeOrbitTypesRep">
+<#Include Label="DimensionOfFixedSet">
+<#Include Label="OrbitTypes">
+<#Include Label="LatticeOrbitTypes">
+<#Include Label="MaximalOrbitTypes">
+<!-- The following are not needed now
+<#Include Label="AlphaCharacteristic">
+<#Include Label="IsAGroup">
+-->
 </Section>
 </Chapter>
 

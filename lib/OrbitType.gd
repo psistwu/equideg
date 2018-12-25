@@ -10,6 +10,7 @@
 ##  Todo:
 ##    1. Think how to arrange <AlphaCharacteristic> and <IsAGroup>;
 ##       they are not needed in this package for the time being.
+##    2. Fix the naming of components.
 ##
 
 #############################################################################

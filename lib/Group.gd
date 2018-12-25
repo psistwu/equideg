@@ -7,6 +7,9 @@
 ##
 ##  This file contains declarations for procedures related to group theory.
 ##
+##  Todo:
+##    1. Fix the naming of components.
+##
 
 ## Part 1: Basic Groups
 

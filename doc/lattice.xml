@@ -9,13 +9,16 @@
 <Chapter Label="ch:lattice"><Heading>Poset and Lattice</Heading>
 We will explain basic math procedures in this package.
 <Section><Heading>Poset</Heading>
+<#Include Label="IsPSortedListBy">
 <#Include Label="IsPSortedList">
+<#Include Label="IsPoset">
 <#Include Label="PSort">
 <#Include Label="PSortedList">
 </Section>
 <Section><Heading>Lattice</Heading>
 <#Include Label="IsLatticeRep">
 <#Include Label="NewLattice">
+<#Include Label="Poset">
 <#Include Label="MaximalSubElementsLattice">
 <#Include Label="DotFileLattice">
 </Section>
