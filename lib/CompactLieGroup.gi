@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#W  CompactLieGroup.gd	GAP Package `EquiDeg'			    Haopin Wu
+#W  CompactLieGroup.gi	GAP Package `EquiDeg'			    Haopin Wu
 ##
 #Y  Copyright (C) 2017-2018, Haopin Wu
 #Y  Department of Mathematics, National Tsing Hua University, Taiwan

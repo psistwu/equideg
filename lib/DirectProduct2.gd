@@ -1,21 +1,41 @@
-# # GAP: Compact Lie Group Library
-#
-# Declaration file of libCompactLieGroupDirectProduct.g
-#
-# Author(s):
-# Haopin Wu <psistwu@outlook.com>
-#
+#############################################################################
+##
+#W  DirectProduct2.gd	GAP Package `EquiDeg'			    Haopin Wu
+##
+#Y  Copyright (C) 2017-2018, Haopin Wu
+#Y  Department of Mathematics, National Tsing Hua University, Taiwan
+##
+##  This file contains declarations for procedures related to direct proudct
+##  of a finite group and an elementary compact Lie group (ECLG).
+##
+##  Todo:
+##
 
-
-# ### category(s)
+#############################################################################
+##
+#C  IsDirectProductWithECLG
+##
   DeclareCategory( "IsDirectProductWithECLG", IsCompactLieGroup );
 
-
-# ### representation(s)
+#############################################################################
+##
+#R  IsDirectProductWithECLGCCSRep
+##
   DeclareRepresentation( "IsDirectProductWithECLGCCSRep", IsCompactLieGroupCCSRep, [ ] );
+
+#############################################################################
+##
+#R  IsDirectProductWithECLGCCSsRep
+##
   DeclareRepresentation( "IsDirectProductWithECLGCCSsRep", IsCompactLieGroupCCSsRep, [ ] );
 
-
-# ### attribute(s)
+#############################################################################
+##
+#A  GoursatInfo( <C> )
+##
   DeclareAttribute( "GoursatInfo", IsDirectProductWithECLGCCSRep );
 
+
+#############################################################################
+##
+#E  DirectProduct2.gd . . . . . . . . . . . . . . . . . . . . . . . ends here

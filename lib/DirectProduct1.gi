@@ -1,14 +1,18 @@
-# # GAP: Direct Product Library
-#
-# Implementation file of libDirectProduct.g
-#
-# Author(s):
-# Haopin Wu <psistwu@outlook.com>
-#
+#############################################################################
+##
+#W  DirerctProduct1.gi	GAP Package `EquiDeg'			    Haopin Wu
+##
+#Y  Copyright (C) 2017-2018, Haopin Wu
+#Y  Department of Mathematics, National Tsing Hua University, Taiwan
+##
+##  This file contains implementations for procedures
+##  related to direct product of finite groups.
+##
 
-
-# ## attribute(s)
-# ***
+#############################################################################
+##
+#A  DirectProductComponents( <G> )
+##
   InstallMethod( DirectProductComponents,
     "return the list of direct product components of a group",
     [ IsGroup ],
@@ -21,7 +25,10 @@
     end
   );
 
-# ***
+#############################################################################
+##
+#A  GoursatInfo( <U> )
+##
   InstallMethod( GoursatInfo,
     "return the Goursat info of a subgroup",
     [ IsGroup and HasParentAttr ],
@@ -72,78 +79,40 @@
     end
   );
 
-# ***
-# InstallMethod( AmalgamationQuadruple,
-#   "return the amalgamation quadruple of a CCS of direct product of two groups",
-#   [ IsConjugacyClassSubgroupsRep ],
-#   function( c )
-#     local subg,                                 # subgroup
-#           grp,                                  # group
-#           grp1, grp2,                           # direct product components of grp
-#           ccs_list1, ccs_list2,                 # CCSs of grp1 and grp2
-#           cH1, cH2, cZ1, cZ2,                   # CCS of H1, H2, Z1 and Z2
-#           ind_cH1, ind_cH2, ind_cZ1, ind_cZ2;   # indices of cH1, cH2, cZ1, cZ2
-
-#     subg := Representative( c );
-#     grp := ParentAttr( subg );
-
-#     if HasDirectProductInfo( grp ) then
-#     elif ( Size( DirectProductInfo( grp ).groups ) = 2 ) then
-#     else
-#       Error( "It has to be a CCS of the direct product of TWO groups." );
-#     fi;
-
-#     if not ForAll( DirectProductInfo( grp ).groups, IsFinite ) then
-#       TryNextMethod( );
-#     fi;
-
-#     grp1 := DirectProductInfo( grp ).groups[ 1 ];
-#     grp2 := DirectProductInfo( grp ).groups[ 2 ];
-#     ccs_list1 := ConjugacyClassesSubgroups( grp1 );
-#     ccs_list2 := ConjugacyClassesSubgroups( grp2 );
-
-#     cH1 := ConjugacyClassSubgroups( GoursatInfo( subg ).Quadruple[ 1 ] );
-#     cZ1 := ConjugacyClassSubgroups( SubgroupDirectProductInfo( subg ).Quadruple[ 2 ] );
-#     cZ2 := ConjugacyClassSubgroups( SubgroupDirectProductInfo( subg ).Quadruple[ 3 ] );
-#     cH2 := ConjugacyClassSubgroups( SubgroupDirectProductInfo( subg ).Quadruple[ 4 ] );
-
-#     ind_cH1 := Position( ccs_list1, cH1 );
-#     ind_cZ1 := Position( ccs_list1, cZ1 );
-#     ind_cZ2 := Position( ccs_list2, cZ2 );
-#     ind_cH2 := Position( ccs_list2, cH2 );
-
-#     return [ ind_cH1, ind_cZ1, ind_cZ2, ind_cH2 ];
-#   end
-# );
-
-# ***
+#############################################################################
+##
+#O  DirectProductDecomposition( <C> )
+##
   InstallMethod( DirectProductDecomposition,
     "direct product decomposition of a CC of a group",
     [ IsConjugacyClassGroupRep ],
-    function( cc )
-      local grp,                  # group
-            grp_dpcpnts,          # list of direct product components of grp
-            elmt,                 # representative of cc
-            elmt_dpcpnts,         # list of direct product components of elm
-            cc_dpcpnt,            # direct product component of cc
-            cc_dpcpnts,           # list of direct product components of cc
-            i;                    # index
+    function( C )
+      local grp,		# group
+            grp_dpcpnts,	# list of direct product components of grp
+            elmt,		# representative of C
+            elmt_dpcpnts,	# list of direct product components of elm
+            C_dpcpnt,		# direct product component of cc
+            C_dpcpnts,		# list of direct product components of cc
+            i;			# index
 
-      grp := ActingDomain( cc );
+      grp := ActingDomain( C );
       grp_dpcpnts := DirectProductComponents( grp );
-      elmt := Representative( cc );
+      elmt := Representative( C );
       elmt_dpcpnts := DirectProductDecomposition( grp, elmt );
-      cc_dpcpnts := [ ];
+      C_dpcpnts := [ ];
       for i in [ 1 .. Size( grp_dpcpnts ) ] do
-        cc_dpcpnt := ConjugacyClass( grp_dpcpnts[ i ], elmt_dpcpnts[ i ] );
-        Add( cc_dpcpnts, cc_dpcpnt );
+        C_dpcpnt := ConjugacyClass( grp_dpcpnts[ i ], elmt_dpcpnts[ i ] );
+        Add( C_dpcpnts, C_dpcpnt );
       od;
 
-      return cc_dpcpnts;
+      return C_dpcpnts;
     end
   );
 
-#
+#############################################################################
+##
+#O  DirectProductDecomposition( <chi> )
+##
   InstallMethod( DirectProductDecomposition,
     "direct product decomposition of a irredicible character of a group",
     [ IsCharacter ],
@@ -196,9 +165,10 @@
     end
   );
 
-
-# ## operation(s)
-# ***
+#############################################################################
+##
+#O  DirectProductDecomposition( <G>, <e> )
+##
   InstallMethod( DirectProductDecomposition,
     "direct product decomposition of a group element",
     [ IsGroup, IsMultiplicativeElementWithInverse ],
@@ -228,25 +198,28 @@
     end
   );
 
-# ***
+#############################################################################
+##
+#O  AmalgamationSymbol( <C> )
+##
   InstallMethod( AmalgamationSymbol,
     "return the amalgamation symbol of a CCS of direct product of two groups",
     [ IsConjugacyClassSubgroupsRep ],
-    function( c )
+    function( C )
       local grp,            # group
-            subg,           # representative of c
+            subg,           # representative of C
             subg_ginfo,     # Goursat info of subg
-            quad,           # Goursat quadruple of c
+            quad,           # Goursat quadruple of C
             symbol,         # the returning symbol
             cc,             # conjugacy class of subgroups
             ccs_name_list;  # name list of CCSs
 
-      grp := ActingDomain( c );
+      grp := ActingDomain( C );
       if not ( Size( DirectProductComponents( grp ) ) = 2 ) then
         Error( "It has to be a CCS of the direct product of TWO groups." );
       fi;
 
-      subg := Representative( c );
+      subg := Representative( C );
       subg_ginfo := GoursatInfo( subg );
       quad := List( subg_ginfo.quadruple, s -> ConjugacyClassSubgroups( s ) );
 
@@ -263,23 +236,26 @@
     end
   );
 
-# ***
+#############################################################################
+##
+#O  LaTeXTypesetting( <C>, <subscript> )
+##
   InstallOtherMethod( LaTeXTypesetting,
     "return LaTeX typesetting of a CCS",
     [ IsConjugacyClassSubgroupsRep, IsString ],
     1,
-    function( c, subscript )
+    function( C, subscript )
       local grp,
             subg,
             subg_ginfo,
             ccs_latex_list;
 
-      grp := ActingDomain( c );
+      grp := ActingDomain( C );
       if not ( Size( DirectProductComponents( grp ) ) = 2 ) then
         TryNextMethod( );
       fi;
 
-      subg := Representative( c );
+      subg := Representative( C );
       subg_ginfo := GoursatInfo( subg );
       ccs_latex_list := List( subg_ginfo.quadruple,
           s -> LaTeXString( ConjugacyClassSubgroups( s ) ) );
@@ -288,23 +264,31 @@
     end
   );
 
-# ***
-  InstallOtherMethod( LaTeXTypesetting,
+#############################################################################
+##
+#O  LaTeXTypesetting( <C> )
+##
+  InstallMethod( LaTeXTypesetting,
     "return LaTeX typesetting of a CCS",
     [ IsConjugacyClassSubgroupsRep ],
     1,
-    function( c )
+    function( C )
       local grp;
 
-      if HasLaTeXString( c ) then
-        return LaTeXString( c );
+      if HasLaTeXString( C ) then
+        return LaTeXString( C );
       fi;
 
-      grp := ActingDomain( c );
+      grp := ActingDomain( C );
       if not ( Size( DirectProductComponents( grp ) ) = 2 ) then
         TryNextMethod( );
       fi;
 
-      return LaTeXTypesetting( c, "" );
+      return LaTeXTypesetting( C, "" );
     end
   );
+
+
+#############################################################################
+##
+#E  DirectProduct1.gi . . . . . . . . . . . . . . . . . . . . . . . ends here

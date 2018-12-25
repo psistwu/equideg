@@ -1,13 +1,19 @@
-# # GAP: Compact Lie Group Library
-#
-# Implementation file of libCompactLieGroupDirectProduct.g
-#
-# Author:
-# Haopin Wu <psistwu@outlook.com>
-#
+#############################################################################
+##
+#W  DirerctProduct2.gi	GAP Package `EquiDeg'			    Haopin Wu
+##
+#Y  Copyright (C) 2017-2018, Haopin Wu
+#Y  Department of Mathematics, National Tsing Hua University, Taiwan
+##
+##  This file contains implementations for procedures
+##  related to direct product of a finite group and
+##  an elementary compact Lie group (ECLG).
+##
 
-# ### Constructor(s)
-# ***
+#############################################################################
+##
+#U  NewCCS( IsDirectProductWithCCSsRep, <rec>, <n> )
+##
   InstallMethod( NewCCS,
     "CCS constructor of DPwCLG",
     [ IsDirectProductWithECLGCCSsRep, IsRecord, IsInt ],
@@ -117,7 +123,10 @@
     end
   );
 
-# ***
+#############################################################################
+##
+#U  NewCCS( IsDirectProductWithECLGCCSsRep, <rec> )
+##
   InstallOtherMethod( NewCCS,
     "CCS constructor of CLG",
     [ IsDirectProductWithECLGCCSsRep, IsRecord ],
@@ -134,9 +143,10 @@
     end
   );
 
-
-# ### Attribute(s)
-# ***
+#############################################################################
+##
+#A  ConjugacyClassesSubgroups( <G> )
+##
   InstallMethod( ConjugacyClassesSubgroups,
     "return CCS list of direct product with ECLG",
     [ IsDirectProductWithECLG ],
@@ -421,9 +431,10 @@
     end
   );
 
-
-# ### Operation(s)
-# ***
+#############################################################################
+##
+#O  DirectProductOp( <list>, <G> )
+##
   InstallMethod( DirectProductOp,
     "Operation for direct product of ECLG and a finite group",
     [ IsList, IsElementaryCompactLieGroup ],
@@ -471,7 +482,10 @@
     end
   );
 
-# ***
+#############################################################################
+##
+#O  Projection( <G>, <k> )
+##
   InstallMethod( Projection,
     "projection of direct product with ECLG",
     [ IsDirectProductWithECLG, IsPosInt ],
@@ -494,7 +508,10 @@
     end
   );
 
-# ***
+#############################################################################
+##
+#O  Embedding( <G>, <k> )
+##
   InstallMethod( Embedding,
     "embedding of direct product with ECLG",
     [ IsDirectProductWithECLG, IsPosInt ],
@@ -518,7 +535,10 @@
     end
   );
 
-# ***
+#############################################################################
+##
+#O  \=( <C1>, <C2> )
+##
   InstallMethod( \=,
     "equivalence relation of CCSs of DPwECLG",
     IsIdenticalObj,
@@ -528,7 +548,10 @@
     end
   );
 
-# ***
+#############################################################################
+##
+#O  nLHnumber( <C1>, <C2> )
+##
   InstallMethod( nLHnumber,
     "n(L,H) number for CCSs of GxECLG",
     IsIdenticalObj,
@@ -595,7 +618,12 @@
   );
 
 
-# ### Print, View and Display
+##  Print, View and Display
+
+#############################################################################
+##
+#A  String( <G> )
+##
   InstallMethod( String,
     "string of direct product with ECLG",
     [ IsDirectProductWithECLG ],
@@ -616,7 +644,10 @@
     end
   );
 
-# ***
+#############################################################################
+##
+#O  PrintObj( <G> )
+##
   InstallMethod( PrintObj,
     "print direct product with ECLG",
     [ IsDirectProductWithECLG ],
@@ -625,7 +656,10 @@
     end
   );
 
-# ***
+#############################################################################
+##
+#A  ViewString( <G> )
+##
   InstallMethod( ViewString,
     "view string of direct product with ECLG",
     [ IsDirectProductWithECLG ],
@@ -646,7 +680,10 @@
     end
   );
 
-# ***
+#############################################################################
+##
+#O  ViewObj( <G> )
+##
   InstallMethod( ViewObj,
     "view direct product with ECLG",
     [ IsDirectProductWithECLG ],
@@ -655,3 +692,7 @@
     end
   );
 
+
+#############################################################################
+##
+#E  DirectProduct2.gi . . . . . . . . . . . . . . . . . . . . . . . ends here
