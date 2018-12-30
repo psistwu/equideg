@@ -458,8 +458,8 @@
       # determine family, category and representation of the direct product
       fam_elmt_list := List( list, cpnt -> ElementsFamily( FamilyObj( cpnt ) ) );
       fam_grp := CollectionsFamily( DirectProductElementsFamily( fam_elmt_list ) );
-      cat_grp := IsDirectProductWithECLG;
       rep_grp := IsCompactLieGroupRep;
+      cat_grp := IsDirectProductWithECLG;
 
       # objectify the direct product
       grp := Objectify( NewType( fam_grp, cat_grp and rep_grp ), rec( ) );

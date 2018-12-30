@@ -8,6 +8,15 @@
 
 <Chapter Label="ch:compactliegroup"><Heading>Compact Lie Group</Heading>
 <Section><Heading>Compact Lie Group</Heading>
+<#Include Label="IsCompactLieGroup">
+<#Include Label="IsCompactLieGroupCCSRep">
+<#Include Label="IsCompactLieGroupCCSsRep">
+<#Include Label="NewCCS">
+</Section>
+<Section><Heading>Elementary Compact Lie Group</Heading>
+<#Include Label="IsElementaryCompactLieGroupRep">
+<#Include Label="IsElementaryCompactLieGroupCCSRep">
+<#Include Label="NewElementaryCompactLieGroup">
 </Section>
 </Chapter>
 

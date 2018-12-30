@@ -9,6 +9,8 @@
 ##  compact Lie group.
 ##
 
+##  Part 1: Compact Lie Group
+
 #############################################################################
 ##
 #C  IsCompactLieGroup
@@ -17,7 +19,7 @@
 ##  <ManSection>
 ##  <Filt Name="IsCompcatLieGroup" Type="category"/>
 ##  <Description>
-##    This is the category of compact Lie group.
+##    This is the category of (infinite) compact Lie group.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
@@ -26,126 +28,163 @@
 
 #############################################################################
 ##
-#C  IsElementaryCompactLieGroup
+#R  IsCompactLieGroupCCSRep
 ##
-##  <#GAPDoc Label="IsElementaryCompactLieGroup">
+##  <#GAPDoc Label="IsCompactLieGroupCCSRep">
 ##  <ManSection>
-##  <Filt Name="IsElementaryCompcatLieGroup" Type="category"/>
+##  <Filt Name="IsCompactLieGroupCCSRep" Type="representation"/>
 ##  <Description>
-##    This is the category of elementary compact Lie group,
-##    including SO(2), O(2) and other
+##    This is a representation of CCS of (infinite) compact Lie group.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareCategory( "IsElementaryCompactLieGroup", IsCompactLieGroup );
-
-#############################################################################
-##
-#R  IsCompactLieGroupRep
-##
-  DeclareRepresentation( "IsCompactLieGroupRep",
-      IsComponentObjectRep and IsAttributeStoringRep, [ ] );
-
-#############################################################################
-##
-#R  IsCompactLieGroupCCSRep
-##
   DeclareRepresentation( "IsCompactLieGroupCCSRep",
-      IsComponentObjectRep and IsAttributeStoringRep and
       IsConjugacyClassSubgroupsRep, [ ] );
 
 #############################################################################
 ##
 #R  IsCompactLieGroupCCSsRep
 ##
+##  <#GAPDoc Label="IsCompactLieGroupCCSsRep">
+##  <ManSection>
+##  <Filt Name="IsCompactLieGroupCCSsRep" Type="representation"/>
+##  <Description>
+##    This is a representation of CCS list of (infinite) compact Lie group.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
   DeclareRepresentation( "IsCompactLieGroupCCSsRep",
+      IsComponentObjectRep and IsAttributeStoringRep, [ ] );
+
+#############################################################################
+##
+#U  NewCCS( IsCompactLieGroupCCSRep, <r> )
+##
+##  <#GAPDoc Label="NewCCS">
+##  <ManSection>
+##  <Constr Name="NewCCS" Arg="IsCompactLieGroupCCSRep, r"/>
+##  <Description>
+##    This is the constructor of CCS of (infinite) compact Lie group.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+  DeclareConstructor( "NewCCS", [ IsCompactLieGroupCCSRep, IsRecord ] );
+
+#############################################################################
+##
+#A  CCSClasses( <CCSs> )
+##
+  DeclareGlobalFunction( "CCSClasses",
+      "returns CCS classes of a compact Lie group" );
+
+#############################################################################
+##
+#A  CCSId( <CCSs> )
+##
+  DeclareAttribute( "CCSId", IsCompactLieGroupCCSsRep );
+
+#############################################################################
+##
+#A  IdCCS( <C> )
+##
+  DeclareAttribute( "IdCCS", IsCompactLieGroupCCSRep );
+
+#############################################################################
+##
+#P  IsZeroModeCCS( <C> )
+##
+  DeclareProperty( "IsZeroModeCCS", IsCompactLieGroupCCSRep );
+
+
+##  Part 2: Elementary Compact Lie Group
+
+#############################################################################
+##
+#R  IsElementaryCompactLieGroupRep
+##
+##  <#GAPDoc Label="IsElementaryCompactLieGroupRep">
+##  <ManSection>
+##  <Filt Name="IsElementaryCompactLieGroupRep" Type="representation"/>
+##  <Description>
+##    This is a representation of (infinite) compact Lie group.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+  DeclareRepresentation( "IsElementaryCompactLieGroupRep",
       IsComponentObjectRep and IsAttributeStoringRep, [ ] );
 
 #############################################################################
 ##
 #R  IsElementaryCompactLieGroupCCSRep
 ##
-  DeclareRepresentation( "IsElementaryCompactLieGroupCCSRep", IsCompactLieGroupCCSRep, [ ] );
+##  <#GAPDoc Label="IsElementaryCompactLieGroupCCSRep">
+##  <ManSection>
+##  <Filt Name="IsElementaryCompactLieGroupCCSRep" Type="representation"/>
+##  <Description>
+##    This is a representation of CCS of elementary compact Lie group.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+  DeclareRepresentation( "IsElementaryCompactLieGroupCCSRep",
+      IsCompactLieGroupCCSRep, [ ] );
 
 #############################################################################
 ##
-#R  IsElementaryCompactLieGroupCCSsRep
+#U  NewElementaryCompactLieGroup( IsCompactLieGroup and
+##      IsElementaryCompactLieGroupRep, rec )
 ##
-  DeclareRepresentation( "IsElementaryCompactLieGroupCCSsRep", IsCompactLieGroupCCSsRep, [ ] );
-
-#############################################################################
+##  <#GAPDoc Label="NewElementaryCompactLieGroup">
+##  <ManSection>
+##  <Constr Name="NewElementaryCompactLieGroup"
+##      Arg="IsCompactLieGroup and IsElementaryCompactLieGroupRep, n"/>
+##  <Description>
+##    This is the constructor of elementary compact lie group.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 ##
-#R  NewElementaryCompactLieGroup( IsGroup, <n> )
-##
-  DeclareConstructor( "NewElementaryCompactLieGroup", [ IsGroup, IsPosInt ] );
-
-#############################################################################
-##
-#R  NewCCS( IsCompactLieGroupCCSsRep, <rec>, <n> )
-##
-  DeclareConstructor( "NewCCS",
-      [ IsCompactLieGroupCCSsRep, IsRecord, IsInt ] );
+  DeclareConstructor( "NewElementaryCompactLieGroup",
+      [ IsCompactLieGroup and IsElementaryCompactLieGroupRep, IsRecord ] );
 
 #############################################################################
 ##
 #A  IdECLG( <eclg> )
 ##
-  DeclareAttribute( "IdECLG", IsElementaryCompactLieGroup );
+##  <#GAPDoc Label="IdECLG">
+##  <ManSection>
+##  <Attr Name="IdECLG" Arg="eclg"/>
+##  <Description>
+##    This attribute contains the ID of elementary compact Lie group
+##    <A>eclg</A>.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+  DeclareAttribute( "IdECLG", IsCompactLieGroup and
+      IsElementaryCompactLieGroupRep );
 
 #############################################################################
 ##
-#A  IdECLG( <ccss_clg> )
+#F  ECLGId( <id> )
 ##
-  DeclareAttribute( "UnderlyingGroup", IsCompactLieGroupCCSsRep );
-
-#############################################################################
-##
-#A  IdCCS( <ccs_clg> )
-##
-  DeclareAttribute( "IdCCS", IsCompactLieGroupCCSRep );
-
-#############################################################################
-##
-#A  CCSClasses( <ccss_clg> )
-##
-  DeclareAttribute( "CCSClasses", IsCompactLieGroupCCSsRep );
-
-#############################################################################
-##
-#A  CCSClassesFiltered( <ccss_clg> )
-##
-  DeclareAttribute( "CCSClassesFiltered", IsCompactLieGroupCCSsRep );
-
-#############################################################################
-##
-#A  CCSId( <ccss_clg> )
-##
-  DeclareAttribute( "CCSId", IsCompactLieGroupCCSsRep );
-
-#############################################################################
-##
-#P  IsZeroModeCCS( <ccs_clg> )
-##
-  DeclareProperty( "IsZeroModeCCS", IsCompactLieGroupCCSRep );
+  DeclareGlobalFunction( "ECLGId", "returns ECLG by ID" );
 
 #############################################################################
 ##
 #F  OrthogonalGroupOverReal( <n> )
 ##
-  DeclareOperation( "OrthogonalGroupOverReal", [ IsPosInt ] );
+  DeclareGlobalFunction( "OrthogonalGroupOverReal", "returns O(n,R)" );
 
 #############################################################################
 ##
 #F  SpecialOrthogonalGroupOverReal( <n> )
 ##
-  DeclareOperation( "SpecialOrthogonalGroupOverReal", [ IsPosInt ] );
-
-#############################################################################
-##
-#F  ECLGId( <type>, <mode> )
-##
-  DeclareOperation( "ECLGId", [ IsList ] );
+  DeclareGlobalFunction( "SpecialOrthogonalGroupOverReal", "returns SO(n,R)" );
 
 
 #############################################################################

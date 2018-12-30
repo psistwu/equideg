@@ -533,7 +533,7 @@
   InstallMethod( ViewString,
     "view string of a Burnside ring",
     [ IsBurnsideRing ],
-    A -> Concatenation("BurnsideRing( ",
+    A -> Concatenation("Brng( ",
          ViewString( UnderlyingGroup( A ) ), " )" )
   );
 
