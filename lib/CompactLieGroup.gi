@@ -9,7 +9,36 @@
 ##  compact Lie group.
 ##
 
-##  Part 1: Compact Lie Group
+##  Part 1: Compact Lie Group (CLG)
+
+#############################################################################
+##
+#O  PrintObj( <G> )
+##
+  InstallMethod( PrintObj,
+    "print a compact Lie group",
+    [ IsCompactLieGroup ],
+    10,
+    function( G )
+      Print( String( G ) );
+    end
+  );
+
+#############################################################################
+##
+#O  ViewObj( <G> )
+##
+  InstallMethod( ViewObj,
+    "view a compact Lie group",
+    [ IsCompactLieGroup ],
+    10,
+    function( G )
+      Print( ViewString( G ) );
+    end
+  );
+
+
+##  Part 2: Elementary Compact Lie Group (ECLG)
 
 #############################################################################
 ##
@@ -59,8 +88,8 @@
       cat := IsCompactLieGroup and IsMatrixGroup;
       rep := IsElementaryCompactLieGroupRep;
       G := NewElementaryCompactLieGroup(
-          cat and rep,
-          rec( dimensionMat := n )
+        cat and rep,
+        rec( dimensionMat := n )
       );
 
       # setup property(s) and attribute(s) of the group
@@ -74,8 +103,8 @@
       # certainly, the given set does not generate O(2)
       if ( n = 2 ) then
         SetGeneratorsOfGroup( G,
-            [ [ [ 0, -1 ],[ 1, 0 ] ],
-              [ [ 1, 0 ], [ 0, -1 ] ] ]
+          [ [ [ 0, -1 ],[ 1, 0 ] ],
+            [ [ 1, 0 ], [ 0, -1 ] ] ]
         );
       fi;
 
@@ -97,8 +126,8 @@
       cat := IsCompactLieGroup and IsMatrixGroup;
       rep := IsElementaryCompactLieGroupRep;
       G := NewElementaryCompactLieGroup(
-          cat and rep,
-          rec( dimensionMat := n )
+        cat and rep,
+        rec( dimensionMat := n )
       );
 
       # setup property(s) and attribute(s) of the group
@@ -106,7 +135,7 @@
       SetDimension( G, n*(n-1)/2 );
       SetIdECLG( G, [ 1, n ] );
       SetString( G,
-          StringFormatted( "SpecialOrthogonalGroupOverReal( {} )", n )
+        StringFormatted( "SpecialOrthogonalGroupOverReal( {} )", n )
       );
 
       # the follow clause is an ad hoc approach for
@@ -147,69 +176,191 @@
 
 #############################################################################
 ##
-#U  NewCCS( IsCompactLieGroupCCSRep, <r> )
+#O  \=( <G>, <H> )
 ##
-  InstallMethod( NewCCS,
-    "CCS constructor of SO(2) or O(2)",
-    [ IsElementaryCompactLieGroupRep, IsRecord ],
-    function( filt, r )
-      local id,
-            C,
-            U,
-            fam,
-            cat;
+  InstallMethod( \=,
+    "equivalence relation of ECLGs",
+    [ IsCompactLieGroup and IsElementaryCompactLieGroupRep,
+      IsCompactLieGroup and IsElementaryCompactLieGroupRep ],
+    function( G, H )
+      return IdECLG( G ) = IdECLG( H );
+    end
+  );
 
-      id := IdECLG( r.ccs_class.group );
+#############################################################################
+##
+#O  \in( <obj>, SO(n) )
+##
+  InstallMethod( \in,
+    "Membership test for SO(n)",
+    [ IsObject, IsCompactLieGroup and IsElementaryCompactLieGroupRep ],
+    function( obj, G )
+      local id;
 
-      if not ( id in [ [ 1, 2 ], [ 2, 2 ] ] ) then
+      id := IdECLG( G );
+
+      if not ( id[ 1 ] = 1 ) then
         TryNextMethod( );
       fi;
 
-      if ( r.ccs_class.is_zero_mode <> ( r.mode = 0 ) ) then
-        Error( "Invalid mode for the selected CCS class." );
+      if IsIdenticalObj(
+          FamilyObj( obj ), ElementsFamily( FamilyObj( G ) ) ) and
+          ( TransposedMat( obj ) * obj = One( G ) ) and
+          ( Determinant( obj ) = 1 ) then
+        return true;
+      else
+        return false;
       fi;
-
-      # objectify the CCS
-      fam := CollectionsFamily( FamilyObj( r.ccs_class.group ) );
-      cat := CategoryCollections( IsMatrixGroup );
-      C := Objectify( NewType( fam, cat and filt ), rec( ) );
-
-      # find representative subgroup and its normalizer
-      if ( r.ccs_class.id = [ 1, 0 ] ) then
-        U := ECLGId( [ 1, 2 ] );
-        SetNormalizerInParent( U, r.group );
-        if ( id[ 1 ] = 1 ) then
-          SetOrderOfWeylGroup( U, [ 1, 0 ] );
-        elif ( id[ 1 ] = 2 ) then
-          SetOrderOfWeylGroup( U, [ 2, 0 ] );
-        fi;
-      elif ( r.ccs_class.id = [ 2, 0 ] ) then
-        U := ECLGId( [ 2, 2 ] );
-        SetNormalizerInParent( U, r.group );
-        SetOrderOfWeylGroup( U, [ 1, 0 ] );
-      elif ( r.ccs_class.id = [ 1, 1 ] ) then
-        U := mCyclicGroup( r.mode );
-        SetNormalizerInParent( U, r.group );
-        if ( id[ 1 ] = 1 ) then
-          SetOrderOfWeylGroup( U, [ 1, 1 ] );
-        elif ( id[ 1 ] = 2 ) then
-          SetOrderOfWeylGroup( U, [ 2, 1 ] );
-        fi;
-      elif ( r.ccs_class.id = [ 2, 1 ] ) then
-        U := mDihedralGroup( r.mode );
-      fi;
-
-      # setup attributes of U and C
-      SetParentAttr( U, r.group );
-      SetOrderOfWeylGroup( U, r.ccs_class.order_of_weyl_group );
-      SetIsZeroModeCCS( C, r.ccs_class.is_zero_mode );
-      SetActingDomain( C, r.group );
-      SetOrderOfWeylGroup( C, r.ccs_class.order_of_weyl_group );
-      SetRepresentative( C, U );
-
-      return C;
     end
   );
+
+#############################################################################
+##
+#O  \in( <obj>, O(n) )
+##
+  InstallMethod( \in,
+    "Membership test for O(n)",
+    [ IsObject, IsCompactLieGroup and IsElementaryCompactLieGroupRep ],
+    function( obj, G )
+      local id;
+
+      id := IdECLG( G );
+
+      if not ( id[ 1 ] = 2 ) then
+        TryNextMethod( );
+      fi;
+
+      if IsIdenticalObj(
+          FamilyObj( obj ), ElementsFamily( FamilyObj( G ) ) ) and
+          ( TransposedMat( obj ) * obj = One( G ) ) then
+        return true;
+      else
+        return false;
+      fi;
+    end
+  );
+
+#############################################################################
+##
+#O  IsSubset( <G>, <col> )
+##
+  InstallMethod( IsSubset,
+    "Test if a finite group is a subgroup of a ECLG",
+    [ IsCompactLieGroup and IsElementaryCompactLieGroupRep, IsCollection ],
+    function( G, col )
+      local elmt;
+
+      if not IsFinite( col ) then
+        TryNextMethod( );
+      fi;
+
+      for elmt in List( col ) do
+        if not ( elmt in G ) then
+          return false;
+        fi;
+      od;
+
+      return true;
+    end
+  );
+
+#############################################################################
+##
+#O  IsSubset( <col>, <G> )
+##
+  InstallMethod( IsSubset,
+    "Test if an ECLG is a subgroup of a finite group",
+    [ IsCollection, IsCompactLieGroup and IsElementaryCompactLieGroupRep ],
+    function( col, G )
+      if IsFinite( col ) then
+        return false;
+      else
+        TryNextMethod( );
+      fi;
+    end
+  );
+
+#############################################################################
+##
+#O  IsSubset( <G>, <U> )
+##
+  InstallMethod( IsSubset,
+    "Test if an ECLG is a subset of another ECLG",
+    [ IsCompactLieGroup and IsElementaryCompactLieGroupRep,
+      IsCompactLieGroup and IsElementaryCompactLieGroupRep ],
+    function( G, U )
+      local idG,
+            idU;
+
+      idG := IdECLG( G );
+      idU := IdECLG( U );
+
+      # one should change the rule when adding more ECLGs into the library
+      if ( idG = idU ) then
+        return true;
+      elif ( idG[ 1 ] = 2 ) and ( idU[ 1 ] = 1 ) and
+          ( idG[ 2 ] = idU[ 2 ] ) then
+        return true;
+      else
+        return false;
+      fi;
+    end
+  );
+
+#############################################################################
+##
+#O  ViewString( <G> )
+##
+  InstallMethod( ViewString,
+    "view string of ECLG",
+    [ IsCompactLieGroup and IsElementaryCompactLieGroupRep ],
+    function( G )
+      local type,
+            n,
+            string;
+
+      type := IdECLG( G )[ 1 ];
+      n := IdECLG( G )[ 2 ];
+
+      if ( type = 1 ) then
+        string := StringFormatted( "SO({},R)", n );
+      elif ( type = 2 ) then
+        string := StringFormatted( "O({},R)", n );
+      fi;
+
+      return string;
+    end
+  );
+
+#############################################################################
+##
+#O  DisplayString( <G> )
+##
+  InstallMethod( DisplayString,
+    "display string of a elementary compact Lie group",
+    [ IsCompactLieGroup and IsElementaryCompactLieGroupRep ],
+    function( G )
+      local type,
+            n,
+            str;
+
+      type := IdECLG( G )[ 1 ];
+      n := IdECLG( G )[ 2 ];
+
+      if ( type = 1 ) then
+        str := StringFormatted(
+            "<group of {1}x{1} special orthogonal matrices over R>", n );
+      elif ( type = 2 ) then
+        str := StringFormatted(
+            "<group of {1}x{1} orthogonal matrices over R>", n );
+      fi;
+
+      return str;
+    end
+  );
+
+
+##  Part 3: Conjugacy Classes of Subgroups of ECLG
 
 #############################################################################
 ##
@@ -242,6 +393,10 @@
       CCSs := Objectify( NewType( fam, cat and rep ), rec( ) );
       SetUnderlyingGroup( CCSs, G );
       SetIsFinite( CCSs, false );
+      SetString( CCSs,
+        StringFormatted( "ConjugacyClassesSubgroups( {} )",
+        String( G ) )
+      );
 
       # generate CCS classes
       if ( id = [ 1, 2 ] ) then
@@ -342,364 +497,177 @@
 
 #############################################################################
 ##
-#A  CCSId( <CCSs> )
+#U  NewCCS( IsElementaryCompactLieGroupCCSRep, <r> )
 ##
-# InstallMethod( CCSId,
-#   "return CCSId attribute of a compact Lie group CCS list",
-#   [ IsCompactLieGroupCCSsRep ],
-#   ccss -> function( id )
-#     local rep_ccss,
-#           ccs_class,
-#           ccs_classes_filtered,
-#           ccs;
+  InstallMethod( NewCCS,
+    "CCS constructor of SO(2) or O(2)",
+    [ IsElementaryCompactLieGroupCCSRep, IsRecord ],
+    function( filt, r )
+      local G,		# the ECLG
+            id,		# id of ECLG
+            fam,	# family of CCS
+            cat,	# category of CCS
+            C,		# CCS
+            U,		# representative of CCS
+            N;		# normalizer of U in G
 
-#     ccs_classes_filtered := CCSClassesFiltered( ccss );
+      G := r.ccs_class.group;
+      id := IdECLG( G );
 
-#     if ( id[ 2 ] = 0 ) then
-#       ccs_class := ccs_classes_filtered( "zero_mode" )[ id[ 1 ] ];
-#     elif IsPosInt( id[ 2 ] ) then
-#       ccs_class := ccs_classes_filtered( "nonzero_mode" )[ id[ 1 ] ];
-#     else
-#       return fail;
-#     fi;
+      if not ( id in [ [ 1, 2 ], [ 2, 2 ] ] ) then
+        TryNextMethod( );
+      fi;
 
-#     # extract representation of the given CCSs
-#     rep_ccss := EvalString( Remove( ShallowCopy( RepresentationsOfObject( ccss ) ) ) );
+      if ( r.ccs_class.is_zero_mode <> ( r.ccs_id[ 2 ] = 0 ) ) then
+        Error( "Invalid mode for the selected CCS class." );
+      fi;
 
-#     ccs := NewCCS( rep_ccss, ccs_class, id[ 2 ] );
-#     SetIdCCS( ccs, id );
+      # objectify the CCS
+      fam := CollectionsFamily( FamilyObj( G ) );
+      cat := CategoryCollections( IsMatrixGroup );
+      C := Objectify( NewType( fam, cat and filt ), rec( ) );
 
-#     return ccs;
-#   end
-# );
+      # find representative subgroup and its normalizer
+      if ( r.ccs_id = [ 1, 0 ] ) then
+        U := ECLGId( [ 1, 2 ] );
+        N := G;
+      elif ( r.ccs_id = [ 2, 0 ] ) then
+        U := ECLGId( [ 2, 2 ] );
+        N := G;
+      elif ( r.ccs_id[ 1 ] = 1 ) then
+        U := mCyclicGroup( r.ccs_id[ 2 ] );
+        N := G;
+      elif ( r.ccs_id[ 1 ] = 2 ) then
+        U := mDihedralGroup( r.ccs_id[ 2 ] );
+        N := mDihedralGroup( 2*r.ccs_id[ 2 ] );
+      fi;
 
-#############################################################################
-##
-#O  \=( <eclg1>, <eclg2> )
-##
-# InstallMethod( \=,
-#   "equivalence relation of ECLGs",
-#   [ IsElementaryCompactLieGroup, IsElementaryCompactLieGroup ],
-#   function( eclg1, eclg2 )
-#     return IdECLG( eclg1 ) = IdECLG( eclg2 );
-#   end
-# );
+      # setup attributes of U and C
+      SetParentAttr( U, G );
+      SetNormalizerInParent( U, N );
+      SetOrderOfWeylGroup( U, r.ccs_class.order_of_weyl_group );
+      SetRepresentative( C, U );
+      SetActingDomain( C, G );
+      SetIsZeroModeCCS( C, r.ccs_class.is_zero_mode );
+      SetStabilizerOfExternalSet( C, N );
+      SetOrderOfWeylGroup( C, r.ccs_class.order_of_weyl_group );
+      SetIdCCS( C, r.ccs_id );
 
-#############################################################################
-##
-#O  \in( <obj>, SO(n) )
-##
-# InstallMethod( \in,
-#   "Membership test for SO(n)",
-#   [ IsObject, IsElementaryCompactLieGroup and IsMatrixGroup ],
-#   function( obj, eclg )
-#     local d;
-
-#     d := DimensionOfMatrixGroup( eclg );
-#     if not ( eclg = SpecialOrthogonalGroupOverReal( d ) ) then
-#       TryNextMethod( );
-#     fi;
-
-#     if IsIdenticalObj( CollectionsFamily( FamilyObj( obj ) ),
-#         FamilyObj( eclg ) ) and ( TransposedMat( obj ) * obj
-#         = One( eclg ) ) and ( Determinant( obj ) = 1 ) then
-#       return true;
-#     else
-#       return false;
-#     fi;
-#   end
-# );
-
-#############################################################################
-##
-#O  \in( <obj>, O(n) )
-##
-# InstallMethod( \in,
-#   "Membership test for O(n)",
-#   [ IsObject, IsElementaryCompactLieGroup and IsMatrixGroup ],
-#   function( obj, eclg )
-#     local d;
-
-#     d := DimensionOfMatrixGroup( eclg );
-#     if not ( eclg = OrthogonalGroupOverReal( d ) ) then
-#       TryNextMethod( );
-#     fi;
-
-#     if IsIdenticalObj( CollectionsFamily( FamilyObj( obj ) ),
-#         FamilyObj( eclg ) ) and ( TransposedMat( obj ) * obj
-#         = One( eclg ) ) then
-#       return true;
-#     else
-#       return false;
-#     fi;
-#   end
-# );
-
-#############################################################################
-##
-#O  IsSubset( <eclg>, <grp> )
-##
-# InstallMethod( IsSubset,
-#   "Test if a finite group is a subgroup of a ECLG",
-#   [ IsElementaryCompactLieGroup, IsGroup ],
-#   function( eclg, grp )
-#     local elmt;
-
-#     if not IsFinite( grp ) then
-#       TryNextMethod( );
-#     fi;
-
-#     for elmt in List( grp ) do
-#       if not ( elmt in eclg ) then
-#         return false;
-#       fi;
-#     od;
-
-#     return true;
-#   end
-# );
-
-#############################################################################
-##
-#O  IsSubset( <grp>, <eclg> )
-##
-# InstallMethod( IsSubset,
-#   "Test if an ECLG is a subgroup of a finite group",
-#   [ IsGroup, IsElementaryCompactLieGroup ],
-#   function( grp, eclg )
-#     if IsFinite( grp ) then
-#       return false;
-#     else
-#       TryNextMethod( );
-#     fi;
-#   end
-# );
-
-#############################################################################
-##
-#O  IsSubset( <eclg>, <eclg> )
-##
-# InstallMethod( IsSubset,
-#   "Test if an ECLG is a subset of another ECLG",
-#   [ IsElementaryCompactLieGroup, IsElementaryCompactLieGroup ],
-#   function( eclg1, eclg2 )
-#     # one should change the rule when adding more ECLGs into the library
-#     return IsZero( IdECLG( eclg1 ) mod IdECLG( eclg2 ) );
-#   end
-# );
-
-#############################################################################
-##
-#O  \=( <ccs1_eclg>, <ccs2_eclg> )
-##
-# InstallMethod( \=,
-#   "the equivalence relation of CCSs of ECLG",
-#   IsIdenticalObj,
-#   [ IsCompactLieGroupCCSRep, IsCompactLieGroupCCSRep ],
-#   function( ccs1, ccs2 )
-#     return ( ActingDomain( ccs1 ) = ActingDomain( ccs2 ) ) and
-#     ( Representative( ccs1 ) = Representative( ccs2 ) );
-#   end
-# );
-
-#############################################################################
-##
-#O  nLHnumber( <ccs1_eclg>, <ccs2_eclg> )
-##
-# InstallMethod( nLHnumber,
-#   "return n(L,H) number for CCSs of ECLG",
-#   IsIdenticalObj,
-#   [ IsElementaryCompactLieGroupCCSRep, IsElementaryCompactLieGroupCCSRep ],
-#   function( ccs1, ccs2 )
-#     local eclg,           # underlying group of ccs1 and ccs2
-#           workable_clg,   # workable group list
-#           is_supported,   # flag indicating whether the underlying group
-#                           # is supported
-#           subg1, subg2,   # representatives
-#           k;              # the reflection
-
-#     eclg := ActingDomain( ccs1 );
-#     if not ( eclg = ActingDomain( ccs2 ) ) then
-#       Error( "ccs1 and ccs2 must be from the same ECLG." );
-#     fi;
-
-#     is_supported := false;
-#     if not ( IdECLG( eclg ) in [ [ 1, 1 ], [ 2, 1 ] ] ) then
-#       Info( InfoEquiDeg, INFO_LEVEL_EquiDeg, "The underlying group of the CCSs is not supported." );
-#       return fail;
-#     fi;
-
-#     subg1 := Representative( ccs1 );
-#     subg2 := Representative( ccs2 );
-
-#     if IsSubset( subg2, subg1 ) then
-#       k := [ [ 1, 0 ], [ 0, -1 ] ];
-#       if ( k in subg2 ) and not ( k in subg1 ) then
-#         return infinity;
-#       else
-#         return 1;
-#       fi;
-#     else
-#       return 0;
-#     fi;
-#   end
-# );
-
-#############################################################################
-##
-#O  \<( <ccs1_clg>, <ccs2_clg> )
-##
-# InstallMethod( \<,
-#   "the partial order oe the conjugacy classes of subgroups of a compact Lie group",
-#   IsIdenticalObj,
-#   [ IsCompactLieGroupCCSRep, IsCompactLieGroupCCSRep ],
-#   function( ccs1, ccs2 )
-#     return ( nLHnumber( ccs1, ccs2 ) > 0 );
-#   end
-# );
-
-#############################################################################
-##
-#O  PrintObj( <eclg> )
-##
-  InstallMethod( PrintObj,
-    "print ECLG",
-    [ IsCompactLieGroup and IsElementaryCompactLieGroupRep ],
-    10,
-    function( eclg )
-      Print( String( eclg ) );
+      return C;
     end
   );
 
 #############################################################################
 ##
-#A  ViewString( <eclg> )
+#O  CCSId( <CCSs>, <ccs_id> )
+##
+  InstallMethod( CCSId,
+    "return CCS in CCSs object of a compact Lie group",
+    [ IsCompactLieGroupCCSsRep, IsList ],
+    function( CCSs, ccs_id )
+      local G,
+            rep,
+            ccs_class;
+
+      G := UnderlyingGroup( CCSs );
+
+      if ( ccs_id[ 2 ] = 0 ) then
+        ccs_class := CCSClasses( CCSs, "zero_mode" )[ ccs_id[ 1 ] ];
+      elif IsPosInt( ccs_id[ 2 ] ) then
+        ccs_class := CCSClasses( CCSs, "nonzero_mode" )[ ccs_id[ 1 ] ];
+      fi;
+
+      # extract representation of the given CCSs
+      if IsElementaryCompactLieGroupRep( G ) then
+        rep := IsElementaryCompactLieGroupCCSRep;
+      else
+        rep := IsCompactLieGroupCCSRep;
+      fi;
+
+      return NewCCS( rep, rec( ccs_class := ccs_class, ccs_id := ccs_id ) );
+    end
+  );
+
+#############################################################################
+##
+#O  nLHnumber( <CL>, <CH> )
+##
+  InstallMethod( nLHnumber,
+    "return n(L,H) number for CCSs of ECLG",
+    IsIdenticalObj,
+    [ IsElementaryCompactLieGroupCCSRep, IsElementaryCompactLieGroupCCSRep ],
+    function( CL, CH )
+      local G,		# underlying group of ccs1 and ccs2
+            L, H,	# representatives
+            k;		# the reflection
+
+      G := ActingDomain( CL );
+      if not ( G = ActingDomain( CH ) ) then
+        Error( "CL and CH must be from the same ECLG." );
+      fi;
+
+      if not ( IdECLG( G ) in [ [ 1, 2 ], [ 2, 2 ] ] ) then
+        Info( InfoEquiDeg, INFO_LEVEL_EquiDeg,
+            "The underlying group of the CCSs is not supported." );
+        TryNextMethod( );
+      fi;
+
+      L := Representative( CL );
+      H := Representative( CH );
+
+      k := [ [ 1, 0 ], [ 0, -1 ] ];
+      if IsSubset( H, L ) then
+        if IsZeroModeCCS( CH ) then
+          return [ 1, 0 ];
+        elif ( k in H ) and not ( k in L ) then
+          return [ 1, 1 ];
+        else
+          return [ 1, 0 ];
+        fi;
+      else
+        return 0;
+      fi;
+    end
+  );
+
+#############################################################################
+##
+#O  ViewString( <CCSs> )
 ##
   InstallMethod( ViewString,
-    "view string of ECLG",
-    [ IsCompactLieGroup and IsElementaryCompactLieGroupRep ],
-    function( eclg )
-      local type,
-            n,
-            string;
+    "view string of CCS list of CLG",
+    [ IsCollection and IsCompactLieGroupCCSsRep ],
+    function( CCSs )
+      local G;
 
-      type := IdECLG( eclg )[ 1 ];
-      n := IdECLG( eclg )[ 2 ];
-
-      if ( type = 1 ) then
-        string := StringFormatted( "SO({},R)", n );
-      elif ( type = 2 ) then
-        string := StringFormatted( "O({},R)", n );
-      fi;
-
-      return string;
+      G := UnderlyingGroup( CCSs );
+      return StringFormatted( "CCSs( {} )", ViewString( G ) );
     end
   );
 
 #############################################################################
 ##
-#O  ViewObj( <eclg> )
-##
-  InstallMethod( ViewObj,
-    "view ECLG",
-    [ IsCompactLieGroup and IsElementaryCompactLieGroupRep ],
-    10,
-    function( eclg )
-      Print( ViewString( eclg ) );
-    end
-  );
-
-#############################################################################
-##
-#A  DisplayString( <eclg> )
+#A  DisplayString( <CCSs> )
 ##
   InstallMethod( DisplayString,
-    "display string of ECLG",
-    [ IsCompactLieGroup and IsElementaryCompactLieGroupRep ],
-    function( eclg )
-      local type,
-            n,
-            string;
+    "Display CCSs of CLG",
+    [ IsCollection and IsCompactLieGroupCCSsRep ],
+    function( CCSs )
+      local G,
+            str;
 
-      type := IdECLG( eclg )[ 1 ];
-      n := IdECLG( eclg )[ 2 ];
+      G := UnderlyingGroup( CCSs );
 
-      if ( type = 1 ) then
-        string := StringFormatted( "<group of {1}x{1} special orthogonal matrices over R>", n );
-      elif ( type = 2 ) then
-        string := StringFormatted( "<group of {1}x{1} orthogonal matrices over R>", n );
-      fi;
-
-      return string;
+      return StringFormatted(
+        "<conjugacy classes of subgroups of {}>",
+        DisplayString( G )
+      );
     end
   );
 
-#############################################################################
-##
-#O  Display( <eclg> )
-##
-  InstallMethod( Display,
-    "display ECLG",
-    [ IsCompactLieGroup and IsElementaryCompactLieGroupRep ],
-    10,
-    function( eclg )
-      Print( DisplayString( eclg ) );
-    end
-  );
 
-#############################################################################
-##
-#A  PrintString( <ccss_clg> )
-##
-# InstallMethod( PrintString,
-#   "print string of CCS list of clg",
-#   [ IsCollection and IsCompactLieGroupCCSsRep ],
-#   function( ccss )
-#     local clg;
-
-#     clg := UnderlyingGroup( ccss );
-#     return Concatenation( "ConjugacyClassesSubgroups( ", String( clg ), " )" );
-#   end
-# );
-
-#############################################################################
-##
-#O  PrintObj( <ccss_cclg> )
-##
-# InstallMethod( PrintObj,
-#   "print CCS list of compact Lie group",
-#   [ IsCollection and IsCompactLieGroupCCSsRep ],
-#   function( ccss )
-#     Print( PrintString( ccss ) );
-#   end
-# );
-
-#############################################################################
-##
-#A  ViewString( <ccss_clg> )
-##
-# InstallMethod( ViewString,
-#   "view string of CCS list of CLG",
-#   [ IsCollection and IsCompactLieGroupCCSsRep ],
-#   function( ccss )
-#     local clg;
-
-#     clg := UnderlyingGroup( ccss );
-#     return Concatenation( "CCSs( ", ViewString( clg ), " )" );
-#   end
-# );
-
-#############################################################################
-##
-#A  ViewObj( <ccss_clg> )
-##
-# InstallMethod( ViewObj,
-#   "view CCS list of compact Lie group",
-#   [ IsCollection and IsCompactLieGroupCCSsRep ],
-#   function( ccss )
-#     Print( ViewString( ccss ) );
-#   end
-# );
+##  Part 4: Character Theory for ECLG
+##  ??????
 
 
 #############################################################################

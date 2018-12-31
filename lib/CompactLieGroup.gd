@@ -75,16 +75,16 @@
 
 #############################################################################
 ##
-#A  CCSClasses( <CCSs> )
+#F  CCSClasses( <CCSs> )
 ##
   DeclareGlobalFunction( "CCSClasses",
       "returns CCS classes of a compact Lie group" );
 
 #############################################################################
 ##
-#A  CCSId( <CCSs> )
+#O  CCSId( <CCSs> )
 ##
-  DeclareAttribute( "CCSId", IsCompactLieGroupCCSsRep );
+  DeclareOperation( "CCSId", [ IsCompactLieGroupCCSsRep, IsList ] );
 
 #############################################################################
 ##
@@ -94,9 +94,9 @@
 
 #############################################################################
 ##
-#P  IsZeroModeCCS( <C> )
+#A  IsZeroModeCCS( <C> )
 ##
-  DeclareProperty( "IsZeroModeCCS", IsCompactLieGroupCCSRep );
+  DeclareAttribute( "IsZeroModeCCS", IsCompactLieGroupCCSRep );
 
 
 ##  Part 2: Elementary Compact Lie Group

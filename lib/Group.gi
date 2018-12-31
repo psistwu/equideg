@@ -146,43 +146,6 @@
     end
   );
 
-#############################################################################
-##
-#O  \<( <cH1>, <cH2> )
-##
-  InstallMethod( \<,
-    "the partial order of conjugacy classes of subgroups of a finite group",
-    [ IsConjugacyClassSubgroupsRep, IsConjugacyClassSubgroupsRep ],
-    function( cH1, cH2 )
-      return nLHnumber( cH1, cH2 ) > 0;
-    end
-  );
-
-#############################################################################
-##
-#A  OrderOfWeylGroup( <H> )
-##
-  InstallMethod( OrderOfWeylGroup,
-    "return order of weyl group",
-    [ IsGroup and HasParentAttr ],
-    function( H )
-      return Order( NormalizerInParent( H ) ) / Order( H );
-    end
-  );
-
-#############################################################################
-##
-#A  OrderOfWeylGroup( <cH> )
-##
-  InstallMethod( OrderOfWeylGroup,
-    "return order of weyl group",
-    [ IsConjugacyClassSubgroupsRep ],
-    function( cH )
-      return Order( StabilizerOfExternalSet( cH ) ) /
-          Order( Representative( cH ) );
-    end
-  );
-
 ##############################################################################
 ##
 #O  nLHnumber( <L>, <H> )
@@ -216,24 +179,24 @@
 
 #############################################################################
 ##
-#O  nLHnumber( <cL>, <cH> )
+#O  nLHnumber( <CL>, <CH> )
 ##
   InstallMethod( nLHnumber,
     "return n(L,H)",
     IsIdenticalObj,
     [ IsConjugacyClassSubgroupsRep, IsConjugacyClassSubgroupsRep ],
-    function( cL, cH )
+    function( CL, CH )
       local nLH,         # n(L,H)
             L, H;
 
-      L := Representative( cL );
-      H := Representative( cH );
+      L := Representative( CL );
+      H := Representative( CH );
       if not IsZero( Order( H ) mod Order( L ) ) then
         return 0;
       fi;
 
       nLH := 0;
-      for H in cH do
+      for H in CH do
         if IsSubset( H, L ) then
           nLH := nLH+1;
         fi;
@@ -245,15 +208,52 @@
 
 #############################################################################
 ##
-#A  LatticeCCSs( <grp> )
+#O  \<( <C1>, <C2> )
+##
+  InstallMethod( \<,
+    "the partial order of conjugacy classes of subgroups of a finite group",
+    [ IsConjugacyClassSubgroupsRep, IsConjugacyClassSubgroupsRep ],
+    function( C1, C2 )
+      return not IsZero( nLHnumber( C1, C2 ) );
+    end
+  );
+
+#############################################################################
+##
+#A  OrderOfWeylGroup( <H> )
+##
+  InstallMethod( OrderOfWeylGroup,
+    "return order of weyl group",
+    [ IsGroup and HasParentAttr ],
+    function( H )
+      return Order( NormalizerInParent( H ) ) / Order( H );
+    end
+  );
+
+#############################################################################
+##
+#A  OrderOfWeylGroup( <C> )
+##
+  InstallMethod( OrderOfWeylGroup,
+    "return order of weyl group",
+    [ IsConjugacyClassSubgroupsRep ],
+    function( C )
+      return Order( StabilizerOfExternalSet( C ) ) /
+          Order( Representative( C ) );
+    end
+  );
+
+#############################################################################
+##
+#A  LatticeCCSs( <G> )
 ##
   InstallMethod( LatticeCCSs,
     "returns the lattice of CCSs of <grp>",
     [ IsGroup ],
-    function( grp )
-      local ccs_list,		# CCS list
+    function( G )
+      local CCSs,		# CCS list
             lat,		# lattice of CCSs
-            c,			# a CCS
+            C,			# a CCS
             node_shape_list,	# define the node shape of
 				# each CCS in the lattice diagram
 				# normal subgroups -> squares
@@ -261,36 +261,34 @@
             rank_list;		# define the rank of each CCS,
 				# which is the order of the subgroup
 
-      ccs_list := ConjugacyClassesSubgroups( grp );
+      CCSs := ConjugacyClassesSubgroups( G );
       node_shape_list := [ ];
       rank_list := [ ];
-      for c in ccs_list do
-        if ( Size( c ) = 1 ) then
+      for C in CCSs do
+        if ( Size( C ) = 1 ) then
           Add( node_shape_list, "square" );
         else
           Add( node_shape_list, "circle" );
         fi;
-        Add( rank_list, Order( Representative( c ) ) );
+        Add( rank_list, Order( Representative( C ) ) );
       od;
 
       lat := NewLattice( IsLatticeCCSsRep,
         rec(
-          poset := ccs_list,
-          node_labels := [ 1 .. Size( ccs_list ) ],
+          poset := CCSs,
+          node_labels := [ 1 .. Size( CCSs ) ],
           node_shapes := node_shape_list,
           rank_type := "Order",
           ranks := rank_list,
           is_rank_reversed := true,
-          group := grp
+          group := G
         )
       );
-      SetConjugacyClassesSubgroups( lat, ccs_list );
+      SetConjugacyClassesSubgroups( lat, CCSs );
 
       return lat;
     end
   );
-
-##  Appendix: Print, View, Display
 
 #############################################################################
 ##
