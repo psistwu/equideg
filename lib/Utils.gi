@@ -26,6 +26,59 @@
     end
   );
 
+#############################################################################
+##
+#O  \+( <f>, <g> )
+##
+  InstallOtherMethod( \+,
+    "addition of functions",
+    IsIdenticalObj,
+    [ IsGeneralMapping, IsGeneralMapping ],
+    function( f, g )
+      if not IsAdditiveElementCollection( Range( f ) ) then
+        TryNextMethod( );
+      fi;
+
+      return MappingByFunction( Source( f ), Range( f ),
+          x -> Image( f, x ) + Image( g, x ) );
+    end
+  );
+
+#############################################################################
+##
+#O  AdditiveInverseOp( <f> )
+##
+  InstallOtherMethod( AdditiveInverseOp,
+    "additive inverse of functions",
+    [ IsGeneralMapping ],
+    function( f )
+      if not IsAdditiveElementWithInverseCollection( Range( f ) ) then
+        TryNextMethod( );
+      fi;
+
+      return MappingByFunction( Source( f ), Range( f ),
+          x -> -Image( f, x ) );
+    end
+  );
+
+#############################################################################
+##
+#O  \*( <f>, <g> )
+##
+  InstallOtherMethod( \*,
+    "multiplication of functions",
+    IsIdenticalObj,
+    [ IsGeneralMapping, IsGeneralMapping ],
+    function( f, g )
+      if not IsMultiplicativeElementCollection( Range( f ) ) then
+        TryNextMethod( );
+      fi;
+
+      return MappingByFunction( Source( f ), Range( f ),
+          x -> Image( f, x ) * Image( g, x ) );
+    end
+  );
+
 
 #############################################################################
 ##
