@@ -4,11 +4,7 @@
 # Haopin Wu <psistwu@outlook.com>
 #
 
-  # preload
-  LIB_LIST := [ "Sys", "BasicMath", "Group", "OrbitType" ];
-  MakeReadOnlyGlobal( "LIB_LIST" );
-  Read( "../preload.gap" );
-
+  LoadPackage( "EquiDeg" );
 
 # ## Setup
   Print( "=== Setup ===\n" );

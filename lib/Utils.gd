@@ -8,8 +8,6 @@
 ##  This file contains declarations for utilities.
 ##
 
-##  Part 1: EquiDeg Info Class
-
 #############################################################################
 ##
 #V  INFO_LEVEL_EquiDeg
@@ -46,9 +44,6 @@
   DeclareInfoClass( "InfoEquiDeg" );
   SetInfoLevel( InfoEquiDeg, 1 );
 
-
-##  Part 2: LaTeX Typesettings
-
 #############################################################################
 ##
 #A  LaTeXString( <obj> )
@@ -82,6 +77,13 @@
 ##  <#/GAPDoc>
 ##
   DeclareOperation( "LaTeXTypesetting", [ IsObject ] );
+
+#############################################################################
+##
+#F  ListA( <list1>, <list2>, ..., <listn>, <f> )
+##
+  DeclareGlobalFunction( "ListA",
+      "Apply action (function with no return value on list of arguments" );
 
 
 #############################################################################

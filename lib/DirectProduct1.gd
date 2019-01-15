@@ -13,15 +13,9 @@
 
 #############################################################################
 ##
-#A  DirectProductComponents( <G> )
+#O  DirectProductDecomposition( <G> )
 ##
-  DeclareAttribute( "DirectProductComponents", IsGroup );
-
-#############################################################################
-##
-#A  GoursatInfo( <U> )
-##
-  DeclareAttribute( "GoursatInfo", IsGroup and HasParentAttr );
+  DeclareOperation( "DirectProductDecomposition", [ IsGroup ] );
 
 #############################################################################
 ##
@@ -42,6 +36,12 @@
 ##
   DeclareOperation( "DirectProductDecomposition",
       [ IsGroup, IsMultiplicativeElementWithInverse ] );
+
+#############################################################################
+##
+#A  GoursatInfo( <U> )
+##
+  DeclareAttribute( "GoursatInfo", IsGroup and HasParentAttr );
 
 #############################################################################
 ##

@@ -4,11 +4,7 @@
 # Haopin Wu <psistwu@outlook.com>
 #
 
-  # preload
-  LIB_LIST := [ "Sys" ];
-  MakeReadOnlyGlobal( "LIB_LIST" );
-  Read( "../preload.gap" );
-
+  LoadPackage( "EquiDeg" );
   
 # ## Demo 1: use ListF to install LaTeXString for CCSs of S4
   Print( "Take grp as group S4.... " );

@@ -2,7 +2,7 @@
 ##
 #W  Group.gd		GAP Package `EquiDeg'			    Haopin Wu
 ##
-#Y  Copyright (C) 2017-2018, Haopin Wu
+#Y  Copyright (C) 2017-2019, Haopin Wu
 #Y  Department of Mathematics, National Tsing Hua University, Taiwan
 ##
 ##  This file contains declarations for procedures related to group theory.
@@ -86,6 +86,25 @@
 
 #############################################################################
 ##
+#A  IdCC( <c> )
+##
+  DeclareAttribute( "IdCC", IsConjugacyClassGroupRep );
+
+#############################################################################
+##
+#A  IdCCS( <C> )
+##
+  DeclareAttribute( "IdCCS", IsConjugacyClassSubgroupsRep );
+
+#############################################################################
+##
+#F  IdCCSPartialOrder( <id1>, <id2> )
+##
+  DeclareGlobalFunction( "IdCCSPartialOrder",
+      "partial order of id of CCS" );
+
+#############################################################################
+##
 #O  ConjugacyClassSubgroups( <H> )
 ##
 ##  <#GAPDoc Label="ConjugacyClassSubgroups">
@@ -104,46 +123,13 @@
 
 #############################################################################
 ##
-#O  \<( <cH1>, <cH2> )
-##
-##  <#GAPDoc Label="LessThan">
-##  <ManSection>
-##  <Oper Name="&bslash;&lt;" Arg="cH1, cH2"/>
-##  <Description>
-##    This is the standard partial order relation defined
-##    on the collection of CCSs.
-##  </Description>
-##  </ManSection>
-##  <#/GAPDoc>
-##
-
-#############################################################################
-##
-#A  OrderOfWeylGroup( <H> )
-#A  OrderOfWeylGroup( <cH> )
-##
-##  <#GAPDoc Label="OrderOfWeylGroup">
-##  <ManSection>
-##  <Attr Name="OrderOfWeylGroup" Arg="H"/>
-##  <Attr Name="OrderOfWeylGroup" Arg="cH" Label="ccs"/>
-##  <Description>
-##    This attribute contains the order of the Weyl group of <A>H</A>.
-##  </Description>
-##  </ManSection>
-##  <#/GAPDoc>
-##
-  DeclareAttribute( "OrderOfWeylGroup", IsGroup and HasParentAttr );
-  DeclareAttribute( "OrderOfWeylGroup", IsConjugacyClassSubgroupsRep );
-
-#############################################################################
-##
 #O  nLHnumber( <L>, <H> )
-#O  nLHnumber( <cL>, <cH> )
+#O  nLHnumber( <CL>, <CH> )
 ##
 ##  <#GAPDoc Label="nLHnumber">
 ##  <ManSection>
 ##  <Oper Name="nLHnumber" Arg="L, H"/>
-##  <Oper Name="nLHnumber" Arg="cL, cH" Label="ccs"/>
+##  <Oper Name="nLHnumber" Arg="CL, CH" Label="ccs"/>
 ##  <Description>
 ##    This operation computes <M>n(<A>L</A>,<A>H</A>)</M>.
 ##  </Description>
@@ -154,6 +140,40 @@
       [ IsGroup and HasParentAttr, IsGroup and HasParentAttr ] );
   DeclareOperation( "nLHnumber",
       [ IsConjugacyClassSubgroupsRep, IsConjugacyClassSubgroupsRep ] );
+
+#############################################################################
+##
+#O  \<( <C1>, <C2> )
+##
+##  <#GAPDoc Label="LessThan">
+##  <ManSection>
+##  <Oper Name="&bslash;&lt;" Arg="C1, C2"/>
+##  <Description>
+##    This is the standard partial order relation defined
+##    on the collection of CCSs.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+
+#############################################################################
+##
+#A  OrderOfWeylGroup( <U> )
+#A  OrderOfWeylGroup( <C> )
+##
+##  <#GAPDoc Label="OrderOfWeylGroup">
+##  <ManSection>
+##  <Attr Name="OrderOfWeylGroup" Arg="U"/>
+##  <Attr Name="OrderOfWeylGroup" Arg="C" Label="ccs"/>
+##  <Description>
+##    This attribute contains the order of the Weyl group for given
+##    subgroup <A>U</A> or CCS <A>C</A>.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+  DeclareAttribute( "OrderOfWeylGroup", IsGroup and HasParentAttr );
+  DeclareAttribute( "OrderOfWeylGroup", IsConjugacyClassSubgroupsRep );
 
 
 #############################################################################

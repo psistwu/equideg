@@ -13,27 +13,16 @@
 
 #############################################################################
 ##
-#C  IsDirectProductWithECLG
-##
-  DeclareCategory( "IsDirectProductWithECLG", IsCompactLieGroup );
-
-#############################################################################
-##
 #R  IsDirectProductWithECLGCCSRep
 ##
-  DeclareRepresentation( "IsDirectProductWithECLGCCSRep", IsCompactLieGroupCCSRep, [ ] );
-
-#############################################################################
-##
-#R  IsDirectProductWithECLGCCSsRep
-##
-  DeclareRepresentation( "IsDirectProductWithECLGCCSsRep", IsCompactLieGroupCCSsRep, [ ] );
+# DeclareRepresentation( "IsDirectProductWithECLGCCSRep",
+#     IsCompactLieGroupCCSRep, [ ] );
 
 #############################################################################
 ##
 #A  GoursatInfo( <C> )
 ##
-  DeclareAttribute( "GoursatInfo", IsDirectProductWithECLGCCSRep );
+  DeclareAttribute( "GoursatInfo", IsCompactLieGroupConjugacyClassSubgroupsRep );
 
 
 #############################################################################

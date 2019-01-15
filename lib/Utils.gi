@@ -20,62 +20,46 @@
         return LaTeXString( obj );
       else
         Info( InfoEquiDeg, INFO_LEVEL_EquiDeg,
-            "LaTeXString of the object is not defined." );
-        return "";
+            "LaTeXString of the object is not defined.\n" );
+        return fail;
       fi;
     end
   );
 
 #############################################################################
 ##
-#O  \+( <f>, <g> )
+#F  ListA( <list1>, <list2>, ..., <listn>, f )
 ##
-  InstallOtherMethod( \+,
-    "addition of functions",
-    IsIdenticalObj,
-    [ IsGeneralMapping, IsGeneralMapping ],
-    function( f, g )
-      if not IsAdditiveElementCollection( Range( f ) ) then
-        TryNextMethod( );
+  InstallGlobalFunction( ListA,
+    function( args... )
+      local f,
+            m,
+            i,
+            argf;
+
+      f := Remove( args );
+      m := Length( args[ 1 ] );
+
+      if ForAny( args, list -> not ( Length( list ) = m ) ) then
+        Error( "<list1>, <list2>, ..., <listn> should have the same length." );
       fi;
 
-      return MappingByFunction( Source( f ), Range( f ),
-          x -> Image( f, x ) + Image( g, x ) );
+      for i in [ 1 .. m ] do
+        argf := List( args, x -> x[ i ] );
+        CallFuncListWrap( f, argf );
+      od;
     end
   );
 
 #############################################################################
 ##
-#O  AdditiveInverseOp( <f> )
+#O  \[\]( <obj>, <list> )
 ##
-  InstallOtherMethod( AdditiveInverseOp,
-    "additive inverse of functions",
-    [ IsGeneralMapping ],
-    function( f )
-      if not IsAdditiveElementWithInverseCollection( Range( f ) ) then
-        TryNextMethod( );
-      fi;
-
-      return MappingByFunction( Source( f ), Range( f ),
-          x -> -Image( f, x ) );
-    end
-  );
-
-#############################################################################
-##
-#O  \*( <f>, <g> )
-##
-  InstallOtherMethod( \*,
-    "multiplication of functions",
-    IsIdenticalObj,
-    [ IsGeneralMapping, IsGeneralMapping ],
-    function( f, g )
-      if not IsMultiplicativeElementCollection( Range( f ) ) then
-        TryNextMethod( );
-      fi;
-
-      return MappingByFunction( Source( f ), Range( f ),
-          x -> Image( f, x ) * Image( g, x ) );
+  InstallOtherMethod( \[\],
+    "for multi-component indices",
+    [ IsObject, IsList ],
+    function( obj, list )
+      return CallFuncList( \[\], Flat( [ obj, list ] ) );
     end
   );
 

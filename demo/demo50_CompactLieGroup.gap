@@ -6,10 +6,7 @@
 # Haopin Wu <psistwu@outlook.com>
 #
 
-  # preload
-  LIB_LIST := [ "Sys", "BasicMath", "Group", "CompactLieGroup", "DirectProduct" ];
-  MakeReadOnlyGlobal( "LIB_LIST" );
-  Read( "../preload.gap" );
+  LoadPackage( "EquiDeg" );
 
 # ## Test 1: generate O(2) and SO(2)
   Print( "=== Test 1 ===\n" );

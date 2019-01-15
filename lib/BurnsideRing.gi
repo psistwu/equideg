@@ -13,13 +13,39 @@
 
 #############################################################################
 ##
+#U  NewBurnsideRingElement( <filt>, <r> )
+##
+  InstallMethod( NewBurnsideRingElement,
+    "constructs Burnside ring element",
+    [ IsBurnsideRingByFiniteGroupElement and
+      IsBurnsideRingByCompactLieGroupElement,
+      IsRecord ],
+    function( filt, r )
+      local fam,
+            cat,
+            rep;
+
+            fam := r.fam;
+            cat := filt;
+            rep := IsBurnsideRingElementRep;
+
+      return Objectify( NewType( fam, cat and rep ),
+        rec( ccsList	:= r.ccs_list,
+             ccsIdList	:= r.ccs_id_list,
+             coeffList	:= r.coeff_list   )
+      );
+    end
+  );
+
+#############################################################################
+##
 #A  Length( <a> )
 ##
-# InstallMethod( Length,
-#   "length of the summand in a Burnside ring element",
-#   [ IsBurnsideRingElement and IsBurnsideRingBySmallGroupElementRep ],
-#   a -> Length( a!.ccsIndices )
-# );
+  InstallMethod( Length,
+    "length of a Burnside ring element",
+    [ IsBurnsideRingElement ],
+    a -> Length( a!.ccsList )
+  );
 
 #############################################################################
 ##
@@ -27,8 +53,8 @@
 ##
   InstallMethod( ToSparseList,
     "convert a Burnside ring element to a sparse list",
-    [ IsBurnsideRingElement and IsBurnsideRingBySmallGroupElementRep ],
-    a -> ListN( a!.ccsIndices, a!.coefficients, { x, y } -> [ x, y ] )
+    [ IsBurnsideRingElement ],
+    a -> ListN( a!.ccsIdList, a!.coeffList, { x, y } -> [ x, y ] )
   );
 
 #############################################################################
@@ -37,16 +63,14 @@
 ##
   InstallMethod( ToDenseList,
     "convert a Burnside ring element to a dense list",
-    [ IsBurnsideRingElement and IsBurnsideRingBySmallGroupElementRep ],
+    [ IsBurnsideRingByFiniteGroupElement ],
     function( a )
-      local list,   # the return list
-            fam,    # the family of the Burnside ring element
-            dim;    # dimension of the Burnside module (ring)
+      local list,	# the return list
+            dim;	# dimension of the Burnside module (ring)
 
-      fam := FamilyObj( a );
-      dim := fam!.dimension;
+      dim := FamilyObj( a ).dimension;
       list := ZeroOp( [ 1 .. dim ] );
-      list{ a!.ccsIndices } := a!.coefficients;
+      list{ a!.ccsIdList } := a!.coeffList;
 
       return list;
     end
@@ -54,52 +78,53 @@
 
 #############################################################################
 ##
-#O  ZeroMutable( <a> )
+#O  ZeroOp( <a> )
 ##
-  InstallMethod( ZeroMutable,
+  InstallMethod( ZeroOp,
     "additive identity of a Burnside ring",
-    [ IsBurnsideRingElement and IsBurnsideRingBySmallGroupElementRep ],
+    [ IsBurnsideRingElement ],
     function( a )
-      return ZeroImmutable( FamilyObj( a ) );
+      return ZeroAttr( FamilyObj( a ) );
     end
   );
 
 #############################################################################
 ##
-#O  OneMutable( <a> )
+#O  OneOp( <a> )
 ##
-  InstallMethod( OneMutable,
+  InstallMethod( OneOp,
     "multiplicative identity of a Burnside ring",
-    [ IsBurnsideRingElement and IsBurnsideRingBySmallGroupElementRep ],
+    [ IsBurnsideRingElement ],
     function( a )
-      return OneImmutable( FamilyObj( a ) );
+      return OneAttr( FamilyObj( a ) );
     end
   );
 
 #############################################################################
 ##
-#O  AdditiveInverseMutable( <a> )
+#O  AdditiveInverseOp( <a> )
 ##
-  InstallMethod( AdditiveInverseMutable,
+  InstallMethod( AdditiveInverseOp,
     "additive inverse in a Burnside ring",
-    [ IsBurnsideRingElement and IsBurnsideRingBySmallGroupElementRep ],
+    [ IsBurnsideRingElement ],
     function( a )
       local fam,
-            minusa;
+            cat,
+            rep,
+            addinv;
 
       fam := FamilyObj( a );
+      cat := First( EquiDeg_BRNG_ELMT_CAT_LIST, filt -> filt( a ) );
 
-      minusa := Objectify(
-        NewType( fam, IsBurnsideRingElement and
-            IsBurnsideRingBySmallGroupElementRep ),
-            rec( ccss         :=  a!.ccss,
-                 ccsIndices   :=  a!.ccsIndices,
-                 coefficients := -a!.coefficients )
+      addinv := NewBurnsideRingElement( cat,
+        rec( fam := fam,
+             ccs_list		:=  a!.ccsList,
+             ccs_id_list	:=  a!.ccsIdList,
+             coeff_list		:= -a!.coeffList  )
 
       );
-      SetLength( minusa, Length( a ) );
 
-      return minusa;
+      return addinv;
     end
   );
 
@@ -110,12 +135,10 @@
   InstallMethod( \=,
     "identical relation in a Burnside ring",
     IsIdenticalObj,
-    [ IsBurnsideRingElement and IsBurnsideRingBySmallGroupElementRep,
-      IsBurnsideRingElement and IsBurnsideRingBySmallGroupElementRep ],
+    [ IsBurnsideRingElement, IsBurnsideRingElement ],
     function( a, b )
-      return ( a!.ccss         = b!.ccss         ) and
-             ( a!.ccsIndices   = b!.ccsIndices   ) and
-             ( a!.coefficients = b!.coefficients );
+      return ( a!.ccsIdList	= b!.ccsIdList	) and
+             ( a!.coeffList	= b!.coeffList 	);
     end
   );
 
@@ -126,35 +149,62 @@
   InstallMethod( \+,
     "addition in a Burnside ring",
     IsIdenticalObj,
-    [ IsBurnsideRingElement and IsBurnsideRingBySmallGroupElementRep,
-      IsBurnsideRingElement and IsBurnsideRingBySmallGroupElementRep ],
+    [ IsBurnsideRingElement, IsBurnsideRingElement ],
     function( a, b )
-      local sum_dense_list,
-            fam,
-            sum_ccs_list,
-            sum_ccs_index_list,
-            sum_coefficient_list,
-            aplusb;
+      local fam,
+            cat,
+            a_sparse_list,
+            b_sparse_list,
+            sum_sparse_list,
+            a_term,
+            b_term,
+            coeff,
+            sum,
+            ccs_list,
+            ccs_id_list,
+            coeff_list;
 
       fam := FamilyObj( a );
+      cat := First( EquiDeg_BRNG_ELMT_CAT_LIST, filt -> filt( a ) );
 
-      sum_dense_list       := ToDenseList( a ) + ToDenseList( b );
-      sum_ccs_index_list   := PositionsProperty( sum_dense_list,
-                              x -> not IsZero( x ) );
-      sum_ccs_list         := fam!.ccss{ sum_ccs_index_list };
-      sum_coefficient_list := sum_dense_list{ sum_ccs_index_list };
+      a_sparse_list := ToSparseList( a );
+      b_sparse_list := ToSparseList( b );
+      sum_sparse_list := [ ];
 
-      aplusb := Objectify(
-        NewType( fam,
-                 IsBurnsideRingElement and
-                 IsBurnsideRingBySmallGroupElementRep ),
-            rec( ccss         := sum_ccs_list,
-                 ccsIndices   := sum_ccs_index_list,
-                 coefficients := sum_coefficient_list )
+      while not IsEmpty( a_sparse_list ) and not IsEmpty( b_sparse_list ) do
+        a_term := First( a_sparse_list, x -> true );
+        b_term := First( b_sparse_list, x -> true );
+
+        if ( a_term[ 1 ] = b_term[ 1 ] ) then
+          coeff := a_term[ 2 ] + b_term[ 2 ];
+          if not ( coeff = 0 ) then
+            Add( sum_sparse_list, [ a_term[ 1 ], coeff ] );
+          fi;
+          Remove( a_sparse_list, 1 );
+          Remove( b_sparse_list, 1 );
+        elif IdCCSPartialOrder( a_term[ 1 ], b_term[ 1 ] ) then
+          Add( sum_sparse_list, a_term );
+          Remove( a_sparse_list, 1 );
+        elif IdCCSPartialOrder( b_term[ 1 ], a_term[ 1 ] ) then
+          Add( sum_sparse_list, b_term );
+          Remove( b_sparse_list, 1 );
+        fi;
+      od;
+      Append( sum_sparse_list, a_sparse_list );
+      Append( sum_sparse_list, b_sparse_list );
+
+      ccs_id_list := List( sum_sparse_list, x -> x[ 1 ] );
+      ccs_list := List( ccs_id_list, id -> \[\]( fam!.CCSs, id ) );
+      coeff_list := List( sum_sparse_list, x -> x[ 2 ] );
+
+      sum := NewBurnsideRingElement( cat,
+        rec( fam		:= fam,
+             ccs_list		:= ccs_list,
+             ccs_id_list	:= ccs_id_list,
+             coeff_list		:= coeff_list   )
       );
-      SetLength( aplusb, Length( sum_ccs_index_list ) );
 
-      return aplusb;
+      return sum;
     end
   );
 
@@ -164,27 +214,28 @@
 ##
   InstallMethod( \*,
     "scalar multiplication in a Burnside ring",
-    [ IsInt, IsBurnsideRingElement and IsBurnsideRingBySmallGroupElementRep ],
+    [ IsInt, IsBurnsideRingElement ],
     function( n, a )
       local fam,
-            na;		# result
+            cat,
+            rep,
+            mul;	# result
 
       fam := FamilyObj( a );
+      cat := First( EquiDeg_BRNG_ELMT_CAT_LIST, filt -> filt( a ) );
+      rep := IsBurnsideRingElementRep;
 
       if IsZero( n ) then
-        na := Zero( a );
+        return Zero( a );
       else
-        na := Objectify(
-          NewType( fam, IsBurnsideRingElement and
-              IsBurnsideRingBySmallGroupElementRep ),
-              rec( ccss         := a!.ccss,
-                   ccsIndices   := a!.ccsIndices,
-                   coefficients := n*a!.coefficients )
+        return NewBurnsideRingElement(
+          cat,
+          rec( fam		:= fam,
+               ccs_list		:= a!.ccsList,
+               ccs_id_list	:= a!.ccsIdList,
+               coeff_list	:= n*a!.coeffList )
         );
-        SetLength( na, Length( a ) );
       fi;
-
-      return na;
     end
   );
 
@@ -195,64 +246,73 @@
   InstallMethod( \*,
     "multiplication in a Burnside ring",
     IsIdenticalObj,
-    [ IsBurnsideRingElement and IsBurnsideRingBySmallGroupElementRep,
-      IsBurnsideRingElement and IsBurnsideRingBySmallGroupElementRep ],
+    [ IsBurnsideRingByFiniteGroupElement,
+      IsBurnsideRingByFiniteGroupElement  ],
     function( a, b )
-      local fam,		# family of Burnside ring elements
+      local fam,		# family of Burnside ring element
+            cat,		# category of Burnside ring element
             G,			# group
-            ccs_list,		# CCSs
             A,			# Burnside ring
+            CCSs,		# CCSs of G
             basis,		# basis of Burnside ring
-            indCa,		# index of CCS a (when a is in the basis )
-            indCb,		# index of CCS b (when b is in the basis )
+            idCa,		# id of CCS a (when a is in the basis )
+            idCb,		# id of CCS b (when b is in the basis )
             Ca,			# CCS of a (when a is in the basis)
             Cb,			# CCS of b (when b is in the basis)
-            len,		# length of the product
-            ab_ccs_list,	# ccs list of the product
-            ab_ccs_index_list,	# ccs index list of the product
-            ab_coeff_list,	# coefficient list of the product
+            ccs_list,		# ccs list of the product
+            ccs_id_list,	# ccs id list of the product
+            coeff_list,		# coefficient list of the product
             coeff,		# a coefficient in the product
             i, j,		# indices
             Ci, Cj;		# i-th and j-th CCSs
 
       fam := FamilyObj( a );
+      cat := IsBurnsideRingByFiniteGroupElement;
+
       G := fam!.group;
       A := fam!.burnsideRing;
+      CCSs := fam!.CCSs;
       basis := Basis( A );
-      ccs_list := fam!.ccss;
 
-      if ( a in basis ) and ( b in basis ) then
-        indCa := a!.ccsIndices[ 1 ];
-        indCb := b!.ccsIndices[ 1 ];
-        Ca := a!.ccss[ 1 ];
-        Cb := b!.ccss[ 1 ];
-        ab_ccs_list := [ ];
-        ab_ccs_index_list := [ ];
-        ab_coeff_list := [ ];
+      if IsBurnsideRingGenerator( a ) and IsBurnsideRingGenerator( b ) then
+        idCa	:= a!.ccsIdList[ 1 ];
+        idCb	:= b!.ccsIdList[ 1 ];
+        Ca	:= a!.ccsList[ 1 ];
+        Cb	:= b!.ccsList[ 1 ];
 
-        for i in Reversed( [ 1 .. Minimum( indCa, indCb ) ] ) do
-          Ci := ccs_list[ i ];
-          if not ( ( Ci <= Ca ) and ( Ci <= Cb ) ) then
-            continue;
-          fi;
+        ccs_list := [ ];
+        ccs_id_list := [ ];
+        coeff_list := [ ];
 
+        for i in Reversed( [ 1 .. Minimum( idCa, idCb ) ] ) do
+          Ci := CCSs[ i ];
           coeff := nLHnumber( Ci, Ca ) * OrderOfWeylGroup( Ca ) *
                    nLHnumber( Ci, Cb ) * OrderOfWeylGroup( Cb );
 
-          for j in [ 1 .. Size( ab_ccs_list ) ] do
-            Cj := ab_ccs_list[ j ];
-            coeff := coeff - nLHnumber( Ci, Cj )*ab_coeff_list[ j ];
+          if IsZero( coeff ) then
+            continue;
+          fi;
+
+          for j in [ 1 .. Size( ccs_list ) ] do
+            Cj := ccs_list[ j ];
+            coeff := coeff - nLHnumber( Ci, Cj )*coeff_list[ j ];
           od;
 
           if not IsZero( coeff ) then
-            Add( ab_ccs_list, Ci, 1 );
-            Add( ab_ccs_index_list, i, 1 );
-            Add( ab_coeff_list, coeff, 1 );
+            Add( ccs_list, Ci, 1 );
+            Add( ccs_id_list, i, 1 );
+            Add( coeff_list, coeff, 1 );
           fi;
         od;
-        ab_coeff_list := ListN( ab_coeff_list,
-                         List( ab_ccs_list, OrderOfWeylGroup ), \/ );
-        return Sum( ListN( ab_coeff_list, basis{ ab_ccs_index_list }, \* ) );
+        coeff_list := ListN( coeff_list, List( ccs_list, OrderOfWeylGroup ), \/ );
+        coeff_list := List( coeff_list, LeadingCoefficient );
+
+        return NewBurnsideRingElement( cat,
+          rec( fam		:= fam,
+               ccs_list		:= ccs_list,
+               ccs_id_list 	:= ccs_id_list,
+               coeff_list 	:= coeff_list   )
+        );
       else
         return Sum( ListX( ToSparseList( a ), ToSparseList( b ),
           { x, y } -> x[ 2 ] * y[ 2 ] * ( basis[ x[ 1 ] ] * basis[ y[ 1 ] ] )
@@ -261,80 +321,141 @@
     end
   );
 
+#############################################################################
+##
+#O  \*( <a>, <b> )
+##
+  InstallMethod( \*,
+    "multiplication in a Burnside ring",
+    IsIdenticalObj,
+    [ IsBurnsideRingByCompactLieGroupElement,
+      IsBurnsideRingByCompactLieGroupElement  ],
+    function( a, b )
+      local fam,		# family of Burnside ring element
+            cat,		# category of Burnside ring element
+            G,			# group
+            A,			# Burnside ring
+            CCSs,		# CCSs of G
+            basis,		# basis of Burnside ring
+            idCa,		# id of CCS a (when a is in the basis )
+            idCb,		# id of CCS b (when b is in the basis )
+            Ca,			# CCS of a (when a is in the basis)
+            Cb,			# CCS of b (when b is in the basis)
+            l,			# mode of the product
+            imax,
+            ccs_list,		# ccs list of the product
+            ccs_id_list,	# ccs id list of the product
+            coeff_list,		# coefficient list of the product
+            coeff,		# a coefficient in the product
+            i, j,		# indices
+            Ci, Cj;		# i-th and j-th CCSs
+
+      fam := FamilyObj( a );
+      cat := IsBurnsideRingByCompactLieGroupElement;
+
+      G := fam!.group;
+      A := fam!.burnsideRing;
+      CCSs := fam!.CCSs;
+      basis := Basis( A );
+
+      if IsBurnsideRingGenerator( a ) and IsBurnsideRingGenerator( b ) then
+        idCa	:= a!.ccsIdList[ 1 ];
+        idCb	:= b!.ccsIdList[ 1 ];
+        Ca	:= a!.ccsList[ 1 ];
+        Cb	:= b!.ccsList[ 1 ];
+
+        l := Gcd( idCa[ 1 ], idCb[ 1 ] );
+        if IsPosInt( l ) then
+          imax := NumberOfNonzeroModeClasses( CCSs );
+        else
+          imax := NumberOfZeroModeClasses( CCSs );
+        fi;
+
+        ccs_list := [ ];
+        ccs_id_list := [ ];
+        coeff_list := [ ];
+
+        for i in Reversed( [ 1 .. imax ] ) do
+          Ci := CCSs[ l, i ];
+          if not ( OrderOfWeylGroup( Ci )[ 2 ] = 0 ) then
+            continue;
+          fi;
+          coeff := nLHnumber( Ci, Ca ) * OrderOfWeylGroup( Ca ) *
+                   nLHnumber( Ci, Cb ) * OrderOfWeylGroup( Cb );
+
+          if ( coeff = 0 ) then
+            continue;
+          fi;
+
+          for j in [ 1 .. Size( ccs_list ) ] do
+            Cj := ccs_list[ j ];
+            coeff := coeff - nLHnumber( Ci, Cj )*coeff_list[ j ];
+          od;
+
+          if not IsZero( coeff ) then
+            Add( ccs_list, Ci, 1 );
+            Add( ccs_id_list, [ l, i ], 1 );
+            Add( coeff_list, coeff, 1 );
+          fi;
+        od;
+        coeff_list := ListN( coeff_list,
+            List( ccs_list, C -> OrderOfWeylGroup( C ) ), \/ );
+        coeff_list := List( coeff_list, LeadingCoefficient );
+
+        return NewBurnsideRingElement( cat,
+          rec( fam:= fam,
+               ccs_list		:= ccs_list,
+               ccs_id_list 	:= ccs_id_list,
+               coeff_list 	:= coeff_list   )
+        );
+      else
+        return Sum( ListX( ToSparseList( a ), ToSparseList( b ),
+          { x, y } -> x[ 2 ] * y[ 2 ] * ( basis[ x[ 1 ] ] * basis[ y[ 1 ] ] )
+        ) );
+      fi;
+    end
+  );
 
 ##  Part 2: Burnside ring
 
 #############################################################################
 ##
-#U  NewBurnsideRing( IsBurnsideRing and IsBurnsideRingBySmallGroupRep, <G> )
+#U  NewBurnsideRing( IsBurnsideRingByFiniteGroup and
+#U      IsBurnsideRingByCompactLieGroup, <r> )
 ##
   InstallMethod( NewBurnsideRing,
     "create a Burnside ring induced by a small group",
-    [ IsBurnsideRing and IsBurnsideRingBySmallGroupRep, IsGroup ],
-    function( filt, G )
-      local fam_elmt,	# family of the Burnside ring elements
-            filt_elmt,	# filter of the Burnside ring elements
-            A,		# the Burnside ring
-            ccs_list,	# conjugacy classes of subgroups
+    [ IsBurnsideRingByFiniteGroup and IsBurnsideRingByCompactLieGroup,
+      IsRecord ],
+    function( filt, r )
+      local G,		# the group
+            CCSs,	# conjugacy classes of subgroups
             d,		# dimension of the module (ring)
-            zero,	# zero of the Burnside ring
-            b,          # an element in the basis
-            basis,	# basis of the module (ring)
-            i, j;	# indices
+            fam_elmt,	# family of Burnside ring element
+            rep,	# representation of Burnside ring
+            A,		# the Burnside ring
+            zero;	# zero of the Burnside ring
 
       # extract info of <G>
-      ccs_list := ConjugacyClassesSubgroups( G );
-      d        := Size( ccs_list );
-
-      # declare the family and filter of elements of the Burnside ring
-      filt_elmt := IsBurnsideRingElement and
-                   IsBurnsideRingBySmallGroupElementRep;
-      fam_elmt  := NewFamily( Concatenation( "BurnsideRing(",
-                   ViewString( G ), ")Family" ), filt_elmt );
+      G		:= r.group;
+      CCSs	:= ConjugacyClassesSubgroups( G );
+      d         := Size( CCSs );
+      fam_elmt	:= ElementsFamily( r.fam );
 
       # objectify the Burnside ring
-      A := Objectify( NewType( CollectionsFamily( fam_elmt ),
-           filt ), rec( ) );
+      rep := IsComponentObjectRep and IsAttributeStoringRep;
+      A := Objectify( NewType( r.fam, filt and rep ), rec( ) );
       SetIsWholeFamily( A, true );
+      SetString( A, StringFormatted( "BurnsideRing( {} )", String( G ) ) );
 
-      # assign attributes to the family of elements
-      fam_elmt!.group        := G;
-      fam_elmt!.ccss         := ccs_list;
-      fam_elmt!.dimension    := d;
-      fam_elmt!.burnsideRing := A;
-
-      # generate zero of the Burnside ring
-      zero := Objectify(
-        NewType( fam_elmt, filt_elmt ),
-        rec( ccss        := [ ],
-             ccsIndices  := [ ],
-             coefficient := [ ]  )
-      );
-      SetLength( zero, 0 );
-      SetZeroImmutable( fam_elmt, zero );
-      SetZeroImmutable( A, zero );
-
-      # generate the basis of the Burnside ring
-      SetDimension( A, d );
-      basis := [ ];
-      for i in [ 1 .. d ] do
-        b := Objectify(
-          NewType( fam_elmt, filt_elmt ),
-          rec( ccss         := ccs_list{ [ i ] },
-               ccsIndices   := [ i ],
-               coefficients := [ 1 ]  )
-        );
-        SetLength( b, 1 );
-        Add( basis, b );
-      od;
-      SetBasis( A, basis );
-      SetGeneratorsOfRing( A, basis );
-      SetOneImmutable( fam_elmt, basis[ d ] );
-      SetOneImmutable( A, basis[ d ] );
+      # assign values to instance variables of the family of element
+      fam_elmt!.group		:= G;
+      fam_elmt!.CCSs		:= CCSs;
+      fam_elmt!.dimension	:= d;
+      fam_elmt!.burnsideRing	:= A;
 
       # other attributes related to its module structure
       SetLeftActingDomain( A, Integers );
-      SetIsFiniteDimensional( A, true );
 
       # other attributes related to its Burnside ring sturcture
       SetUnderlyingGroup( A, G );
@@ -348,16 +469,215 @@
 #A  BurnsideRing( <G> )
 ##
   InstallMethod( BurnsideRing,
-    "return the Burnside ring induced by a group",
+    "This attribute contains the Burnside ring induced by finite group <G>",
     [ IsGroup and IsFinite ],
-    G -> NewBurnsideRing( IsBurnsideRing and
-                          IsBurnsideRingBySmallGroupRep, G )
+    function( G )
+      local CCSs,	# CCSs of <G>
+            d,		# size of <CCSs>
+            fam_elmt,   # family of Burnside ring elements
+            cat_elmt,	# category of Burnside ring elements
+            fam,	# family of the Burnside ring
+	    cat,	# category of the Burnside ring
+            A,		# the Burnside ring
+            zero,	# zero of the Burnside ring
+            basis;	# basis of the module (ring)
+
+      # extract info of <G>
+      CCSs	:= ConjugacyClassesSubgroups( G );
+      d		:= Size( CCSs );
+
+      # family and category of Burnside ring element
+      cat_elmt := IsBurnsideRingByFiniteGroupElement;
+      fam_elmt := NewFamily(
+        StringFormatted( "BurnsideRing( {} )Family", String( G ) ),
+        cat_elmt
+      );
+
+      # family and category of the Burnside ring
+      cat := IsBurnsideRingByFiniteGroup;
+      fam := CollectionsFamily( fam_elmt );
+
+      # construct the Burnside ring
+      A := NewBurnsideRing(
+        cat,
+        rec( group	:= G,
+             fam	:= fam )
+      );
+
+      # generate zero of the Burnside ring
+      zero := NewBurnsideRingElement(
+        cat_elmt,
+        rec( fam		:= fam_elmt,
+             ccs_list		:= [ ],
+             ccs_id_list	:= [ ],
+             coeff_list		:= [ ]       )
+      );
+
+      # generate the basis of the Burnside ring
+      basis := List( [ 1 .. d ],
+        i -> NewBurnsideRingElement(
+          cat_elmt,
+          rec( fam		:= fam_elmt,
+               ccs_list		:= [ CCSs[ i ] ],
+               ccs_id_list	:= [ i ],
+               coeff_list	:= [ 1 ]          )
+        )
+      );
+
+      # other attributes related to its module structure
+      SetDimension( A, d );
+      SetIsFiniteDimensional( A, true );
+      SetBasis( A, basis );
+
+      # other attributes related to its Burnside ring sturcture
+      SetZeroAttr( fam_elmt, zero );
+      SetZeroAttr( A, zero );
+      SetOneImmutable( fam_elmt, basis[ d ] );
+      SetOneImmutable( A, basis[ d ] );
+      SetGeneratorsOfRing( A, basis );
+
+      return A;
+    end
+  );
+
+#############################################################################
+##
+#U  NewBurnsideRingByCompactLieGroupBasis( 
+#U      IsBurnsideRingByCompactLieGroup, <r> )
+##
+  InstallMethod( NewBurnsideRingByCompactLieGroupBasis,
+    "constructs basis of a Burnside ring induced by a compact Lie group",
+    [ IsBurnsideRingByCompactLieGroup, IsRecord ],
+    function( filt, r )
+      local fam,
+            cat,
+            rep,
+            A,
+            G,
+            basis;
+
+      A := r.burnside_ring;
+      G := UnderlyingGroup( A );
+
+      fam := FamilyObj( A );
+      cat := CategoryCollections( IsBurnsideRingByCompactLieGroupElement );
+      rep := IsComponentObjectRep and IsAttributeStoringRep;
+      
+      basis := Objectify( NewType( fam, cat and rep ), rec( ) );
+      SetString( basis, StringFormatted( "Basis( {} )", String( A ) ) );
+      SetIsBurnsideRingByCompactLieGroupBasis( basis, true );
+
+      return( basis );
+    end
+  );
+
+#############################################################################
+##
+#O  \[\]( <basis>, <l>, <j> )
+##
+  InstallOtherMethod( \[\],
+    "",
+    [ CategoryCollections( IsBurnsideRingByCompactLieGroupElement ) and
+      IsBurnsideRingByCompactLieGroupBasis, IsInt, IsInt ],
+    function( basis, l, j )
+      local fam,
+            G,
+            CCSs,
+            C;
+
+      fam := ElementsFamily( FamilyObj( basis ) );
+      G := fam!.group;
+      CCSs := ConjugacyClassesSubgroups( G );
+      C := CCSs[ l, j ];
+      if ( Degree( OrderOfWeylGroup( C ) ) > 0 ) then
+        return fail;
+      fi;
+
+      return NewBurnsideRingElement(
+        IsBurnsideRingByCompactLieGroupElement,
+        rec( fam := fam,
+             ccs_list		:= [ CCSs[ l, j ] ],
+             ccs_id_list	:= [ [ l, j ] ],
+             coeff_list		:= [ 1 ] )
+      );
+    end
+  );
+
+#############################################################################
+##
+#A  BurnsideRing( <G> )
+##
+  InstallMethod( BurnsideRing,
+    "This attribute contains the Burnside ring induced by compact Lie group <G>",
+    [ IsCompactLieGroup ],
+    function( G )
+      local CCSs,	# CCSs of <G>
+            d,		# size of <CCSs>
+            fam_elmt,   # family of Burnside ring elements
+            cat_elmt,	# category of Burnside ring elements
+            fam,	# family of the Burnside ring
+	    cat,	# category of the Burnside ring
+            A,		# the Burnside ring
+            zero,	# zero of the Burnside ring
+            basis;	# basis of the module (ring)
+
+      # extract info of <G>
+      CCSs	:= ConjugacyClassesSubgroups( G );
+      d		:= Size( CCSs );
+
+      # family and category of Burnside ring element
+      cat_elmt := IsBurnsideRingByCompactLieGroupElement;
+      fam_elmt := NewFamily(
+        StringFormatted( "BurnsideRing( {} )Family", String( G ) ),
+        cat_elmt
+      );
+
+      # family and category of the Burnside ring
+      cat := IsBurnsideRingByCompactLieGroup;
+      fam := CollectionsFamily( fam_elmt );
+
+      # construct the Burnside ring
+      A := NewBurnsideRing(
+        cat,
+        rec( group	:= G,
+             fam	:= fam )
+      );
+
+      # generate zero of the Burnside ring
+      zero := NewBurnsideRingElement(
+        cat_elmt,
+        rec( fam		:= fam_elmt,
+             ccs_list		:= [ ],
+             ccs_id_list	:= [ ],
+             coeff_list		:= [ ]       )
+      );
+
+      # generate the basis of the Burnside ring
+      basis := NewBurnsideRingByCompactLieGroupBasis(
+        IsBurnsideRingByCompactLieGroup,
+        rec( burnside_ring := A )
+      );
+
+      # other attributes related to its module structure
+      SetDimension( A, d );
+      SetIsFiniteDimensional( A, false );
+      SetBasis( A, basis );
+
+      # other attributes related to its Burnside ring sturcture
+      SetZeroAttr( fam_elmt, zero );
+      SetZeroAttr( A, zero );
+      SetOneImmutable( fam_elmt, basis[ 0, NumberOfZeroModeClasses( CCSs ) ] );
+      SetOneImmutable( A, basis[ 0, NumberOfZeroModeClasses( CCSs ) ] );
+      SetGeneratorsOfRing( A, basis );
+
+      return A;
+    end
   );
 
 
 ##  Part 3: Other Aspects
 
-##!##########################################################################
+#############################################################################
 ##
 #A  BasicDegree( <chi> )
 ##
@@ -365,49 +685,111 @@
     "return the Basic Degree of the representation",
     [ IsCharacter ],
     function( chi )
-      local G,				# group
-            ccs_list,			# CCSs
-            A,				# Burnside ring
-            basis,			# basis of Burnside ring
-            lat,			# lattice of orbit types
-            orbt_list,			# orbit types
-            orbt_index_list,		# Indices of orbit types
-            fixeddim_list,		# dimension of fixed point space
-            coeff,			# coefficent
-            i, j,			# indices
-            Oi, Oj,			# orbit types
-            bdeg_ccs_list,
-            bdeg_ccs_index_list,	# indices of basic degree
-            bdeg_coeff_list;		# coefficient of basic degree
+      local G,			# group
+            CCSs,		# CCSs
+            A,			# Burnside ring
+            orbts,		# orbit types
+            coeff,		# coefficent
+            j,			# index
+            Oi, Oj,		# orbit types
+            ccs_list,		# CCS list of basic degree
+            ccs_id_list,	# CCS id list of basic degree
+            coeff_list;		# coefficient list of basic degree
 
       G := UnderlyingGroup( chi );
-      ccs_list := ConjugacyClassesSubgroups( G );
+      CCSs := ConjugacyClassesSubgroups( G );
       A := BurnsideRing( G );
-      basis := Basis( A );
-      lat := LatticeOrbitTypes( chi );
-      orbt_list := OrbitTypes( chi );
-      orbt_index_list := List( orbt_list, orbt -> Position( ccs_list, orbt ) );
-      fixeddim_list := lat!.ranks;
-      bdeg_ccs_list := [ ];
-      bdeg_ccs_index_list := [ ];
-      bdeg_coeff_list := [ ];
+      orbts := OrbitTypes( chi );
 
-      for i in Reversed( [ 1 .. Size( orbt_list ) ] ) do
-        Oi := orbt_list[ i ];
-        coeff := (-1)^fixeddim_list[ i ];
-        for j in [ 1 .. Size( bdeg_ccs_list ) ] do
-          Oj := bdeg_ccs_list[ j ];
-          coeff := coeff - bdeg_coeff_list[ j ]*nLHnumber( Oi, Oj );
+      ccs_list := [ ];
+      ccs_id_list := [ ];
+      coeff_list := [ ];
+
+      for Oi in Reversed( orbts ) do
+        coeff := (-1)^DimensionOfFixedSet( chi, Oi );
+        for j in [ 1 .. Size( ccs_list ) ] do
+          Oj := ccs_list[ j ];
+          coeff := coeff - coeff_list[ j ]*nLHnumber( Oi, Oj );
         od;
+
         if not IsZero( coeff ) then
-          Add( bdeg_ccs_list, Oi, 1 );
-          Add( bdeg_ccs_index_list, orbt_index_list[ i ], 1 );
-          Add( bdeg_coeff_list, coeff, 1 );
+          Add( ccs_list, Oi, 1 );
+          Add( ccs_id_list, IdCCS( Oi ), 1 );
+          Add( coeff_list, coeff, 1 );
         fi;
       od;
-      bdeg_coeff_list := ListN( bdeg_coeff_list,
-                         List( bdeg_ccs_list, OrderOfWeylGroup ), \/ );
-      return Sum( ListN( bdeg_coeff_list, basis{ bdeg_ccs_index_list }, \* ) );
+
+      coeff_list := ListN( coeff_list,
+          List( ccs_list, OrderOfWeylGroup ), \/ );
+      coeff_list := List( coeff_list, LeadingCoefficient );
+
+      return NewBurnsideRingElement(
+        IsBurnsideRingByFiniteGroupElement,
+        rec( fam		:= ElementsFamily( FamilyObj( A ) ),
+             ccs_list		:= ccs_list,
+             ccs_id_list	:= ccs_id_list,
+             coeff_list		:= coeff_list                       )
+      );
+    end
+  );
+
+#############################################################################
+##
+#A  BasicDegree( <chi> )
+##
+  InstallMethod( BasicDegree,
+    "return the Basic Degree of the representation",
+    [ IsCompactLieGroupCharacter ],
+    function( chi )
+      local G,			# group
+            CCSs,		# CCSs
+            A,			# Burnside ring
+            orbts,		# orbit types
+            coeff,		# coefficent
+            j,			# index
+            Oi, Oj,		# orbit types
+            ccs_list,		# ccs_list of the basic degree
+            ccs_id_list,	# indices of basic degree
+            coeff_list;		# coefficient of basic degree
+
+      G := UnderlyingGroup( chi );
+      CCSs := ConjugacyClassesSubgroups( G );
+      A := BurnsideRing( G );
+      orbts := OrbitTypes( chi );
+
+      ccs_list := [ ];
+      ccs_id_list := [ ];
+      coeff_list := [ ];
+
+      for Oi in Reversed( orbts ) do
+        if not ( OrderOfWeylGroup( Oi )[ 2 ] = 0 ) then
+          continue;
+        fi;
+
+        coeff := (-1)^DimensionOfFixedSet( chi, Oi );
+        for j in [ 1 .. Size( ccs_list ) ] do
+          Oj := ccs_list[ j ];
+          coeff := coeff - coeff_list[ j ]*nLHnumber( Oi, Oj );
+        od;
+
+        if not IsZero( coeff ) then
+          Add( ccs_list, Oi, 1 );
+          Add( ccs_id_list, IdCCS( Oi ), 1 );
+          Add( coeff_list, coeff, 1 );
+        fi;
+      od;
+
+      coeff_list := ListN( coeff_list,
+          List( ccs_list, C -> OrderOfWeylGroup( C ) ), \/ );
+      coeff_list := List( coeff_list, LeadingCoefficient );
+
+      return NewBurnsideRingElement(
+        IsBurnsideRingByFiniteGroupElement,
+        rec( fam		:= ElementsFamily( FamilyObj( A ) ),
+             ccs_list		:= ccs_list,
+             ccs_id_list	:= ccs_id_list,
+             coeff_list		:= coeff_list                       )
+      );
     end
   );
 
@@ -424,22 +806,23 @@
     function( a )
       local i,		# index
             coeff,	# coefficient
-            ccs_index,	# index of CCS
+            ccs_id,	# id of CCS
             ccs_list,	# CCSs of the underlying group
             ccs_name,	# name of CCS
             str;	# name string
 
-      ccs_list := FamilyObj( a )!.ccss;
+      ccs_list := FamilyObj( a )!.CCSs;
       str := "";
       for i in [ 1 .. Length( a ) ] do
-        coeff     := a!.coefficients[ i ];
-        ccs_index := a!.ccsIndices[ i ];
+        coeff     := a!.coeffList[ i ];
+        ccs_id := a!.ccsIdList[ i ];
 
         # determine the name of CCS
-        if HasName( ccs_list[ ccs_index ] ) then
-          ccs_name := Name( ccs_list[ ccs_index ] );
+        if HasName( ccs_list[ ccs_id ] ) then
+          ccs_name := Name( ccs_list[ ccs_id ] );
         else
-          ccs_name := String( ccs_index );
+          ccs_name := String( ccs_id );
+          RemoveCharacters( ccs_name, " []" );
         fi;
 
         # append coefficient and name of CCS
@@ -482,7 +865,7 @@
 
       A := FamilyObj( a )!.burnsideRing;
 
-      return Concatenation( String( a ), " in ", PrintString( A ) );
+      return Concatenation( String( a ), " in ", String( A ) );
     end
   );
 
@@ -496,22 +879,22 @@
     function( a )
       local i,		# index
             coeff,	# coefficient
-            ccs_index,	# index of CCS
+            ccs_id,	# id of CCS
             ccs_list,	# CCSs of the underlying group
             ccs_name,	# name of CCS
             str;	# name string
 
-      ccs_list := FamilyObj( a )!.ccss;
+      ccs_list := FamilyObj( a )!.CCSs;
       str := "";
       for i in [ 1 .. Length( a ) ] do
-        coeff     := a!.coefficients[ i ];
-        ccs_index := a!.ccsIndices[ i ];
+        coeff     := a!.coeffList[ i ];
+        ccs_id := a!.ccsIdList[ i ];
 
         # determine the name of CCS
-        if HasLaTeXString( ccs_list[ ccs_index ] ) then
-          ccs_name := LaTeXString( ccs_list[ ccs_index ] );
+        if HasLaTeXString( ccs_list[ ccs_id ] ) then
+          ccs_name := LaTeXString( ccs_list[ ccs_id ] );
         else
-          ccs_name := String( ccs_index );
+          ccs_name := String( ccs_id );
         fi;
 
         # append coefficient and name of CCS
@@ -533,8 +916,7 @@
   InstallMethod( ViewString,
     "view string of a Burnside ring",
     [ IsBurnsideRing ],
-    A -> Concatenation("Brng( ",
-         ViewString( UnderlyingGroup( A ) ), " )" )
+    A -> StringFormatted( "Brng( {} )", ViewString( UnderlyingGroup( A ) ) )
   );
 
 #############################################################################
@@ -551,27 +933,31 @@
 
 #############################################################################
 ##
-#A  PrintString( <A> )
-##
-  InstallMethod( PrintString,
-    "print string of a Burnside ring",
-    [ IsBurnsideRing ],
-    A -> Concatenation(
-      "BurnsideRing( ",
-      PrintString( UnderlyingGroup( A ) ),
-      " )"
-    )
-  );
-
-#############################################################################
-##
 #O  PrintObj( <A> )
 ##
   InstallMethod( PrintObj,
     "print a Burnside ring",
     [ IsBurnsideRing ],
     function( A )
-      Print( PrintString( A ) );
+      Print( String( A ) );
+    end
+  );
+
+#############################################################################
+##
+#O  ViewString( <basis> )
+##
+  InstallMethod( ViewString,
+    "view string of basis of Burnside ring induced by a compact Lie group",
+    [ IsBurnsideRingByCompactLieGroupBasis ],
+    function( basis )
+      local A,
+            fam_elmt;
+
+      fam_elmt := ElementsFamily( FamilyObj( basis ) );
+      A := fam_elmt!.burnsideRing;
+
+      return StringFormatted( "Basis( {} )", ViewString( A ) );
     end
   );
 

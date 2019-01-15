@@ -73,60 +73,157 @@
 
 #############################################################################
 ##
-#A  IsFinite( <CCSs> )
+#U  NewCompactLieGroupConjugacyClassSubgroups(
+#U      IsCompactLieGroupConjugacyClassSubgroupsRep, <G>, <r> )
 ##
-  InstallImmediateMethod( IsFinite,
-    "compact Lie group admits infinite CCSs",
-    IsCompactLieGroupConjugacyClassesSubgroupsRep,
-    0,
-    CCSs -> false
+  InstallMethod( NewCompactLieGroupConjugacyClassSubgroups,
+    "constructor of CCS of compact Lie group",
+    [ IsMatrixGroup, IsGroup, IsRecord ],
+    function( filt, G, r )
+      local fam,	# family of CCS
+            cat,	# category of CCS
+            rep,	# representation of CCS
+            C;		# CCS
+
+      # objectify the CCS
+      fam := CollectionsFamily( FamilyObj( G ) );
+      cat := CategoryCollections( filt );
+      rep := IsCompactLieGroupConjugacyClassSubgroupsRep;
+      C := Objectify( NewType( fam, cat and rep ), rec( ) );
+
+      SetActingDomain( C, G );
+      if IsBound( r.order_of_weyl_group ) then
+        SetOrderOfWeylGroup( C, r.order_of_weyl_group );
+      fi;
+
+      if IsBound( r.representative ) then
+        SetRepresentative( C, r.representative );
+        SetParentAttr( r.representative, G );
+
+        if IsBound( r.order_of_weyl_group ) then
+          SetOrderOfWeylGroup( r.representative, r.order_of_weyl_group );
+        fi;
+
+        if IsBound( r.normalizer ) then
+          SetStabilizerOfExternalSet( C, r.normalizer );
+          SetNormalizerInParent( r.representative, r.normalizer );
+        fi;
+      fi;
+
+      return C;
+    end
   );
 
 #############################################################################
 ##
-#F  CCSClasses( <CCSs>, args... )
+#U  NewCCSClass( IsGroup, <cat>, <r> )
 ##
-  InstallGlobalFunction( CCSClasses,
-    function( args... )
-      local CCSs,
-            count,
-            term,
-            m,
-            ccs_classes;
+# InstallMethod( NewCCSClass,
+#   "constructs a ccs class of a compact Lie group",
+#   [ IsCompactLieGroup, IsOperation, IsRecord ],
+#   function( filt, cat, r )
+#     local G,
+#           ccs_class,
+#           C,
+#           CC;
 
-      CCSs := Remove( args, 1 );
+#     G := r.group;
 
-      if not IsCompactLieGroupConjugacyClassesSubgroupsRep( CCSs ) then
-        Error( "The first argument should satisfy IsCompactLieGroupConjugacyClassesSubgroupsRep." );
-      fi;
+#     ccs_class := rec( );
+#     ccs_class.is_zero_mode := r.is_zero_mode;
+#     ccs_class.order_of_weyl_group := r.order_of_weyl_group;
 
-      ccs_classes := CCSs!.ccsClasses;
-      count := 1;
+#     if r.is_zero_mode then
+#       C := NewCompactLieGroupConjugacyClassSubgroups( cat, G );
+#       SetOrderOfWeylGroup( C, r.order_of_weyl_group );
 
-      while not IsEmpty( args ) do
-        term := Remove( args, 1 );
-        count := count+1;
+#       if IsBound( r.normalizer ) then
+#         SetStabilizerOfExternalSet( C, r.normalizer );
+#       fi;
 
-        if ( term = "nonzero_mode" ) then
-          ccs_classes := Filtered( ccs_classes, cl -> not cl.is_zero_mode );
-        elif ( term = "zero_mode" ) then
-          ccs_classes := Filtered( ccs_classes, cl -> cl.is_zero_mode );
-        elif ( term = "with_m-dim_weyl_group" ) then
-          m := Remove( args, 1 );
-          if not IsInt( m ) or ( m < 0 ) then
-            Error( StringFormatted(
-                "{}-th and {}-th arguments are invalid.", count, count+1 ) );
-          fi;
-          ccs_classes := Filtered( ccs_classes,
-              cl -> ( cl.order_of_weyl_group[ 2 ] = m ) );
-          count := count+1;
-        else
-          Error( StringFormatted( "{}-th argument is invalid.", count ) );
-        fi;
-      od;
+#       if IsBound( r.representative ) then
+#         SetRepresentative( C, r.representative );
+#         SetParentAttr( r.representative, G );
+#         SetOrderOfWeylGroup( r.representative, r.order_of_weyl_group );
+#         if IsBound( r.normalizer ) then
+#           SetNormalizerInParent( r.representative, r.normalizer );
+#         fi;
+#       fi;
+#       ccs_class.ccs := C;
+#     else
+#       CC := function( l )
+#         local C,
+#               H,
+#               NH;
 
-      return ccs_classes;
+#         C := NewCompactLieGroupConjugacyClassSubgroups( cat, G );
+#         SetOrderOfWeylGroup( C, r.order_of_weyl_group );
+
+#         if IsBound( r.normalizer ) then
+#           NH := r.normalizer( l );
+#           SetStabilizerOfExternalSet( C, NH );
+#         fi;
+#       
+#         if IsBound( r.representative ) then
+#           H := r.representative( l );
+#           SetRepresentative( C, H );
+#           SetParentAttr( H, G );
+#           SetOrderOfWeylGroup( H, r.order_of_weyl_group );
+#           if IsBound( r.normalizer ) then
+#             SetNormalizerInParent( H, NH );
+#           fi;
+#         fi;
+
+#         return C;
+#       end;
+#       ccs_class.ccs := CC;
+#     fi;
+
+#     return ccs_class;
+#   end
+# );
+
+#############################################################################
+##
+#U  NewCompactLieGroupConjugacyClassesSubgroups(
+#U      IsGroup, <G> )
+##
+  InstallMethod( NewCompactLieGroupConjugacyClassesSubgroups,
+    "constructs CCSs of a compact Lie group",
+    [ IsMatrixGroup, IsGroup, IsRecord ],
+    function( filt, G, r )
+      local fam,
+            cat,
+            rep,
+            CCSs;
+
+      # objectify CCSs of the group
+      fam := CollectionsFamily( CollectionsFamily( FamilyObj( G ) ) );
+      cat := CategoryCollections( CategoryCollections( filt ) );
+      rep := IsCompactLieGroupConjugacyClassesSubgroupsRep;
+      CCSs := Objectify( NewType( fam, cat and rep ), r );
+
+      # assign attributes to CCSs
+      SetUnderlyingGroup( CCSs, G );
+      SetString( CCSs,
+        StringFormatted( "ConjugacyClassesSubgroups( {} )",
+        String( G ) )
+      );
+#     SetIsFinite( CCSs, false );
+
+      return CCSs;
     end
+  );
+
+#############################################################################
+##
+#P  IsFinite( <CCSs> )
+##
+  InstallImmediateMethod( IsFinite,
+    "",
+    IsCompactLieGroupConjugacyClassesSubgroupsRep,
+    0,
+    CCSs -> false
   );
 
 #############################################################################
@@ -140,7 +237,8 @@
       local G;
 
       G := UnderlyingGroup( CCSs );
-      return StringFormatted( "ConjugacyClassesSubgroups( {} )", ViewString( G ) );
+      return StringFormatted( "ConjugacyClassesSubgroups( {} )",
+          ViewString( G ) );
     end
   );
 
@@ -158,8 +256,10 @@
       G := UnderlyingGroup( CCSs );
 
       return StringFormatted(
-        "<conjugacy classes of subgroups of {}>",
-        DisplayString( G )
+        "<conjugacy classes of subgroups of {}, {} zero-mode classes and {} nonzero-mode classes>",
+        DisplayString( G ),
+        NumberOfZeroModeClasses( CCSs ),
+        NumberOfNonzeroModeClasses( CCSs )
       );
     end
   );
@@ -169,7 +269,8 @@
 
 #############################################################################
 ##
-#U  NewCompactLieGroup( IsCompactLieGroup and IsMatrixGroup, <r> )
+#U  NewCompactLieGroup( IsCompactLieGroup and IsMatrixGroup and
+#U      IsOrthogonalGroupOverReal and IsSpecialOrthogonalGroupOverReal, <r> )
 ##
   InstallMethod( NewCompactLieGroup,
     "construct a matrix-CLG",
@@ -300,11 +401,13 @@
 ##
 #A  IdGroup( <G> )
 ##
-  InstallMethod( IdGroup,
-    "synonym for IdElementaryCompactLieGroup",
-    [ IsCompactLieGroup and HasIdElementaryCompactLieGroup ],
+  InstallImmediateMethod( IdGroup,
+    "synonym for IdElementaryCompactLieGroup for ECLG",
+    IsCompactLieGroup and HasIdElementaryCompactLieGroup,
+    0,
     G -> IdElementaryCompactLieGroup( G )
   );
+
 
 #############################################################################
 ##
@@ -495,177 +598,67 @@
 
 #############################################################################
 ##
-#U  NewCompactLieGroupConjugacyClassSubgroups(
-#U      IsSpecialOrthogonalGroupOverReal and IsOrthogonalGroupOverReal, <r> )
-##
-  InstallMethod( NewCompactLieGroupConjugacyClassSubgroups,
-    "constructor of CCS for SO(2) and O(2)",
-    [ IsSpecialOrthogonalGroupOverReal and
-      IsOrthogonalGroupOverReal,
-      IsRecord ],
-    function( filt, r )
-      local G,		# the ECLG
-            n,		# dimension of matrices
-            fam,	# family of CCS
-            cat,	# category of CCS
-            rep,	# representation of CCS
-            C,		# CCS
-            U,		# representative of CCS
-            N;		# normalizer of U in G
-
-      G := r.ccs_class.group;
-      n := DimensionOfMatrixGroup( G );
-
-      if not filt( G ) or not ( n = 2 ) then
-        TryNextMethod( );
-      fi;
-
-      if ( r.ccs_class.is_zero_mode <> ( r.ccs_id[ 2 ] = 0 ) ) then
-        Error( "Invalid mode for the selected CCS class." );
-      fi;
-
-      # objectify the CCS
-      fam := CollectionsFamily( FamilyObj( G ) );
-      cat := CategoryCollections( IsMatrixGroup );
-      rep := IsCompactLieGroupConjugacyClassSubgroupsRep;
-      C := Objectify( NewType( fam, cat and rep ), rec( ) );
-
-      # find representative subgroup and its normalizer
-      if ( r.ccs_id = [ 1, 0 ] ) then
-        U := SpecialOrthogonalGroupOverReal( 2 );
-        N := G;
-      elif ( r.ccs_id = [ 2, 0 ] ) then
-        U := OrthogonalGroupOverReal( 2 );
-        N := G;
-      elif ( r.ccs_id[ 1 ] = 1 ) then
-        U := mCyclicGroup( r.ccs_id[ 2 ] );
-        N := G;
-      elif ( r.ccs_id[ 1 ] = 2 ) then
-        U := mDihedralGroup( r.ccs_id[ 2 ] );
-        N := mDihedralGroup( 2*r.ccs_id[ 2 ] );
-      fi;
-
-      # setup attributes of U and C
-      SetParentAttr( U, G );
-      SetNormalizerInParent( U, N );
-      SetOrderOfWeylGroup( U, r.ccs_class.order_of_weyl_group );
-      SetRepresentative( C, U );
-      SetActingDomain( C, G );
-      SetIsZeroModeCCS( C, r.ccs_class.is_zero_mode );
-      SetStabilizerOfExternalSet( C, N );
-      SetOrderOfWeylGroup( C, r.ccs_class.order_of_weyl_group );
-      SetIdCCS( C, r.ccs_id );
-
-      return C;
-    end
-  );
-
-#############################################################################
-##
-#U  NewCompactLieGroupConjugacyClassesSubgroups(
-#U      IsSpecialOrthogonalGroupOverReal and IsOrthogonalGroupOverReal, <G> )
-##
-  InstallMethod( NewCompactLieGroupConjugacyClassesSubgroups,
-    "constructor of CCSs for O(2) and SO(2)",
-    [ IsSpecialOrthogonalGroupOverReal and IsOrthogonalGroupOverReal,
-      IsCompactLieGroup ],
-    function( filt, G )
-      local n,
-            fam,
-            cat,
-            rep,
-            CCSs;
-
-      n := DimensionOfMatrixGroup( G );
-
-      # <G> must satisfy <filt>
-      if not filt( G ) then
-        Error( "<G> must satisfy <filt>." );
-      fi;
-
-      # define family, collection and representation of CCSs
-      fam := CollectionsFamily( CollectionsFamily( FamilyObj( G ) ) );
-      cat := CategoryCollections( CategoryCollections( IsMatrixGroup ) );
-      rep := IsCompactLieGroupConjugacyClassesSubgroupsRep;
-
-      # objectify CCSs of the group
-      CCSs := Objectify( NewType( fam, cat and rep ), rec( ) );
-      SetUnderlyingGroup( CCSs, G );
-      SetString( CCSs,
-        StringFormatted( "ConjugacyClassesSubgroups( {} )",
-        String( G ) )
-      );
-
-      return CCSs;
-    end
-  );
-
-#############################################################################
-##
 #A  ConjugacyClassesSubgroups( <G> )
 ##
   InstallMethod( ConjugacyClassesSubgroups,
     "CCSs of SO(n)",
     [ IsSpecialOrthogonalGroupOverReal ],
     function( G )
-      local n,			# dimension of matrices
-            CCSs,		# CCSs
-            ccs_classes;	# procedure generating CCS classes
-
-      # objectify the CCSs object
-      CCSs := NewCompactLieGroupConjugacyClassesSubgroups(
-          IsSpecialOrthogonalGroupOverReal, G );
+      local n,				# dimension of matrices
+            r,				#
+            x,
+            ord,
+            H,
+            NH;
 
       # generate CCS classes for SO(2)
+      r := rec( );
       n := DimensionOfMatrixGroup( G );
       if ( n = 2 ) then
-        ccs_classes := [
-          rec(
-            group := G,
-            is_zero_mode := true,
-            note := "SO(2)",
-            order_of_weyl_group := [ 1, 0 ]
-          ),
-          rec(
-            group := G,
-            is_zero_mode := false,
-            note := "Z_n",
-            order_of_weyl_group := [ 1, 1 ]
+        x := X( Integers, "x" );
+        r.ccsClasses := [ ];
+
+        # SO(2)
+        ord := One( x );
+        H := SpecialOrthogonalGroupOverReal( 2 );
+        NH := G;
+        Add( r.ccsClasses, rec(
+          is_zero_mode := true,
+          ord_of_weyl_group := ord,
+          ccs := NewCompactLieGroupConjugacyClassSubgroups(
+            IsMatrixGroup,
+            G,
+            rec( order_of_weyl_group	:= ord,
+                 representative		:= H,
+                 normalizer		:= NH	)
           )
-        ];
-        CCSs!.ccsClasses := ccs_classes;
+        ) );
+
+        # Z_l
+        ord:= x;
+        Add( r.ccsClasses, rec(
+          is_zero_mode := false,
+          order_of_weyl_group := ord,
+          ccs := function( l )
+            local H,
+                  NH;
+
+            H := mCyclicGroup( l );
+            NH := G;
+            return NewCompactLieGroupConjugacyClassSubgroups(
+              IsMatrixGroup,
+              G,
+              rec( order_of_weyl_group	:= ord,
+                   representative	:= H,
+                   normalizer		:= NH	)
+            );
+          end
+        ) );
       fi;
 
-      return CCSs;
-    end
-  );
-
-#############################################################################
-##
-#O  \[\]( <CCSs>, <j>, <l> )
-##
-  InstallOtherMethod( \[\],
-    "CCS selector for SO(2) and O(2)",
-    [ IsCompactLieGroupConjugacyClassesSubgroupsRep, IsInt, IsInt ],
-    function( CCSs, j, l )
-      local G,
-            cat,
-            ccs_class;
-
-      G := UnderlyingGroup( CCSs );
-      cat := EvalString( First( Reversed( CategoriesOfObject( G ) ), IsString ) );
-
-      if ( l = 0 ) then
-        ccs_class := CCSClasses( CCSs, "zero_mode" )[ j ];
-      else
-        ccs_class := CCSClasses( CCSs, "nonzero_mode" )[ j ];
-      fi;
-
-      return NewCompactLieGroupConjugacyClassSubgroups(
-        cat,
-        rec( ccs_class := ccs_class,
-             ccs_id := [ j, l ] )
-      );
+      # return the CCSs object
+      return NewCompactLieGroupConjugacyClassesSubgroups(
+          IsMatrixGroup, G, r );
     end
   );
 
@@ -677,80 +670,156 @@
     "CCSs of O(n)",
     [ IsOrthogonalGroupOverReal ],
     function( G )
-      local n,			# dimension of matrices
-            CCSs,		# CCSs
-            ccs_classes;	# procedure generating CCS classes
-
-      # objectify the CCSs object
-      CCSs := NewCompactLieGroupConjugacyClassesSubgroups(
-          IsOrthogonalGroupOverReal, G );
+      local n,		# dimension of matrices
+            r,		# procedure generating CCS classes
+            x,
+            ord,
+            H,
+            NH;
 
       # generate CCS classes for O(2)
+      r := rec( );
       n := DimensionOfMatrixGroup( G );
       if ( n = 2 ) then
-        ccs_classes := [
-          rec(
-            group := G,
-            is_zero_mode := true,
-            note := "SO(2)",
-            order_of_weyl_group := [ 2, 0 ]
-          ),
-          rec(
-            group := G,
-            is_zero_mode := true,
-            note := "O(2)",
-            order_of_weyl_group := [ 1, 0 ],
-          ),
-          rec(
-            group := G,
-            is_zero_mode := false,
-            note := "Z_n",
-            order_of_weyl_group := [ 2, 1 ]
-          ),
-          rec(
-            group := G,
-            is_zero_mode := false,
-            note := "D_n",
-            order_of_weyl_group := [ 2, 0 ],
+        x := X( Integers, "x" );
+        r.ccsClasses := [ ];
+
+        # SO(2)
+        ord := 2*One( x );
+        H := SpecialOrthogonalGroupOverReal( 2 );
+        NH := G;
+        Add( r.ccsClasses, rec(
+          is_zero_mode := true,
+          ord_of_weyl_group := ord,
+          ccs := NewCompactLieGroupConjugacyClassSubgroups(
+            IsMatrixGroup,
+            G,
+            rec( order_of_weyl_group	:= ord,
+                 representative		:= H,
+                 normalizer		:= NH	)
           )
-        ];
-        CCSs!.ccsClasses := ccs_classes;
+        ) );
+
+        # O(2)
+        ord := One( x );
+        H := OrthogonalGroupOverReal( 2 );
+        NH := G;
+        Add( r.ccsClasses, rec(
+          is_zero_mode := true,
+          ord_of_weyl_group := ord,
+          ccs := NewCompactLieGroupConjugacyClassSubgroups(
+            IsMatrixGroup,
+            G,
+            rec( order_of_weyl_group	:= ord,
+                 representative		:= H,
+                 normalizer		:= NH	)
+          )
+        ) );
+
+        # Z_l
+        ord:= 2*x;
+        Add( r.ccsClasses, rec(
+          is_zero_mode := false,
+          order_of_weyl_group := ord,
+          ccs := function( l )
+            local H,
+                  NH;
+
+            H := mCyclicGroup( l );
+            NH := G;
+            return NewCompactLieGroupConjugacyClassSubgroups(
+              IsMatrixGroup,
+              G,
+              rec( order_of_weyl_group	:= ord,
+                   representative	:= H,
+                   normalizer		:= NH	)
+            );
+          end
+        ) );
+
+        # D_l
+        ord:= 2*One( x );
+        Add( r.ccsClasses, rec(
+          is_zero_mode := false,
+          order_of_weyl_group := ord,
+          ccs := function( l )
+            local H,
+                  NH;
+
+            H := mDihedralGroup( l );
+            NH := mDihedralGroup( 2*l );
+            return NewCompactLieGroupConjugacyClassSubgroups(
+              IsMatrixGroup,
+              G,
+              rec( order_of_weyl_group	:= ord,
+                   representative	:= H,
+                   normalizer		:= NH	)
+            );
+          end
+        ) );
       fi;
 
-      return CCSs;
+      # objectify the CCSs object
+      return NewCompactLieGroupConjugacyClassesSubgroups(
+          IsMatrixGroup, G, r );
     end
   );
 
 #############################################################################
 ##
-#O  CCSId( <CCSs>, <ccs_id> )
+#O  NumberOfZeroModeClasses( <CCSs> )
 ##
-# InstallMethod( CCSId,
-#   "return CCS in CCSs object of a compact Lie group",
-#   [ IsCompactLieGroupCCSsRep, IsList ],
-#   function( CCSs, ccs_id )
-#     local G,
-#           cat,
-#           ccs_class;
+  InstallMethod( NumberOfZeroModeClasses,
+    "length of nonzero mode CCS classes",
+    [ IsCompactLieGroupConjugacyClassesSubgroupsRep ],
+    function( CCSs )
+      if IsBound( CCSs!.ccsClasses ) then
+        return Number( CCSs!.ccsClasses, cl -> cl.is_zero_mode );
+      else
+        return "unknown";
+      fi;
+    end
+  );
 
-#     G := UnderlyingGroup( CCSs );
+#############################################################################
+##
+#A  NumberOfNonzeroModeClasses( <CCSs> )
+##
+  InstallMethod( NumberOfNonzeroModeClasses,
+    "length of nonzero mode CCS classes",
+    [ IsCompactLieGroupConjugacyClassesSubgroupsRep ],
+    function( CCSs )
+      if IsBound( CCSs!.ccsClasses ) then
+        return Number( CCSs!.ccsClasses, cl -> cl.is_zero_mode );
+      else
+        return "unknown";
+      fi;
+    end
+  );
 
-#     if ( ccs_id[ 2 ] = 0 ) then
-#       ccs_class := CCSClasses( CCSs, "zero_mode" )[ ccs_id[ 1 ] ];
-#     elif IsPosInt( ccs_id[ 2 ] ) then
-#       ccs_class := CCSClasses( CCSs, "nonzero_mode" )[ ccs_id[ 1 ] ];
-#     fi;
+#############################################################################
+##
+#O  \[\]( <CCSs>, <j>, <l> )
+##
+  InstallMethod( \[\],
+    "CCS selector for SO(2) and O(2)",
+    [ IsCompactLieGroupConjugacyClassesSubgroupsRep, IsInt, IsInt ],
+    function( CCSs, l, j )
+      local C;
 
-#     # extract representation of the given CCSs
-#     if IsSpecialOrthogonalGroupOverReal( G ) then
-#       cat := IsSpecialOrthogonalGroupOverReal;
-#     elif IsOrthogonalGroupOverReal( G ) then
-#       cat := IsOrthogonalGroupOverReal;
-#     fi;
+      if ( l = 0 ) and ( j in [ 1 .. NumberOfZeroModeClasses( CCSs ) ] ) then
+        C := Filtered( CCSs!.ccsClasses, cl -> cl.is_zero_mode )[ j ].ccs;
+      elif ( l > 0 ) and ( j in [ 1 .. NumberOfNonzeroModeClasses( CCSs ) ] ) then
+        C := Filtered( CCSs!.ccsClasses, cl -> not cl.is_zero_mode )[ j ].ccs( l );
+      else
+        Error( "Invalid CCS id." );
+      fi;
 
-#     return NewConjugacyClassSubgroups( cat, rec( ccs_class := ccs_class, ccs_id := ccs_id ) );
-#   end
-# );
+      SetIdCCS( C, [ l, j ] );
+
+      return C;
+    end
+  );
 
 #############################################################################
 ##
@@ -759,37 +828,39 @@
   InstallMethod( nLHnumber,
     "return n(L,H) number for CCSs of ECLG",
     IsIdenticalObj,
-    [ IsCompactLieGroupConjugacyClassSubgroupsRep, IsCompactLieGroupConjugacyClassSubgroupsRep ],
+    [ IsCompactLieGroupConjugacyClassSubgroupsRep,
+      IsCompactLieGroupConjugacyClassSubgroupsRep  ],
     function( CL, CH )
       local G,		# underlying group of ccs1 and ccs2
             L, H,	# representatives
+            x,		# indeterminate
             k;		# the reflection
 
       G := ActingDomain( CL );
       if not ( G = ActingDomain( CH ) ) then
-        Error( "CL and CH must be from the same ECLG." );
+        Error( "CL and CH must be from the same group." );
       fi;
 
-      if not ( IdElementaryCompactLieGroup( G ) in [ [ 1, 2 ], [ 2, 2 ] ] ) then
-        Info( InfoEquiDeg, INFO_LEVEL_EquiDeg,
-            "The underlying group of the CCSs is not supported." );
+      if not HasIdElementaryCompactLieGroup( G ) or
+          not ( IdElementaryCompactLieGroup( G ) in [ [ 1, 2 ], [ 2, 2 ] ] ) then
         TryNextMethod( );
       fi;
 
+      x := X( Integers, "x" );
       L := Representative( CL );
       H := Representative( CH );
 
       k := [ [ 1, 0 ], [ 0, -1 ] ];
       if IsSubset( H, L ) then
-        if IsZeroModeCCS( CH ) then
-          return [ 1, 0 ];
+        if ( IdCCS( CH )[ 1 ] = 0 ) then
+          return One( x );
         elif ( k in H ) and not ( k in L ) then
-          return [ 1, 1 ];
+          return x;
         else
-          return [ 1, 0 ];
+          return One( x );
         fi;
       else
-        return 0;
+        return Zero( x );
       fi;
     end
   );
@@ -857,7 +928,7 @@
             rep,	# representation of irrs
             irrs;	# irreducible representations of O(2)
 
-      fam := CollectionsFamily( CollectionsFamily ( CyclotomicsFamily ) );
+      fam := CollectionsFamily( CollectionsFamily( CyclotomicsFamily ) );
       cat := IsCompactLieGroupIrrCollection;
       rep := IsComponentObjectRep and IsAttributeStoringRep;
 
@@ -893,27 +964,37 @@
 
 #############################################################################
 ##
-#U  NewCompactLieGroupClassFunction( IsCompactLieGroupClassFunction, <G> )
+#U  NewCompactLieGroupClassFunction(
+#U      IsCompactLieGroupClassFunction and IsMappingByFunctionRep, <r> )
 ##
   InstallMethod( NewCompactLieGroupClassFunction,
     "constructs class function of a compact Lie group",
-    [ IsCompactLieGroupClassFunction, IsCompactLieGroup ],
-    function( filt, G )
-      local tbl,
-            tr,
+    [ IsCompactLieGroupClassFunction, IsRecord ],
+    function( filt, r )
+      local G,
+            tbl,
             fam,
+            cat,
             rep,
             phi;
 
+      G := r.group;
       tbl := CharacterTable( G );
 
       fam := GeneralMappingsFamily(
         ElementsFamily( FamilyObj( G ) ),
         CyclotomicsFamily
       );
-      rep := IsComponentObjectRep and IsAttributeStoringRep;
+      cat := filt;
+      rep := IsMappingByFunctionRep;
 
-      phi := Objectify( NewType( fam, filt and rep ), rec( ) );
+      phi := Objectify(
+        NewType( fam, cat and rep ),
+        rec( fun := r.fun )
+      );
+
+      SetSource( phi, G );
+      SetRange( phi, Cyclotomics );
       SetUnderlyingCharacterTable( phi, tbl );
       SetString( phi,
         StringFormatted( "Character( CharacterTable( {1} ), Mapping( {1}, {2} ) )",
@@ -926,6 +1007,19 @@
 
 #############################################################################
 ##
+#O  ViewObj( <chi> )
+##
+  InstallMethod( ViewObj,
+    "view string of a class function of a compact Lie group",
+    [ IsCompactLieGroupClassFunction ],
+    20,
+    function( chi )
+      Print( String( chi ) );
+    end
+  );
+
+#############################################################################
+##
 #O  \[\]( <irrs>, <l> )
 ##
   InstallOtherMethod( \[\],
@@ -933,7 +1027,8 @@
     [ IsCompactLieGroupIrrCollection, IsInt ],
     function( irrs, l )
       local G,
-            tr,
+            cat,
+            fun,
             chi;
 
       G := UnderlyingGroup( irrs );
@@ -943,25 +1038,28 @@
         TryNextMethod( );
       fi;
 
+      cat := IsCompactLieGroupClassFunction;
       if ( l = -1 ) then
-        tr := MappingByFunction( G, Cyclotomics, g -> DeterminantMat( g ) );
+        fun := x -> DeterminantMat( x );
       elif ( l = 0 ) then
-        tr := MappingByFunction( G, Cyclotomics, g -> 1 );
+        fun := x -> 1;
       elif ( l = 1 ) then
-        tr := MappingByFunction( G, Cyclotomics, g -> TraceMat( g ) );
+        fun := x -> TraceMat( x );
       elif ( l > 0 ) then
-        tr := MappingByFunction( G, Cyclotomics,
-            g -> ( 1 + DeterminantMat( g ) )/2 * TraceMat( g^l ) );
+        fun := x -> ( 1 + DeterminantMat( x ) )/2 * TraceMat( x^l );
       else
         Error( StringFormatted( "{} admits no such irreducible representation.\n",
             ViewString( G ) ) );
       fi;
+      chi := NewCompactLieGroupClassFunction(
+        cat,
+        rec( group := G,
+             fun := fun  )
+      );
       
-      chi := NewCompactLieGroupClassFunction( IsCompactLieGroupClassFunction, G );
-      SetValuesOfClassFunction( chi, tr );
       SetIsCompactLieGroupCharacter( chi, true );
       SetIsGeneratorsOfSemigroup( chi, true );
-      SetModeOfIrr( chi, l );
+      SetIdIrr( chi, l );
 
       return chi;
     end
@@ -969,12 +1067,46 @@
 
 #############################################################################
 ##
-#A  UnderlyingGroup( <cf> )
+#O  \[\]( <irrs>, <l> )
+##
+  InstallOtherMethod( \[\],
+    "returns an irreducible representation of the irr list",
+    [ IsCompactLieGroupIrrCollection, IsInt ],
+    function( irrs, l )
+      local G,
+            cat,
+            rep,
+            fun,
+            chi;
+
+      G := UnderlyingGroup( irrs );
+
+      if not IsSpecialOrthogonalGroupOverReal( G ) or
+          not ( DimensionOfMatrixGroup( G ) = 2 ) then
+        TryNextMethod( );
+      fi;
+
+      cat := IsCompactLieGroupClassFunction;
+      fun := x -> [ 1, E(4) ]*x^l*[ 1, 0 ];
+      chi := NewCompactLieGroupClassFunction( cat,
+          rec( group := G, fun := fun ) );
+      
+      SetIsCompactLieGroupCharacter( chi, true );
+      SetIsGeneratorsOfSemigroup( chi, true );
+      SetIdIrr( chi, l );
+
+      return chi;
+    end
+  );
+
+#############################################################################
+##
+#A  UnderlyingGroup( <chi> )
 ##
   InstallOtherMethod( UnderlyingGroup,
     "underlying group of a class function of a compact Lie group",
     [ IsCompactLieGroupClassFunction ],
-    cf -> UnderlyingGroup( UnderlyingCharacterTable( cf ) )
+    chi -> UnderlyingGroup( UnderlyingCharacterTable( chi ) )
   );
 
 #############################################################################
@@ -988,17 +1120,14 @@
       IsCompactLieGroupClassFunction and IsGeneralMapping  ],
     function( chi, psi )
       local G,
-            phi,
-            fchi,
-            fpsi;
+            phi;
 
       G := UnderlyingGroup( chi );
-      fchi := ValuesOfClassFunction( chi );
-      fpsi := ValuesOfClassFunction( psi );
 
       phi := NewCompactLieGroupClassFunction(
          IsCompactLieGroupClassFunction, G );
-      SetValuesOfClassFunction( phi, fchi + fpsi );
+      phi!.fun := x -> chi!.fun( x ) + psi!.fun( x );
+
       if IsCompactLieGroupCharacter( chi ) and
           IsCompactLieGroupCharacter( psi ) then
         SetIsCompactLieGroupCharacter( phi, true );
@@ -1020,15 +1149,14 @@
     [ IsCompactLieGroupClassFunction and IsGeneralMapping ],
     function( chi )
       local G,
-            phi,
-            fchi;
+            phi;
 
       G := UnderlyingGroup( chi );
-      fchi := ValuesOfClassFunction( chi );
 
       phi := NewCompactLieGroupClassFunction(
          IsCompactLieGroupClassFunction, G );
-      SetValuesOfClassFunction( phi, -fchi );
+      phi!.fun := x -> -chi!.fun( x );
+
       if IsCompactLieGroupVirtualCharacter( chi ) then
         SetIsCompactLieGroupVirtualCharacter( phi, true );
       fi;
@@ -1048,17 +1176,14 @@
       IsCompactLieGroupClassFunction and IsGeneralMapping  ],
     function( chi, psi )
       local G,
-            phi,
-            fchi,
-            fpsi;
+            phi;
 
       G := UnderlyingGroup( chi );
-      fchi := ValuesOfClassFunction( chi );
-      fpsi := ValuesOfClassFunction( psi );
 
       phi := NewCompactLieGroupClassFunction(
          IsCompactLieGroupClassFunction, G );
-      SetValuesOfClassFunction( phi, fchi * fpsi );
+      phi!.fun := x -> chi!.fun( x ) * psi!.fun( x );
+
       if IsCompactLieGroupCharacter( chi ) and
           IsCompactLieGroupCharacter( psi ) then
         SetIsCompactLieGroupCharacter( phi, true );
@@ -1073,13 +1198,152 @@
 
 #############################################################################
 ##
-#O  ViewString( <cf> )
+#O  DimensionOfFixedSet( <chi>, <H> );
 ##
-  InstallMethod( ViewString,
-    "view string of a class function of a compact Lie group",
-    [ IsCompactLieGroupClassFunction ],
-    cf -> String( cf )
+  InstallMethod( DimensionOfFixedSet,
+    "dimension of fixed set of <H>",
+    [ IsCompactLieGroupCharacter, IsGroup ],
+    function( chi, H )
+      local G;
+
+      G := UnderlyingGroup( chi );
+
+      if not IsSubgroup( G, H ) then
+        Error( "<H> must be a subgroup of <G>." );
+      fi;
+
+      if IsFinite( H ) then
+        return Sum( List( H ), x -> Image( chi, x ) )/Order( H );
+      else
+        TryNextMethod( );
+      fi;
+    end
   );
+
+  InstallMethod( DimensionOfFixedSet,
+    "dimension of fixed set of <H>",
+    [ IsCompactLieGroupCharacter, IsGroup ],
+    function( chi, H )
+      local G;
+
+      G := UnderlyingGroup( chi );
+
+      if not IsSubgroup( G, H ) then
+        Error( "<H> must be a subgroup of <G>." );
+      fi;
+
+      if HasIdElementaryCompactLieGroup( G ) and
+          ( IdElementaryCompactLieGroup( G ) = [ 1, 2 ] ) and
+          not IsFinite( H ) then
+        if ( IdIrr( chi ) = 0 ) then
+          return 1;
+        else
+          return 0;
+        fi;
+      else
+        TryNextMethod( );
+      fi;
+    end
+  );
+
+  InstallMethod( DimensionOfFixedSet,
+    "dimension of fixed set of <H>",
+    [ IsCompactLieGroupCharacter, IsGroup ],
+    function( chi, H )
+      local G;
+
+      G := UnderlyingGroup( chi );
+
+      if not IsSubgroup( G, H ) then
+        Error( "<H> must be a subgroup of <G>." );
+      fi;
+
+      if HasIdElementaryCompactLieGroup( G ) and
+          ( IdElementaryCompactLieGroup( G ) = [ 2, 2 ] ) and
+          not IsFinite( H ) then
+        if ( IdIrr( chi ) = -1 ) then
+          if ( IdElementaryCompactLieGroup( H ) = [ 2, 2 ] ) then
+            return 0;
+          elif ( IdElementaryCompactLieGroup( H ) = [ 1, 2 ] ) then
+            return 1;
+          fi;
+        elif ( IdIrr( chi ) = 0 ) then
+          return 1;
+        else
+          return 0;
+        fi;
+      else
+        TryNextMethod( );
+      fi;
+    end
+  );
+
+  InstallOtherMethod( DimensionOfFixedSet,
+    "",
+    [ IsCompactLieGroupCharacter,
+      IsCompactLieGroupConjugacyClassSubgroupsRep ],
+    { chi, C } -> DimensionOfFixedSet( chi, Representative( C ) )
+  );
+
+#############################################################################
+##
+#A  OrbitTypes( <chi> )
+##
+
+  # For SO(2)
+  InstallMethod( OrbitTypes,
+    "orbit types of character of an elementary compact Lie group",
+    [ IsCompactLieGroupCharacter ],
+    function( chi )
+      local G,
+            CCSs,
+            l;
+
+      G := UnderlyingGroup( chi );
+      CCSs := ConjugacyClassesSubgroups( G );
+      l := IdIrr( chi );
+
+      if HasIdElementaryCompactLieGroup( G ) and
+          IdElementaryCompactLieGroup( G ) = [ 1, 2 ] then
+        if ( l = 0 ) then
+          return [ CCSs[ 0, 1 ] ];
+        else
+          return [ CCSs[ l, 1 ], CCSs[ 0, 1 ] ];
+        fi;
+      else
+        TryNextMethod( );
+      fi;
+    end
+  );
+
+  # For O(2)
+  InstallMethod( OrbitTypes,
+    "orbit types of character of an elementary compact Lie group",
+    [ IsCompactLieGroupCharacter ],
+    function( chi )
+      local G,
+            CCSs,
+            l;
+
+      G := UnderlyingGroup( chi );
+      CCSs := ConjugacyClassesSubgroups( G );
+      l := IdIrr( chi );
+
+      if HasIdElementaryCompactLieGroup( G ) and
+          IdElementaryCompactLieGroup( G ) = [ 2, 2 ] then
+        if ( l = -1 ) then
+          return [ CCSs[ 0, 1 ], CCSs[ 0, 2 ] ];
+        elif ( l = 0 ) then
+          return [ CCSs[ 0, 2 ] ];
+        else
+          return [ CCSs[ l, 1 ], CCSs[ l, 2 ], CCSs[ 0, 2 ] ];
+        fi;
+      else
+        TryNextMethod( );
+      fi;
+    end
+  );
+
 
 #############################################################################
 ##

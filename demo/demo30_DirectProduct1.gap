@@ -4,10 +4,7 @@
 # Haopin Wu <psistwu@outlook.com>
 #
 
-  # preload
-  LIB_LIST := [ "Sys", "BasicMath", "Group", "DirectProduct" ];
-  MakeReadOnlyGlobal( "LIB_LIST" );
-  Read( "../preload.gap" );
+  LoadPackage( "EquiDeg" );
 
 # ## Setup
   Print( "=== Setup ===\n" );
@@ -65,13 +62,13 @@
   Print( "Setup names for CCSs of grp1 (S4).... " );
   ccss_grp1_names := [ "Z1", "Z2", "D1", "Z3", "V4",
       "D2", "Z4", "D3", "D4", "A4", "S4" ];
-  ListF( ccss_grp1, ccss_grp1_names, SetName );
+  ListA( ccss_grp1, ccss_grp1_names, SetName );
   Print( "Done!\n" );
 
   # setup names of all CCSs of grp2 (D3)
   Print( "Setup names for CCSs of grp2 (D3).... " );
   ccss_grp2_names := [ "Z1", "D1", "Z3", "D3" ];
-  ListF( ccss_grp2, ccss_grp2_names, SetName );
+  ListA( ccss_grp2, ccss_grp2_names, SetName );
   Print( "Done!\n\n" );
 
   # show the amalgamation notation of the CCS
@@ -83,18 +80,18 @@
 # ## Demo 6: LaTeX typesetting of a CCS of S4xD3
   Print( "=== Demo 6 ===\n" );
 
-  # setup LaTeX names of all CCSs of grp1 (S4)
+# # setup LaTeX names of all CCSs of grp1 (S4)
   Print( "Setup LaTeX names for CCSs of grp1 (S4).... " );
   ccss_grp1_latex_names := [ "\\mathbb{Z}_1", "\\mathbb{Z}_2", "D_1",
       "\\mathbb{Z}_3", "V_4", "D_2", "\\mathbb{Z}_4",
       "D_3", "D_4", "A_4", "S_4" ];
-  ListF( ccss_grp1, ccss_grp1_latex_names, SetLaTeXString );
+  ListA( ccss_grp1, ccss_grp1_latex_names, SetLaTeXString );
   Print( "Done!\n" );
 
   # setup LaTeX names of all CCSs of grp2 (D3)
   Print( "Setup LaTeX names for CCSs of grp2 (D3).... " );
   ccss_grp2_latex_names := [ "\\mathbb{Z}_1", "D_1", "\\mathbb{Z}_3", "D_3" ];
-  ListF( ccss_grp2, ccss_grp2_latex_names, SetLaTeXString );
+  ListA( ccss_grp2, ccss_grp2_latex_names, SetLaTeXString );
   Print( "Done!\n\n" );
 
   # show the amalgamation notation of the CCS

@@ -6,11 +6,7 @@
 # Haopin Wu <psistwu@outlook.com>
 #
 
-  # preload
-  LIB_LIST := [ "Sys", "BasicMath", "Group", "CompactLieGroup", "DirectProduct", "CompactLieGroupDirectProduct" ];
-  MakeReadOnlyGlobal( "LIB_LIST" );
-  Read( "../preload.gap" );
-
+  LoadPackage( "EquiDeg" );
 
 # ## Test 1
   Print( "---\n" );
