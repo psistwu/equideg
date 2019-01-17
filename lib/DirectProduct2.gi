@@ -369,7 +369,7 @@
               H1 := Representative( C1 );
               epi1_list := [ ];
               epi1 := GroupHomomorphismByFunction( H1, L,
-                  x -> One( L ), false, y -> One( H1 ) );
+                  g -> One( L ), false, y -> One( H1 ) );
               SetKernelOfMultiplicativeGeneralMapping( epi1, H1 );
               Add( epi1_list, epi1 );
 
@@ -533,7 +533,8 @@
               H1 := Representative( C1 );
               epi1_list := [ ];
               epi1 := GroupHomomorphismByFunction( H1, L,
-                  g -> (L.2)^(1-DeterminantMat( g ))/2 );
+                  g -> (L.2)^((1-DeterminantMat( g ))/2),
+                  false, y -> H1.(Order(y)) );
               SetKernelOfMultiplicativeGeneralMapping( epi1,
                   Representative( CCSs_O2[ 0, 1 ] ) );
               Add( epi1_list, epi1 );
@@ -575,6 +576,24 @@
 #     PSort( ccs_pairs );
 
       return NewCompactLieGroupConjugacyClassesSubgroups( IsGroup, G, data );
+    end
+  );
+
+#############################################################################
+##
+#A  OrderOfRepresentative( <C> )
+##
+  InstallMethod( OrderOfRepresentative,
+    "",
+    [ IsCompactLieGroupConjugacyClassSubgroupsRep and HasGoursatInfo ],
+    function( C )
+      local info;
+
+      info := GoursatInfo( C );
+
+      return OrderOfRepresentative( info.C1 )*
+             OrderOfRepresentative( info.C2 )/
+             Order( info.L );
     end
   );
 
@@ -634,73 +653,112 @@
 
 #############################################################################
 ##
-#O  nLHnumber( <C1>, <C2> )
+#O  nLHnumber( <A>, <B> )
 ##
-# InstallMethod( nLHnumber,
-#   "n(L,H) number for CCSs of GxECLG",
-#   IsIdenticalObj,
-#   [ IsDirectProductWithECLGCCSRep, IsDirectProductWithECLGCCSRep ],
-#   function( ccs1, ccs2 )
-#     local gamma,
-#           nLH_gamma,
-#           nLH_eclg,
-#           info1, info2,
-#           H1, ZH1, L1, K1, ZK1, phi1,
-#           H2, HH2, L2, K2, ZK2, phi2,
-#           iso_HH2_H2,
-#           phi_list2,
-#           nLH;
+  InstallOtherMethod( nLHnumber,
+    "n(L,H) number for CCSs of ECLGxG",
+    IsIdenticalObj,
+    [ IsCompactLieGroupConjugacyClassSubgroupsRep and HasGoursatInfo,
+      IsCompactLieGroupConjugacyClassSubgroupsRep and HasGoursatInfo  ],
+    function( A, B )
+      local G,
+            decomp,
+            Ga,
+            x,
+            infoA,
+            infoB,
+            nLH1,
+            nLH2,
+            nLH,
+            AH2,
+            BH2,
+            BH2_,
+            Aepi1,
+            Aepi2,
+            Bepi1,
+            Bepi2,
+            Bepi1_list,
+            Bepi2_list,
+            g,
+            y,
+            h1,
+            h2,
+            iso,
+            flag;
 
-#     if not ( ActingDomain( ccs1 ) = ActingDomain( ccs2 ) ) then
-#       Error( "ccs1 and ccs2 are not from the same group." );
-#     fi;
+      G := ActingDomain( A );
+      decomp := DirectProductDecomposition( G );
+      Ga := decomp[ 2 ];
 
-#     info1 := GoursatInfo( ccs1 );
-#     gamma := ActingDomain( info1.cH );
-#     H1 := Representative( info1.cH );
-#     phi1 := Representative( info1.phi_list );
-#     ZH1 := Kernel( phi1 );
-#     K1 := Representative( info1.cK );
-#     ZK1 := Kernel( info1.psi );
-#     L1 := Range( info1.psi );
+      if not ( ActingDomain( B ) = G ) then
+        Error( "C1 and C2 are not from the same group." );
+      fi;
 
-#     info2 := GoursatInfo( ccs2 );
-#     H2 := Representative( info2.cH );
-#     K2 := Representative( info2.cK );
-#     ZK2 := Kernel( info2.psi );
-#     L2 := Range( info2.psi );
+      x := X( Integers, "x" );
+      infoA := GoursatInfo( A );
+      infoB := GoursatInfo( B );
 
-#     nLH_eclg := nLHnumber( info1.cK, info2.cK );
-#     if IsZero( nLH_eclg ) then
-#       return 0;
-#     elif not IsSubset( ZK2, ZK1 ) then
-#       return 0;
-#     fi;
+      nLH1 := nLHnumber( infoA.C1, infoB.C1 );
+      nLH2 := nLHnumber( infoA.C2, infoB.C2 );
+      if IsZero( nLH1 ) or IsZero( nLH2 ) then
+        return Zero( x );
+      fi;
 
-#     nLH_gamma := nLHnumber( info1.cH, info2.cH );
-#     if IsZero( nLH_gamma ) then
-#       return 0;
-#     elif IsPosInt( nLH_gamma ) then
-#       nLH := 0;
-#       HH2 := First( info2.cH, subg -> IsSubset( subg, H1 ) );
-#       iso_HH2_H2 := ConjugatorIsomorphism( HH2, RepresentativeAction( gamma, HH2, H2 ) );
-#       phi_list2 := iso_HH2_H2*info2.phi_list;
+      AH2 := Representative( infoA.C2 );
+      BH2 := Representative( infoB.C2 );
+      Aepi1 := Representative( infoA.epi1_list );
+      Aepi2 := Representative( infoA.epi2_list );
+      Bepi1_list := infoB.epi1_list;
+      Bepi2_list := infoB.epi2_list;
 
-#       for phi2 in phi_list2 do
-#         if not ForAll( GeneratorsOfGroup( ZH1 ), gen -> ( Image( phi2, gen ) = One( L2 ) ) ) then
-#           continue;
-#         elif ( Size( L1 ) > 1 ) and not ForAll( GeneratorsOfGroup( L1 ), gen -> ( Image( info2.psi, Representative( PreImages( info1.psi, gen ) ) ) = Image( phi2, Representative( PreImages( phi1, gen ) ) ) ) ) then
-#           continue;
-#         fi;
-#         nLH := nLH+1;
-#       od;
-#     fi;
-#     nLH := nLH_gamma*nLH_eclg*nLH;
+      if not IsSubset( BH2, AH2 ) then
+        for BH2_ in infoB.C2 do
+          if IsSubset( BH2_, AH2 ) then
+            g := RepresentativeAction( Ga, BH2_, BH2 );
+            iso := ConjugatorIsomorphism( BH2_, g );
+            Bepi2_list := iso*Bepi2_list;
+            break;
+          fi;
+        od;
+      fi;
 
-#     return nLH;
-#   end
-# );
+      nLH := Zero( x );
+      for Bepi1 in Bepi1_list do
+        if not IsSubset( Kernel( Bepi1 ), Kernel( Aepi1 ) ) then
+          continue;
+        fi;
 
+        for Bepi2 in Bepi2_list do
+          if not IsSubset( Kernel( Bepi2 ), Kernel( Aepi2 ) ) then
+            continue;
+          fi;
+
+          flag := true;
+          for y in GeneratorsOfGroup( infoA.L ) do
+            if IsOne( y ) then
+              continue;
+            fi;
+
+            h1 := PreImagesRepresentative( Aepi1, y );
+            h2 := PreImagesRepresentative( Aepi2, y );
+
+            if not ( Image( Bepi1, h1 ) = Image( Bepi2, h2 ) ) then
+              flag := false;
+              continue;
+            fi;
+          od;
+
+          if flag then
+            nLH := nLH + 1;
+          fi;
+        od;
+      od;
+
+      return nLH * nLH1 * nLH2;
+    end
+  );
+
+      
 
 ##  Print, View and Display
 

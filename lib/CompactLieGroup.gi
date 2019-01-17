@@ -128,6 +128,10 @@
         SetAbbrv( C, attr.abbrv );
       fi;
 
+      if IsBound( attr.order_of_representative ) then
+        SetOrderOfRepresentative( C, attr.order_of_representative );
+      fi;
+
       return C;
     end
   );
@@ -252,6 +256,10 @@
           attr.abbrv := cl.abbrv;
         fi;
 
+        if IsBound( cl.order_of_representative ) then
+          attr.order_of_representative := cl.order_of_representative;
+        fi;
+
       elif ( l > 0 ) and ( j in [ 1 .. NumberOfNonzeroModeClasses( CCSs ) ] ) then
         cl := Filtered( CCSs!.ccsClasses, cl -> not cl.is_zero_mode )[ j ];
 
@@ -290,6 +298,10 @@
           else
             attr.abbrv := StringFormatted( cl.abbrv, l );
           fi;
+        fi;
+
+        if IsBound( cl.order_of_representative ) then
+          attr.order_of_representative := l*cl.order_of_representative;
         fi;
 
       else
@@ -624,20 +636,22 @@
 
         # SO(2)
         Add( data.ccsClasses, rec(
-          is_zero_mode		:= true,
-          order_of_weyl_group	:= One( x ),
-          representative	:= SpecialOrthogonalGroupOverReal( 2 ),
-          normalizer		:= G,
-          abbrv			:= "(SO(2))"
+          is_zero_mode			:= true,
+          order_of_weyl_group		:= One( x ),
+          representative		:= SpecialOrthogonalGroupOverReal( 2 ),
+          normalizer			:= G,
+          order_of_representative	:= x,
+          abbrv				:= "(SO(2))"
         ) );
 
         # Z_l
         Add( data.ccsClasses, rec(
-          is_zero_mode		:= false,
-          order_of_weyl_group	:= x,
-          representative	:= l -> mCyclicGroup( l ),
-          normalizer		:= l -> G,
-          abbrv			:= "(Z_{})"
+          is_zero_mode			:= false,
+          order_of_weyl_group		:= x,
+          representative		:= l -> mCyclicGroup( l ),
+          normalizer			:= l -> G,
+          order_of_representative	:= One( x ),
+          abbrv				:= "(Z_{})"
         ) );
       fi;
 
@@ -668,38 +682,42 @@
 
         # SO(2)
         Add( data.ccsClasses, rec(
-          is_zero_mode		:= true,
-          order_of_weyl_group	:= 2*One( x ),
-          representative	:= SpecialOrthogonalGroupOverReal( 2 ),
-          normalizer		:= G,
-          abbrv			:= "(SO(2))"
+          is_zero_mode			:= true,
+          order_of_weyl_group		:= 2*One( x ),
+          representative		:= SpecialOrthogonalGroupOverReal( 2 ),
+          normalizer			:= G,
+          order_of_representative	:= x,
+          abbrv				:= "(SO(2))"
         ) );
 
         # O(2)
         Add( data.ccsClasses, rec(
-          is_zero_mode		:= true,
-          order_of_weyl_group	:= One( x ),
-          representative	:= OrthogonalGroupOverReal( 2 ),
-          normalizer		:= G,
-          abbrv			:= "(O(2))"
+          is_zero_mode			:= true,
+          order_of_weyl_group		:= One( x ),
+          representative		:= OrthogonalGroupOverReal( 2 ),
+          normalizer			:= G,
+          order_of_representative	:= 2*x,
+          abbrv				:= "(O(2))"
         ) );
 
         # Z_l
         Add( data.ccsClasses, rec(
-          is_zero_mode		:= false,
-          order_of_weyl_group	:= 2*x,
-          representative	:= l -> mCyclicGroup( l ),
-          normalizer		:= l -> G,
-          abbrv			:= "(Z_{})"
+          is_zero_mode			:= false,
+          order_of_weyl_group		:= 2*x,
+          representative		:= l -> mCyclicGroup( l ),
+          normalizer			:= l -> G,
+          order_of_representative	:= One( x ),
+          abbrv				:= "(Z_{})"
         ) );
 
         # D_l
         Add( data.ccsClasses, rec(
-          is_zero_mode		:= false,
-          order_of_weyl_group	:= 2*One( x ),
-          representative	:= l -> mDihedralGroup( l ),
-          normalizer		:= l -> mDihedralGroup( 2*l ),
-          abbrv			:= "(D_{})"
+          is_zero_mode			:= false,
+          order_of_weyl_group		:= 2*One( x ),
+          representative		:= l -> mDihedralGroup( l ),
+          normalizer			:= l -> mDihedralGroup( 2*l ),
+          order_of_representative	:= 2*One( x ),
+          abbrv				:= "(D_{})"
         ) );
       fi;
 

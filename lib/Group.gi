@@ -206,6 +206,16 @@
     end
   );
 
+#############################################################################
+##
+#A  OrderOfRepresentative( <C> )
+##
+  InstallMethod( OrderOfRepresentative,
+    "order of represetative of CCS of finite group",
+    [ IsConjugacyClassSubgroupsRep and HasRepresentative ],
+    C -> Order( Representative( C ) )
+  );
+
 ##############################################################################
 ##
 #O  nLHnumber( <L>, <H> )

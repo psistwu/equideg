@@ -123,6 +123,12 @@
 
 #############################################################################
 ##
+#A  OrderOfRepresentative( <C> )
+##
+  DeclareAttribute( "OrderOfRepresentative", IsConjugacyClassSubgroupsRep );
+
+#############################################################################
+##
 #O  nLHnumber( <L>, <H> )
 #O  nLHnumber( <CL>, <CH> )
 ##
