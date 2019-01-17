@@ -16,7 +16,7 @@ ReadPackage( "EquiDeg", "lib/Group.gd" );
 ReadPackage( "EquiDeg", "lib/OrbitType.gd" );
 ReadPackage( "EquiDeg", "lib/DirectProduct1.gd" );
 ReadPackage( "EquiDeg", "lib/CompactLieGroup.gd" );
-#ReadPackage( "EquiDeg", "lib/DirectProduct2.gd" );
+ReadPackage( "EquiDeg", "lib/DirectProduct2.gd" );
 ReadPackage( "EquiDeg", "lib/BurnsideRing.gd" );
 
 #############################################################################

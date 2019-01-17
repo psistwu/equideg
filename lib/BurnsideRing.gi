@@ -377,7 +377,7 @@
 
         for i in Reversed( [ 1 .. imax ] ) do
           Ci := CCSs[ l, i ];
-          if not ( OrderOfWeylGroup( Ci )[ 2 ] = 0 ) then
+          if ( Degree( OrderOfWeylGroup( Ci ) ) > 0 ) then
             continue;
           fi;
           coeff := nLHnumber( Ci, Ca ) * OrderOfWeylGroup( Ca ) *
@@ -762,7 +762,7 @@
       coeff_list := [ ];
 
       for Oi in Reversed( orbts ) do
-        if not ( OrderOfWeylGroup( Oi )[ 2 ] = 0 ) then
+        if ( Degree( OrderOfWeylGroup( Oi ) ) > 0 ) then
           continue;
         fi;
 
@@ -805,24 +805,26 @@
     [ IsBurnsideRingElement ],
     function( a )
       local i,		# index
-            coeff,	# coefficient
+            ccs,
             ccs_id,	# id of CCS
-            ccs_list,	# CCSs of the underlying group
+            coeff,	# coefficient
             ccs_name,	# name of CCS
             str;	# name string
 
-      ccs_list := FamilyObj( a )!.CCSs;
       str := "";
       for i in [ 1 .. Length( a ) ] do
-        coeff     := a!.coeffList[ i ];
-        ccs_id := a!.ccsIdList[ i ];
+        coeff	:= a!.coeffList[ i ];
+        ccs_id	:= a!.ccsIdList[ i ];
+        ccs	:= a!.ccsList[ i ];
 
         # determine the name of CCS
-        if HasName( ccs_list[ ccs_id ] ) then
-          ccs_name := Name( ccs_list[ ccs_id ] );
+        if HasAbbrv( ccs ) then
+          ccs_name := Abbrv( ccs );
         else
-          ccs_name := String( ccs_id );
-          RemoveCharacters( ccs_name, " []" );
+          ccs_name := StringFormatted(
+            "({})",
+            JoinStringsWithSeparator( ccs_id, "," )
+          );
         fi;
 
         # append coefficient and name of CCS
@@ -830,7 +832,7 @@
           Append( str, "+" );
         fi;
         Append( str, String( coeff ) );
-        Append( str, StringFormatted("({})", ccs_name ) );
+        Append( str, ccs_name );
       od;
 
       return StringFormatted("<{}>", str );

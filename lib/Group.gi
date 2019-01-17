@@ -282,7 +282,11 @@
     "the partial order of conjugacy classes of subgroups of a finite group",
     [ IsConjugacyClassSubgroupsRep, IsConjugacyClassSubgroupsRep ],
     function( C1, C2 )
-      return IsPosInt( nLHnumber( C1, C2 ) );
+      local x;
+
+      x := X( Integers, "x" );
+
+      return ( nLHnumber( C1, C2 ) > Zero( x ) );
     end
   );
 

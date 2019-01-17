@@ -40,8 +40,15 @@
           projections := [ ]
       ) );
       SetOneImmutable( D, DirectProductElement( ones ) );
-      SetString( D, StringFormatted( "DirectProduct( {} )",
-          JoinStringsWithSeparator( list, ", " ) ) );
+      SetString( D, StringFormatted(
+        "DirectProduct( {} )",
+        JoinStringsWithSeparator( list, ", " )
+      ) );
+      SetAbbrv( D, StringFormatted(
+        "DirectProduct( {} )",
+        JoinStringsWithSeparator( List( list, ViewString ), ", " )
+      ) );
+        
 
       return D;
     end
@@ -51,18 +58,18 @@
 ##
 #A  ViewString( <G> )
 ##
-  InstallMethod( ViewString,
-    "view string of compact Lie group with direct product info",
-    [ IsCompactLieGroup and HasDirectProductInfo ],
-    function( G )
-      local list;	# direct product components of <G>
+# InstallMethod( ViewString,
+#   "view string of compact Lie group with direct product info",
+#   [ IsCompactLieGroup and HasDirectProductInfo ],
+#   function( G )
+#     local list;	# direct product components of <G>
 
-      list := DirectProductDecomposition( G );
+#     list := DirectProductDecomposition( G );
 
-      return StringFormatted( "DirectProduct( {} )",
-          JoinStringsWithSeparator( List( list, ViewString ), ", " ) );
-    end
-  );
+#     return StringFormatted( "DirectProduct( {} )",
+#         JoinStringsWithSeparator( List( list, ViewString ), ", " ) );
+#   end
+# );
 
 #############################################################################
 ##
@@ -101,10 +108,6 @@
 
 ##  CCS of Direct Product of Compact Lie Groups
 
-#############################################################################
-##
-#U  NewCCS( IsDirectProductWithCCSsRep, <rec>, <n> )
-##
 # InstallMethod( NewCCS,
 #   "CCS constructor of DPwCLG",
 #   [ IsDirectProductWithECLGCCSsRep, IsRecord, IsInt ],
@@ -216,97 +219,6 @@
 
 #############################################################################
 ##
-#U  NewCCSClass( IsCompactLieGroup and HasDirectProductInfo, <cat>, <r> )
-##
-  InstallMethod( NewCCSClass,
-    "construct a CCS class of a compact Lie group",
-    [ IsCompactLieGroup and HasDirectProductInfo,
-      IsOperation,
-      IsRecord ]
-    function( filt, cat, r )
-      local G,
-            decomp,
-            EC,
-            Ga,
-            ccs_class,
-            C,
-            CC;
-
-      G := r.group;
-
-      decomp := DirectProductDecomposition( G );
-      if not ( Length( decomp ) = 2 ) then
-        TryNextMethod( );
-      fi;
-
-      EC := decomp[ 1 ];
-      if not HasIdElementaryCompactLieGroup( O2 ) then
-        TryNextMethod( );
-      fi;
-
-      Ga := decomp[ 2 ];
-      if not ( IsFinite( Ga ) ) then
-        TryNextMethod( );
-      fi;
-
-      ccs_class := rec( );
-      ccs_class.is_zero_mode := r.is_zero_mode;
-      ccs_class.order_of_weyl_group := r.order_of_weyl_group;
-
-      if r.is_zero_mode then
-        C := NewCompactLieGroupConjugacyClassSubgroups( cat, G );
-        SetOrderOfWeylGroup( C, r.order_of_weyl_group );
-        SetGoursatInfo( C, r.goursat_info );
-
-        if IsBound( r.normalizer ) then
-          SetStabilizerOfExternalSet( C, r.normalizer );
-        fi;
-
-        if IsBound( r.representative ) then
-          SetRepresentative( C, r.representative );
-          SetParentAttr( r.representative, G );
-          SetOrderOfWeylGroup( r.representative, r.order_of_weyl_group );
-          if IsBound( r.normalizer ) then
-            SetNormalizerInParent( r.representative, r.normalizer );
-          fi;
-        fi;
-        ccs_class.ccs := C;
-      else
-        CC := function( l )
-          local C,
-                H,
-                NH;
-
-          C := NewCompactLieGroupConjugacyClassSubgroups( cat, G );
-          SetOrderOfWeylGroup( C, r.order_of_weyl_group );
-          SetGoursatInfo( C, r.goursat_info( l ) );
-
-          if IsBound( r.normalizer ) then
-            NH := r.normalizer( l );
-            SetStabilizerOfExternalSet( C, NH );
-          fi;
-
-          if IsBound( r.representative ) then
-            H := r.representative( l );
-            SetRepresentative( C, H );
-            SetParentAttr( H, G );
-            SetOrderOfWeylGroup( H, r.order_of_weyl_group );
-            if IsBound( r.normalizer ) then
-              SetNormalizerInParent( H, NH );
-            fi;
-          fi;
-
-          return C;
-        end;
-        ccs_class.ccs := CC;
-      fi;
-
-      return ccs_class;
-    end
-  );
-
-#############################################################################
-##
 #A  ConjugacyClassesSubgroups( <G> )
 ##
   InstallMethod( ConjugacyClassesSubgroups,
@@ -318,37 +230,35 @@
             O2,			# O(2)
             CCSs_Ga,		# CCS list of gamma
             CCSs_O2,		# CCS list of O(2)
-            info,		# direct product info of the group
             
             # The following local variables are related to ccs_classes
-            ccs_classes,	# CCS classes
-            epi1_list,
-            epi2_list,
+            data,
+            epis,
             epi2_classes,
-            epi2_class,
-            C,
-            CC,
+            epi2_list,
+            epi2,
+            epi1_list,
+            epi1,
             C1,
             C2,
-            H,
             H1,
             H2,
+            Z2,
+            CZ2,
+            name_H2,
+            name_Z2,
             L,
-            NH1,
             NH2,
-            NH,
             NL,
             NLxNH2,
             actfunc,
-            order_of_weyl_group,
-            goursat_info,
+            x,
             k,
             j,
             LL,
             L_to_LL,
             LL_to_L;
             
-
       # test if <G> is a direct product of two groups
       decomp := DirectProductDecomposition( G );
       if not ( Length( decomp ) = 2 ) then
@@ -372,12 +282,18 @@
       CCSs_Ga := ConjugacyClassesSubgroups( Ga );
 
       # setup CCS classes
-      ccs_classes := rec( zero_mode	:= [ ],
-                          nonzero_mode	:= [ ]  );
+      data := rec( ccsClasses := [ ] );
+      x := X( Integers, "x" );
 
       for C2 in CCSs_Ga do
         # take a representative from a given CCS
         H2 := Representative( C2 );
+        if HasAbbrv( C2 ) then
+          name_H2 := ShallowCopy( Abbrv( C2 ) );
+          RemoveCharacters( name_H2, "()" );
+        else
+          name_H2 := String( H2 );
+        fi;
         NH2 := NormalizerInParent( H2 );
 
         for k in DivisorsInt( Order( H2 ) ) do
@@ -385,18 +301,18 @@
           L := pCyclicGroup( k );
 
           # find all epimorphisms from H2 to L
-          epi2_list := GQuotients( H2, L );
-          if not IsEmpty( epi2_list ) then
-            epi2_list := ListX( epi2_list, AllAutomorphisms( L ), \* );
+          epis := GQuotients( H2, L );
+          if not IsEmpty( epis ) then
+            epis := ListX( epis, AllAutomorphisms( L ), \* );
 
             # Take NL to be the group generate by kappa (reflection)
             NL := pDihedralGroup( k );
             NL := Group( NL.2 );
 
-            # Take the direct product of NL and NH2
+            # Take the direct product of <NL> and <NH2>
             NLxNH2 := DirectProduct( NL, NH2 );
 
-            # define NLxNH2 action on epi2_list
+            # define <NLxNH2> action on <epis>
             actfunc := function( epi, g )
               local dg,
                     aut_H2,
@@ -410,186 +326,153 @@
             end;
 
             # divide epimorphisms into conjugacy classes
-            epi2_classes := Orbits( NLxNH2, epi2_list, actfunc );
+            epi2_classes := Orbits( NLxNH2, epis, actfunc );
           else
             epi2_classes := [ ];
           fi;
 
-          for epi2_class in epi2_classes do
+          for epi2_list in epi2_classes do
+            epi2 := Representative( epi2_list );
+            Z2 := Kernel( epi2 );
+            CZ2 := First( CCSs_Ga, C -> Z2 in C );
+            if HasAbbrv( CZ2 ) then
+              name_Z2 := ShallowCopy( Abbrv( CZ2 ) );
+              RemoveCharacters( name_Z2, "()" );
+            else
+              name_Z2 := String( Z2 );
+            fi;
+
             # L = Z_1
             if ( k = 1 ) then
-              # case 1: H1 = Z1 = SO(2)
+              # H1 = Z1 = SO(2)
               C1 := CCSs_O2[ 0, 1 ];
               H1 := Representative( C1 );
-              NH1 := NormalizerInParent( H1 );
-              epi1_list := [ GroupHomomorphismByFunction( H1, L, x -> One( L ) ) ];
-              H := DirectProduct( H1, H2 );
-              NH := DirectProduct( NH1, NH2 );
-              order_of_weyl_group := [ 2*OrderOfWeylGroup( C2 ), 0 ];
+              epi1_list := [ ];
+              epi1 := GroupHomomorphismByFunction( H1, L,
+                  g -> One( L ), false, y -> One( H1 ) );
+              SetKernelOfMultiplicativeGeneralMapping( epi1, H1 );
+              Add( epi1_list, epi1 );
 
-              goursat_info := ( C1		:= C1,
-                                C2		:= C2,
-                                epi1_list	:= epi1_list,
-                                epi2_list	:= epi2_class,
-                                L		:= L		);
-
-              Add( ccs_classes, NewCCSClass(
-                group := G,
-                goursat_info := goursat_info,
-                representative := H,
-                normalizer := NH,
-                is_zero_mode := true,
-                order_of_weyl_group := order_of_weyl_group
+              Add( data.ccsClasses, rec(
+                is_zero_mode		:= true,
+                order_of_weyl_group	:= 2*OrderOfWeylGroup( C2 ),
+                abbrv			:= StringFormatted( "(SO(2) x {})", name_H2 ),
+                goursat_info		:= rec( C1		:= C1,
+                                                C2		:= C2,
+                                                epi1_list	:= epi1_list,
+                                                epi2_list	:= epi2_list,
+                                                L		:= L		)
               ) );
 
-              # case 2: H1 = Z1 = O(2)
+              # H1 = Z1 = O(2)
               C1 := CCSs_O2[ 0, 2 ];
               H1 := Representative( C1 );
-              NH1 := NormalizerInParent( H1 );
-              epi1_list := [ GroupHomomorphismByFunction( H1, L, x -> One( L ) ) ];
-              C := NewCompactLieGroupConjugacyClassSubgroups( IsGroup, G );
-              H := DirectProduct( H1, H2 );
-              NH := DirectProduct( NH1, NH2 );
-              order_of_weyl_group := [ OrderOfWeylGroup( H2 ), 0 ];
+              epi1_list := [ ];
+              epi1 := GroupHomomorphismByFunction( H1, L,
+                  x -> One( L ), false, y -> One( H1 ) );
+              SetKernelOfMultiplicativeGeneralMapping( epi1, H1 );
+              Add( epi1_list, epi1 );
 
-              goursat_info := rec( C1		:= C1,
-                                   C2		:= C2,
-                                   epi1_list	:= epi1_list,
-                                   epi2_list	:= epi2_class,
-                                   L		:= L		);
-
-              Add( ccs_classes, NewCCSClass(
-                group := G,
-                goursat_info := goursat_info,
-                representative := H,
-                normalizer := NH,
-                is_zero_mode := true,
-                order_of_weyl_group := order_of_weyl_group
+              Add( data.ccsClasses, rec(
+                is_zero_mode		:= true,
+                order_of_weyl_group	:= OrderOfWeylGroup( C2 ),
+                abbrv			:= StringFormatted( "(O(2) x {})", name_H2 ),
+                goursat_info		:= rec( C1		:= C1,
+                                                C2		:= C2,
+                                                epi1_list	:= epi1_list,
+                                                epi2_list	:= epi2_list,
+                                                L		:= L		)
               ) );
 
-              # case 3: H1 = Z1 = Z_l
-              C1 := l -> CCSs_O2[ l, 1 ];
-              H := l -> DirectProduct( Representative( C1[ l ] )
-              NH
+              # H1 = Z1 = Z_l
+              C1 := CCSs_O2[ 1, 1 ];
+              H1 := Representative( C1 );
+              epi1_list := [ GroupHomomorphismByImagesNC( H1, L ) ];
 
-              CC := function( l )
-                local C1,
-                      H1,
-                      epi1_list,
-                      C;
+              Add( data.ccsClasses, rec(
+                is_zero_mode		:= false,
+                order_of_weyl_group	:= 2*OrderOfWeylGroup( C2 )*x,
+                abbrv			:= StringFormatted( "(Z_{{}} x {})", name_H2 ),
+                goursat_info		:= rec( C1		:= C1,
+                                                C2		:= C2,
+                                                epi1_list	:= epi1_list,
+                                                epi2_list	:= epi2_list,
+                                                L		:= L		)
+              ) );
 
-                C1 := CCSs_O2[ l, 1 ];
-                H1 := Representative( C1 );
-                epi1_list := [ MappingByFunction( H1, L, x -> One( L ) ) ];
-                C := NewCompactLieGroupConjugacyClassSubgroups( IsGroup, G );
-                SetGoursatInfo( C,
-                  rec( C1		:= C1,
-                       C2		:= C2,
-                       epi1_list	:= epi1_list,
-                       epi2_list	:= epi2_class,
-                       L		:= L		)
-                );
-                SetOrderOfWeylGroup( C, [ 2*OrderOfWeylGroup( H2 ), 1 ] );
-                return C;
-              end;
-              Add( ccs_classes.nonzero_mode, CC );
+              # H1 = Z1 = D_l
+              C1 := CCSs_O2[ 1, 2 ];
+              H1 := Representative( C1 );
+              epi1_list := [ GroupHomomorphismByImagesNC( H1, L, [ L.1, L.1 ] ) ];
 
-              # case 4: H1 = Z1 = D_l
-              CC := function( l )
-                local C1,
-                      H1,
-                      epi1_list,
-                      C;
-
-                C1 := CCSs_O2[ l, 2 ];
-                H1 := Representative( C1 );
-                epi1_list := [ MappingByFunction( H1, L, x -> One( L ) ) ];
-                C := NewCompactLieGroupConjugacyClassSubgroups( IsGroup, G );
-                SetGoursatInfo( C,
-                  rec( C1		:= C1,
-                       C2		:= C2,
-                       epi1_list	:= epi1_list,
-                       epi2_list	:= epi2_class,
-                       L		:= L		)
-                );
-                SetOrderOfWeylGroup( C, [ 2*OrderOfWeylGroup( H2 ), 0 ] );
-                return C;
-              end;
-              Add( ccs_classes.nonzero_mode, CC );
+              Add( data.ccsClasses, rec(
+                is_zero_mode		:= false,
+                order_of_weyl_group	:= 2*OrderOfWeylGroup( C2 ),
+                abbrv			:= StringFormatted( "(D_{{}} x {})", name_H2 ),
+                goursat_info		:= rec( C1		:= C1,
+                                                C2		:= C2,
+                                                epi1_list	:= epi1_list,
+                                                epi2_list	:= epi2_list,
+                                                L		:= L		)
+              ) );
 
             # L = Z_2
             elif ( k = 2 ) then
-              # case 1: H1 = Z_{2l}, Z1 = Z_l
-              CC := function( l )
-                local C1,
-                      H1,
-                      epi1_list,
-                      C;
+              # H1 = Z_{2l}, Z1 = Z_l
+              C1 := CCSs_O2[ 2, 1 ];
+              H1 := Representative( C1 );
+              epi1_list := [ GroupHomomorphismByImages( H1, L ) ];
 
-                C1 := CCSs_O2[ 2*l, 1 ];
-                H1 := Representative( C1 );
-                epi1_list := [ MappingByFunction( H1, L ) ];
-                C := NewCompactLieGroupConjugacyClassSubgroups( IsGroup, G );
-                SetGoursatInfo( C,
-                  rec( C1		:= C1,
-                       C2		:= C2,
-                       epi1_list	:= epi1_list,
-                       epi2_list	:= epi2_class,
-                       L		:= L		)
-                );
-                SetOrderOfWeylGroup( C, [ 2*OrderOfWeylGroup( H2 )/Size( epi2_class ), 1 ] );
-                return C;
-              end;
-              Add( ccs_classes.nonzero_mode, CC );
-                
-              # case 2: H1 = D_{2l}, Z1 = D_l
-              CC := function( l )
-                local C1,
-                      H1,
-                      epi1_list,
-                      C;
+              Add( data.ccsClasses, rec(
+                is_zero_mode		:= false,
+                order_of_weyl_group	:= 2*OrderOfWeylGroup( C2 )/Size( epi2_list )*x,
+                abbrv			:= StringFormatted( "(Z_{{}}|Z_{{}} x {}|{})",
+                                                            name_Z2, name_H2 ),
+                goursat_info		:= rec( C1		:= C1,
+                                                C2		:= C2,
+                                                epi1_list	:= epi1_list,
+                                                epi2_list	:= epi2_list,
+                                                L		:= L		)
+              ) );
 
-                C1 := CCSs_O2[ 2*l, 2 ];
-                H1 := Representative( C1 );
-                epi1_list := [ MappingByFunction( H1, L, [ L.1, One( L ) ] ),
-                               MappingByFunction( H1, L, [ L.1, L.1 ] ) ];
-                C := NewCompactLieGroupConjugacyClassSubgroups( IsGroup, G );
-                SetGoursatInfo( C,
-                  rec( C1		:= C1,
-                       C2		:= C2,
-                       epi1_list	:= epi1_list,
-                       epi2_list	:= epi2_class,
-                       L		:= L		)
-                );
-                SetOrderOfWeylGroup( C, [ 2*OrderOfWeylGroup( H2 )/Size( epi2_class ), 0 ] );
-                return C;
-              end;
-              Add( ccs_classes.nonzero_mode, CC );
+              # H1 = D_{2l}, Z1 = D_l
+              C1 := CCSs_O2[ 2, 2 ];
+              H1 := Representative( C1 );
+              epi1_list := [
+                GroupHomomorphismByImages( H1, L, [ L.1, One( L ) ] ),
+                GroupHomomorphismByImages( H1, L, [ L.1, L.1 ] )
+              ];
+
+              Add( data.ccsClasses, rec(
+                is_zero_mode		:= false,
+                order_of_weyl_group	:= 2*OrderOfWeylGroup( C2 )/Size( epi2_list ),
+                abbrv			:= StringFormatted( "(D_{{}}|D_{{}} x {}|{})",
+                                                            name_Z2, name_H2 ),
+                goursat_info		:= rec( C1		:= C1,
+                                                C2		:= C2,
+                                                epi1_list	:= epi1_list,
+                                                epi2_list	:= epi2_list,
+                                                L		:= L		)
+              ) );
 
             # L = Z_k, k>=3
             else
-              # case 1: H1 = Z_{kl}, Z1 = Z_l
-              CC := function( l )
-                local C1,
-                      H1,
-                      epi1_list,
-                      C;
+              # H1 = Z_{kl}, Z1 = Z_l
+              C1 := CCSs_O2[ k, 1 ];
+              H1 := Representative( C1 );
+              epi1_list := [ GroupHomomorphismByImages( H1, L ) ];
 
-                C1 := CCSs_O2[ k*l, 1 ];
-                H1 := Representative( C1 );
-                epi1_list := [ MappingByFunction( H1, L ) ];
-                C := NewCompactLieGroupConjugacyClassSubgroups( IsGroup, G );
-                SetGoursatInfo( C,
-                  rec( C1		:= C1,
-                       C2		:= C2,
-                       epi1_list	:= epi1_list,
-                       epi2_list	:= epi2_class,
-                       L		:= L		)
-                );
-                SetOrderOfWeylGroup( C, [ 2*OrderOfWeylGroup( H2 )/Size( epi2_class ), 1 ] );
-                return C;
-              end;
-              Add( ccs_classes.nonzero_mode, CC );
+              Add( data.ccsClasses, rec(
+                is_zero_mode		:= false,
+                order_of_weyl_group	:= 2*OrderOfWeylGroup( C2 )/Size( epi2_list )*x,
+                abbrv			:= StringFormatted( "(Z_{{}}|Z_{{}} x {}|{})",
+                                                            name_Z2, name_H2 ),
+                goursat_info		:= rec( C1		:= C1,
+                                                C2		:= C2,
+                                                epi1_list	:= epi1_list,
+                                                epi2_list	:= epi2_list,
+                                                L		:= L		)
+              ) );
             fi;
           od;
 
@@ -606,9 +489,9 @@
           L_to_LL := GroupHomomorphismByImagesNC( L, LL );
           LL_to_L := GroupHomomorphismByImagesNC( LL, L );
 
-          epi2_list := GQuotients( H2, L );
-          if not IsEmpty( epi2_list ) then
-            epi2_list := ListX( epi2_list, AllAutomorphisms( L ), \* );
+          epis := GQuotients( H2, L );
+          if not IsEmpty( epis ) then
+            epis := ListX( epis, AllAutomorphisms( L ), \* );
 
             # Take NH and the direct product of NL and NH
             NLxNH2 := DirectProduct( NL, NH2 );
@@ -627,69 +510,73 @@
             end;
 
             # divide epimorphisms into conjugacy classes
-            epi2_classes := Orbits( NLxNH2, epi2_list, actfunc );
+            epi2_classes := Orbits( NLxNH2, epis, actfunc );
           else
             epi2_classes := [ ];
           fi;
 
-          for epi2_class in epi2_classes do
-            if ( j = 1 ) then
-              # case 1: H1 = O(2), Z1 = SO(2)
-              C1 := CCSs_O2[ 0, 2 ];
-              H1 := Representative( C1 );
-              epi1_list := [
-                GroupHomomorphismByFunction( H1, L, x -> ( L.2 )^( ( 1-Determinant( x ) )/2 ) )
-              ];
-              C := NewCompactLieGroupConjugacyClassSubgroups( IsGroup, G );
-              SetGoursatInfo( C,
-                rec( C1		:= C1,
-                     C2		:= C2,
-                     epi1_list	:= epi1_list,
-                     epi2_list	:= epi2_class,
-                     L		:= L		)
-              );
-              SetOrderOfWeylGroup( C, [ 2*OrderOfWeylGroup( H2 )/Size( epi2_class ), 0 ] );
-              Add( ccs_classes.zero_mode, C );
+          for epi2_list in epi2_classes do
+            epi2 := Representative( epi2_list );
+            Z2 := Kernel( epi2 );
+            CZ2 := First( CCSs_Ga, C -> Z2 in C );
+            if HasAbbrv( CZ2 ) then
+              name_Z2 := ShallowCopy( Abbrv( CZ2 ) );
+              RemoveCharacters( name_Z2, "()" );
+            else
+              name_Z2 := String( Z2 );
             fi;
 
-            # case 1: K = D_km, Z_m
-            CC := function( l )
-              local C1,
-                    H1,
-                    epi1_list,
-                    C;
-
-              C1 := CCSs_O2[ j*l, 2 ];
+            # L = D_1
+            if ( j = 1 ) then
+              # H1 = O(2), Z1 = SO(2)
+              C1 := CCSs_O2[ 0, 2 ];
               H1 := Representative( C1 );
-              epi1_list := [ MappingByFunction( H1, L ) ];
-              C := NewCompactLieGroupConjugacyClassSubgroups( IsGroup, G );
-              SetGoursatInfo( C,
-                rec( C1		:= C1,
-                     C2		:= C2,
-                     epi1_list	:= epi1_list,
-                     epi2_list	:= epi2_class,
-                     L		:= L		)
-              );
-              SetOrderOfWeylGroup( C, [ 2*OrderOfWeylGroup( H2 )/Size( epi2_class ), 1 ] );
-              return C;
-            end;
-            Add( ccs_classes.nonzero_mode, CC );
+              epi1_list := [ ];
+              epi1 := GroupHomomorphismByFunction( H1, L,
+                  g -> (L.2)^(1-DeterminantMat( g ))/2 );
+              SetKernelOfMultiplicativeGeneralMapping( epi1,
+                  Representative( CCSs_O2[ 0, 1 ] ) );
+              Add( epi1_list, epi1 );
+
+              Add( data.ccsClasses, rec(
+                is_zero_mode		:= true,
+                order_of_weyl_group	:= 2*OrderOfWeylGroup( C2 )/Size( epi2_list ),
+                abbrv			:= StringFormatted( "(O(2)|SO(2) x {}|{})",
+                                                            name_Z2, name_H2 ),
+                goursat_info		:= rec( C1		:= C1,
+                                                C2		:= C2,
+                                                epi1_list	:= epi1_list,
+                                                epi2_list	:= epi2_list,
+                                                L		:= L		)
+              ) );
+            fi;
+
+            # K = D_{jl}, Z_l (l >= 1)
+            C1 := CCSs_O2[ j, 2 ];
+            H1 := Representative( C1 );
+            epi1_list := [ GroupHomomorphismByImages( H1, L ) ];
+
+            Add( data.ccsClasses, rec(
+              is_zero_mode		:= false,
+              order_of_weyl_group	:= 2*j*OrderOfWeylGroup( C2 )/Size( epi2_list ),
+              abbrv			:= StringFormatted( "(D_{{}}|Z_{{}} x {}|{})",
+                                                            name_Z2, name_H2 ),
+              goursat_info		:= rec( C1		:= C1,
+                                                C2		:= C2,
+                                                epi1_list	:= epi1_list,
+                                                epi2_list	:= epi2_list,
+                                                L		:= L		)
+            ) );
           od;
         od;
       od;
-        # sort ccs_classes
-#       ccs_pairs := List( ccs_classes, cl -> [ NewCCS( rep_ccss, cl ), cl ] );
-#       PSort( ccs_pairs );
+      # sort ccs_classes
+#     ccs_pairs := List( ccs_classes, cl -> [ NewCCS( rep_ccss, cl ), cl ] );
+#     PSort( ccs_pairs );
 
-      return NewCompactLieGroupConjugacyClassesSubgroups(
-          IsGroup, G, rec( ccsClasses := ccs_classes ) );
+      return NewCompactLieGroupConjugacyClassesSubgroups( IsGroup, G, data );
     end
   );
-
-#############################################################################
-##
-#O  \[\]( <CCSs>, <l>, <j> )
-##
 
 #############################################################################
 ##
@@ -742,19 +629,6 @@
 #     fi;
 
 #     return embed;
-#   end
-# );
-
-#############################################################################
-##
-#O  \=( <C1>, <C2> )
-##
-# InstallMethod( \=,
-#   "equivalence relation of CCSs of DPwECLG",
-#   IsIdenticalObj,
-#   [ IsDirectProductWithECLGCCSRep, IsDirectProductWithECLGCCSRep ],
-#   function( ccs1, ccs2 )
-#     return ( ActingDomain( ccs1 ) = ActingDomain( ccs2 ) ) and ( GoursatInfo( ccs1 ) = GoursatInfo( ccs2 ) );
 #   end
 # );
 

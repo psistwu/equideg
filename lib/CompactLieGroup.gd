@@ -48,6 +48,7 @@
 #A  DimensionOfCompactLieGroup
 ##
   DeclareAttribute( "DimensionOfCompactLieGroup", IsCompactLieGroup );
+  DeclareAttribute( "Dimension", IsCompactLieGroup );
 
 #############################################################################
 ##
@@ -153,7 +154,7 @@
 
 #############################################################################
 ##
-#A  NumberOfNonzeroModeClasses( <CCSs> )
+#O  NumberOfNonzeroModeClasses( <CCSs> )
 ##
   DeclareOperation( "NumberOfZeroModeClasses",
       [ IsCompactLieGroupConjugacyClassesSubgroupsRep ] );
@@ -240,7 +241,7 @@
 #U  NewCompactLieGroupClassFunction( IsCompactLieGroupClassFunction, <G> )
 ##
   DeclareConstructor( "NewCompactLieGroupClassFunction",
-      [ IsCompactLieGroupClassFunction, IsRecord ] );
+      [ IsCompactLieGroupClassFunction, IsCompactLieGroup, IsRecord ] );
 
 #############################################################################
 ##
@@ -257,6 +258,12 @@
       IsCompactLieGroupClassFunction );
   InstallTrueMethod( IsCompactLieGroupVirtualCharacter,
       IsCompactLieGroupCharacter );
+
+#############################################################################
+##
+#O  \[\]( <irrs>, <l> )
+##
+  DeclareOperation( "\[\]", [ IsCompactLieGroupIrrCollection, IsInt ] );
 
 #############################################################################
 ##
