@@ -42,7 +42,7 @@
 
 #############################################################################
 ##
-#P  IsPSortedList( <list> )
+#P  IsPoset( <list> )
 ##
   InstallMethod( IsPoset,
     "checks whether <list> is a poset with respect to partial order \<",
@@ -54,7 +54,7 @@
 ##
 #O  PSort( <list>, <func> )
 ##
-  InstallMethod( PSort,
+  InstallOtherMethod( PSort,
     "sorts <list> with respect to partial order <func>",
     [ IsHomogeneousList and IsMutable, IsFunction ],
     function( list, lt )
@@ -112,7 +112,7 @@
 ##
 #O  PSort( <list> )
 ##
-  InstallOtherMethod( PSort,
+  InstallMethod( PSort,
     "sorts <list> with respect to partial order \<",
     [ IsHomogeneousList and IsMutable ],
     function( list )
@@ -124,7 +124,7 @@
 ##
 #O  PSortedList( <list>, <func> )
 ##
-  InstallMethod( PSortedList,
+  InstallOtherMethod( PSortedList,
     "returns a shallow copy of <list> sorted with respect to partial order <func>",
     [ IsHomogeneousList, IsFunction ],
     function( list, func )
@@ -136,7 +136,7 @@
 ##
 #O  PSortedList( <list> )
 ##
-  InstallOtherMethod( PSortedList,
+  InstallMethod( PSortedList,
     "returns a shallow copy of <list> sorted with respect to partial order \<",
     [ IsHomogeneousList ],
     function( list )

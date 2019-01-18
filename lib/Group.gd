@@ -226,6 +226,15 @@
   DeclareAttribute( "ConjugacyClassesSubgroups", IsLatticeCCSsRep );
 
 
+##  Character and Representation Theory
+
+#############################################################################
+##
+#A  IdIrr( chi )
+##
+  DeclareAttribute( "IdIrr", IsCharacter );
+
+
 #############################################################################
 ##
 #E  Group.gd . . . . . . . . . . . . . . . . . . . . . . . . . . .  ends here

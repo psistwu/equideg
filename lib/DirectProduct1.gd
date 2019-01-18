@@ -40,8 +40,10 @@
 #############################################################################
 ##
 #A  GoursatInfo( <U> )
+#A  GoursatInfo( <C> )
 ##
   DeclareAttribute( "GoursatInfo", IsGroup and HasParentAttr );
+  DeclareAttribute( "GoursatInfo", IsConjugacyClassSubgroupsRep );
 
 #############################################################################
 ##

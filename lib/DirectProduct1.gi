@@ -9,6 +9,8 @@
 ##  related to direct product of finite groups.
 ##
 
+##  Part 1: General Cases
+
 #############################################################################
 ##
 #O  DirectProductDecomposition( <G> )
@@ -138,6 +140,9 @@
     end
   );
 
+
+##  Part 2: For Direct Product of Two Groups
+
 #############################################################################
 ##
 #A  GoursatInfo( <U> )
@@ -154,7 +159,7 @@
 	    H1, H2,	# projection of the subg to G1 and G2
             Z1, Z2,	# kernels of the homomorphisms from H1 and H2 to L
             L,		# generators of H1 which determine the homomorphism
-            proj1_U;	# restricted projection1 to subg
+            proj1_U;	# restricted projection1 to <U>
 
       # take the parent group
       G := ParentAttr( U );
@@ -185,7 +190,7 @@
       proj1_U := RestrictedMapping( proj1, U );
       L := RightCosets( U, PreImages( proj1_U, Z1 ) );
 
-      return [ H1, Z1, Z2, H2, L ];
+      return rec( H1 := H1, H2 := H2, Z1 := Z1, Z2 := Z2, L := L );
     end
   );
 
@@ -197,12 +202,12 @@
     "return the amalgamation symbol of a CCS of direct product of two groups",
     [ IsConjugacyClassSubgroupsRep ],
     function( C )
-      local G,			# group
-            U,			# representative of C
-            U_ginfo,		# Goursat info of subg
-            quad,
-            symbol,		# the returning symbol
-            C2,			# conjugacy class of subgroups
+      local G,		# group
+            U,		# representative of <C>
+            infoU,	# Goursat info of <U>
+            quad,	# the list of four essential groups
+            symbol,	# the returning symbol
+            C_,		# CCS
             name_list;	# name list of CCSs
 
       G := ActingDomain( C );
@@ -211,19 +216,19 @@
       fi;
 
       U := Representative( C );
-      U_ginfo := GoursatInfo( U );
-      quad := List( U_ginfo{ [ 1 .. 4 ] }, ConjugacyClassSubgroups );
+      infoU := GoursatInfo( U );
+      quad := List( [ infoU.H1, infoU.Z1, infoU.Z2, infoU.H2 ], ConjugacyClassSubgroups );
 
       name_list := [ ];
-      for C2 in quad do
-        if HasName( C2 ) then
-          Add( name_list, Name( C2 ) );
+      for C_ in quad do
+        if HasAbbrv( C_ ) then
+          Add( name_list, Abbrv( C_ ) );
         else
-          Add( name_list, String( IdCCS( C2 ) ) );
+          Add( name_list, String( IdCCS( C_ ) ) );
         fi;
       od;
 
-      return StringFormatted( "[{}|{}|{}|{}]",
+      return StringFormatted( "[{}|{} x {}|{}]",
           name_list[ 1 ],
           name_list[ 2 ],
           name_list[ 3 ],
@@ -238,11 +243,10 @@
   InstallOtherMethod( LaTeXTypesetting,
     "return LaTeX typesetting of a CCS",
     [ IsConjugacyClassSubgroupsRep, IsString ],
-    1,
     function( C, str )
       local G,
             U,
-            U_ginfo,
+            infoU,
             latex_list;
 
       G := ActingDomain( C );
@@ -251,8 +255,8 @@
       fi;
 
       U := Representative( C );
-      U_ginfo := GoursatInfo( U );
-      latex_list := List( U_ginfo{ [ 1 .. 4 ] },
+      infoU := GoursatInfo( U );
+      latex_list := List( [ infoU.H1, infoU.Z1, infoU.Z2, infoU.H2 ],
           S -> LaTeXString( ConjugacyClassSubgroups( S ) ) );
 
       return StringFormatted( "\\amal{{{}}}{{{}}}{{{}}}{{{}}}{{{}}}",
@@ -261,30 +265,6 @@
         str,
         latex_list[ 3 ],
         latex_list[ 4 ]  );
-    end
-  );
-
-#############################################################################
-##
-#O  LaTeXTypesetting( <C> )
-##
-  InstallMethod( LaTeXTypesetting,
-    "return LaTeX typesetting of a CCS",
-    [ IsConjugacyClassSubgroupsRep ],
-    1,
-    function( C )
-      local G;
-
-      if HasLaTeXString( C ) then
-        return LaTeXString( C );
-      fi;
-
-      G := ActingDomain( C );
-      if not ( Size( DirectProductDecomposition( G ) ) = 2 ) then
-        TryNextMethod( );
-      fi;
-
-      return LaTeXTypesetting( C, "" );
     end
   );
 

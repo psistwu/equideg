@@ -49,27 +49,70 @@
         JoinStringsWithSeparator( List( list, ViewString ), ", " )
       ) );
         
-
       return D;
     end
   );
 
 #############################################################################
 ##
-#A  ViewString( <G> )
+#O  Projection( <G>, <k> )
 ##
-# InstallMethod( ViewString,
-#   "view string of compact Lie group with direct product info",
-#   [ IsCompactLieGroup and HasDirectProductInfo ],
-#   function( G )
-#     local list;	# direct product components of <G>
+  InstallMethod( Projection,
+    "projection of direct product with CLG",
+    [ IsCompactLieGroup and HasDirectProductInfo, IsPosInt ],
+    function( G, k )
+      local info,	# direct product info
+            comp,	# the codomain of the projection
+            proj;	# projection from <G> to its component
 
-#     list := DirectProductDecomposition( G );
+      info := DirectProductInfo( G );
+      comp := info.groups[ k ];
 
-#     return StringFormatted( "DirectProduct( {} )",
-#         JoinStringsWithSeparator( List( list, ViewString ), ", " ) );
-#   end
-# );
+      if not IsBound( info.projections[ k ] ) then
+        proj := GroupHomomorphismByFunction( G, comp, e -> e[ k ] );
+        SetIsSurjective( proj, true );
+        info.projections[ k ] := proj;
+      fi;
+
+      return info.projections[ k ];
+    end
+  );
+
+#############################################################################
+##
+#O  Embedding( <G>, <k> )
+##
+  InstallMethod( Embedding,
+    "embedding of direct product with ECLG",
+    [ IsCompactLieGroup and HasDirectProductInfo, IsPosInt ],
+    function( G, k )
+      local info,	# direct product info
+            comp,	# the codomain of the projection
+            ones,	# identities of direct product components of <G>
+            embed;	# projection from <G> to its component
+
+      info := DirectProductInfo( G );
+      comp := info.groups[ k ];
+
+      if not IsBound( info.embeddings[ k ] ) then
+        ones := List( info.groups, One );
+        embed := GroupHomomorphismByFunction( comp, G,
+          function( e )
+            local a;
+
+            a := ShallowCopy( ones );
+            a[ k ] := e;
+
+            return DirectProductElement( a );
+          end
+        );
+        SetIsInjective( embed, true );
+        info.embeddings[ k ] := embed;
+      fi;
+
+      return info.embeddings[ k ];
+    end
+  );
 
 #############################################################################
 ##
@@ -79,13 +122,8 @@
     "",
     IsCompactLieGroup and HasDirectProductInfo,
     0,
-    function( G )
-      local list;	# direct product components of G
-
-      list := Filtered( DirectProductDecomposition( G ), IsCompactLieGroup );
-
-      return Sum( List( list, DimensionOfCompactLieGroup ) );
-    end
+    G -> Sum( List( DirectProductInfo( G ).groups,
+         DimensionOfCompactLieGroup ) )
   );
 
 #############################################################################
@@ -96,126 +134,140 @@
     "",
     IsCompactLieGroup and HasDirectProductInfo,
     0,
-    function( G )
-      local list;
+    G -> Sum( List( DirectProductInfo( G ).groups,
+         RankOfCompactLieGroup ) )
+  );
 
-      list := Filtered( DirectProductDecomposition( G ), IsCompactLieGroup );
 
-      return Sum( List( list, RankOfCompactLieGroup ) );
+##  Part 2: CCS of Direct Product of Compact Lie Groups
+
+#############################################################################
+##
+#A  OrderOfRepresentative( <C> )
+##
+  InstallMethod( OrderOfRepresentative,
+    "",
+    [ IsCompactLieGroupConjugacyClassSubgroupsRep and HasGoursatInfo ],
+    function( C )
+      local info;
+
+      info := GoursatInfo( C );
+
+      return OrderOfRepresentative( info.C1 )*
+             OrderOfRepresentative( info.C2 )/
+             Order( info.L );
+    end
+  );
+
+#############################################################################
+##
+#O  nLHnumber( <A>, <B> )
+##
+  InstallOtherMethod( nLHnumber,
+    "n(L,H) number for CCSs of ECLGxG",
+    IsIdenticalObj,
+    [ IsCompactLieGroupConjugacyClassSubgroupsRep and HasGoursatInfo,
+      IsCompactLieGroupConjugacyClassSubgroupsRep and HasGoursatInfo  ],
+    function( A, B )
+      local G,
+            decomp,
+            Ga,
+            x,
+            infoA,
+            infoB,
+            nLH1,
+            nLH2,
+            nLH,
+            AH2,
+            BH2,
+            BH2_,
+            Aepi1,
+            Aepi2,
+            Bepi1,
+            Bepi2,
+            Bepi1_list,
+            Bepi2_list,
+            g,
+            y,
+            h1,
+            h2,
+            iso,
+            flag;
+
+      G := ActingDomain( A );
+      decomp := DirectProductInfo( G ).groups;
+      Ga := decomp[ 2 ];
+
+      if not ( ActingDomain( B ) = G ) then
+        Error( "C1 and C2 are not from the same group." );
+      fi;
+
+      x := X( Integers, "x" );
+      infoA := GoursatInfo( A );
+      infoB := GoursatInfo( B );
+
+      nLH1 := nLHnumber( infoA.C1, infoB.C1 );
+      nLH2 := nLHnumber( infoA.C2, infoB.C2 );
+      if IsZero( nLH1 ) or IsZero( nLH2 ) then
+        return Zero( x );
+      fi;
+
+      AH2 := Representative( infoA.C2 );
+      BH2 := Representative( infoB.C2 );
+      Aepi1 := Representative( infoA.epi1_list );
+      Aepi2 := Representative( infoA.epi2_list );
+      Bepi1_list := infoB.epi1_list;
+      Bepi2_list := infoB.epi2_list;
+
+      if not IsSubset( BH2, AH2 ) then
+        for BH2_ in infoB.C2 do
+          if IsSubset( BH2_, AH2 ) then
+            g := RepresentativeAction( Ga, BH2_, BH2 );
+            iso := ConjugatorIsomorphism( BH2_, g );
+            Bepi2_list := iso*Bepi2_list;
+            break;
+          fi;
+        od;
+      fi;
+
+      nLH := Zero( x );
+      for Bepi1 in Bepi1_list do
+        if not IsSubset( Kernel( Bepi1 ), Kernel( Aepi1 ) ) then
+          continue;
+        fi;
+
+        for Bepi2 in Bepi2_list do
+          if not IsSubset( Kernel( Bepi2 ), Kernel( Aepi2 ) ) then
+            continue;
+          fi;
+
+          flag := true;
+          for y in GeneratorsOfGroup( infoA.L ) do
+            if IsOne( y ) then
+              continue;
+            fi;
+
+            h1 := PreImagesRepresentative( Aepi1, y );
+            h2 := PreImagesRepresentative( Aepi2, y );
+
+            if not ( Image( Bepi1, h1 ) = Image( Bepi2, h2 ) ) then
+              flag := false;
+              continue;
+            fi;
+          od;
+
+          if flag then
+            nLH := nLH + 1;
+          fi;
+        od;
+      od;
+
+      return nLH * nLH1 * nLH2;
     end
   );
 
 
-##  CCS of Direct Product of Compact Lie Groups
-
-# InstallMethod( NewCCS,
-#   "CCS constructor of DPwCLG",
-#   [ IsDirectProductWithECLGCCSsRep, IsRecord, IsInt ],
-#   function( filter, ccs_class, mode )
-#     local fam_ccs,            # family of CCS
-#           cat_ccs,            # category of CCS
-#           rep_ccs,            # representation of CCS
-#           ccs,                # the CCS
-#           dpinfo,             # direct product info
-#           eclg,               # the ECLG component of the group
-#           ccss_eclg,          # CCS list of the ECLG component
-#           subg,               # a representative of CCS
-#           phi,                # an epimorphism from H to L
-#           psi,                # an epimorphism from K to L
-#           cH, cK,             # conjugacy classes of subgroups
-#           H, ZH, K, ZK, L,    # five essential subgroups related to subg
-#           idK,                # id of K
-#           gens_K,             # generotors of K
-#           gens_L,             # generators of L
-#           gens_subg,          # generators of subg
-#           eL, eH, eK;         # elements in L, H and K
-
-#     # test consistency between ccs_class and mode
-#     if ( mode < 0 ) or ( ccs_class.is_zero_mode <> ( mode = 0 ) ) then
-#       Error( "Illegel mode for the selected CCS class." );
-#     fi;
-
-#     # extract the direct product info
-#     dpinfo := DirectProductInfo( ccs_class.group );
-
-#     # it works only when the ECLG component is SO(2) or O(2)
-#     if not ( IdECLG( dpinfo.eclg ) in [ [ 1, 1 ], [ 2, 1 ] ] ) then
-#       TryNextMethod( );
-#     fi;
-
-#     # objectify the CCS
-#     fam_ccs := CollectionsFamily( FamilyObj( ccs_class.group ) );
-#     cat_ccs := CategoryCollections( IsGroup );
-#     rep_ccs := IsDirectProductWithECLGCCSRep;
-#     ccs := Objectify( NewType( fam_ccs, cat_ccs and rep_ccs ), rec( ) );
-
-#     # extract ccss_eclg, cH, cK, H, ZH, L and K
-#     ccss_eclg := ConjugacyClassesSubgroups( dpinfo.eclg );
-#     cH := ccs_class.cH;
-#     phi := Representative( ccs_class.phi_list );
-#     H := Source( phi );
-#     ZH := Kernel( phi );
-#     L := Range( phi );
-#     idK := [ ccs_class.idK[ 1 ], ccs_class.idK[ 2 ]*mode ];
-#     cK := CCSId( ccss_eclg )( idK );
-#     K := Representative( cK );
-
-#     # generate the representative of CCS
-#     # for CCS of zero mode
-#     if ccs_class.is_zero_mode then
-#       if ( Size( L ) = 1 ) then
-#         subg := DirectProduct( K, H );
-#         psi := GroupHomomorphismByFunction( K, L, elmt -> One( L ), false, elmt -> One( K ) );
-#         SetKernelOfMultiplicativeGeneralMapping( psi, K );
-#       else
-#         subg := Objectify( NewType( FamilyObj( ccs_class.group ), IsGroup ), rec( ) );
-#         psi := GroupHomomorphismByFunction( K, L, elmt -> L.2^( ( 1-DeterminantMat( elmt ) )/2 ), false, elmt -> DiagonalMat( [ 1, (-1)^( Order( elmt )-1 ) ] ) );
-#         SetKernelOfMultiplicativeGeneralMapping( psi, Representative( CCSId( ccss_eclg )( [ 1, 0 ] ) ) );
-#       fi;
-#     # for CCS of non-zero mode
-#     else
-#       # setup homomorphism from K to L
-#       gens_L := GeneratorsOfGroup( L );
-#       gens_K := GeneratorsOfGroup( K );
-#       if ( Size( gens_K ) > Size( gens_L ) ) then
-#         psi := GroupHomomorphismByImages( K, L, [ L.1, One( L ) ] );
-#       elif ( Size( gens_K ) = Size( gens_L ) ) then
-#         psi := GroupHomomorphismByImages( K, L );
-#       fi;
-
-#       if ( Size( L ) = 1 ) then
-#         subg := DirectProduct( K, H );
-#       else
-#         # extract ZK
-#         ZK := Kernel( psi );
-
-#         # generate a representative of the CCS
-#         gens_subg := ShallowCopy( GeneratorsOfGroup( DirectProduct( ZK, ZH ) ) );
-#         for eL in gens_L do
-#           eH := Representative( PreImages( phi, eL ) );
-#           eK := Representative( PreImages( psi, eL ) );
-#           Add( gens_subg, DirectProductElement( [ eK, eH ] ) );
-#         od;
-#         subg := Group( gens_subg );
-#       fi;
-#     fi;
-
-#     SetParentAttr( subg, ccs_class.group );
-#     SetOrderOfWeylGroup( subg, ccs_class.order_of_weyl_group );
-#     SetIsZeroModeCCS( ccs, ccs_class.is_zero_mode );
-#     SetRepresentative( ccs, subg );
-#     SetActingDomain( ccs, ccs_class.group );
-#     SetOrderOfWeylGroup( ccs, ccs_class.order_of_weyl_group );
-#     SetGoursatInfo( ccs, rec( cH := cH,
-#         cK := cK,
-#         phi_list := ccs_class.phi_list,
-#         psi := psi,
-#         idL := ccs_class.idL,
-#     ) );
-
-#     return ccs;
-#   end
-# );
+##  Part 3: CCSs for O(2)xGa
 
 #############################################################################
 ##
@@ -231,7 +283,7 @@
             CCSs_Ga,		# CCS list of gamma
             CCSs_O2,		# CCS list of O(2)
             
-            # The following local variables are related to ccs_classes
+            # The following local variables are related to CCS classes
             data,
             epis,
             epi2_classes,
@@ -257,10 +309,12 @@
             j,
             LL,
             L_to_LL,
-            LL_to_L;
+            LL_to_L,
+            class,
+            proto;
             
       # test if <G> is a direct product of two groups
-      decomp := DirectProductDecomposition( G );
+      decomp := DirectProductInfo( G ).groups;
       if not ( Length( decomp ) = 2 ) then
         TryNextMethod( );
       fi;
@@ -352,8 +406,8 @@
                   g -> One( L ), false, y -> One( H1 ) );
               SetKernelOfMultiplicativeGeneralMapping( epi1, H1 );
               Add( epi1_list, epi1 );
-
-              Add( data.ccsClasses, rec(
+              
+              class	:= rec(
                 is_zero_mode		:= true,
                 order_of_weyl_group	:= 2*OrderOfWeylGroup( C2 ),
                 abbrv			:= StringFormatted( "(SO(2) x {})", name_H2 ),
@@ -361,8 +415,11 @@
                                                 C2		:= C2,
                                                 epi1_list	:= epi1_list,
                                                 epi2_list	:= epi2_list,
-                                                L		:= L		)
-              ) );
+                                                L		:= L		) );
+              proto		:= NewCompactLieGroupConjugacyClassSubgroups(
+                                   IsMatrixGroup, G, class );
+              class.proto	:= proto;
+              Add( data.ccsClasses, class );
 
               # H1 = Z1 = O(2)
               C1 := CCSs_O2[ 0, 2 ];
@@ -373,7 +430,7 @@
               SetKernelOfMultiplicativeGeneralMapping( epi1, H1 );
               Add( epi1_list, epi1 );
 
-              Add( data.ccsClasses, rec(
+              class := rec(
                 is_zero_mode		:= true,
                 order_of_weyl_group	:= OrderOfWeylGroup( C2 ),
                 abbrv			:= StringFormatted( "(O(2) x {})", name_H2 ),
@@ -381,15 +438,17 @@
                                                 C2		:= C2,
                                                 epi1_list	:= epi1_list,
                                                 epi2_list	:= epi2_list,
-                                                L		:= L		)
-              ) );
+                                                L		:= L		) );
+              class.proto := NewCompactLieGroupConjugacyClassSubgroups(
+                             IsMatrixGroup, G, class );
+              Add( data.ccsClasses, class );
 
               # H1 = Z1 = Z_l
               C1 := CCSs_O2[ 1, 1 ];
               H1 := Representative( C1 );
               epi1_list := [ GroupHomomorphismByImagesNC( H1, L ) ];
 
-              Add( data.ccsClasses, rec(
+              class := rec(
                 is_zero_mode		:= false,
                 order_of_weyl_group	:= 2*OrderOfWeylGroup( C2 )*x,
                 abbrv			:= StringFormatted( "(Z_{{}} x {})", name_H2 ),
@@ -397,15 +456,17 @@
                                                 C2		:= C2,
                                                 epi1_list	:= epi1_list,
                                                 epi2_list	:= epi2_list,
-                                                L		:= L		)
-              ) );
+                                                L		:= L		) );
+              class.proto := NewCompactLieGroupConjugacyClassSubgroups(
+                             IsMatrixGroup, G, class );
+              Add( data.ccsClasses, class );
 
               # H1 = Z1 = D_l
               C1 := CCSs_O2[ 1, 2 ];
               H1 := Representative( C1 );
               epi1_list := [ GroupHomomorphismByImagesNC( H1, L, [ L.1, L.1 ] ) ];
 
-              Add( data.ccsClasses, rec(
+              class := rec(
                 is_zero_mode		:= false,
                 order_of_weyl_group	:= 2*OrderOfWeylGroup( C2 ),
                 abbrv			:= StringFormatted( "(D_{{}} x {})", name_H2 ),
@@ -413,56 +474,19 @@
                                                 C2		:= C2,
                                                 epi1_list	:= epi1_list,
                                                 epi2_list	:= epi2_list,
-                                                L		:= L		)
-              ) );
+                                                L		:= L		) );
+              class.proto := NewCompactLieGroupConjugacyClassSubgroups(
+                             IsMatrixGroup, G, class );
+              Add( data.ccsClasses, class );
 
-            # L = Z_2
-            elif ( k = 2 ) then
-              # H1 = Z_{2l}, Z1 = Z_l
-              C1 := CCSs_O2[ 2, 1 ];
-              H1 := Representative( C1 );
-              epi1_list := [ GroupHomomorphismByImages( H1, L ) ];
-
-              Add( data.ccsClasses, rec(
-                is_zero_mode		:= false,
-                order_of_weyl_group	:= 2*OrderOfWeylGroup( C2 )/Size( epi2_list )*x,
-                abbrv			:= StringFormatted( "(Z_{{}}|Z_{{}} x {}|{})",
-                                                            name_Z2, name_H2 ),
-                goursat_info		:= rec( C1		:= C1,
-                                                C2		:= C2,
-                                                epi1_list	:= epi1_list,
-                                                epi2_list	:= epi2_list,
-                                                L		:= L		)
-              ) );
-
-              # H1 = D_{2l}, Z1 = D_l
-              C1 := CCSs_O2[ 2, 2 ];
-              H1 := Representative( C1 );
-              epi1_list := [
-                GroupHomomorphismByImages( H1, L, [ L.1, One( L ) ] ),
-                GroupHomomorphismByImages( H1, L, [ L.1, L.1 ] )
-              ];
-
-              Add( data.ccsClasses, rec(
-                is_zero_mode		:= false,
-                order_of_weyl_group	:= 2*OrderOfWeylGroup( C2 )/Size( epi2_list ),
-                abbrv			:= StringFormatted( "(D_{{}}|D_{{}} x {}|{})",
-                                                            name_Z2, name_H2 ),
-                goursat_info		:= rec( C1		:= C1,
-                                                C2		:= C2,
-                                                epi1_list	:= epi1_list,
-                                                epi2_list	:= epi2_list,
-                                                L		:= L		)
-              ) );
-
-            # L = Z_k, k>=3
+            # L = Z_k (k>1)
             else
               # H1 = Z_{kl}, Z1 = Z_l
               C1 := CCSs_O2[ k, 1 ];
               H1 := Representative( C1 );
               epi1_list := [ GroupHomomorphismByImages( H1, L ) ];
 
-              Add( data.ccsClasses, rec(
+              class := rec(
                 is_zero_mode		:= false,
                 order_of_weyl_group	:= 2*OrderOfWeylGroup( C2 )/Size( epi2_list )*x,
                 abbrv			:= StringFormatted( "(Z_{{}}|Z_{{}} x {}|{})",
@@ -471,8 +495,34 @@
                                                 C2		:= C2,
                                                 epi1_list	:= epi1_list,
                                                 epi2_list	:= epi2_list,
-                                                L		:= L		)
-              ) );
+                                                L		:= L		) );
+              class.proto := NewCompactLieGroupConjugacyClassSubgroups(
+                             IsMatrixGroup, G, class );
+              Add( data.ccsClasses, class );
+
+              if ( k = 2 ) then
+                # H1 = D_{2l}, Z1 = D_l
+                C1 := CCSs_O2[ 2, 2 ];
+                H1 := Representative( C1 );
+                epi1_list := [
+                  GroupHomomorphismByImages( H1, L, [ L.1, One( L ) ] ),
+                  GroupHomomorphismByImages( H1, L, [ L.1, L.1 ] )
+                ];
+
+                class := rec(
+                  is_zero_mode		:= false,
+                  order_of_weyl_group	:= 2*OrderOfWeylGroup( C2 )/Size( epi2_list ),
+                  abbrv			:= StringFormatted( "(D_{{}}|D_{{}} x {}|{})",
+                                                            name_Z2, name_H2 ),
+                  goursat_info		:= rec( C1		:= C1,
+                                                C2		:= C2,
+                                                epi1_list	:= epi1_list,
+                                                epi2_list	:= epi2_list,
+                                                L		:= L		) );
+                class.proto := NewCompactLieGroupConjugacyClassSubgroups(
+                               IsMatrixGroup, G, class );
+                Add( data.ccsClasses, class );
+              fi;
             fi;
           od;
 
@@ -539,7 +589,7 @@
                   Representative( CCSs_O2[ 0, 1 ] ) );
               Add( epi1_list, epi1 );
 
-              Add( data.ccsClasses, rec(
+              class := rec(
                 is_zero_mode		:= true,
                 order_of_weyl_group	:= 2*OrderOfWeylGroup( C2 )/Size( epi2_list ),
                 abbrv			:= StringFormatted( "(O(2)|SO(2) x {}|{})",
@@ -548,8 +598,10 @@
                                                 C2		:= C2,
                                                 epi1_list	:= epi1_list,
                                                 epi2_list	:= epi2_list,
-                                                L		:= L		)
-              ) );
+                                                L		:= L		) );
+              class.proto := NewCompactLieGroupConjugacyClassSubgroups(
+                             IsMatrixGroup, G, class );
+              Add( data.ccsClasses, class );
             fi;
 
             # K = D_{jl}, Z_l (l >= 1)
@@ -557,7 +609,7 @@
             H1 := Representative( C1 );
             epi1_list := [ GroupHomomorphismByImages( H1, L ) ];
 
-            Add( data.ccsClasses, rec(
+            class := rec(
               is_zero_mode		:= false,
               order_of_weyl_group	:= 2*j*OrderOfWeylGroup( C2 )/Size( epi2_list ),
               abbrv			:= StringFormatted( "(D_{{}}|Z_{{}} x {}|{})",
@@ -566,201 +618,95 @@
                                                 C2		:= C2,
                                                 epi1_list	:= epi1_list,
                                                 epi2_list	:= epi2_list,
-                                                L		:= L		)
-            ) );
+                                                L		:= L		) );
+            class.proto := NewCompactLieGroupConjugacyClassSubgroups(
+                           IsMatrixGroup, G, class );
+            Add( data.ccsClasses, class );
           od;
         od;
       od;
+
       # sort ccs_classes
-#     ccs_pairs := List( ccs_classes, cl -> [ NewCCS( rep_ccss, cl ), cl ] );
-#     PSort( ccs_pairs );
+      PSort( data.ccsClasses, { cl1, cl2 } -> cl1.proto < cl2.proto );
 
       return NewCompactLieGroupConjugacyClassesSubgroups( IsGroup, G, data );
     end
   );
 
+
+##  Part 4: Character and Representation Theory
+
 #############################################################################
 ##
-#A  OrderOfRepresentative( <C> )
+#O  \[\]( <irrs>, <l>, <j> )
 ##
-  InstallMethod( OrderOfRepresentative,
+  InstallOtherMethod( \[\],
     "",
-    [ IsCompactLieGroupConjugacyClassSubgroupsRep and HasGoursatInfo ],
-    function( C )
-      local info;
-
-      info := GoursatInfo( C );
-
-      return OrderOfRepresentative( info.C1 )*
-             OrderOfRepresentative( info.C2 )/
-             Order( info.L );
-    end
-  );
-
-#############################################################################
-##
-#O  Projection( <G>, <k> )
-##
-# InstallMethod( Projection,
-#   "projection of direct product with ECLG",
-#   [ IsCompactLieGroup and HasDirectProductInfo, IsPosInt ],
-#   function( G, k )
-#     local info,
-#           proj,      # projection from the direct product to its component
-#           proj1,     # projection from gamma to its component
-#           dpinfo;    # direct product info
-
-#     info := DirectProductInfo( G );
-
-#     if ( ind = 1 ) then
-#       proj := GroupHomomorphismByFunction( grp, dpinfo.eclg, elmt -> elmt[ 1 ] );
-#     else
-#       proj1 := Projection( dpinfo.gamma, ind-1 );
-#       proj := GroupHomomorphismByFunction( grp, dpinfo.groups[ ind ], elmt -> Image( proj1, elmt[ 2 ] ) );
-#     fi;
-#     SetImagesSource( proj, dpinfo.groups[ ind ] );
-
-#     return proj;
-#   end
-# );
-
-#############################################################################
-##
-#O  Embedding( <G>, <k> )
-##
-# InstallMethod( Embedding,
-#   "embedding of direct product with ECLG",
-#   [ IsDirectProductWithECLG, IsPosInt ],
-#   function( grp, ind )
-#     local embed,     # embedding to the direct product from its component
-#           embed1,    # embedding to gamma from its component
-#           dpinfo;    # direct product info
-
-#     dpinfo := DirectProductInfo( grp );
-
-#     if ( ind = 1 ) then
-#       embed := GroupHomomorphismByFunction( dpinfo.eclg, grp, elmt -> DirectProductElement( [ elmt, One( dpinfo.gamma ) ] ) );
-#       SetImagesSource( embed, DirectProduct( dpinfo.eclg, Group( One( dpinfo.gamma ) ) ) );
-#     else
-#       embed1 := Embedding( dpinfo.gamma, ind-1 );
-#       embed := GroupHomomorphismByFunction( dpinfo.gamma, grp, elmt -> DirectProductElement( [ One( dpinfo.eclg ), Image( embed1, elmt ) ] ) );
-#       SetImagesSource( embed, DirectProduct( Group( One( dpinfo.eclg ) ), Image( embed1 ) ) );
-#     fi;
-
-#     return embed;
-#   end
-# );
-
-#############################################################################
-##
-#O  nLHnumber( <A>, <B> )
-##
-  InstallOtherMethod( nLHnumber,
-    "n(L,H) number for CCSs of ECLGxG",
-    IsIdenticalObj,
-    [ IsCompactLieGroupConjugacyClassSubgroupsRep and HasGoursatInfo,
-      IsCompactLieGroupConjugacyClassSubgroupsRep and HasGoursatInfo  ],
-    function( A, B )
+    [ IsCompactLieGroupIrrCollection, IsInt, IsInt ],
+    function( irrs, l, j )
       local G,
             decomp,
-            Ga,
-            x,
-            infoA,
-            infoB,
-            nLH1,
-            nLH2,
-            nLH,
-            AH2,
-            BH2,
-            BH2_,
-            Aepi1,
-            Aepi2,
-            Bepi1,
-            Bepi2,
-            Bepi1_list,
-            Bepi2_list,
-            g,
-            y,
-            h1,
-            h2,
-            iso,
-            flag;
+            G1,
+            G2,
+            chi_G1,
+            chi_G2,
+            CCs_G2,
+            cat,
+            fun,
+            chi;
 
-      G := ActingDomain( A );
+      G := UnderlyingGroup( irrs );
       decomp := DirectProductDecomposition( G );
-      Ga := decomp[ 2 ];
 
-      if not ( ActingDomain( B ) = G ) then
-        Error( "C1 and C2 are not from the same group." );
+      if not ( Size( decomp ) = 2 ) then
+        TryNextMethod( );
       fi;
 
-      x := X( Integers, "x" );
-      infoA := GoursatInfo( A );
-      infoB := GoursatInfo( B );
+      G1 := decomp[ 1 ];
+      G2 := decomp[ 2 ];
 
-      nLH1 := nLHnumber( infoA.C1, infoB.C1 );
-      nLH2 := nLHnumber( infoA.C2, infoB.C2 );
-      if IsZero( nLH1 ) or IsZero( nLH2 ) then
-        return Zero( x );
+      # it works for <G1> = SO(2) or O(2)
+      if not HasIdElementaryCompactLieGroup( G1 ) or
+         not ( IdElementaryCompactLieGroup( G1 ) in [ [ 1, 2 ], [ 2, 2 ] ] ) then
+        TryNextMethod( );
       fi;
 
-      AH2 := Representative( infoA.C2 );
-      BH2 := Representative( infoB.C2 );
-      Aepi1 := Representative( infoA.epi1_list );
-      Aepi2 := Representative( infoA.epi2_list );
-      Bepi1_list := infoB.epi1_list;
-      Bepi2_list := infoB.epi2_list;
-
-      if not IsSubset( BH2, AH2 ) then
-        for BH2_ in infoB.C2 do
-          if IsSubset( BH2_, AH2 ) then
-            g := RepresentativeAction( Ga, BH2_, BH2 );
-            iso := ConjugatorIsomorphism( BH2_, g );
-            Bepi2_list := iso*Bepi2_list;
-            break;
-          fi;
-        od;
+      # ... and <G2> is finite
+      if not IsFinite( G2 ) then
+        TryNextMethod( );
       fi;
 
-      nLH := Zero( x );
-      for Bepi1 in Bepi1_list do
-        if not IsSubset( Kernel( Bepi1 ), Kernel( Aepi1 ) ) then
-          continue;
-        fi;
+      chi_G1 := Irr( G1 )[ l ];
+      chi_G2 := Irr( G2 )[ j ];
+      CCs_G2 := ConjugacyClasses( CharacterTable( G2 ) );
 
-        for Bepi2 in Bepi2_list do
-          if not IsSubset( Kernel( Bepi2 ), Kernel( Aepi2 ) ) then
-            continue;
-          fi;
+      cat := IsCompactLieGroupClassFunction;
+      fun := function( e )
+        local k;
 
-          flag := true;
-          for y in GeneratorsOfGroup( infoA.L ) do
-            if IsOne( y ) then
-              continue;
-            fi;
+        k := Position( CCs_G2, C -> e[ 2 ] in C );
+        
+        return chi_G2[ k ]*Image( chi_G1, e[ 1 ] );
+      end;
+      chi := NewCompactLieGroupClassFunction( cat, G, rec( fun := fun ) );
 
-            h1 := PreImagesRepresentative( Aepi1, y );
-            h2 := PreImagesRepresentative( Aepi2, y );
+      SetIsCompactLieGroupCharacter( chi, true );
+      SetIsGeneratorsOfSemigroup( chi, true );
+      SetIdIrr( chi, [ l, j ] );
+      ResetFilterObj( chi, HasAbbrv );
+      ResetFilterObj( chi, HasString );
+      SetString( chi, StringFormatted(
+        "DirectProduct( {}, Character( CharacterTable( {} ), {} ) )",
+        String( chi_G1 ), String( G2 ), String( chi_G2 )
+      ) );
+      SetAbbrv( chi, StringFormatted(
+        "Character( CharacterTable( {} ), irreducible, id = {} )",
+        ViewString( G ), [ l, j ]
+      ) );
+      return chi;
 
-            if not ( Image( Bepi1, h1 ) = Image( Bepi2, h2 ) ) then
-              flag := false;
-              continue;
-            fi;
-          od;
-
-          if flag then
-            nLH := nLH + 1;
-          fi;
-        od;
-      od;
-
-      return nLH * nLH1 * nLH2;
     end
   );
-
-      
-
-##  Print, View and Display
 
 
 #############################################################################

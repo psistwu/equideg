@@ -8,21 +8,6 @@
 ##  This file contains declarations for procedures related to direct proudct
 ##  of a finite group and an elementary compact Lie group (ECLG).
 ##
-##  Todo:
-##
-
-#############################################################################
-##
-#R  IsDirectProductWithECLGCCSRep
-##
-# DeclareRepresentation( "IsDirectProductWithECLGCCSRep",
-#     IsCompactLieGroupCCSRep, [ ] );
-
-#############################################################################
-##
-#A  GoursatInfo( <C> )
-##
-  DeclareAttribute( "GoursatInfo", IsCompactLieGroupConjugacyClassSubgroupsRep );
 
 
 #############################################################################

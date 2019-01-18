@@ -78,8 +78,7 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareOperation( "PSort",
-      [ IsHomogeneousList and IsMutable, IsFunction ] );
+  DeclareOperation( "PSort", [ IsHomogeneousList and IsMutable ] );
 
 #############################################################################
 ##
@@ -97,7 +96,7 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareOperation( "PSortedList", [ IsHomogeneousList, IsFunction ] );
+  DeclareOperation( "PSortedList", [ IsHomogeneousList ] );
 
 
 ##  Part 2: Lattice

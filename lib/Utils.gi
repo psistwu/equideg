@@ -36,15 +36,9 @@
 ##
   InstallMethod( LaTeXTypesetting,
     "return LaTeX typesetting of an object",
-    [ IsObject ],
+    [ IsObject and HasLaTeXString ],
     function( obj )
-      if HasLaTeXString( obj ) then
-        return LaTeXString( obj );
-      else
-        Info( InfoEquiDeg, INFO_LEVEL_EquiDeg,
-            "LaTeXString of the object is not defined.\n" );
-        return fail;
-      fi;
+      return LaTeXString( obj );
     end
   );
 

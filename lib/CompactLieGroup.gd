@@ -47,8 +47,8 @@
 ##
 #A  DimensionOfCompactLieGroup
 ##
-  DeclareAttribute( "DimensionOfCompactLieGroup", IsCompactLieGroup );
-  DeclareAttribute( "Dimension", IsCompactLieGroup );
+  DeclareAttribute( "DimensionOfCompactLieGroup", IsGroup );
+  DeclareAttribute( "Dimension", IsGroup );
 
 #############################################################################
 ##
@@ -261,6 +261,21 @@
 
 #############################################################################
 ##
+#P  IsIrreducibleCharacter( <chi> )
+##
+  DeclareProperty( "IsIrreducibleCharacter", IsCompactLieGroupClassFunction );
+  InstallTrueMethod( IsCompactLieGroupCharacter,
+      IsCompactLieGroupClassFunction and IsIrreducibleCharacter );
+
+#############################################################################
+##
+#A  IdCompactLieGroupClassFunction( <chi> )
+##
+  DeclareAttribute( "IdCompactLieGroupClassFunction",
+    IsCompactLieGroupClassFunction );
+
+#############################################################################
+##
 #O  \[\]( <irrs>, <l> )
 ##
   DeclareOperation( "\[\]", [ IsCompactLieGroupIrrCollection, IsInt ] );
@@ -274,9 +289,13 @@
 #############################################################################
 ##
 #O  DimensionOfFixedSet( <chi>, <H> );
+#O  DimensionOfFixedSet( <chi>, <C> );
 ##
   DeclareOperation( "DimensionOfFixedSet",
     [ IsCompactLieGroupCharacter, IsGroup ] );
+  DeclareOperation( "DimensionOfFixedSet",
+    [ IsCompactLieGroupCharacter,
+      IsCompactLieGroupConjugacyClassSubgroupsRep ] );
 
 #############################################################################
 ##
