@@ -79,6 +79,21 @@
     end
   );
 
+#############################################################################
+##
+#O  Divides( <m>, <n> )
+##
+  InstallMethod( Divides,
+    "test if <m> divides <n>",
+    [ IsInt, IsInt ],
+    function( m, n )
+      if IsZero( m ) then
+        return IsZero( n );
+      else
+        return ( n mod m = 0 );
+      fi;
+    end
+  );
 
 #############################################################################
 ##

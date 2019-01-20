@@ -26,9 +26,9 @@
 
 #############################################################################
 ##
-#O  DirectProductDecomposition( <chi> )
+#O  TensorProductDecomposition( <chi> )
 ##
-  DeclareOperation( "DirectProductDecomposition", [ IsCharacter ] );
+  DeclareOperation( "TensorProductDecomposition", [ IsCharacter ] );
 
 #############################################################################
 ##

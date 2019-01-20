@@ -6,15 +6,9 @@
 # Haopin Wu <psistwu@outlook.com>
 #
 
-  # preload
-  LIB_LIST := [ "Sys", "BasicMath", "Group", "OrbitType", "BurnsideRing" ];
-  MakeReadOnlyGlobal( "LIB_LIST" );
-  Read( "../preload.gap" );
+  LoadPackage( "EquiDeg" );
 
-  grp := pDihedralGroup( 4 );
-  ccs_list := ConjugacyClassesSubgroups( grp );
-  cc_list := ConjugacyClasses( grp );
-  chtbl := CharacterTable( grp );
-  ccs_names := [ "Z1", "Z2", "D1", "T1", "D2", "Z4", "T2", "D4" ];
-  ListF( ccs_list, ccs_names, SetName );
-  bdeg_list := List( Irr( grp ), BasicDegree );
+  x := X( Integers, "x" );
+
+  f := x^-2+x^-1+x;
+  Print( Degree( f ) );

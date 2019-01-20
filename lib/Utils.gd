@@ -97,6 +97,12 @@
   DeclareGlobalFunction( "ListA",
       "Apply action (function with no return value on list of arguments" );
 
+#############################################################################
+##
+#O  Divides( <m>, <n> )
+##
+  DeclareOperation( "Divides", [ IsInt, IsInt ] );
+
 
 #############################################################################
 ##

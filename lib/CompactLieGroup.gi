@@ -1246,7 +1246,6 @@
 
       G := UnderlyingGroup( chi );
       id := IdCompactLieGroupClassFunction( chi );
-      c := CoefficientsOfUnivariateLaurentPolynomial( id[ 1 ] );
 
       if not IsSubgroup( G, H ) then
         Error( "<H> must be a subgroup of <G>." );
@@ -1254,13 +1253,13 @@
 
       if ( G = SpecialOrthogonalGroupOverReal( 2 ) ) then
         if ( H = G ) then
-          return c[ 1 ][ 1 - c[ 2 ] ];
+          return Coefficient( id[ 1 ], 0 );
         fi;
       elif ( G = OrthogonalGroupOverReal( 2 ) ) then
         if ( H = G ) then
-            return ( c[ 1 ][ 1 - c[ 2 ] ] - id[ 2 ] ) / 2;
+          return ( Coefficient( id[ 1 ], 0 ) + id[ 2 ] )/2;
         elif ( H = SpecialOrthogonalGroupOverReal( 2 ) ) then
-          return c[ 1 ][ 1 - c[ 2 ] ];
+          return Coefficient( id[ 1 ], 0 );
         fi;
       fi;
 
@@ -1268,25 +1267,77 @@
     end
   );
 
+  # for SO(2)
   InstallMethod( DimensionOfFixedSet,
     "returns dimension of fixed set of a CCS",
     [ IsCompactLieGroupCharacter and HasIdCompactLieGroupClassFunction,
       IsCompactLieGroupConjugacyClassSubgroupsRep ],
     function( chi, C )
-      local G;
+      local G,
+            idchi,
+	    l, h,
+            idC,
+	    degs;
 
       G := UnderlyingGroup( chi );
-      id := IdCompactLieGroupClassFunction( chi );
-
-      if G = SpecialOrthogonalGroupOverReal( 2 ) then
-        
-      elif G = OrthogonalGroupOverReal( 2 ) then
-        
-      else
+      if not ( G = SpecialOrthogonalGroupOverReal( 2 ) ) then
         TryNextMethod( );
+      fi;
+      
+      idchi := IdCompactLieGroupClassFunction( chi );
+      if IsZero( idchi[ 1 ] ) then
+        return 0;
+      fi;
+
+      l := LowestDegree( idchi[ 1 ] );
+      h := DegreeOfLaurentPolynomial( idchi[ 1 ] );
+      idC := IdCCS( C );
+
+      degs := Filtered( [ l .. h ], d -> Divides( idC[ 1 ], d ) );
+      return Sum( List( degs, d -> Coefficient( idchi[ 1 ], d ) ) );
+    end
+  );
+
+  # for O(2)
+  InstallMethod( DimensionOfFixedSet,
+    "returns dimension of fixed set of a CCS",
+    [ IsCompactLieGroupCharacter and HasIdCompactLieGroupClassFunction,
+      IsCompactLieGroupConjugacyClassSubgroupsRep ],
+    function( chi, C )
+      local G,
+            idchi,
+	    l, h,
+            idC,
+	    degs,
+	    dim;
+
+      G := UnderlyingGroup( chi );
+      if not ( G = OrthogonalGroupOverReal( 2 ) ) then
+        TryNextMethod( );
+      fi;
+      
+      idchi := IdCompactLieGroupClassFunction( chi );
+      if IsZero( idchi[ 1 ] ) then
+        return 0;
+      fi;
+
+      l := LowestDegree( idchi[ 1 ] );
+      h := DegreeOfLaurentPolynomial( idchi[ 1 ] );
+      idC := IdCCS( C );
+
+      if ( idC[ 2 ] = 1 ) then
+        degs := Filtered( [ l .. h ], d -> Divides( idC[ 1 ], d ) );
+        return Sum( List( degs, d -> Coefficient( idchi[ 1 ], d ) ) );
+      elif ( idC[ 2 ] = 2 ) then
+        degs := Filtered( [ 1 .. h ], d -> Divides( idC[ 1 ], d ) );
+        return Sum( List( degs, d -> Coefficient( idchi[ 1 ], d ) ) ) +
+	       ( Coefficient( idchi[ 1 ], 0 ) + idchi[ 2 ] )/2;
+      else
+        Error( "Invalid CCS." );
       fi;
     end
   );
+
 
 #############################################################################
 ##

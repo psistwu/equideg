@@ -696,7 +696,7 @@
       ResetFilterObj( chi, HasAbbrv );
       ResetFilterObj( chi, HasString );
       SetString( chi, StringFormatted(
-        "DirectProduct( {}, Character( CharacterTable( {} ), {} ) )",
+        "TensorProduct( {}, Character( CharacterTable( {} ), {} ) )",
         String( chi_G1 ), String( G2 ), String( chi_G2 )
       ) );
       SetAbbrv( chi, StringFormatted(

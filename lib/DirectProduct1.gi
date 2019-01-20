@@ -61,7 +61,7 @@
 ##
 #O  DirectProductDecomposition( <chi> )
 ##
-  InstallMethod( DirectProductDecomposition,
+  InstallMethod( TensorProductDecomposition,
     "direct product decomposition of a irredicible character of a group",
     [ IsCharacter ],
     function( chi )
