@@ -221,7 +221,7 @@
 
 #############################################################################
 ##
-#A  ConjugacyClassesSubgroups( lat_ccss )
+#A  ConjugacyClassesSubgroups( <lat_ccss> )
 ##
   DeclareAttribute( "ConjugacyClassesSubgroups", IsLatticeCCSsRep );
 
@@ -230,9 +230,17 @@
 
 #############################################################################
 ##
-#A  IdIrr( chi )
+#A  IdIrr( <chi> )
 ##
   DeclareAttribute( "IdIrr", IsCharacter );
+
+
+#############################################################################
+##
+#O  ImageOfClassFunction( <chi>, e )
+##
+  DeclareOperation( "ImageOfClassFunction",
+      [ IsClassFunction, IsMultiplicativeElementWithInverse ] );
 
 
 #############################################################################

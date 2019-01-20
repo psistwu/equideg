@@ -418,6 +418,31 @@
     end
   );
 
+#############################################################################
+##
+#O  Image( <chi>, <e> )
+##
+  InstallMethod( ImageOfClassFunction,
+    "",
+    [ IsClassFunction, IsMultiplicativeElementWithInverse ],
+    function( chi, e )
+      local G,
+            tbl,
+            n;
+
+      G := UnderlyingGroup( chi );
+      if not ( e in G ) then
+        Info( InfoEquiDeg, INFO_LEVEL_EquiDeg,
+	    "<e> is not in the underlying group of <chi>." );
+        return fail;
+      fi;
+
+      tbl := UnderlyingCharacterTable( chi );
+      n := PositionProperty( ConjugacyClasses( tbl ), c -> e in c );
+      return ValuesOfClassFunction( chi )[ n ];
+    end
+  );
+
 
 #############################################################################
 ##
