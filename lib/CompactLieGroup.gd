@@ -95,13 +95,6 @@
 
 #############################################################################
 ##
-#A  IsZeroModeCCS( <C> )
-##
-  DeclareAttribute( "IsZeroModeCCS",
-      IsCompactLieGroupConjugacyClassSubgroupsRep );
-
-#############################################################################
-##
 #R  IsCompactLieGroupConjugacyClassesSubgroupsRep
 ##
 ##  <#GAPDoc Label="IsCompactLieGroupConjugacyClassesSubgroupsRep">
@@ -288,14 +281,22 @@
 
 #############################################################################
 ##
+#A  DegreeOfCharacter( <chi> )
+##
+  DeclareAttribute( "DegreeOfCharacter", IsCompactLieGroupVirtualCharacter );
+
+#############################################################################
+##
 #O  DimensionOfFixedSet( <chi>, <H> );
 #O  DimensionOfFixedSet( <chi>, <C> );
+#V  DimensionOfFixedSetHandler
 ##
   DeclareOperation( "DimensionOfFixedSet",
     [ IsCompactLieGroupCharacter, IsGroup ] );
   DeclareOperation( "DimensionOfFixedSet",
     [ IsCompactLieGroupCharacter,
       IsCompactLieGroupConjugacyClassSubgroupsRep ] );
+  BindGlobal( "DIMENSION_OF_FIXED_SET_HANDLER", rec( ) );
 
 #############################################################################
 ##

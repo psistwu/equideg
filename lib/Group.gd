@@ -237,9 +237,9 @@
 
 #############################################################################
 ##
-#O  ImageOfClassFunction( <chi>, e )
+#O  ImageElm( <chi>, <e> )
 ##
-  DeclareOperation( "ImageOfClassFunction",
+  DeclareOperation( "ImageElm",
       [ IsClassFunction, IsMultiplicativeElementWithInverse ] );
 
 

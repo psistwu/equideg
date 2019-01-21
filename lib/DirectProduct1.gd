@@ -13,22 +13,22 @@
 
 #############################################################################
 ##
-#O  DirectProductDecomposition( <G> )
+#A  DirectProductDecomposition( <G> )
 ##
-  DeclareOperation( "DirectProductDecomposition", [ IsGroup ] );
+  DeclareAttribute( "DirectProductDecomposition", IsGroup );
 
 #############################################################################
 ##
-#O  DirectProductDecomposition( <C> )
+#A  DirectProductDecomposition( <C> )
 ##
-  DeclareOperation( "DirectProductDecomposition",
-      [ IsConjugacyClassGroupRep ] );
+  DeclareAttribute( "DirectProductDecomposition",
+      IsConjugacyClassGroupRep );
 
 #############################################################################
 ##
-#O  TensorProductDecomposition( <chi> )
+#A  TensorProductDecomposition( <chi> )
 ##
-  DeclareOperation( "TensorProductDecomposition", [ IsCharacter ] );
+  DeclareAttribute( "TensorProductDecomposition", IsCharacter );
 
 #############################################################################
 ##

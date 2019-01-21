@@ -24,13 +24,12 @@
         Error( "n must be a positive integer." );
       fi;
 
-      # take the generator
       gen := ( );
       for i in [ 1 .. n-1 ] do
         gen := ( i, i+1 )*gen;
       od;
 
-      return Group( [ gen ] );
+      return Group( gen );
     end
   );
 
@@ -52,7 +51,7 @@
       iz := ImaginaryPart ( z );
       gen_mat := [ [ rz, -iz ], [ iz, rz ] ];
 
-      return GroupByGenerators( [ gen_mat ] );
+      return Group( gen_mat );
     end
   );
 
@@ -116,7 +115,7 @@
       gen1 := [ [ rz, -iz ], [ iz, rz ] ];
       gen2 := [ [ 1, 0 ], [ 0, -1 ] ];
 
-      return GroupByGenerators( [ gen1, gen2 ] );
+      return Group( [ gen1, gen2 ] );
     end
   );
 
@@ -420,9 +419,9 @@
 
 #############################################################################
 ##
-#O  Image( <chi>, <e> )
+#O  ImageElm( <chi>, <e> )
 ##
-  InstallMethod( ImageOfClassFunction,
+  InstallMethod( ImageElm,
     "",
     [ IsClassFunction, IsMultiplicativeElementWithInverse ],
     function( chi, e )

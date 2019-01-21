@@ -143,6 +143,49 @@
 
 #############################################################################
 ##
+#A  Representative( <C> )
+##
+  InstallMethod( Representative,
+    "representative of a conjugacy class of subgroups of finite order",
+    [ IsCompactLieGroupConjugacyClassSubgroupsRep and HasGoursatInfo ],
+    function( C )
+      local G,
+            info,
+            epi1,
+            epi2,
+            Z1,
+            Z2,
+            gens,
+            l,
+            e1,
+            e2;
+
+      G := ActingDomain( C );
+
+      if IsZero( IdCCS( C )[ 1 ] ) then
+        TryNextMethod( );
+      fi;
+
+      info := GoursatInfo( C );
+      epi1 := Representative( info.epi1_list );
+      epi2 := Representative( info.epi2_list );
+      Z1 := Kernel( epi1 );
+      Z2 := Kernel( epi2 );
+
+      gens := ShallowCopy( GeneratorsOfGroup( DirectProduct( Z1, Z2 ) ) );
+      for l in GeneratorsOfGroup( info.L ) do
+        e1 := PreImagesRepresentative( epi1, l );
+        e2 := PreImagesRepresentative( epi2, l );
+        Add( gens, [ e1, e2 ] );
+      od;
+      gens := List( gens, DirectProductElement );
+
+      return Subgroup( G, gens );
+    end
+  );
+
+#############################################################################
+##
 #A  OrderOfRepresentative( <C> )
 ##
   InstallMethod( OrderOfRepresentative,
@@ -464,7 +507,7 @@
               # H1 = Z1 = D_l
               C1 := CCSs_O2[ 1, 2 ];
               H1 := Representative( C1 );
-              epi1_list := [ GroupHomomorphismByImagesNC( H1, L, [ L.1, L.1 ] ) ];
+              epi1_list := [ GroupHomomorphismByImagesNC( H1, L, [ One( L ), One( L ) ] ) ];
 
               class := rec(
                 is_zero_mode		:= false,
@@ -628,6 +671,8 @@
 
       # sort ccs_classes
       PSort( data.ccsClasses, { cl1, cl2 } -> cl1.proto < cl2.proto );
+      StableSort( data.ccsClasses, { cl1, cl2 } ->
+          OrderOfRepresentative( cl1.proto ) < OrderOfRepresentative( cl2.proto ) );
 
       return NewCompactLieGroupConjugacyClassesSubgroups( IsGroup, G, data );
     end
@@ -678,36 +723,130 @@
 
       chi_G1 := Irr( G1 )[ l ];
       chi_G2 := Irr( G2 )[ j ];
-      CCs_G2 := ConjugacyClasses( CharacterTable( G2 ) );
 
       cat := IsCompactLieGroupClassFunction;
-      fun := function( e )
-        local k;
-
-        k := Position( CCs_G2, C -> e[ 2 ] in C );
-        
-        return chi_G2[ k ]*Image( chi_G1, e[ 1 ] );
-      end;
+      fun := e -> ImageElm( chi_G2, e[ 2 ] )*Image( chi_G1, e[ 1 ] );
       chi := NewCompactLieGroupClassFunction( cat, G, rec( fun := fun ) );
 
       SetIsCompactLieGroupCharacter( chi, true );
       SetIsGeneratorsOfSemigroup( chi, true );
       SetIdIrr( chi, [ l, j ] );
-      ResetFilterObj( chi, HasAbbrv );
+      SetTensorProductDecomposition( chi, [ chi_G1, chi_G2 ] );
       ResetFilterObj( chi, HasString );
       SetString( chi, StringFormatted(
-        "TensorProduct( {}, Character( CharacterTable( {} ), {} ) )",
-        String( chi_G1 ), String( G2 ), String( chi_G2 )
-      ) );
-      SetAbbrv( chi, StringFormatted(
-        "Character( CharacterTable( {} ), irreducible, id = {} )",
-        ViewString( G ), [ l, j ]
+        "TensorProduct( Irr( {} )[ {} ], Character( CharacterTable( {} ), {} ) )",
+        ViewString( G1 ), l, ViewString( G2 ), String( chi_G2 )
       ) );
       return chi;
 
     end
   );
 
+#############################################################################
+##
+#O  DimensionOfFixedSet( <chi>, <C> )
+##
+  InstallOtherMethod( DimensionOfFixedSet,
+    "DimensionOfFixedSet",
+    [ IsCompactLieGroupCharacter and HasTensorProductDecomposition,
+      IsCompactLieGroupConjugacyClassSubgroupsRep and HasGoursatInfo ],
+    function( chi, C )
+      local G,
+            decomp_G,
+            G1,
+            G2,
+            decomp_chi,
+            chi1,
+            chi2,
+            info,
+            Z1,
+            Z2,
+            epi1,
+            epi2,
+            dfsH1,
+            dfsH2,
+            dfsZ1,
+            dfsZ2;
+
+      G := UnderlyingGroup( chi );
+      if not ( ActingDomain( C ) = G ) then
+        Error( "<C> is not a CCS of the underlying group of <chi>." );
+      fi;
+
+      decomp_G := DirectProductInfo( G ).groups;
+      G2 := decomp_G[ 2 ];
+      if not IsFinite( G2 ) then
+        TryNextMethod( );
+      fi;
+
+      G1 := decomp_G[ 1 ];
+      if G1 = OrthogonalGroupOverReal( 2 ) then
+      elif G1 = SpecialOrthogonalGroupOverReal( 2 ) then
+      else
+        TryNextMethod( );
+      fi;
+
+      if not ( IdCCS( C )[ 1 ] = 0 ) then
+        TryNextMethod( );
+      fi;
+
+      decomp_chi := TensorProductDecomposition( chi );
+      chi1 := decomp_chi[ 1 ];
+      chi2 := decomp_chi[ 2 ];
+      info := GoursatInfo( C );
+
+      if ( Order( info.L ) = 1 ) then
+        return DimensionOfFixedSet( chi1, info.C1 ) *
+               DimensionOfFixedSet( chi2, info.C2 );
+      elif ( Order( info.L ) = 2 ) then
+        epi1 := Representative( info.epi1_list );
+        epi2 := Representative( info.epi2_list );
+        Z1 := Kernel( epi1 );
+        Z2 := Kernel( epi2 );
+
+        dfsH1 := DimensionOfFixedSet( chi1, info.C1 );
+        dfsZ1 := DimensionOfFixedSet( chi1, Z1 );
+        dfsH2 := DimensionOfFixedSet( chi2, info.C2 );
+        dfsZ2 := DimensionOfFixedSet( chi2, Z2 );
+
+        return ( 4*dfsH1*dfsH2 + 2*dfsZ1*dfsZ2
+                 - 2*dfsH1*dfsZ2 - 2*dfsH2*dfsZ1 )/2;
+      fi;
+    end
+  );
+
+#############################################################################
+##
+#A  OrbitTypes( <chi> );
+##
+# InstallMethod( OrbitTypes,
+#   "orbit types of character of an elementary compact Lie group",
+#   [ IsCompactLieGroupCharacter and
+#     IsIrreducibleCharacter and
+#     HasTensorProductDecomposition ],
+#   function( chi )
+#     local G,
+#           decomp_G,
+#           CCSs,
+#           l;
+
+#     G := UnderlyingGroup( chi );
+#     decomp_G := DirectProductDecomposition( G );
+#     if not ( Size( decomp_G ) = 2 ) then
+#       TryNextMethod( );
+#     fi;
+
+#     id := IdIrr( chi );
+#     CCSs := ConjugacyClassesSubgroups( G );
+
+#     orbt_list := [ ];
+#     if ( ld[ 1 ] <= 0 ) then
+#       
+#     else
+#       
+#     fi;
+#   end
+# );
 
 #############################################################################
 ##

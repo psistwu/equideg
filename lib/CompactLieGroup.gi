@@ -948,8 +948,8 @@
     20,
     function( chi )
       if HasIdIrr( chi ) then
-        PrintFormatted( "Irr( {} )[ {} ]",
-            UnderlyingGroup( chi ), IdIrr( chi ) );
+        PrintFormatted( "Irr( {} ){}",
+            UnderlyingGroup( chi ), Flat( [ IdIrr( chi ) ] ) );
       else
         Print( ViewString( chi ) );
       fi;
@@ -1212,8 +1212,26 @@
 
 #############################################################################
 ##
+#A  DegreeOfCharacter( <chi> )
+##
+  InstallMethod( DegreeOfCharacter,
+    "",
+    [ IsCompactLieGroupVirtualCharacter ],
+    function( chi )
+      local G;
+
+      G := UnderlyingGroup( chi );
+
+      return Image( chi, One( G ) );
+    end
+  );
+
+#############################################################################
+##
 #O  DimensionOfFixedSet( <chi>, <H> );
 ##
+
+  # for finite subgroup
   InstallMethod( DimensionOfFixedSet,
     "dimension of fixed set of <H>",
     [ IsCompactLieGroupCharacter, IsGroup ],
@@ -1226,15 +1244,15 @@
         Error( "<H> must be a subgroup of <G>." );
       fi;
 
-      if not IsFinite( H ) then
-        TryNextMethod( );
+      if IsFinite( H ) then
+        return Sum( List( H ), x -> Image( chi, x ) )/Order( H );
       fi;
 
-      return Sum( List( H ), x -> Image( chi, x ) )/Order( H );
+      TryNextMethod( );
     end
   );
 
-  # for SO(2) and O(2)
+  # for infinite subgroup of SO(2) and O(2)
   InstallMethod( DimensionOfFixedSet,
     "dimension of fixed set of <H>",
     [ IsCompactLieGroupCharacter and HasIdCompactLieGroupClassFunction,
@@ -1267,11 +1285,17 @@
     end
   );
 
-  # for SO(2)
+#############################################################################
+##
+#O  DimensionOfFixedSet( <chi>, <C> );
+##
+
+  # for CCS of SO(2)
   InstallMethod( DimensionOfFixedSet,
     "returns dimension of fixed set of a CCS",
     [ IsCompactLieGroupCharacter and HasIdCompactLieGroupClassFunction,
       IsCompactLieGroupConjugacyClassSubgroupsRep ],
+    20,
     function( chi, C )
       local G,
             idchi,
@@ -1298,11 +1322,12 @@
     end
   );
 
-  # for O(2)
+  # for CCS of O(2)
   InstallMethod( DimensionOfFixedSet,
     "returns dimension of fixed set of a CCS",
     [ IsCompactLieGroupCharacter and HasIdCompactLieGroupClassFunction,
       IsCompactLieGroupConjugacyClassSubgroupsRep ],
+    20,
     function( chi, C )
       local G,
             idchi,
@@ -1338,13 +1363,27 @@
     end
   );
 
+  # for CCS of finite order
+  InstallMethod( DimensionOfFixedSet,
+    "",
+    [ IsCompactLieGroupCharacter,
+      IsCompactLieGroupConjugacyClassSubgroupsRep ],
+    function( chi, C )
+      if not ( Degree( OrderOfRepresentative( C ) ) = 0 ) then
+        TryNextMethod( );
+      fi;
+
+      return DimensionOfFixedSet( chi, Representative( C ) );
+    end
+  );
+
 
 #############################################################################
 ##
 #A  OrbitTypes( <chi> )
 ##
 
-##  For SO(2)
+  # For SO(2)
   InstallMethod( OrbitTypes,
     "orbit types of character of an elementary compact Lie group",
     [ IsCompactLieGroupCharacter ],
