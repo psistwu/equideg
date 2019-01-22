@@ -22,5 +22,5 @@
   Ga := DirectProduct( s3, s2 );
 
   # O(2) x S_4
-  G := DirectProduct( o2, Ga );
+  G := DirectProduct( o2, s4 );
   CCSs_G := ConjugacyClassesSubgroups( G );

@@ -39,6 +39,142 @@
 
 #############################################################################
 ##
+#A  String( <a> )
+##
+  InstallMethod( String,
+    "string of a Burnside ring element",
+    [ IsBurnsideRingElement ],
+    function( a )
+      local i,		# index
+            ccs,
+            ccs_id,	# id of CCS
+            coeff,	# coefficient
+            ccs_name,	# name of CCS
+            str;	# name string
+
+      str := "";
+      for i in [ 1 .. Length( a ) ] do
+        coeff	:= a!.coeffList[ i ];
+        ccs_id	:= a!.ccsIdList[ i ];
+        ccs	:= a!.ccsList[ i ];
+
+        ccs_name := StringFormatted(
+          "({})",
+          JoinStringsWithSeparator( Flat( [ ccs_id ] ), "," )
+        );
+
+        # append coefficient and name of CCS
+        if ( i > 1 ) and ( coeff > 0 ) then
+          Append( str, "+" );
+        fi;
+        Append( str, String( coeff ) );
+        Append( str, ccs_name );
+      od;
+
+      return StringFormatted( "<{}>", str );
+    end
+  );
+
+#############################################################################
+##
+#O  ViewString( <a> )
+##
+  InstallMethod( ViewString,
+    "view string of a Burnside ring element",
+    [ IsBurnsideRingElement ],
+    function( a )
+      local A;     # the Burnside ring
+
+      A := FamilyObj( a )!.burnsideRing;
+
+      return Concatenation( String( a ), " in ", ViewString( A ) );
+    end
+  );
+
+#############################################################################
+##
+#O  PrintObj( <a> )
+##
+  InstallMethod( PrintObj,
+    "display a Burnside ring element",
+    [ IsBurnsideRingElement ],
+    function( a )
+      local i,			# index
+            ccs,
+            ccs_id,		# id of CCS
+            ccs_id_formatted,	# id of CCS
+            coeff,		# coefficient
+            ccs_name,		# name of CCS
+            str;		# name string
+
+      Print( ViewString( FamilyObj( a )!.burnsideRing ), "\n" );
+      for i in [ 1 .. Length( a ) ] do
+        coeff	:= a!.coeffList[ i ];
+        ccs_id	:= a!.ccsIdList[ i ];
+        ccs_id_formatted := StringFormatted(
+          "({})",
+          JoinStringsWithSeparator( Flat( [ ccs_id ] ), "," )
+        );
+        ccs	:= a!.ccsList[ i ];
+
+        # determine the name of CCS
+        if HasAbbrv( ccs ) then
+          ccs_name := Concatenation( ccs_id_formatted, "\t", Abbrv( ccs ) );
+        else
+          ccs_name := ccs_id_formatted;
+        fi;
+
+        # append coefficient and name of CCS
+        Print( StringFormatted( "{}\t{}\n", coeff, ccs_name ) );
+      od;
+    end
+  );
+
+#############################################################################
+##
+#O  LaTeXTypesetting( <a> )
+##
+  InstallMethod( LaTeXTypesetting,
+    "return LaTeX typesetting of an element in the Burnside ring",
+    [ IsBurnsideRingElement ],
+    function( a )
+      local i,		# index
+            coeff,	# coefficient
+            ccs_id,	# id of CCS
+            ccs_list,	# CCSs of the underlying group
+            ccs_name,	# name of CCS
+            str;	# name string
+
+      ccs_list := FamilyObj( a )!.CCSs;
+      str := "";
+      for i in [ 1 .. Length( a ) ] do
+        coeff     := a!.coeffList[ i ];
+        ccs_id := a!.ccsIdList[ i ];
+
+        # determine the name of CCS
+        if HasLaTeXString( ccs_list[ ccs_id ] ) then
+          ccs_name := LaTeXString( ccs_list[ ccs_id ] );
+        else
+          ccs_name := StringFormatted(
+            "({})",
+            JoinStringsWithSeparator( Flat( [ ccs_id ] ), "," )
+          );
+        fi;
+
+        # append coefficient and name of CCS
+        if ( i > 1 ) and ( coeff > 0 ) then
+          Append( str, "+" );
+        fi;
+        Append( str, String( coeff ) );
+        Append( str, StringFormatted( "({})", ccs_name ) );
+      od;
+
+      return str;
+    end
+  );
+
+#############################################################################
+##
 #A  Length( <a> )
 ##
   InstallMethod( Length,
@@ -803,121 +939,6 @@
 
 
 ##  Appendix: Print, View and Display
-
-#############################################################################
-##
-#A  String( <a> )
-##
-  InstallMethod( String,
-    "string of a Burnside ring element",
-    [ IsBurnsideRingElement ],
-    function( a )
-      local i,		# index
-            ccs,
-            ccs_id,	# id of CCS
-            coeff,	# coefficient
-            ccs_name,	# name of CCS
-            str;	# name string
-
-      str := "";
-      for i in [ 1 .. Length( a ) ] do
-        coeff	:= a!.coeffList[ i ];
-        ccs_id	:= a!.ccsIdList[ i ];
-        ccs	:= a!.ccsList[ i ];
-
-#       # determine the name of CCS
-#       if HasAbbrv( ccs ) then
-#         ccs_name := Abbrv( ccs );
-#       else
-          ccs_name := StringFormatted(
-            "({})",
-            JoinStringsWithSeparator( Flat( [ ccs_id ] ), "," )
-          );
-#       fi;
-
-        # append coefficient and name of CCS
-        if ( i > 1 ) and ( coeff > 0 ) then
-          Append( str, "+" );
-        fi;
-        Append( str, String( coeff ) );
-        Append( str, ccs_name );
-      od;
-
-      return StringFormatted("<{}>", str );
-    end
-  );
-
-#############################################################################
-##
-#A  ViewString( <a> )
-##
-  InstallMethod( ViewString,
-    "view string of a Burnside ring element",
-    [ IsBurnsideRingElement ],
-    function( a )
-      local A;     # the Burnside ring
-
-      A := FamilyObj( a )!.burnsideRing;
-
-      return Concatenation( String( a ), " in ", ViewString( A ) );
-    end
-  );
-
-#############################################################################
-##
-#A  PrintString( <a> )
-##
-  InstallMethod( PrintString,
-    "print string of a Burnside ring element",
-    [ IsBurnsideRingElement ],
-    function( a )
-      local A;     # the Burnside ring
-
-      A := FamilyObj( a )!.burnsideRing;
-
-      return Concatenation( String( a ), " in ", String( A ) );
-    end
-  );
-
-#############################################################################
-##
-#O  LaTeXTypesetting( <a> )
-##
-  InstallMethod( LaTeXTypesetting,
-    "return LaTeX typesetting of an element in the Burnside ring",
-    [ IsBurnsideRingElement ],
-    function( a )
-      local i,		# index
-            coeff,	# coefficient
-            ccs_id,	# id of CCS
-            ccs_list,	# CCSs of the underlying group
-            ccs_name,	# name of CCS
-            str;	# name string
-
-      ccs_list := FamilyObj( a )!.CCSs;
-      str := "";
-      for i in [ 1 .. Length( a ) ] do
-        coeff     := a!.coeffList[ i ];
-        ccs_id := a!.ccsIdList[ i ];
-
-        # determine the name of CCS
-        if HasLaTeXString( ccs_list[ ccs_id ] ) then
-          ccs_name := LaTeXString( ccs_list[ ccs_id ] );
-        else
-          ccs_name := String( ccs_id );
-        fi;
-
-        # append coefficient and name of CCS
-        if ( i > 1 ) and ( coeff > 0 ) then
-          Append( str, "+" );
-        fi;
-        Append( str, String( coeff ) );
-        Append( str, StringFormatted("({})", ccs_name ) );
-      od;
-
-      return str;
-    end
-  );
 
 #############################################################################
 ##
