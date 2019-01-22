@@ -228,11 +228,17 @@
         fi;
       od;
 
-      return StringFormatted( "[{}|{} x {}|{}]",
-          name_list[ 1 ],
-          name_list[ 2 ],
-          name_list[ 3 ],
-          name_list[ 4 ]  );
+      if ( Size( infoU.L ) = 1 ) then
+        return StringFormatted( "[{} x {}]",
+            name_list[ 1 ],
+            name_list[ 4 ]  );
+      else
+        return StringFormatted( "[{}|{} x {}|{}]",
+            name_list[ 1 ],
+            name_list[ 2 ],
+            name_list[ 3 ],
+            name_list[ 4 ]  );
+      fi;
     end
   );
 

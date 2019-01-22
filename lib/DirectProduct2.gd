@@ -9,6 +9,10 @@
 ##  of a finite group and an elementary compact Lie group (ECLG).
 ##
 
+  DeclareOperation( "nLHnumber2",
+    [ IsCompactLieGroupConjugacyClassSubgroupsRep and HasGoursatInfo,
+      IsCompactLieGroupConjugacyClassSubgroupsRep and HasGoursatInfo  ] );
+    
 
 #############################################################################
 ##

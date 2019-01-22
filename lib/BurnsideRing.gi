@@ -339,6 +339,7 @@
             basis,		# basis of Burnside ring
             idCa,		# id of CCS a (when a is in the basis )
             idCb,		# id of CCS b (when b is in the basis )
+            idmin,
             Ca,			# CCS of a (when a is in the basis)
             Cb,			# CCS of b (when b is in the basis)
             l,			# mode of the product
@@ -366,9 +367,15 @@
 
         l := Gcd( idCa[ 1 ], idCb[ 1 ] );
         if IsPosInt( l ) then
-          imax := NumberOfNonzeroModeClasses( CCSs );
+          if IsPosInt( idCa[ 1 ] ) and IsPosInt( idCb[ 1 ] ) then
+            imax := Minimum( idCa[ 2 ], idCb[ 2 ] );
+          elif IsZero( idCa[ 1 ] ) then
+            imax := idCb[ 2 ];
+          elif IsZero( idCb[ 1 ] ) then
+            imax := idCa[ 2 ];
+          fi;
         else
-          imax := NumberOfZeroModeClasses( CCSs );
+          imax := Minimum( idCa[ 2 ], idCb[ 2 ] );
         fi;
 
         ccs_list := [ ];
@@ -383,7 +390,7 @@
           coeff := nLHnumber( Ci, Ca ) * OrderOfWeylGroup( Ca ) *
                    nLHnumber( Ci, Cb ) * OrderOfWeylGroup( Cb );
 
-          if ( coeff = 0 ) then
+          if IsZero( coeff ) then
             continue;
           fi;
 
@@ -410,7 +417,8 @@
         );
       else
         return Sum( ListX( ToSparseList( a ), ToSparseList( b ),
-          { x, y } -> x[ 2 ] * y[ 2 ] * ( basis[ x[ 1 ] ] * basis[ y[ 1 ] ] )
+          { x, y } -> ( x[ 2 ] * y[ 2 ] ) *
+                      ( basis[ x[ 1 ] ] * basis[ y[ 1 ] ] )
         ) );
       fi;
     end
@@ -780,11 +788,11 @@
       od;
 
       coeff_list := ListN( coeff_list,
-          List( ccs_list, C -> OrderOfWeylGroup( C ) ), \/ );
+          List( ccs_list, OrderOfWeylGroup ), \/ );
       coeff_list := List( coeff_list, LeadingCoefficient );
 
       return NewBurnsideRingElement(
-        IsBurnsideRingByFiniteGroupElement,
+        IsBurnsideRingByCompactLieGroupElement,
         rec( fam		:= ElementsFamily( FamilyObj( A ) ),
              ccs_list		:= ccs_list,
              ccs_id_list	:= ccs_id_list,
@@ -817,15 +825,15 @@
         ccs_id	:= a!.ccsIdList[ i ];
         ccs	:= a!.ccsList[ i ];
 
-        # determine the name of CCS
-        if HasAbbrv( ccs ) then
-          ccs_name := Abbrv( ccs );
-        else
+#       # determine the name of CCS
+#       if HasAbbrv( ccs ) then
+#         ccs_name := Abbrv( ccs );
+#       else
           ccs_name := StringFormatted(
             "({})",
-            JoinStringsWithSeparator( ccs_id, "," )
+            JoinStringsWithSeparator( Flat( [ ccs_id ] ), "," )
           );
-        fi;
+#       fi;
 
         # append coefficient and name of CCS
         if ( i > 1 ) and ( coeff > 0 ) then

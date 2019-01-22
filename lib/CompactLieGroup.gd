@@ -95,6 +95,13 @@
 
 #############################################################################
 ##
+#O  Refolded( <C>, <l> )
+##
+  DeclareOperation( "Refolded",
+      [ IsCompactLieGroupConjugacyClassSubgroupsRep, IsInt ] );
+
+#############################################################################
+##
 #R  IsCompactLieGroupConjugacyClassesSubgroupsRep
 ##
 ##  <#GAPDoc Label="IsCompactLieGroupConjugacyClassesSubgroupsRep">
@@ -124,19 +131,6 @@
 ##
   DeclareOperation( "\[\]",
       [ IsCompactLieGroupConjugacyClassesSubgroupsRep, IsInt, IsInt ] );
-
-#############################################################################
-##
-#U  NewCCSClass( IsGroup, IsFilter, IsRecord )
-##
-# DeclareConstructor( "NewCCSClass", [ IsGroup, IsOperation, IsRecord ] );
-
-#############################################################################
-##
-#F  CCSClasses( <CCSs> )
-##
-  DeclareGlobalFunction( "CCSClasses",
-      "returns CCS classes of a compact Lie group" );
 
 #############################################################################
 ##
@@ -278,6 +272,13 @@
 #A  IdIrr( <irr> )
 ##
   DeclareAttribute( "IdIrr", IsCompactLieGroupCharacter );
+
+#############################################################################
+##
+#O  Refolded( <chi>, <l> )
+##
+  DeclareOperation( "Refolded",
+      [ IsCompactLieGroupClassFunction and IsIrreducibleCharacter, IsInt ] );
 
 #############################################################################
 ##

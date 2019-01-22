@@ -260,18 +260,15 @@
       Aepi1 := Representative( infoA.epi1_list );
       Aepi2 := Representative( infoA.epi2_list );
       Bepi1_list := infoB.epi1_list;
-      Bepi2_list := infoB.epi2_list;
+      Bepi2_list := [ ];
 
-      if not IsSubset( BH2, AH2 ) then
-        for BH2_ in infoB.C2 do
-          if IsSubset( BH2_, AH2 ) then
-            g := RepresentativeAction( Ga, BH2_, BH2 );
-            iso := ConjugatorIsomorphism( BH2_, g );
-            Bepi2_list := iso*Bepi2_list;
-            break;
-          fi;
-        od;
-      fi;
+      for BH2_ in infoB.C2 do
+        if IsSubset( BH2_, AH2 ) then
+          g := RepresentativeAction( Ga, BH2_, BH2 );
+          iso := ConjugatorIsomorphism( BH2_, g );
+          Append( Bepi2_list, iso*infoB.epi2_list );
+        fi;
+      od;
 
       nLH := Zero( x );
       for Bepi1 in Bepi1_list do
@@ -305,7 +302,7 @@
         od;
       od;
 
-      return nLH * nLH1 * nLH2;
+      return nLH * nLH1;
     end
   );
 
@@ -446,7 +443,8 @@
               H1 := Representative( C1 );
               epi1_list := [ ];
               epi1 := GroupHomomorphismByFunction( H1, L,
-                  g -> One( L ), false, y -> One( H1 ) );
+                  g -> One( pCyclicGroup( 1 ) ),
+                  false, y -> One( Representative( CCSs_O2[ 0, 1 ] ) ) );
               SetKernelOfMultiplicativeGeneralMapping( epi1, H1 );
               Add( epi1_list, epi1 );
               
@@ -469,7 +467,8 @@
               H1 := Representative( C1 );
               epi1_list := [ ];
               epi1 := GroupHomomorphismByFunction( H1, L,
-                  g -> One( L ), false, y -> One( H1 ) );
+                  g -> One( pCyclicGroup( 1 ) ),
+                  false, y -> One( Representative( CCSs_O2[ 0, 2 ] ) ) );
               SetKernelOfMultiplicativeGeneralMapping( epi1, H1 );
               Add( epi1_list, epi1 );
 
@@ -626,8 +625,8 @@
               H1 := Representative( C1 );
               epi1_list := [ ];
               epi1 := GroupHomomorphismByFunction( H1, L,
-                  g -> (L.2)^((1-DeterminantMat( g ))/2),
-                  false, y -> H1.(Order(y)) );
+                  g -> ( pDihedralGroup( 2 ).2 )^( ( 1-DeterminantMat( g ) )/2 ),
+                  false, y -> Representative( CCSs_O2[ 0, 2 ] ).( Order(y) ) );
               SetKernelOfMultiplicativeGeneralMapping( epi1,
                   Representative( CCSs_O2[ 0, 1 ] ) );
               Add( epi1_list, epi1 );
@@ -731,6 +730,7 @@
       SetIsCompactLieGroupCharacter( chi, true );
       SetIsGeneratorsOfSemigroup( chi, true );
       SetIdIrr( chi, [ l, j ] );
+      SetIsIrreducibleCharacter( chi, true );
       SetTensorProductDecomposition( chi, [ chi_G1, chi_G2 ] );
       ResetFilterObj( chi, HasString );
       SetString( chi, StringFormatted(
@@ -819,34 +819,57 @@
 ##
 #A  OrbitTypes( <chi> );
 ##
-# InstallMethod( OrbitTypes,
-#   "orbit types of character of an elementary compact Lie group",
-#   [ IsCompactLieGroupCharacter and
-#     IsIrreducibleCharacter and
-#     HasTensorProductDecomposition ],
-#   function( chi )
-#     local G,
-#           decomp_G,
-#           CCSs,
-#           l;
+  InstallOtherMethod( OrbitTypes,
+    "orbit types of character of an elementary compact Lie group",
+    [ IsCompactLieGroupCharacter and
+      IsIrreducibleCharacter and
+      HasTensorProductDecomposition ],
+    function( chi )
+      local G,
+            decomp_G,
+            CCSs,
+            id,
+            ccs_list,
+            is_orbittype,
+            orbt_list,
+            fixeddim_list,
+            i, j;
 
-#     G := UnderlyingGroup( chi );
-#     decomp_G := DirectProductDecomposition( G );
-#     if not ( Size( decomp_G ) = 2 ) then
-#       TryNextMethod( );
-#     fi;
+      G := UnderlyingGroup( chi );
+      decomp_G := DirectProductDecomposition( G );
+      if not ( Size( decomp_G ) = 2 ) then
+        TryNextMethod( );
+      fi;
 
-#     id := IdIrr( chi );
-#     CCSs := ConjugacyClassesSubgroups( G );
+      id := IdIrr( chi );
+      CCSs := ConjugacyClassesSubgroups( G );
 
-#     orbt_list := [ ];
-#     if ( ld[ 1 ] <= 0 ) then
-#       
-#     else
-#       
-#     fi;
-#   end
-# );
+      if ( id[ 1 ] <= 0 ) then
+        ccs_list := List( [ 1 .. NumberOfZeroModeClasses( CCSs ) ], j -> CCSs[ 0, j ] );
+      else
+        ccs_list := List( [ 1 .. NumberOfNonzeroModeClasses( CCSs ) ], j -> CCSs[ 1, j ] );
+        Add( ccs_list, CCSs[ 0, NumberOfZeroModeClasses( CCSs ) ] );
+      fi;
+      fixeddim_list := List( ccs_list, C -> DimensionOfFixedSet( Refolded( chi, 1 ), C ) );
+
+      orbt_list := [ ];
+      for i in Reversed( [ 1 .. Size( ccs_list ) ] ) do
+        is_orbittype := true;
+        for j in [ i+1 .. Size( ccs_list ) ] do
+          if ( fixeddim_list[ i ] = fixeddim_list[ j ] ) and
+              ( ccs_list[ i ] < ccs_list[ j ] ) then
+            is_orbittype := false;
+            break;
+          fi;
+        od;
+        if is_orbittype then
+          Add( orbt_list, ccs_list[ i ], 1 );
+        fi;
+      od;
+
+      return List( orbt_list, C -> Refolded( C, id[ 1 ] ) );
+    end
+  );
 
 #############################################################################
 ##

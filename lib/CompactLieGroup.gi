@@ -185,6 +185,44 @@
 
 #############################################################################
 ##
+#O  Refolded( <C>, <l> )
+##
+  InstallMethod( Refolded,
+    "refolds CCS of a compact Lie group",
+    [ IsCompactLieGroupConjugacyClassSubgroupsRep, IsInt ],
+    function( C, l )
+      local G,
+            G1,
+            CCSs,
+            id;
+
+      G := ActingDomain( C );
+      G1 := DirectProductDecomposition( G )[ 1 ];
+      CCSs := ConjugacyClassesSubgroups( G );
+      id := ShallowCopy( IdCCS( C ) );
+
+      if ( G1 = SpecialOrthogonalGroupOverReal( 2 ) ) then
+        if not IsZero( id[ 1 ] ) and not IsZero( l ) then
+          id[ 1 ] := l;
+          return CCSs[ id ];
+        else
+          return C;
+        fi;
+      elif ( G1 = OrthogonalGroupOverReal( 2 ) ) then
+        if IsPosInt( id[ 1 ] ) and IsPosInt( l ) then
+          id[ 1 ] := l;
+          return CCSs[ id ];
+        else
+          return C;
+        fi;
+      else
+        TryNextMethod( );
+      fi;
+    end
+  );
+
+#############################################################################
+##
 #U  NewCompactLieGroupConjugacyClassesSubgroups(
 #U      IsGroup, <G> )
 ##
@@ -1061,6 +1099,42 @@
       SetIdCompactLieGroupClassFunction( chi, id );
 
       return chi;
+    end
+  );
+
+#############################################################################
+##
+#O  Refolded( <chi>, <l> )
+##
+  InstallMethod( Refolded,
+    "",
+    [ IsCompactLieGroupClassFunction and IsIrreducibleCharacter, IsInt ],
+    function( chi, l )
+      local G,
+            G1,
+            id;
+
+      G := UnderlyingGroup( chi );
+      G1 := DirectProductDecomposition( G )[ 1 ];
+      id := Flat( [ ShallowCopy( IdIrr( chi ) ) ] );
+
+      if ( G1 = SpecialOrthogonalGroupOverReal( 2 ) ) then
+        if not IsZero( id[ 1 ] ) and not IsZero( l ) then
+          id[ 1 ] := l;
+          return Irr( G )[ id ];
+        else
+          return chi;
+        fi;
+      elif ( G1 = OrthogonalGroupOverReal( 2 ) ) then
+        if IsPosInt( id[ 1 ] ) and IsPosInt( l ) then
+          id[ 1 ] := l;
+          return Irr( G )[ id ];
+        else
+          return chi;
+        fi;
+      else
+        TryNextMethod( );
+      fi;
     end
   );
 
