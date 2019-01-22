@@ -228,8 +228,6 @@
             Aepi2,
             Bepi1,
             Bepi2,
-            Bepi1_list,
-            Bepi2_list,
             g,
             y,
             h1,
@@ -259,25 +257,17 @@
       BH2 := Representative( infoB.C2 );
       Aepi1 := Representative( infoA.epi1_list );
       Aepi2 := Representative( infoA.epi2_list );
-      Bepi1_list := infoB.epi1_list;
-      Bepi2_list := [ ];
-
-      for BH2_ in infoB.C2 do
-        if IsSubset( BH2_, AH2 ) then
-          g := RepresentativeAction( Ga, BH2_, BH2 );
-          iso := ConjugatorIsomorphism( BH2_, g );
-          Append( Bepi2_list, iso*infoB.epi2_list );
-        fi;
-      od;
 
       nLH := Zero( x );
-      for Bepi1 in Bepi1_list do
+      for Bepi1 in infoB.epi1_list do
         if not IsSubset( Kernel( Bepi1 ), Kernel( Aepi1 ) ) then
           continue;
         fi;
 
-        for Bepi2 in Bepi2_list do
-          if not IsSubset( Kernel( Bepi2 ), Kernel( Aepi2 ) ) then
+        for Bepi2 in infoB.epi2_list do
+          if not IsSubset( Source( Bepi2 ), Source( Aepi2 ) ) then
+            continue;
+          elif not IsSubset( Kernel( Bepi2 ), Kernel( Aepi2 ) ) then
             continue;
           fi;
 
@@ -340,10 +330,10 @@
             name_H2,
             name_Z2,
             L,
-            NH2,
             NL,
-            NLxNH2,
-            actfunc,
+            NLxGa,
+            actfunc1,
+            actfunc2,
             x,
             k,
             j,
@@ -379,23 +369,52 @@
       data := rec( ccsClasses := [ ] );
       x := X( Integers, "x" );
 
+      # define <NLxGa> action on <epis> when L=Z_n
+      actfunc1 := function( epi, g )
+        local dg,
+              iso_H2,
+              aut_L;
+
+        dg := DirectProductDecomposition( NLxGa, g );
+        aut_L  := ConjugatorAutomorphism( L, dg[ 1 ] );
+        iso_H2 := ConjugatorIsomorphism( Source( epi ), dg[ 2 ] );
+
+        return InverseGeneralMapping( iso_H2 )*epi*aut_L;
+      end;
+
+      # define <NLxNH> action on <epis> when L=D_n
+      actfunc2 := function( epi, g )
+        local dg,
+              iso_H2,
+              aut_L;
+
+        dg := DirectProductDecomposition( NLxGa, g );
+        aut_L := L_to_LL*ConjugatorAutomorphism( LL, dg[ 1 ] )*LL_to_L;
+        iso_H2 := ConjugatorIsomorphism( Source( epi ), dg[ 2 ] );
+
+        return InverseGeneralMapping( iso_H2 )*epi*aut_L;
+      end;
+
       for C2 in CCSs_Ga do
-        # take a representative from a given CCS
         H2 := Representative( C2 );
+        # take a representative from a given CCS
         if HasAbbrv( C2 ) then
           name_H2 := ShallowCopy( Abbrv( C2 ) );
           RemoveCharacters( name_H2, "()" );
         else
           name_H2 := String( H2 );
         fi;
-        NH2 := NormalizerInParent( H2 );
 
         for k in DivisorsInt( Order( H2 ) ) do
           # when L is a cyclic group
           L := pCyclicGroup( k );
 
           # find all epimorphisms from H2 to L
-          epis := GQuotients( H2, L );
+          epis := [ ];
+          for H2 in C2 do
+            Append( epis, GQuotients( H2, L ) );
+          od;
+            
           if not IsEmpty( epis ) then
             epis := ListX( epis, AllAutomorphisms( L ), \* );
 
@@ -403,24 +422,11 @@
             NL := pDihedralGroup( k );
             NL := Group( NL.2 );
 
-            # Take the direct product of <NL> and <NH2>
-            NLxNH2 := DirectProduct( NL, NH2 );
-
-            # define <NLxNH2> action on <epis>
-            actfunc := function( epi, g )
-              local dg,
-                    aut_H2,
-                    aut_L;
-
-              dg := DirectProductDecomposition( NLxNH2, g );
-              aut_L  := ConjugatorAutomorphism( L, dg[ 1 ] );
-              aut_H2 := ConjugatorAutomorphism( H2, Inverse( dg[ 2 ] ) );
-
-              return aut_H2*epi*aut_L;
-            end;
+            # Take the direct product of <NL> and <Ga>
+            NLxGa := DirectProduct( NL, Ga );
 
             # divide epimorphisms into conjugacy classes
-            epi2_classes := Orbits( NLxNH2, epis, actfunc );
+            epi2_classes := Orbits( NLxGa, epis, actfunc1 );
           else
             epi2_classes := [ ];
           fi;
@@ -492,7 +498,7 @@
 
               class := rec(
                 is_zero_mode		:= false,
-                order_of_weyl_group	:= 2*OrderOfWeylGroup( C2 )*x,
+                order_of_weyl_group	:= 2*x*OrderOfWeylGroup( C2 ),
                 abbrv			:= StringFormatted( "(Z_{{}} x {})", name_H2 ),
                 goursat_info		:= rec( C1		:= C1,
                                                 C2		:= C2,
@@ -530,7 +536,8 @@
 
               class := rec(
                 is_zero_mode		:= false,
-                order_of_weyl_group	:= 2*OrderOfWeylGroup( C2 )/Size( epi2_list )*x,
+                order_of_weyl_group	:= 2*x*OrderOfWeylGroup( C2 )/
+                                           Number( epi2_list, epi -> Source( epi ) = H2 ),
                 abbrv			:= StringFormatted( "(Z_{{}}|Z_{{}} x {}|{})",
                                                             name_Z2, name_H2 ),
                 goursat_info		:= rec( C1		:= C1,
@@ -553,7 +560,8 @@
 
                 class := rec(
                   is_zero_mode		:= false,
-                  order_of_weyl_group	:= 2*OrderOfWeylGroup( C2 )/Size( epi2_list ),
+                  order_of_weyl_group	:= 2*OrderOfWeylGroup( C2 )/
+                                           Number( epi2_list, epi -> Source( epi ) = H2 ),
                   abbrv			:= StringFormatted( "(D_{{}}|D_{{}} x {}|{})",
                                                             name_Z2, name_H2 ),
                   goursat_info		:= rec( C1		:= C1,
@@ -581,28 +589,19 @@
           L_to_LL := GroupHomomorphismByImagesNC( L, LL );
           LL_to_L := GroupHomomorphismByImagesNC( LL, L );
 
-          epis := GQuotients( H2, L );
+          epis := [ ];
+          for H2 in C2 do
+            Append( epis, GQuotients( H2, L ) );
+          od;
+            
           if not IsEmpty( epis ) then
             epis := ListX( epis, AllAutomorphisms( L ), \* );
 
             # Take NH and the direct product of NL and NH
-            NLxNH2 := DirectProduct( NL, NH2 );
-
-            # define NLxNH action on phis
-            actfunc := function( epi, g )
-              local dg,
-                    aut_H2,
-                    aut_L;
-
-              dg := DirectProductDecomposition( NLxNH2, g );
-              aut_L := L_to_LL*ConjugatorAutomorphism( LL, dg[ 1 ] )*LL_to_L;
-              aut_H2 := ConjugatorAutomorphism( H2, Inverse( dg[ 2 ] ) );
-
-              return aut_H2*epi*aut_L;
-            end;
+            NLxGa := DirectProduct( NL, Ga );
 
             # divide epimorphisms into conjugacy classes
-            epi2_classes := Orbits( NLxNH2, epis, actfunc );
+            epi2_classes := Orbits( NLxGa, epis, actfunc2 );
           else
             epi2_classes := [ ];
           fi;
@@ -633,7 +632,8 @@
 
               class := rec(
                 is_zero_mode		:= true,
-                order_of_weyl_group	:= 2*OrderOfWeylGroup( C2 )/Size( epi2_list ),
+                order_of_weyl_group	:= 2*OrderOfWeylGroup( C2 )/
+                                           Number( epi2_list, epi -> Source( epi ) = H2 ),
                 abbrv			:= StringFormatted( "(O(2)|SO(2) x {}|{})",
                                                             name_Z2, name_H2 ),
                 goursat_info		:= rec( C1		:= C1,
@@ -653,7 +653,8 @@
 
             class := rec(
               is_zero_mode		:= false,
-              order_of_weyl_group	:= 2*j*OrderOfWeylGroup( C2 )/Size( epi2_list ),
+              order_of_weyl_group	:= 2*j*OrderOfWeylGroup( C2 )/
+                                           Number( epi2_list, epi -> Source( epi ) = H2 ),
               abbrv			:= StringFormatted( "(D_{{}}|Z_{{}} x {}|{})",
                                                             name_Z2, name_H2 ),
               goursat_info		:= rec( C1		:= C1,
