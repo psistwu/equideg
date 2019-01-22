@@ -107,7 +107,7 @@
             ccs_name,		# name of CCS
             str;		# name string
 
-      Print( ViewString( FamilyObj( a )!.burnsideRing ), "\n" );
+      Print( ViewString( FamilyObj( a )!.burnsideRing ), " element:\n" );
       for i in [ 1 .. Length( a ) ] do
         coeff	:= a!.coeffList[ i ];
         ccs_id	:= a!.ccsIdList[ i ];
