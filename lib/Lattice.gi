@@ -253,6 +253,52 @@
 
 #############################################################################
 ##
+#O  MaximalElements( list )
+##
+  InstallMethod( MaximalElements,
+    "",
+    [ IsList ],
+    function( list )
+      local flag,
+            i, j,
+            list2,
+            a, b;
+
+      i := 1;
+      list2 := ShallowCopy( list );
+
+      while ( i <= Length( list2 ) ) do
+        a := list2[ i ];
+        j := 1;
+        flag := true;
+
+        while ( j <= Length( list2 ) ) do
+          b := list2[ j ];
+          if ( a = b ) then
+            j := j + 1;
+            continue;
+          elif ( a < b ) then
+            Remove( list2, i );
+            flag := false;
+            break;
+          elif ( b < a ) then
+            Remove( list2, j );
+          else
+            j := j + 1;
+          fi;
+        od;
+
+        if flag then
+          i := i + 1;
+        fi;
+      od;
+
+      return list2;
+    end
+  );
+
+#############################################################################
+##
 #O  DotFileLattice( <lat>, <filename> )
 ##
   InstallMethod( DotFileLattice,

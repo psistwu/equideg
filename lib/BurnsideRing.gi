@@ -560,6 +560,34 @@
     end
   );
 
+#############################################################################
+##
+#O  MaximalOrbitTypes( <a> )
+##
+  InstallMethod( MaximalOrbitTypes,
+    "",
+    [ IsBurnsideRingElement ],
+    function( a )
+      local A,
+            G,
+            ccs_list,
+            C,
+            n;
+
+      A := FamilyObj( a )!.burnsideRing;
+
+      ccs_list := ShallowCopy( a!.ccsList );
+      C := One( A )!.ccsList[ 1 ];
+      n := Position( ccs_list, C );
+      if not ( n = fail ) then
+        Remove( ccs_list, n );
+      fi;
+
+      return MaximalElements( ccs_list );
+    end
+  );
+
+
 ##  Part 2: Burnside ring
 
 #############################################################################

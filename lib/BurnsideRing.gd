@@ -131,6 +131,12 @@
 ##
   DeclareOperation( "ToSparseList", [ IsBurnsideRingElement ] );
 
+#############################################################################
+##
+#O  MaximalOrbitTypes( <a> )
+##
+  DeclareOperation( "MaximalOrbitTypes", [ IsBurnsideRingElement ] );
+  
 
 ##  Part 2: Brunside Ring
 

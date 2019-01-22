@@ -107,7 +107,7 @@
 
 #############################################################################
 ##
-#A  MaximalOrbitTypes( <chi> )
+#O  MaximalOrbitTypes( <chi> )
 ##
 ##  <#GAPDoc Label="MaximalOrbitTypes">
 ##  <ManSection>
@@ -119,7 +119,7 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareAttribute( "MaximalOrbitTypes", IsCharacter );
+  DeclareOperation( "MaximalOrbitTypes", [ IsCharacter ] );
 
 
 ##  What follows are not needed now

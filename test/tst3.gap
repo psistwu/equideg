@@ -24,3 +24,4 @@
   # O(2) x S_4
   G := DirectProduct( o2, s4 );
   CCSs_G := ConjugacyClassesSubgroups( G );
+  bdeg := BasicDegree( Irr( G )[ -1, 2 ] );

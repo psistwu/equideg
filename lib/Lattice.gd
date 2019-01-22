@@ -210,6 +210,12 @@
 
 #############################################################################
 ##
+#O  MaximalElements( list )
+##
+  DeclareOperation( "MaximalElements", [ IsList ] );
+
+#############################################################################
+##
 #A  MinimalSupElementsLattice( <lat> )	(not yet implemented)
 ##
 ##  <#GAPDoc Label="MinimalSupElementsLattice">
