@@ -367,7 +367,7 @@
           poset := CCSs,
           node_labels := [ 1 .. Size( CCSs ) ],
           node_shapes := node_shape_list,
-          rank_type := "Order",
+          rank_label := "Order",
           ranks := rank_list,
           is_rank_reversed := true,
           group := G

@@ -120,7 +120,7 @@
           poset := orbt_list,
           node_labels := node_label_list,
           node_shapes := node_shape_list,
-          rank_type := "Dim(Fixed Set)",
+          rank_label := "Dim(Fixed Set)",
           ranks := rank_list,
           is_rank_reversed := false,
           group := G

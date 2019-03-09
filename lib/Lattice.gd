@@ -15,54 +15,41 @@
 
 #############################################################################
 ##
-#O  IsPSortedListBy( <list>, <func> )
-##
-##  <#GAPDoc Label="IsPSortedListBy">
-##  <ManSection>
-##  <Oper Name="IsPSortedListBy" Arg="list, func"/>
-##  <Description>
-##    checks whether <A>list</A> is a sorted
-##    with respect to partial order <A>func</A>.
-##  </Description>
-##  </ManSection>
-##  <#/GAPDoc>
-##
-  DeclareOperation( "IsPSortedListBy", [ IsHomogeneousList, IsFunction ] );
-
-#############################################################################
-##
-#P  IsPSortedList( <list> )
+#O  IsPSortedList( <list>[, <func>] )
 ##
 ##  <#GAPDoc Label="IsPSortedList">
 ##  <ManSection>
-##  <Prop Name="IsPSortedList" Arg="list"/>
+##  <Oper Name="IsPSortedList" Arg="list[, func]"/>
 ##  <Description>
-##    checks whether <A>list</A> is a sorted
-##    with respect to partial order <C>&bslash;&lt;</C>.
+##    checks whether <A>list</A> is sorted
+##    with respect to partial order <A>func</A>
+##    (or <C>&bslash;&lt;</C> if <A>func</A>
+##    is not given).
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareProperty( "IsPSortedList", IsHomogeneousList );
+  DeclareOperation( "IsPSortedList", [ IsHomogeneousList ] );
 
 #############################################################################
 ##
-#P  IsPoset( <list> )
+#O  IsPoset( <list> )
 ##
 ##  <#GAPDoc Label="IsPoset">
 ##  <ManSection>
-##  <Prop Name="IsPoset" Arg="list"/>
+##  <Oper Name="IsPoset" Arg="list[, func]"/>
 ##  <Description>
 ##    checks whether <A>list</A> is a poset, i.e.,
-##    a non-repeating homogeneous list sorted
-##    with respect to partial order <C>&bslash;&lt;</C>.
+##    a non-repeating sorted homogeneous list,
+##    with respect to partial order <A>func</A>
+##    (or <C>&bslash;&lt;</C> if <A>func</A> is not given).
 ##    In other words, it is a synonym for
 ##    <C>IsPSortedList and IsDuplicateFree</C>.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareProperty( "IsPoset", IsHomogeneousList );
+  DeclareOperation( "IsPoset", [ IsHomogeneousList ] );
 
 #############################################################################
 ##
@@ -72,8 +59,8 @@
 ##  <ManSection>
 ##  <Oper Name="PSort" Arg="list[, func]"/>
 ##  <Description>
-##    sorts <A>list</A> with respect to partial order <A>func</A>,
-##    or <C>&bslash;&lt;</C> if <A>func</A> is not given.
+##    sorts <A>list</A> with respect to partial order <A>func</A>
+##    (or <C>&bslash;&lt;</C> if <A>func</A> is not given).
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
@@ -90,8 +77,8 @@
 ##  <Description>
 ##    returns a shallow copy of <A>list</A>
 ##    which is sorted
-##    with respect to partial order <A>func</A>,
-##    or <C>&bslash;&lt;</C> if <A>func</A> is not given.
+##    with respect to partial order <A>func</A>
+##    (or <C>&bslash;&lt;</C> if <A>func</A> is not given).
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
@@ -110,7 +97,7 @@
 ##  <Filt Name="IsLatticeRep" Type="representation"/>
 ##  <Description>
 ##    This is a lattice representation of a poset,
-##    which allows visualizing its hierarchy structure.
+##    which allows visualization of its hierarchy structure.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
@@ -144,7 +131,7 @@
 ##      A list of node shapes for elements in the poset.
 ##      The order of the list corresponds to that of <C>poset</C>.
 ##    </Item>
-##    <Mark><C>rank_type</C></Mark>
+##    <Mark><C>rank_label</C></Mark>
 ##    <Item>
 ##      A string indicating the type of the rank of the lattice.
 ##      For example, for a CCS lattice of a group,
@@ -169,26 +156,24 @@
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
-  DeclareConstructor(
-    "NewLattice",
-    [ IsLatticeRep,
-      IsRecord ]
-  );
+# DeclareConstructor( "NewLattice", [ IsLatticeRep, IsRecord ] );
+  DeclareGlobalFunction( "NewLattice", "constructor of Lattice" );
+  DeclareAttribute
 
 #############################################################################
 ##
-#A  Poset( <lat> )
+#A  UnderlyingPoset( <lat> )
 ##
-##  <#GAPDoc Label="Poset">
+##  <#GAPDoc Label="UnderlyingPoset">
 ##  <ManSection>
-##  <Attr Name="Poset" Arg="lat"/>
+##  <Attr Name="UnderlyingPoset" Arg="lat"/>
 ##  <Description>
 ##    returns the underlying poset of <A>lat</A>.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareAttribute( "Poset", IsLatticeRep );
+  DeclareAttribute( "UnderlyingPoset", IsLatticeRep );
 
 #############################################################################
 ##

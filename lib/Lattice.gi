@@ -12,9 +12,9 @@
 
 #############################################################################
 ##
-#O  IsPSortedListBy( <list>, <func> )
+#O  IsPSortedList( <list>, <func> )
 ##
-  InstallMethod( IsPSortedListBy,
+  InstallOtherMethod( IsPSortedList,
     "check whether <list> is sorted with respect to partial order <func>",
     [ IsHomogeneousList, IsFunction ],
     function( list, func )
@@ -32,22 +32,32 @@
 
 #############################################################################
 ##
-#P  IsPSortedList( <list> )
+#O  IsPSortedList( <list> )
 ##
   InstallMethod( IsPSortedList,
-    "checks whether <list> is sorted with respect to partial order \<",
+    "checks whether <list> is sorted with respect to \<",
     [ IsHomogeneousList ],
-    list -> IsPSortedListBy( list, \< )
+    list -> IsPSortedList( list, \< )
   );
 
 #############################################################################
 ##
-#P  IsPoset( <list> )
+#O  IsPoset( <list>, <func> )
+##
+  InstallOtherMethod( IsPoset,
+    "checks whether <list> is a poset with respect to partial order <func>",
+    [ IsHomogeneousList, IsFunction ],
+    { list, func } -> IsPSortedList( list, func ) and IsDuplicateFree( list )
+  );
+
+#############################################################################
+##
+#O  IsPoset( <list> )
 ##
   InstallMethod( IsPoset,
-    "checks whether <list> is a poset with respect to partial order \<",
+    "checks whether <list> is a poset with respect to \<",
     [ IsHomogeneousList ],
-    list -> IsPSortedList( list ) and IsDuplicateFree( list )
+    list -> IsPoset( list, \< )
   );
 
 #############################################################################
@@ -102,7 +112,7 @@
         list{ [ 1 .. Size( list ) ] } := slist;
       else
         Info( InfoEquiDeg, INFO_LEVEL_EquiDeg,
-            "The given list and the relation do not represent a poset." );
+            "( <list>, <lt> ) do not form a poset." );
         return fail;
       fi;
     end
@@ -128,7 +138,12 @@
     "returns a shallow copy of <list> sorted with respect to partial order <func>",
     [ IsHomogeneousList, IsFunction ],
     function( list, func )
-      return PSort( ShallowCopy( list ), func );
+      local tmp;
+
+      tmp := ShallowCopy( list );
+      PSort( tmp, func );
+
+      return tmp;
     end
   );
 
@@ -139,9 +154,7 @@
   InstallMethod( PSortedList,
     "returns a shallow copy of <list> sorted with respect to partial order \<",
     [ IsHomogeneousList ],
-    function( list )
-      return PSort( ShallowCopy( list ), \< );
-    end
+    list -> PSortedList( list, \< )
   );
 
 
@@ -151,13 +164,17 @@
 ##
 #U  NewLattice( <filter>, <r> )
 ##
-  InstallMethod( NewLattice,
-    "constructing the lattice of a poset",
-    [ IsLatticeRep and IsLatticeCCSsRep and IsLatticeOrbitTypesRep,
-      IsRecord ],
+# InstallMethod( NewLattice,
+  InstallGlobalFunction( NewLattice,
     function( filter, r )
-      local n,		# the size of the poset
-            lat;	# the lattice
+      local n;		# the size of the poset
+
+      # check input arguments
+      if not IsFilter( filter ) then
+        Error( "The first argument should be a filter." );
+      elif not IsRecord( r ) then
+        Error( "The second argument should be a record." );
+      fi;
 
       # check the components in <r>
       if not IsPoset( r.poset ) then
@@ -176,8 +193,8 @@
         Error( "<r.node_shapes> must be a list having the same size as <r.poset>." );
       fi;
 
-      if not IsString( r.rank_type ) then
-        Error( "<r.rank_type> must be a string." );
+      if not IsString( r.rank_label ) then
+        Error( "<r.rank_label> must be a string." );
       fi;
 
       if not ( IsHomogeneousList( r.ranks ) and
@@ -190,12 +207,7 @@
       fi;
 
       # generate the lattice object
-      lat := Objectify(
-        NewType( FamilyObj( r.poset ), IsCollection and filter ),
-        r
-      );
-
-      return lat;
+      return Objectify( NewType( FamilyObj( r.poset ), filter ), r );
     end
   );
 
@@ -203,9 +215,10 @@
 ##
 #A  Poset( <lat> )
 ##
-  InstallMethod( Poset,
-    "returns poset of a lattice",
-    [ IsLatticeRep ],
+  InstallImmediateMethod( UnderlyingPoset,
+    "returns underlying poset of a lattice",
+    IsLatticeRep,
+    0,
     lat -> lat!.poset
   );
 
@@ -223,7 +236,7 @@
             maxsub_list;	# return value
 
       # extract the sorted list
-      poset := Poset( lat );
+      poset := UnderlyingPoset( lat );
 
       # initialize maxsub_list;
       maxsub_list := [ ];
@@ -253,7 +266,7 @@
 
 #############################################################################
 ##
-#O  MaximalElements( list )
+#O  MaximalElements( <list> )
 ##
   InstallMethod( MaximalElements,
     "",
@@ -329,7 +342,7 @@
         legend_list := Set( lat!.ranks );
       fi;
       AppendTo( outstream,
-          "\"rt\" [label=\"", lat!.rank_type, "\", color=white];\n");
+          "\"rt\" [label=\"", lat!.rank_label, "\", color=white];\n");
       AppendTo( outstream, "\"rt\" -> ");
       for i in [ 1 .. Size( legend_list ) ] do
         rank := String( legend_list[ i ] );
@@ -343,7 +356,7 @@
       od;
 
       # put nodes of elements
-      for i in [ 1 .. Size( Poset( lat ) ) ] do
+      for i in [ 1 .. Size( UnderlyingPoset( lat ) ) ] do
         node_label := lat!.node_labels[ i ];
         node_shape := lat!.node_shapes[ i ];
         AppendTo( outstream,

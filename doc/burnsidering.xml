@@ -8,20 +8,10 @@
 
 <Chapter Label="ch:burnsidering"><Heading>Burnside Ring</Heading>
 <Section><Heading>Burnside Ring Elements</Heading>
-<#Include Label="IsBurnsideRingElement">
-<#Include Label="IsBurnsideRingBySmallGroupElementRep">
-<#Include Label="Length">
-<#Include Label="ToDenseList">
-<#Include Label="ToSparseList">
 </Section>
 <Section><Heading>Burnside Ring</Heading>
-<#Include Label="IsBurnsideRing">
-<#Include Label="IsBurnsideRingBySmallGroupRep">
-<#Include Label="NewBurnsideRing">
-<#Include Label="BurnsideRing">
 </Section>
 <Section><Heading>Other Aspects</Heading>
-<#Include Label="BasicDegree">
 </Section>
 </Chapter>
 
