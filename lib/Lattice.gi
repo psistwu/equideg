@@ -35,7 +35,7 @@
 #O  IsPSortedList( <list> )
 ##
   InstallMethod( IsPSortedList,
-    "checks whether <list> is sorted with respect to \<",
+    "checks whether <list> is sorted with respect to \\<",
     [ IsHomogeneousList ],
     list -> IsPSortedList( list, \< )
   );
@@ -55,7 +55,7 @@
 #O  IsPoset( <list> )
 ##
   InstallMethod( IsPoset,
-    "checks whether <list> is a poset with respect to \<",
+    "checks whether <list> is a poset with respect to \\<",
     [ IsHomogeneousList ],
     list -> IsPoset( list, \< )
   );
@@ -123,7 +123,7 @@
 #O  PSort( <list> )
 ##
   InstallMethod( PSort,
-    "sorts <list> with respect to partial order \<",
+    "sorts <list> with respect to \\<",
     [ IsHomogeneousList and IsMutable ],
     function( list )
       PSort( list, \< );
@@ -152,9 +152,71 @@
 #O  PSortedList( <list> )
 ##
   InstallMethod( PSortedList,
-    "returns a shallow copy of <list> sorted with respect to partial order \<",
+    "returns a shallow copy of <list> sorted with respect to partial order \\<",
     [ IsHomogeneousList ],
     list -> PSortedList( list, \< )
+  );
+
+#############################################################################
+##
+#O  MaximalElements( <list>, <func> )
+##
+  InstallOtherMethod( MaximalElements,
+    "returns the list of maximal elements in <list> with respect to partial order <func>",
+    [ IsList, IsFunction ],
+    function( list, func )
+      local flag,
+            i, j,
+            list2,
+            a, b;
+
+      # duplicate <list>
+      list2 := ShallowCopy( list );
+
+      i := 1;
+      while ( i <= Length( list2 ) ) do
+        a := list2[ i ];
+        # assume <a> is a maximal element
+        flag := true;
+
+        j := 1;
+        # compare to other elements in <list2>
+        while ( j <= Length( list2 ) ) do
+          b := list2[ j ];
+          if ( a = b ) then
+            j := j + 1;
+            continue;
+          elif func( a, b ) then
+            # remove <a> from <list2> if <a> is less than <b>
+            Remove( list2, i );
+            flag := false;
+            break;
+          elif func( b, a ) then
+            # remove <b> from <list2> if <b> is less then <a>
+            Remove( list2, j );
+          else
+            # keep both <a> and <b> if they are not comparable
+            j := j + 1;
+          fi;
+        od;
+
+        if flag then
+          i := i + 1;
+        fi;
+      od;
+
+      return list2;
+    end
+  );
+
+#############################################################################
+##
+#O  MaximalElements( <list> )
+##
+  InstallOtherMethod( MaximalElements,
+    "returns the list of maximal elements in <list> with respect to \\<",
+    [ IsList ],
+    list -> MaximalElements( list, \< )
   );
 
 
@@ -213,7 +275,17 @@
 
 #############################################################################
 ##
-#A  Poset( <lat> )
+#A  ViewString( <lat> )
+##
+  InstallMethod( ViewString,
+    "view string of lattice",
+    [ IsLatticeRep ],
+    lat -> "<lattice>"
+  );
+
+#############################################################################
+##
+#A  UnderlyingPoset( <lat> )
 ##
   InstallImmediateMethod( UnderlyingPoset,
     "returns underlying poset of a lattice",
@@ -261,52 +333,6 @@
       od;
 
       return maxsub_list;
-    end
-  );
-
-#############################################################################
-##
-#O  MaximalElements( <list> )
-##
-  InstallMethod( MaximalElements,
-    "",
-    [ IsList ],
-    function( list )
-      local flag,
-            i, j,
-            list2,
-            a, b;
-
-      i := 1;
-      list2 := ShallowCopy( list );
-
-      while ( i <= Length( list2 ) ) do
-        a := list2[ i ];
-        j := 1;
-        flag := true;
-
-        while ( j <= Length( list2 ) ) do
-          b := list2[ j ];
-          if ( a = b ) then
-            j := j + 1;
-            continue;
-          elif ( a < b ) then
-            Remove( list2, i );
-            flag := false;
-            break;
-          elif ( b < a ) then
-            Remove( list2, j );
-          else
-            j := j + 1;
-          fi;
-        od;
-
-        if flag then
-          i := i + 1;
-        fi;
-      od;
-
-      return list2;
     end
   );
 

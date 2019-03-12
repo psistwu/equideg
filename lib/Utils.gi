@@ -25,7 +25,7 @@
 ##
   InstallMethod( DisplayString,
     "delegates to attribute Detail",
-    [ IsObject and HasAbbrv ],
+    [ IsObject and HasDetail ],
     100,
     obj -> Detail( obj )
   );

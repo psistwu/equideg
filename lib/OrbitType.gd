@@ -21,7 +21,7 @@
 ##  <ManSection>
 ##  <Filt Name="IsLatticeOrbitTypesRep" Type="representation"/>
 ##  <Description>
-##    This is a representation of lattice of orbit types.
+##    This is the representation of lattice of orbit types.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
@@ -67,23 +67,32 @@
 
 #############################################################################
 ##
+#F  NewLatticeOrbitTypes( <chi> )
+##
+##  <#GAPDoc Label="NewLatticeOrbitTypes">
+##  <ManSection>
+##  <Func Name="NewLatticeOrbitTypes" Arg="chi"/>
+##  <Description>
+##    This is the general constructor of lattice of orbit types.
+##    The underlying group of character <A>chi</A>
+##    need not to be finite.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##  
+  DeclareGlobalFunction( "NewLatticeOrbitTypes",
+      "constructor of lattice of orbit types" );
+
+#############################################################################
+##
 #A  LatticeOrbitTypes( <chi> )
 ##
 ##  <#GAPDoc Label="LatticeOrbitTypes">
 ##  <ManSection>
 ##  <Attr Name="LatticeOrbitTypes" Arg="chi"/>
 ##  <Description>
-##    This attribute contains the lattice of orbit types for
-##    character <A>chi</A>.
-##    Its return object <C>lat</C>
-##    admits attributes <C>Character</C>
-##    and <Ref Attr="OrbitTypes"/> for
-##    retriving underlying character and orbit types,
-##    respectively.
-##    In addition, one can call <Ref Oper="DotFileLattice"/>
-##    on <C>lat</C> to export <C>.dot</C> files,
-##    which can be later converted
-##    into <C>.eps</C> or <C>.pdf</C> files.
+##    This attribute contains the lattice of orbit types associated to
+##    finite group character <A>chi</A>.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
@@ -93,15 +102,6 @@
 #############################################################################
 ##
 #A  Character( <lat> )
-##
-##  <#GAPDoc Label="Character">
-##  <ManSection>
-##  <Attr Name="Character" Arg="lat"/>
-##  <Description>
-##    returns the underlying character of <A>lat</A>.
-##  </Description>
-##  </ManSection>
-##  <#/GAPDoc>
 ##
   DeclareAttribute( "Character", IsLatticeOrbitTypesRep );
 

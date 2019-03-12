@@ -9,7 +9,8 @@
 <Chapter Label="ch:directproduct"><Heading>Direct Product</Heading>
 <Section><Heading>Dirct Product of two finite groups</Heading>
 </Section>
-<Section><Heading>Dirct Product of two finite groups</Heading>
+<Section Label="sec:directproduct2">
+<Heading>Dirct Product of an elementary compact Lie group and a finite group</Heading>
 </Section>
 </Chapter>
 

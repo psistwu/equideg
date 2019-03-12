@@ -7,10 +7,16 @@
 <!-- %%									  -->
 
 <Chapter Label="ch:orbittype"><Heading>Orbit Type</Heading>
+This part of library contains functions dealing with orbit types
+associated to finite groups. Some of these functions may have
+their generalizations to compact Lie groups.
+Please check Chapter <Ref Chap="ch:compactliegroup"/> and Section
+<Ref Sect="sec:directproduct2"/>.
 <Section><Heading>Orbit Type</Heading>
 <#Include Label="IsLatticeOrbitTypesRep">
 <#Include Label="DimensionOfFixedSet">
 <#Include Label="OrbitTypes">
+<#Include Label="NewLatticeOrbitTypes">
 <#Include Label="LatticeOrbitTypes">
 <#Include Label="MaximalOrbitTypes">
 <!-- The following are not needed now

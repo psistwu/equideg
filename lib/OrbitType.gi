@@ -83,14 +83,11 @@
 
 #############################################################################
 ##
-#A  LatticeOrbitTypes( <chi> )
+#F  NewLatticeOrbitTypes( <chi> )
 ##
-  InstallMethod( LatticeOrbitTypes,
-    "return lattice of orbit types of the given character",
-    [ IsCharacter ],
+  InstallGlobalFunction( NewLatticeOrbitTypes,
     function( chi )
       local G,
-            ccs_list,
             orbt_list,
             orbt,
             node_label_list,
@@ -99,19 +96,14 @@
             lat;
 
       G := UnderlyingGroup( chi );
-      ccs_list := ConjugacyClassesSubgroups( G );
       orbt_list := OrbitTypes( chi );
 
       node_label_list := [ ];
       node_shape_list := [ ];
       rank_list := [ ];
       for orbt in orbt_list do
-        Add( node_label_list, Position( ccs_list, orbt ) );
-        if ( Size( orbt ) = 1 ) then
-          Add( node_shape_list, "square" );
-        else
-          Add( node_shape_list, "circle" );
-        fi;
+        Add( node_label_list, IdCCS( orbt ) );
+        Add( node_shape_list, "circle" );
         Add( rank_list, DimensionOfFixedSet( chi, orbt ) );
       od;
 
@@ -131,6 +123,17 @@
 
       return lat;
     end
+  );
+
+
+#############################################################################
+##
+#A  LatticeOrbitTypes( <chi> )
+##
+  InstallMethod( LatticeOrbitTypes,
+    "lattice of orbit types of finite group character <chi>",
+    [ IsCharacter ],
+    chi -> NewLatticeOrbitTypes( chi )
   );
 
 #############################################################################

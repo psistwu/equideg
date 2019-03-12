@@ -17,7 +17,7 @@ We will explain basic math procedures in this package.
 <Section><Heading>Lattice</Heading>
 <#Include Label="IsLatticeRep">
 <#Include Label="NewLattice">
-<#Include Label="Poset">
+<#Include Label="UnderlyingPoset">
 <#Include Label="MaximalSubElementsLattice">
 <#Include Label="DotFileLattice">
 </Section>

@@ -1363,7 +1363,6 @@
 ##
 #O  DimensionOfFixedSet( <chi>, <C> );
 ##
-
   # for CCS of SO(2)
   InstallMethod( DimensionOfFixedSet,
     "returns dimension of fixed set of a CCS",
@@ -1451,7 +1450,6 @@
     end
   );
 
-
 #############################################################################
 ##
 #A  OrbitTypes( <chi> )
@@ -1509,6 +1507,16 @@
         return [ CCSs[ l, 1 ], CCSs[ l, 2 ], CCSs[ 0, 2 ] ];
       fi;
     end
+  );
+
+#############################################################################
+##
+#A  LatticeOrbitTypes( <chi> )
+##
+  InstallMethod( LatticeOrbitTypes,
+    "lattice of orbit types associated to compact Lie group character <chi>",
+    [ IsCompactLieGroupCharacter ],
+    chi -> NewLatticeOrbitTypes( chi )
   );
 
 

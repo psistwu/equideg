@@ -305,6 +305,12 @@
 ##
   DeclareAttribute( "OrbitTypes", IsCompactLieGroupCharacter );
 
+#############################################################################
+##
+#A  LatticeOrbitTypes( <chi> )
+##
+  DeclareAttribute( "LatticeOrbitTypes", IsCompactLieGroupCharacter );
+
 
 #############################################################################
 ##

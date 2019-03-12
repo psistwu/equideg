@@ -85,6 +85,23 @@
 ##
   DeclareOperation( "PSortedList", [ IsHomogeneousList ] );
 
+#############################################################################
+##
+#O  MaximalElements( <list>[, <func>] )
+##
+##  <#GAPDoc Label="MaximalElements">
+##  <ManSection>
+##  <Oper Name="MaximalElements" Arg="list[, func]"/>
+##  <Description>
+##    returns the list of maximal elements in <A>list</A>
+##    with respect to partial order <A>func</A>
+##    (or <C>&bslash;&lt;</C> if <A>func</A> is not given).
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+  DeclareOperation( "MaximalElements", [ IsList ] );
+
 
 ##  Part 2: Lattice
 
@@ -158,7 +175,6 @@
 ##  <#/GAPDoc>
 # DeclareConstructor( "NewLattice", [ IsLatticeRep, IsRecord ] );
   DeclareGlobalFunction( "NewLattice", "constructor of Lattice" );
-  DeclareAttribute
 
 #############################################################################
 ##
@@ -192,12 +208,6 @@
 ##
   DeclareAttribute( "MaximalSubElementsLattice",
       IsCollection and IsLatticeRep );
-
-#############################################################################
-##
-#O  MaximalElements( list )
-##
-  DeclareOperation( "MaximalElements", [ IsList ] );
 
 #############################################################################
 ##
