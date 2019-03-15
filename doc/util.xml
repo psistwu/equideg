@@ -1,12 +1,15 @@
 <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
 <!-- %%									  -->
-<!-- %W  utils.xml	GAP Package `EquiDeg'			Haopin Wu -->
+<!-- %W  util.xml	GAP Package `EquiDeg'			Haopin Wu -->
 <!-- %%									  -->
-<!-- %Y  Copyright (C) 2017-2018, Haopin Wu				  -->
-<!-- %Y  Department of Mathematics, National Tsing Hua University, Taiwan -->
+<!-- %Y  Copyright (C) 2017-2019, Haopin Wu				  -->
+<!-- %Y  Department of Mathematics,					  -->
+<!-- %Y  National Tsing Hua University, Taiwan				  -->
+<!-- %Y  Department of Mathematical Sciences,				  -->
+<!-- %Y  the University of Texas at Dallas, USA				  -->
 <!-- %%									  -->
 
-<Appendix><Heading>Utilities</Heading>
+<Appendix Label="app:util"><Heading>Utilities</Heading>
 Here, we list utilities which are used throughout the package.
 <Section><Heading>EquiDeg Info Class</Heading>
 <#Include Label="INFO_LEVEL_EquiDeg">
@@ -21,4 +24,4 @@ Here, we list utilities which are used throughout the package.
 
 <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
 <!-- %%									  -->
-<!-- %E  utils.xml . . . . . . . . . . . . . . . . . . . . . .  ends here -->
+<!-- %E  util.xml . . . . . . . . . . . . . . . . . . . . . . . ends here -->

@@ -224,12 +224,11 @@
 
 #############################################################################
 ##
-#U  NewLattice( <filter>, <r> )
+#F  NewLattice( <filter>, <r> )
 ##
-# InstallMethod( NewLattice,
   InstallGlobalFunction( NewLattice,
     function( filter, r )
-      local n;		# the size of the poset
+      local n;		# size of the poset
 
       # check input arguments
       if not IsFilter( filter ) then
@@ -245,14 +244,16 @@
 
       n := Size( r.poset );
 
-      if not ( IsHomogeneousList( r.node_labels ) and
-          Size( r.node_labels ) = n ) then
-        Error( "<r.node_labels> must be a list having the same size as <r.poset>." );
+      if not IsHomogeneousList( r.node_labels ) then
+        Error( "<r.node_labels> must be a list." );
+      elif not ( Size( r.node_labels ) = n ) then
+        Error( "<r.node_labels> and <r.poset> must be of the same size." );
       fi;
 
-      if not ( IsHomogeneousList( r.node_shapes ) and
-          Size( r.node_shapes ) = n ) then
-        Error( "<r.node_shapes> must be a list having the same size as <r.poset>." );
+      if not IsHomogeneousList( r.node_shapes ) then
+        Error( "<r.node_shapes> must be a list." );
+      elif not ( Size( r.node_shapes ) = n ) then
+        Error( "<r.node_shapes> and <r.poset> must be of the same size." );
       fi;
 
       if not IsString( r.rank_label ) then
@@ -265,7 +266,7 @@
       fi;
 
       if not IsBool( r.is_rank_reversed ) then
-        Error( "<r.is_rank_reversed> must take true/false value." );
+        Error( "<r.is_rank_reversed> must be true or false." );
       fi;
 
       # generate the lattice object
@@ -275,10 +276,10 @@
 
 #############################################################################
 ##
-#A  ViewString( <lat> )
+#A  String( <lat> )
 ##
-  InstallMethod( ViewString,
-    "view string of lattice",
+  InstallMethod( String,
+    "string of lattice",
     [ IsLatticeRep ],
     lat -> "<lattice>"
   );

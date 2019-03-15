@@ -4,6 +4,7 @@
 ##
 #Y  Copyright (C) 2017-2019, Haopin Wu
 #Y  Department of Mathematics, National Tsing Hua University, Taiwan
+#Y  Department of Mathematical Sciences, the University of Texas at Dallas, USA
 ##
 ##  This file contains declarations for procedures related to
 ##  compact Lie group.
@@ -20,6 +21,8 @@
 ##  <Filt Name="IsCompcatLieGroup" Type="category"/>
 ##  <Description>
 ##    This is the category of (infinite) compact Lie group.
+##    Objects in this Category admits the following <E>attribtues</E>
+##    and <E>properties</E>.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
@@ -28,33 +31,19 @@
 
 #############################################################################
 ##
-#U  NewCompactLieGroup( IsCompactLieGroup, <r> )
+#U  NewCompactLieGroup( filter, <r> )
 ##
 ##  <#GAPDoc Label="NewCompactLieGroup">
 ##  <ManSection>
-##  <Constr Name="NewCompactLieGroup"
-##      Arg="IsCompactLieGroupRep, r"/>
+##  <Constr Name="NewCompactLieGroup" Arg="IsCompactLieGroupRep, r"/>
 ##  <Description>
-##    This is the constructor of compact Lie group.
+##    This is the constructor of matrix compact Lie group.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
   DeclareConstructor( "NewCompactLieGroup",
       [ IsCompactLieGroup, IsRecord ] );
-
-#############################################################################
-##
-#A  DimensionOfCompactLieGroup
-##
-  DeclareAttribute( "DimensionOfCompactLieGroup", IsGroup );
-  DeclareAttribute( "Dimension", IsGroup );
-
-#############################################################################
-##
-#A  RankOfCompactLieGroup
-##
-  DeclareAttribute( "RankOfCompactLieGroup", IsCompactLieGroup );
 
 
 ##  Part 2: CCS of CLG
@@ -147,62 +136,7 @@
       [ IsCompactLieGroupConjugacyClassesSubgroupsRep ] );
 
 
-##  Part 3: Elementary Compact Lie Group (ECLG)
-
-#############################################################################
-##
-#C  IsOrthogonalGroupOverReal
-##
-  DeclareCategory( "IsOrthogonalGroupOverReal",
-      IsCompactLieGroup and IsMatrixGroup );
-
-#############################################################################
-##
-#F  OrthogonalGroupOverReal( <n> )
-##
-  DeclareGlobalFunction( "OrthogonalGroupOverReal", "returns O(n,R)" );
-
-#############################################################################
-##
-#C  IsSpecialOrthogonalGroupOverReal
-##
-  DeclareCategory( "IsSpecialOrthogonalGroupOverReal",
-      IsCompactLieGroup and IsMatrixGroup );
-
-#############################################################################
-##
-#F  SpecialOrthogonalGroupOverReal( <n> )
-##
-  DeclareGlobalFunction( "SpecialOrthogonalGroupOverReal", "returns SO(n,R)" );
-
-#############################################################################
-##
-#F  ElementaryCompactLieGroupId( <id> )
-##
-  DeclareGlobalFunction( "ElementaryCompactLieGroupId",
-      "returns elementary compact Lie group by ID" );
-
-#############################################################################
-##
-#A  IdElementaryCompactLieGroup( <G> )
-##
-##  <#GAPDoc Label="IdElementaryCompactLieGroup">
-##  <ManSection>
-##  <Attr Name="IdElementaryCompactLieGroup" Arg="G"/>
-##  <Description>
-##    This attribute contains the ID of elementary compact Lie group
-##    <A>G</A>.
-##  </Description>
-##  </ManSection>
-##  <#/GAPDoc>
-##
-  DeclareAttribute( "IdElementaryCompactLieGroup", IsCompactLieGroup );
-
-
-##  Part 4: CCS of ECLG
-
-
-##  Part 5: Representation Theory of CLG
+##  Part 3: Representation Theory of CLG
 
 #############################################################################
 ##

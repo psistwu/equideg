@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#W  DirerctProduct2.gi	GAP Package `EquiDeg'			    Haopin Wu
+#W  DirectProductCLG.gi	GAP Package `EquiDeg'			    Haopin Wu
 ##
 #Y  Copyright (C) 2017-2019, Haopin Wu
 #Y  Department of Mathematics, National Tsing Hua University, Taiwan
@@ -9,7 +9,7 @@
 ##  direct product of compact Lie groups (including finite groups).
 ##
 
-##  Part 1: Direct Product of finite groups and compact Lie groups
+##  Part 1: Operators related to Direct Product
 
 #############################################################################
 ##
@@ -351,7 +351,7 @@
 
       # test if the first component is O(2)
       O2 := decomp[ 1 ];
-      if not ( IdElementaryCompactLieGroup( O2 ) = [ 2, 2 ] ) then
+      if not ( IdElementaryCLG( O2 ) = [ 2, 2 ] ) then
         TryNextMethod( );
       fi;
 
@@ -711,8 +711,8 @@
       G2 := decomp[ 2 ];
 
       # it works for <G1> = SO(2) or O(2)
-      if not HasIdElementaryCompactLieGroup( G1 ) or
-         not ( IdElementaryCompactLieGroup( G1 ) in [ [ 1, 2 ], [ 2, 2 ] ] ) then
+      if not HasIdElementaryCLG( G1 ) or
+         not ( IdElementaryCLG( G1 ) in [ [ 1, 2 ], [ 2, 2 ] ] ) then
         TryNextMethod( );
       fi;
 
@@ -874,4 +874,4 @@
 
 #############################################################################
 ##
-#E  DirectProduct2.gi . . . . . . . . . . . . . . . . . . . . . . . ends here
+#E  DirectProductCLG.gi . . . . . . . . . . . . . . . . . . . . . . ends here

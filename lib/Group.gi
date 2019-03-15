@@ -120,26 +120,27 @@
   );
 
 
-## Part 2: Group Theory
+## Part 2: conjugacy class of subgroups
 
 #############################################################################
 ##
 #A  IdCC( <c> )
 ##
   InstallMethod( IdCC,
-    "contains id of CC",
+    "id of CC <c> of a finite group",
     [ IsConjugacyClassGroupRep ],
     function( c )
       local G,
             CCs;
 
       G := ActingDomain( c );
-      if IsFinite( G ) then
-        CCs := ConjugacyClasses( G );
-        return Position( CCs, c );
-      else
+
+      if not IsFinite( G ) then
         TryNextMethod( );
       fi;
+
+      CCs := ConjugacyClasses( G );
+      return Position( CCs, c );
     end
   );
 
@@ -148,19 +149,20 @@
 #A  IdCCS( <C> )
 ##
   InstallMethod( IdCCS,
-    "contains id of CCS",
+    "id of CCS <C> of a finite group",
     [ IsConjugacyClassSubgroupsRep ],
     function( C )
       local G,
             CCSs;
 
       G := ActingDomain( C );
-      if IsFinite( G ) then
-        CCSs := ConjugacyClassesSubgroups( G );
-        return Position( CCSs, C );
-      else
+
+      if not IsFinite( G ) then
         TryNextMethod( );
       fi;
+
+      CCSs := ConjugacyClassesSubgroups( G );
+      return Position( CCSs, C );
     end
   );
 
@@ -417,6 +419,28 @@
     end
   );
 
+
+##  Part 3: Character and Representation Theory
+
+#############################################################################
+##
+#A  IdIrr( <chi> )
+##
+  InstallMethod( IdIrr,
+    "id of a finite group irreducible representation",
+    [ IsIrreducibleCharacter ],
+    function( chi )
+      local G;
+
+      if not IsFinite( G ) then
+        TryNextMethod( );
+      fi;
+
+      G := UnderlyingGroup( chi );
+      return Position( Irr( chi ), chi );
+    end
+  );
+
 #############################################################################
 ##
 #O  ImageElm( <chi>, <e> )
@@ -440,6 +464,49 @@
       n := PositionProperty( ConjugacyClasses( tbl ), c -> e in c );
       return ValuesOfClassFunction( chi )[ n ];
     end
+  );
+
+
+##  Part 4: Concepts Related to Compact Lie Group
+
+#############################################################################
+##
+#A  Dimension( <G> )
+#A  DimensionOfCompactLieGroup( <G> )
+##
+  InstallImmediateMethod( DimensionOfCompactLieGroup,
+    "dimension of finite group <G>",
+    IsGroup and IsFinite,
+    0,
+    G -> 0
+  );
+
+  InstallImmediateMethod( Dimension,
+    "dimension of finite group <G>",
+    IsGroup and IsFinite,
+    0,
+    G -> 0
+  );
+
+#############################################################################
+##
+#A  RankOfCompactLieGroup( <G> )
+##
+  InstallImmediateMethod( RankOfCompactLieGroup,
+    "rank of finite group <G>",
+    IsGroup and IsFinite,
+    0,
+    G -> 0
+  );
+
+#############################################################################
+##
+#O  Rank( <G> )
+##
+  InstallOtherMethod( Rank,
+    "rank of finite group <G>",
+    [ IsGroup and IsFinite ],
+    G -> 0
   );
 
 

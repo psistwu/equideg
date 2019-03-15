@@ -1,6 +1,6 @@
 <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
 <!-- %%									  -->
-<!-- %W  group.xml		GAP Package `EquiDeg'		Haopin Wu -->
+<!-- %W  directProduct.xml	GAP Package `EquiDeg'		Haopin Wu -->
 <!-- %%									  -->
 <!-- %Y  Copyright (C) 2017-2019, Haopin Wu				  -->
 <!-- %Y  Department of Mathematics,					  -->
@@ -9,22 +9,17 @@
 <!-- %Y  the University of Texas at Dallas, USA				  -->
 <!-- %%									  -->
 
-<Chapter Label="ch:group"><Heading>Group</Heading>
-<Section><Heading>Basic Groups</Heading>
-<#Include Label="pCyclicGroup">
-<#Include Label="mCyclicGroup">
-<#Include Label="pDihedralGroup">
-<#Include Label="mDihedralGroup">
+<Chapter Label="ch:directProduct"><Heading>Direct Product</Heading>
+<Section Label="sec:directProduct1">
+<Heading>Dirct Product of Two Finite Groups</Heading>
 </Section>
-<Section><Heading>Group Theory</Heading>
-<#Include Label="LessThan">
-<#Include Label="OrderOfWeylGroup">
-<#Include Label="nLHnumber">
-<#Include Label="LatticeCCSs">
+<Section Label="sec:directProduct2">
+<Heading>Dirct Product of an Elementary Compact Lie Group and
+    a Finite Group</Heading>
 </Section>
 </Chapter>
 
 
 <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
 <!-- %%									  -->
-<!-- %E  group.xml . . . . . . . . . . . . . . . . . . . . . .  ends here -->
+<!-- %E  directProduct.xml . . . . . . . . . . . . . . . . . .  ends here -->

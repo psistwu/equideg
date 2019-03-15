@@ -82,7 +82,7 @@
       "generates a dihedral group which consists of 2-by-2 matices." );
 
 
-## Part 2: Group Theory
+## Part 2: conjugacy class of subgroups
 
 #############################################################################
 ##
@@ -105,7 +105,7 @@
 
 #############################################################################
 ##
-#O  ConjugacyClassSubgroups( <H> )
+#O  ConjugacyClassSubgroups( <U> )
 ##
 ##  <#GAPDoc Label="ConjugacyClassSubgroups">
 ##  <ManSection>
@@ -226,14 +226,13 @@
   DeclareAttribute( "ConjugacyClassesSubgroups", IsLatticeCCSsRep );
 
 
-##  Character and Representation Theory
+##  Part 3: Character and Representation Theory
 
 #############################################################################
 ##
 #A  IdIrr( <chi> )
 ##
-  DeclareAttribute( "IdIrr", IsCharacter );
-
+  DeclareAttribute( "IdIrr", IsIrreducibleCharacter );
 
 #############################################################################
 ##
@@ -241,6 +240,24 @@
 ##
   DeclareOperation( "ImageElm",
       [ IsClassFunction, IsMultiplicativeElementWithInverse ] );
+
+
+##  Part 4: Concepts Related to Compact Lie Group
+
+#############################################################################
+##
+#A  Dimension( <G> )
+#A  DimensionOfCompactLieGroup( <G> )
+##
+  DeclareAttribute( "Dimension", IsGroup );
+  DeclareAttribute( "DimensionOfCompactLieGroup", IsGroup );
+
+#############################################################################
+##
+#A  RankOfCompactLieGroup( <G> )
+#O  Rank( <G> )
+##
+  DeclareAttribute( "RankOfCompactLieGroup", IsGroup );
 
 
 #############################################################################

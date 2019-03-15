@@ -2,8 +2,11 @@
 <!-- %%									  -->
 <!-- %W  lattice.xml		GAP Package `EquiDeg'		Haopin Wu -->
 <!-- %%									  -->
-<!-- %Y  Copyright (C) 2017-2018, Haopin Wu				  -->
-<!-- %Y  Department of Mathematics, National Tsing Hua University, Taiwan -->
+<!-- %Y  Copyright (C) 2017-2019, Haopin Wu				  -->
+<!-- %Y  Department of Mathematics,					  -->
+<!-- %Y  National Tsing Hua University, Taiwan				  -->
+<!-- %Y  Department of Mathematical Sciences,				  -->
+<!-- %Y  the University of Texas at Dallas, USA				  -->
 <!-- %%									  -->
 
 <Chapter Label="ch:lattice"><Heading>Poset and Lattice</Heading>

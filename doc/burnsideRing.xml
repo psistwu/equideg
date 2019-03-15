@@ -1,6 +1,6 @@
 <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
 <!-- %%									  -->
-<!-- %W  group.xml		GAP Package `EquiDeg'		Haopin Wu -->
+<!-- %W  burnsideRing.xml	GAP Package `EquiDeg'		Haopin Wu -->
 <!-- %%									  -->
 <!-- %Y  Copyright (C) 2017-2019, Haopin Wu				  -->
 <!-- %Y  Department of Mathematics,					  -->
@@ -9,22 +9,16 @@
 <!-- %Y  the University of Texas at Dallas, USA				  -->
 <!-- %%									  -->
 
-<Chapter Label="ch:group"><Heading>Group</Heading>
-<Section><Heading>Basic Groups</Heading>
-<#Include Label="pCyclicGroup">
-<#Include Label="mCyclicGroup">
-<#Include Label="pDihedralGroup">
-<#Include Label="mDihedralGroup">
+<Chapter Label="ch:burnsideRing"><Heading>Burnside Ring</Heading>
+<Section><Heading>Burnside Ring Elements</Heading>
 </Section>
-<Section><Heading>Group Theory</Heading>
-<#Include Label="LessThan">
-<#Include Label="OrderOfWeylGroup">
-<#Include Label="nLHnumber">
-<#Include Label="LatticeCCSs">
+<Section><Heading>Burnside Ring</Heading>
+</Section>
+<Section><Heading>Other Aspects</Heading>
 </Section>
 </Chapter>
 
 
 <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
 <!-- %%									  -->
-<!-- %E  group.xml . . . . . . . . . . . . . . . . . . . . . .  ends here -->
+<!-- %E  burnsideRing.xml . . . . . . . . . . . . . . . . . . . ends here -->

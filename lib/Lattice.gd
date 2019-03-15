@@ -124,15 +124,14 @@
 
 #############################################################################
 ##
-#U  NewLattice( <filter>, <r> )
+#F  NewLattice( <filter>, <r> )
 ##
 ##  <#GAPDoc Label="NewLattice">
 ##  <ManSection>
-##  <Constr Name="NewLattice" Arg="IsLatticeRep, r"/>
+##  <Func Name="NewLattice" Arg="filter, r"/>
 ##  <Description>
-##    generates a poset with lattice representation.
-##    Record <A>r</A> must contain all necessary information for
-##    the lattice, including:
+##    generates the lattice representation of a poset.
+##    Record <A>r</A> must contain the following fields:
 ##    <List>
 ##    <Mark><C>poset</C></Mark>
 ##    <Item>
@@ -173,7 +172,6 @@
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
-# DeclareConstructor( "NewLattice", [ IsLatticeRep, IsRecord ] );
   DeclareGlobalFunction( "NewLattice", "constructor of Lattice" );
 
 #############################################################################
@@ -201,7 +199,7 @@
 ##  <Description>
 ##    For lattice <A>lat</A>, this attribute contains the
 ##    list of maximal sub-elements, which is described by
-##    indices corresponding to <A>lat!.poset</A>.
+##    indices corresponding to <C>UnderlyingPoset( <A>lat</A> )</C>.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>

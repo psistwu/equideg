@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#W  DirerctProduct1.gi	GAP Package `EquiDeg'			    Haopin Wu
+#W  DirerctProduct.gi	GAP Package `EquiDeg'			    Haopin Wu
 ##
 #Y  Copyright (C) 2017-2018, Haopin Wu
 #Y  Department of Mathematics, National Tsing Hua University, Taiwan
@@ -277,4 +277,4 @@
 
 #############################################################################
 ##
-#E  DirectProduct1.gi . . . . . . . . . . . . . . . . . . . . . . . ends here
+#E  DirectProduct.gi . . . . . . . . . . . . . . . . . . . . . . .  ends here

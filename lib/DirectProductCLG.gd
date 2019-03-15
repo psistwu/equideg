@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#W  DirectProduct2.gd	GAP Package `EquiDeg'			    Haopin Wu
+#W  DirectProductCLG.gd	GAP Package `EquiDeg'			    Haopin Wu
 ##
 #Y  Copyright (C) 2017-2018, Haopin Wu
 #Y  Department of Mathematics, National Tsing Hua University, Taiwan
@@ -9,11 +9,6 @@
 ##  of a finite group and an elementary compact Lie group (ECLG).
 ##
 
-  DeclareOperation( "nLHnumber2",
-    [ IsCompactLieGroupConjugacyClassSubgroupsRep and HasGoursatInfo,
-      IsCompactLieGroupConjugacyClassSubgroupsRep and HasGoursatInfo  ] );
-    
-
 #############################################################################
 ##
-#E  DirectProduct2.gd . . . . . . . . . . . . . . . . . . . . . . . ends here
+#E  DirectProductCLG.gd . . . . . . . . . . . . . . . . . . . . . . ends here

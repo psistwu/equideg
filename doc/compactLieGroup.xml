@@ -1,0 +1,23 @@
+<!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
+<!-- %%									  -->
+<!-- %W  compactLieGroup.xml	GAP Package `EquiDeg'		Haopin Wu -->
+<!-- %%									  -->
+<!-- %Y  Department of Mathematics,					  -->
+<!-- %Y  National Tsing Hua University, Taiwan				  -->
+<!-- %Y  Department of Mathematical Sciences,				  -->
+<!-- %Y  the University of Texas at Dallas				  -->
+<!-- %%									  -->
+
+<Chapter Label="ch:compactLieGroup"><Heading>Compact Lie Group</Heading>
+<Section><Heading>Group and Subgroup</Heading>
+</Section>
+<Section><Heading>Conjugacy Class of Subgroups</Heading>
+</Section>
+<Section><Heading>Representation and Character Theory</Heading>
+</Section>
+</Chapter>
+
+
+<!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
+<!-- %%									  -->
+<!-- %E  compactLieGroup.xml . . . . . . . . . . . . . . . . .  ends here -->

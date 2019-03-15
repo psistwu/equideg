@@ -10,15 +10,16 @@
 ##
 #R  Read the implementation files
 ##
-ReadPackage( "EquiDeg", "lib/Utils.gi" );
-ReadPackage( "EquiDeg", "lib/Lattice.gi" );
-ReadPackage( "EquiDeg", "lib/Polynomial.gi" );
-ReadPackage( "EquiDeg", "lib/Group.gi" );
-ReadPackage( "EquiDeg", "lib/OrbitType.gi" );
-ReadPackage( "EquiDeg", "lib/DirectProduct1.gi" );
-ReadPackage( "EquiDeg", "lib/CompactLieGroup.gi" );
-ReadPackage( "EquiDeg", "lib/DirectProduct2.gi" );
-ReadPackage( "EquiDeg", "lib/BurnsideRing.gi" );
+  ReadPackage( "EquiDeg", "lib/Utils.gi" );
+  ReadPackage( "EquiDeg", "lib/Lattice.gi" );
+  ReadPackage( "EquiDeg", "lib/Polynomial.gi" );
+  ReadPackage( "EquiDeg", "lib/Group.gi" );
+  ReadPackage( "EquiDeg", "lib/OrbitType.gi" );
+  ReadPackage( "EquiDeg", "lib/DirectProduct.gi" );
+  ReadPackage( "EquiDeg", "lib/CompactLieGroup.gi" );
+  ReadPackage( "EquiDeg", "lib/ElementaryCLG.gi" );
+  ReadPackage( "EquiDeg", "lib/DirectProductCLG.gi" );
+  ReadPackage( "EquiDeg", "lib/BurnsideRing.gi" );
 
 #############################################################################
 ##
