@@ -241,6 +241,13 @@
   DeclareOperation( "ImageElm",
       [ IsClassFunction, IsMultiplicativeElementWithInverse ] );
 
+#############################################################################
+##
+#O  SchurIndicator( <chi>, <n> )
+##
+  DeclareOperation( "SchurIndicator",
+      [ IsCharacter, IsInt ] );
+
 
 ##  Part 4: Concepts Related to Compact Lie Group
 

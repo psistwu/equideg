@@ -466,6 +466,28 @@
     end
   );
 
+#############################################################################
+##
+#O  SchurIndicator( <chi>, <n> )
+##
+  InstallMethod( SchurIndicator,
+    "",
+    [ IsCharacter, IsInt ],
+    function( chi, n )
+      local G,
+            tbl,
+            pmap,
+            CC_list;
+
+      G := UnderlyingGroup( chi );
+      tbl := UnderlyingCharacterTable( chi );
+      pmap := PowerMap( tbl, n );
+      CC_list := ConjugacyClasses( G );
+
+      return Sum( [ 1 .. Size( CC_list ) ], i -> Size( CC_list[ i ] ) * chi[ pmap[ i ] ] )/Order( G );
+    end
+  );
+
 
 ##  Part 4: Concepts Related to Compact Lie Group
 

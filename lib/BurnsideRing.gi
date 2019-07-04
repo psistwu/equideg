@@ -863,22 +863,33 @@
             orbts,		# orbit types
             coeff,		# coefficent
             j,			# index
+            n,			# dimension factor
             Oi, Oj,		# orbit types
             ccs_list,		# CCS list of basic degree
             ccs_id_list,	# CCS id list of basic degree
             coeff_list;		# coefficient list of basic degree
+
+      if not IsIrreducibleCharacter( chi ) then
+        TryNextMethod( );
+      fi;
 
       G := UnderlyingGroup( chi );
       CCSs := ConjugacyClassesSubgroups( G );
       A := BurnsideRing( G );
       orbts := OrbitTypes( chi );
 
+      if ( SchurIndicator( chi, 2 ) = 1 ) then
+        n := 1;
+      else
+        n := 2;
+      fi;
+
       ccs_list := [ ];
       ccs_id_list := [ ];
       coeff_list := [ ];
 
       for Oi in Reversed( orbts ) do
-        coeff := (-1)^DimensionOfFixedSet( chi, Oi );
+        coeff := (-1)^( n * DimensionOfFixedSet( chi, Oi ) );
         for j in [ 1 .. Size( ccs_list ) ] do
           Oj := ccs_list[ j ];
           coeff := coeff - coeff_list[ j ]*nLHnumber( Oi, Oj );
