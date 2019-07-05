@@ -503,13 +503,6 @@
     G -> 0
   );
 
-  InstallImmediateMethod( Dimension,
-    "dimension of finite group <G>",
-    IsGroup and IsFinite,
-    0,
-    G -> 0
-  );
-
 #############################################################################
 ##
 #A  RankOfCompactLieGroup( <G> )

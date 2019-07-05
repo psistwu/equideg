@@ -253,10 +253,8 @@
 
 #############################################################################
 ##
-#A  Dimension( <G> )
 #A  DimensionOfCompactLieGroup( <G> )
 ##
-  DeclareAttribute( "Dimension", IsGroup );
   DeclareAttribute( "DimensionOfCompactLieGroup", IsGroup );
 
 #############################################################################
