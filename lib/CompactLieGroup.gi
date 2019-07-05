@@ -88,16 +88,6 @@
 
 #############################################################################
 ##
-#A  Dimension( <G> )
-##
-  InstallMethod( Dimension,
-    "synonym for DimensionOfCompactLieGroup",
-    [ IsCompactLieGroup ],
-    G -> DimensionOfCompactLieGroup( G )
-  );
-
-#############################################################################
-##
 #O  Rank( <G> )
 ##
   InstallMethod( Rank,

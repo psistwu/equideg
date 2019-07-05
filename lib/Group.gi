@@ -493,7 +493,6 @@
 
 #############################################################################
 ##
-#A  Dimension( <G> )
 #A  DimensionOfCompactLieGroup( <G> )
 ##
   InstallImmediateMethod( DimensionOfCompactLieGroup,
