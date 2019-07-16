@@ -471,7 +471,7 @@
 #O  SchurIndicator( <chi>, <n> )
 ##
   InstallMethod( SchurIndicator,
-    "",
+    "<n>-th Schur Indicator of character <chi>",
     [ IsCharacter, IsInt ],
     function( chi, n )
       local G,

@@ -878,10 +878,8 @@
       A := BurnsideRing( G );
       orbts := OrbitTypes( chi );
 
-      if ( SchurIndicator( chi, 2 ) = 1 ) then
-        n := 1;
-      else
-        n := 2;
+      if not ( SchurIndicator( chi, 2 ) = 1 ) then
+        return OneImmutable( A );
       fi;
 
       ccs_list := [ ];
@@ -889,7 +887,7 @@
       coeff_list := [ ];
 
       for Oi in Reversed( orbts ) do
-        coeff := (-1)^( n * DimensionOfFixedSet( chi, Oi ) );
+        coeff := (-1)^DimensionOfFixedSet( chi, Oi );
         for j in [ 1 .. Size( ccs_list ) ] do
           Oj := ccs_list[ j ];
           coeff := coeff - coeff_list[ j ]*nLHnumber( Oi, Oj );
