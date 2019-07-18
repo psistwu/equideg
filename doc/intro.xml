@@ -10,7 +10,12 @@
 <!-- %%									  -->
 
 <Chapter Label="ch:intro"><Heading>Introduction</Heading>
-The main purpose of the &EquiDeg; package is to
+The purpose of &EquiDeg; package is to provide &GAP; functionalities for
+<List>
+<Item>certain types of compact Lie groups;</Item>
+<Item>Burnside/Euler ring arithmetic;</Item>
+<Item>orbit types and basic degrees of group representations.</Item>
+</List>
 </Chapter>
 
 

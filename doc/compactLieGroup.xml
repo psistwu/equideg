@@ -9,11 +9,16 @@
 <!-- %%									  -->
 
 <Chapter Label="ch:compactLieGroup"><Heading>Compact Lie Group</Heading>
-<Section><Heading>Group and Subgroup</Heading>
-</Section>
-<Section><Heading>Conjugacy Class of Subgroups</Heading>
-</Section>
-<Section><Heading>Representation and Character Theory</Heading>
+<Section><Heading>Test</Heading>
+<#Include Label="NewCompactLieGroup">
+<#Include Label="IsCompactLieGroupConjugacyClassSubgroupsRep">
+<#Include Label="NewCompactLieGroupConjugacyClassSubgroups">
+<#Include Label="IsCompactLieGroupConjugacyClassesSubgroupsRep">
+<#Include Label="NewCompactLieGroupConjugacyClassesSubgroups">
+<#Include Label="CompactLieGroupConjugacyClassesSubgroupsSelector">
+<#Include Label="NumberOfNonzeroModeClasses">
+<#Include Label="NumberOfZeroModeClasses">
+<#Include Label="IsCompactLieGroupCharacterTable">
 </Section>
 </Chapter>
 

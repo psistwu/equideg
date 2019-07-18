@@ -108,8 +108,17 @@
 
 #############################################################################
 ##
-#U  NewCompactLieGroupConjugacyClassesSubgroups(
-#U      IsGroup, G )
+#U  NewCompactLieGroupConjugacyClassesSubgroups( IsGroup, <G> )
+##
+##  <#GAPDoc Label="NewCompactLieGroupConjugacyClassesSubgroups">
+##  <ManSection>
+##  <Constr Name="NewCompactLieGroupConjugacyClassesSubgroups"
+##      Arg="IsGroup, G"/>
+##  <Description>
+##    This is the constructor of list of CCSs of compact Lie group.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 ##
   DeclareConstructor( "NewCompactLieGroupConjugacyClassesSubgroups",
       [ IsGroup, IsGroup, IsRecord ] );
@@ -118,6 +127,16 @@
 ##
 #O  \[\]( <CCSs>, <l>, <j> )
 ##
+##  <#GAPDoc Label="CompactLieGroupConjugacyClassesSubgroupsSelector">
+##  <ManSection>
+##  <Oper Name="\[\]"
+##      Arg="CCSs, l, j"/>
+##  <Description>
+##    This is the selector of list of CCSs of compact Lie group.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
   DeclareOperation( "\[\]",
       [ IsCompactLieGroupConjugacyClassesSubgroupsRep, IsInt, IsInt ] );
 
@@ -125,12 +144,32 @@
 ##
 #O  NumberOfNonzeroModeClasses( <CCSs> )
 ##
+##  <#GAPDoc Label="NumberOfNonzeroModeClasses">
+##  <ManSection>
+##  <Oper Name="NumberOfNonzeroModeClasses"
+##      Arg="CCSs"/>
+##  <Description>
+##    This operation returns the number of non-zero mode CCSs.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
   DeclareOperation( "NumberOfNonzeroModeClasses",
       [ IsCompactLieGroupConjugacyClassesSubgroupsRep ] );
 
 #############################################################################
 ##
-#O  NumberOfNonzeroModeClasses( <CCSs> )
+#O  NumberOfZeroModeClasses( <CCSs> )
+##
+##  <#GAPDoc Label="NumberOfZeroModeClasses">
+##  <ManSection>
+##  <Oper Name="NumberOfZeroModeClasses"
+##      Arg="CCSs"/>
+##  <Description>
+##    This operation returns the number of zero mode CCSs.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 ##
   DeclareOperation( "NumberOfZeroModeClasses",
       [ IsCompactLieGroupConjugacyClassesSubgroupsRep ] );
@@ -142,6 +181,16 @@
 ##
 #C  IsCompactLieGroupCharacterTable
 ##
+##  <#GAPDoc Label="IsCompactLieGroupCharacterTable">
+##  <ManSection>
+##  <Filt Name="IsCompactLieGroupCharacterTable"
+##      Type="Category"/>
+##  <Description>
+##    This is the category of character table of compact Lie group.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##  
   DeclareCategory( "IsCompactLieGroupCharacterTable",
       IsNearlyCharacterTable );
 

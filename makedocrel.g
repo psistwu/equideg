@@ -15,8 +15,8 @@ MakeGAPDocDoc( "doc",     # path to the directory containing the main file
                  "../lib/OrbitType.gd",
                  "../lib/CompactLieGroup.gd",
                  "../lib/ElementaryCLG.gd",
-                 "../lib/DirectProduct1.gd",
-                 "../lib/DirectProduct2.gd",
+                 "../lib/DirectProduct.gd",
+                 "../lib/DirectProductCLG.gd",
                  "../lib/BurnsideRing.gd" ], 
                "EquiDeg", # the name of the book used by GAP's online help
                "../../..",# optional: relative path to the main GAP root 
