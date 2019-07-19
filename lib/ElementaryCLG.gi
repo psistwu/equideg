@@ -260,7 +260,7 @@
         representative			:= SpecialOrthogonalGroupOverReal( 2 ),
         normalizer			:= G,
         order_of_representative		:= x,
-        abbrv				:= "(SO(2))"			);
+        abbrv				:= "SO(2)"			);
       class.proto := NewCompactLieGroupConjugacyClassSubgroups(
                      IsMatrixGroup, G, class );
       Add( data.ccsClasses, class );
@@ -272,7 +272,7 @@
         representative		:= mCyclicGroup( 1 ),
         normalizer		:= G,
         order_of_representative	:= One( x ),
-        abbrv			:= "(Z_{})"			);
+        abbrv			:= "Z_{}"			);
       class.proto := NewCompactLieGroupConjugacyClassSubgroups(
                      IsMatrixGroup, G, class );
       class.representative	:= l -> mCyclicGroup( l );
@@ -313,7 +313,7 @@
         representative		:= SpecialOrthogonalGroupOverReal( 2 ),
         normalizer		:= G,
         order_of_representative	:= x,
-        abbrv			:= "(SO(2))"				);
+        abbrv			:= "SO(2)"				);
       class.proto := NewCompactLieGroupConjugacyClassSubgroups(
                      IsMatrixGroup, G, class );
       Add( data.ccsClasses, class );
@@ -325,7 +325,7 @@
         representative		:= OrthogonalGroupOverReal( 2 ),
         normalizer		:= G,
         order_of_representative	:= 2*x,
-        abbrv			:= "(O(2))"			);
+        abbrv			:= "O(2)"			);
       class.proto := NewCompactLieGroupConjugacyClassSubgroups(
                      IsMatrixGroup, G, class );
       Add( data.ccsClasses, class );
@@ -337,7 +337,7 @@
         representative		:= mCyclicGroup( 1 ),
         normalizer		:= G,
         order_of_representative	:= One( x ),
-        abbrv			:= "(Z_{})"		);
+        abbrv			:= "Z_{}"		);
       class.proto := NewCompactLieGroupConjugacyClassSubgroups(
                      IsMatrixGroup, G, class );
       class.representative	:= l -> mCyclicGroup( l );
@@ -351,7 +351,7 @@
         representative		:= mDihedralGroup( 1 ),
         normalizer		:= mDihedralGroup( 2 ),
         order_of_representative	:= 2*One( x ),
-        abbrv			:= "(D_{})"		);
+        abbrv			:= "D_{}"		);
       class.proto := NewCompactLieGroupConjugacyClassSubgroups(
                      IsMatrixGroup, G, class );
       class.representative	:= l -> mDihedralGroup( l );

@@ -184,7 +184,7 @@
 ##  <#GAPDoc Label="IsCompactLieGroupCharacterTable">
 ##  <ManSection>
 ##  <Filt Name="IsCompactLieGroupCharacterTable"
-##      Type="Category"/>
+##      Type="category"/>
 ##  <Description>
 ##    This is the category of character table of compact Lie group.
 ##  </Description>
@@ -198,11 +198,32 @@
 ##
 #C  IsCompactLieGroupIrrCollection
 ##
+##  <#GAPDoc Label="IsCompactLieGroupIrrCollection">
+##  <ManSection>
+##  <Filt Name="IsCompactLieGroupIrrCollection"
+##      Type="category"/>
+##  <Description>
+##    This is the category of collection of irreducible
+##    representations of compact Lie group.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
   DeclareCategory( "IsCompactLieGroupIrrCollection", IsCollection );
 
 #############################################################################
 ##
 #C  IsCompactLieGroupClassFunction
+##
+##  <#GAPDoc Label="IsCompactLieGroupClassFunction">
+##  <ManSection>
+##  <Filt Name="IsCompactLieGroupClassFunction"
+##      Type="category"/>
+##  <Description>
+##    This is the category of class function of compact Lie group.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 ##
   DeclareCategory( "IsCompactLieGroupClassFunction", IsObject );
 
@@ -217,12 +238,32 @@
 ##
 #P  IsCompactLieGroupCharacter
 ##
+##  <#GAPDoc Label="IsCompactLieGroupCharacter">
+##  <ManSection>
+##  <Filt Name="IsCompactLieGroupCharacter"
+##      Type="property"/>
+##  <Description>
+##    This is the property of compact Lie group character.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
   DeclareProperty( "IsCompactLieGroupCharacter",
       IsCompactLieGroupClassFunction );
 
 #############################################################################
 ##
 #P  IsCompactLieGroupVirtualCharacter
+##
+##  <#GAPDoc Label="IsCompactLieGroupVirtualCharacter">
+##  <ManSection>
+##  <Filt Name="IsCompactLieGroupVirtualCharacter"
+##      Type="property"/>
+##  <Description>
+##    This is the property of compact Lie group virtual character.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 ##
   DeclareProperty( "IsCompactLieGroupVirtualCharacter",
       IsCompactLieGroupClassFunction );
@@ -233,6 +274,16 @@
 ##
 #P  IsIrreducibleCharacter( <chi> )
 ##
+##  <#GAPDoc Label="IsIrreducibleCharacter">
+##  <ManSection>
+##  <Filt Name="IsIrreducibleCharacter"
+##      Type="property"/>
+##  <Description>
+##    This is the property of compact Lie group irreducible character.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
   DeclareProperty( "IsIrreducibleCharacter", IsCompactLieGroupClassFunction );
   InstallTrueMethod( IsCompactLieGroupCharacter,
       IsCompactLieGroupClassFunction and IsIrreducibleCharacter );
@@ -241,6 +292,16 @@
 ##
 #A  IdCompactLieGroupClassFunction( <chi> )
 ##
+##  <#GAPDoc Label="IdCompactLieGroupClassFunction">
+##  <ManSection>
+##  <Attr Name="IdCompactLieGroupClassFunction" Arg="chi"/>
+##  <Description>
+##    This attribute contains the id of compact Lie group class function
+##    <A>chi</A>.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
   DeclareAttribute( "IdCompactLieGroupClassFunction",
     IsCompactLieGroupClassFunction );
 
@@ -248,11 +309,32 @@
 ##
 #O  \[\]( <irrs>, <l> )
 ##
+##  <#GAPDoc Label="CompactLieGroupIrrsCollectionSelector">
+##  <ManSection>
+##  <Oper Name="\[\]"
+##      Arg="col_irrs, l"/>
+##  <Description>
+##    This is the selector of collection of compact Lie group
+##    irreducible representations.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
   DeclareOperation( "\[\]", [ IsCompactLieGroupIrrCollection, IsInt ] );
 
 #############################################################################
 ##
-#A  IdIrr( <irr> )
+#A  IdIrr( <chi> )
+##
+##  <#GAPDoc Label="CLG_IdIrr">
+##  <ManSection>
+##  <Attr Name="IdIrr" Arg="chi"/>
+##  <Description>
+##    This attribute contains the id of compact Lie group
+##    irreducbile representation <A>chi</A>.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 ##
   DeclareAttribute( "IdIrr", IsCompactLieGroupCharacter );
 
@@ -273,14 +355,27 @@
 ##
 #O  DimensionOfFixedSet( <chi>, <H> );
 #O  DimensionOfFixedSet( <chi>, <C> );
-#V  DimensionOfFixedSetHandler
+##
+##  <#GAPDoc Label="clg_DimensionOfFixedSet">
+##  <ManSection Label="DimensionOfFixedSet:clg">
+##  <Heading>DimensionOfFixedSet</Heading>
+##  <Oper Name="DimensionOfFixedSet" Label="clg subgroup"
+##      Arg="chi, H"/>
+##  <Oper Name="DimensionOfFixedSet" Label="clg CCS"
+##      Arg="chi, C"/>
+##  <Description>
+##    This operation returns the dimension of fixed set
+##    of subgroup <A>H</A> or conjugacy class of subgroups
+##    <A>C</A> with repect to character <A>chi</A>.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 ##
   DeclareOperation( "DimensionOfFixedSet",
     [ IsCompactLieGroupCharacter, IsGroup ] );
   DeclareOperation( "DimensionOfFixedSet",
     [ IsCompactLieGroupCharacter,
       IsCompactLieGroupConjugacyClassSubgroupsRep ] );
-  BindGlobal( "DIMENSION_OF_FIXED_SET_HANDLER", rec( ) );
 
 #############################################################################
 ##

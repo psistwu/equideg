@@ -11,4 +11,20 @@
 
 #############################################################################
 ##
+#O  DirectProduct( <ECLG>, <G1>[, <G2>, ....] )
+##
+##  <#GAPDoc Label="CLG_DirectProduct">
+##  <ManSection>
+##  <Oper Name="DirectProduct" Label="for elementary compact Lie group"
+##      Arg="ECLG, G1[, G2, ...]"/>
+##  <Description>
+##    This operation returns the direct product of a compact Lie group
+##    <A>ECLG</A> and finite groups <A>G1</A>, <A>G2</A>, ....
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+
+#############################################################################
+##
 #E  DirectProductCLG.gd . . . . . . . . . . . . . . . . . . . . . . ends here

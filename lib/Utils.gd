@@ -10,6 +10,28 @@
 
 #############################################################################
 ##
+#A  Abbrv( <obj> )
+##
+##  <#GAPDoc Label="Abbrv">
+##  <ManSection>
+##  <Attr Name="Abbrv" Arg="obj"/>
+##  <Description>
+##    This is an attribute for most objects defined in this package,
+##    which provides minimal amount of information.
+##    This attribute can be assigned to an object <A>obj</A> manually
+##    by <C>SetAbbrv(<A>obj</A>,<A>val</A>)</C>.
+##    However, it is generated automatically for
+##    certain types of objects.
+##    If object <A>obj</A> has this attribute,
+##    <C>ViewString(<A>obj</A>)</C> will simply return
+##    <C>Abbrv(<A>obj</A>)</C>.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+
+#############################################################################
+##
 #V  INFO_LEVEL_EquiDeg
 ##
 ##  <#GAPDoc Label="INFO_LEVEL_EquiDeg">
@@ -19,7 +41,7 @@
 ##    is the info level regarding the usage of
 ##    <Ref BookName="Reference" Func="Info"/> throughout the package;
 ##    its default value is 1.
-##    Since higher value results in more detailed feedback,
+##    As higher value results in more detailed feedback,
 ##    one can increase the value for debugging purpose.
 ##  </Description>
 ##  </ManSection>

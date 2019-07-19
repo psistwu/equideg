@@ -14,27 +14,31 @@
 
 #############################################################################
 ##
-#C  IsOrthogonalGroupOverReal
-##
-  DeclareCategory( "IsOrthogonalGroupOverReal",
-      IsCompactLieGroup and IsMatrixGroup );
-
-#############################################################################
-##
 #F  OrthogonalGroupOverReal( <n> )
+##
+##  <#GAPDoc Label="OrthogonalGroupOverReal">
+##  <ManSection>
+##  <Func Name="OrthogonalGroupOverReal" Arg="n"/>
+##  <Description>
+##    This function creates group O(n,R).
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 ##
   DeclareGlobalFunction( "OrthogonalGroupOverReal", "returns O(n,R)" );
 
 #############################################################################
 ##
-#C  IsSpecialOrthogonalGroupOverReal
-##
-  DeclareCategory( "IsSpecialOrthogonalGroupOverReal",
-      IsCompactLieGroup and IsMatrixGroup );
-
-#############################################################################
-##
 #F  SpecialOrthogonalGroupOverReal( <n> )
+##
+##  <#GAPDoc Label="SpecialOrthogonalGroupOverReal">
+##  <ManSection>
+##  <Func Name="SpecialOrthogonalGroupOverReal" Arg="n"/>
+##  <Description>
+##    This function creates group SO(n,R).
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 ##
   DeclareGlobalFunction( "SpecialOrthogonalGroupOverReal", "returns SO(n,R)" );
 
@@ -46,7 +50,7 @@
 ##  <ManSection>
 ##  <Func Name="ElementaryCLGId" Arg="id"/>
 ##  <Description>
-##    returns elementary compact Lie group for given <A>id</A>.
+##    This function creates elementary compact Lie group of given <A>id</A>.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>

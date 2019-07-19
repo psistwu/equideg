@@ -562,9 +562,9 @@
 
 #############################################################################
 ##
-#O  MaximalOrbitTypes( <a> )
+#O  MaximalCCSs( <a> )
 ##
-  InstallMethod( MaximalOrbitTypes,
+  InstallMethod( MaximalCCSs,
     "",
     [ IsBurnsideRingElement ],
     function( a )
@@ -854,7 +854,7 @@
 #A  BasicDegree( <chi> )
 ##
   InstallMethod( BasicDegree,
-    "return the Basic Degree of the representation",
+    "return the basic degree associated to finite group character <chi>",
     [ IsCharacter ],
     function( chi )
       local G,			# group
@@ -919,7 +919,7 @@
 #A  BasicDegree( <chi> )
 ##
   InstallMethod( BasicDegree,
-    "return the Basic Degree of the representation",
+    "return the Basic Degree associated to compact Lie group character <chi>",
     [ IsCompactLieGroupCharacter ],
     function( chi )
       local G,			# group

@@ -93,8 +93,8 @@
 ##  <ManSection>
 ##  <Attr Name="Length" Arg="a"/>
 ##  <Description>
-##    This attribute of Burnside ring element <A>a</A>
-##    contains the length of its summation representative.
+##    This is an attribute of a Burnside ring element <A>a</A>
+##    which stores the length of its summation form.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
@@ -109,7 +109,8 @@
 ##  <ManSection>
 ##  <Oper Name="ToDenseList" Arg="a"/>
 ##  <Description>
-##    returns a dense list representing Burnside ring element <A>a</A>.
+##    This operation returns a dense list represention of
+##    Burnside ring element <A>a</A>.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
@@ -124,7 +125,8 @@
 ##  <ManSection>
 ##  <Oper Name="ToSparseList" Arg="a"/>
 ##  <Description>
-##    returns a sparse list representing Burnside ring element <A>a</A>.
+##    This operation returns a sparse list represention of
+##    Burnside ring element <A>a</A>.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
@@ -133,9 +135,18 @@
 
 #############################################################################
 ##
-#O  MaximalOrbitTypes( <a> )
+#O  MaximalCCSs( <a> )
 ##
-  DeclareOperation( "MaximalOrbitTypes", [ IsBurnsideRingElement ] );
+##  <#GAPDoc Label="MaximalCCSs">
+##  <ManSection>
+##  <Oper Name="MaximalOrbitTypes"
+##      Arg="a"/>
+##  <Description>
+##    This operation returns the maximal CCSs in <A>a</A>.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+  DeclareOperation( "MaximalCCSs", [ IsBurnsideRingElement ] );
   
 
 ##  Part 2: Brunside Ring
@@ -191,7 +202,7 @@
 ##  <ManSection>
 ##  <Constr Name="NewBurnsideRing" Arg="filt, r"/>
 ##  <Description>
-##    constructs a Burnside ring object induced by group <A>r.group</A>.
+##  constructs a Burnside ring object induced by group <A>r.group</A>.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
@@ -206,9 +217,26 @@
 ##  <ManSection>
 ##  <Attr Name="BurnsideRing" Arg="G"/>
 ##  <Description>
-##    This attribute contains the Burnside ring induced by group <A>G</A>.
-##    The returned Burnside ring admits attribute <C>UnderlyingGroup</C>,
-##    by which one can retrieve <A>G</A>.
+##  This is an attribute of a group <A>G</A> which
+##  contains the induced Burnside ring <E>A</E>.
+##  The additive and multiplicative identities of <E>A</E>
+##  are stored in attributes
+##  <Ref BookName="Reference" Attr="ZeroImmutable"/>
+##  and <Ref BookName="Reference" Attr="OneImmutable"/>,
+##  respectively.
+##  Here is an example of creating a Burnside ring
+##  induced by a finite group and printing
+##  its additive and multiplicative idenities.
+##  <Example>
+##  gap> G := SymmetricGroup( 4 );
+##  Sym( [ 1 .. 4 ] )
+##  gap> A := BurnsideRing( G );
+##  Brng( Sym( [ 1 .. 4 ] ) )
+##  gap> Zero(A);
+##  &lt;&gt; in Brng( Sym( [ 1 .. 4 ] ) )
+##  gap> One(A);
+##  &lt;1(11)&gt; in Brng( Sym( [ 1 .. 4 ] ) )
+##  </Example>
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
@@ -217,14 +245,36 @@
 
 #############################################################################
 ##
+#A  Basis( <A> )
+##
+##  <#GAPDoc Label="brng_Basis">
+##  <ManSection>
+##  <Attr Name="Basis" Label="Burnside ring" Arg="A"/>
+##  <Description>
+##  This is an attribute of a Burnside ring <A>A</A>
+##  which stores its basis.
+##  Here is an example of selecting certain element
+##  in the basis of <A>A</A> induced by a finite group.
+##  <Example>
+##  gap> B := Basis( A );;
+##  gap> b := B[2];
+##  &lt;1(2)&gt; in Brng( Sym( [ 1 .. 4 ] ) )
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+
+#############################################################################
+##
 #A  UnderlyingGroup( <A> )
 ##
-##  <#GAPDoc Label="UnderlyingGroup">
+##  <#GAPDoc Label="brng_UnderlyingGroup">
 ##  <ManSection>
-##  <Attr Name="UnderlyingGroup" Arg="A"/>
+##  <Attr Name="UnderlyingGroup" Label="Burnside ring" Arg="A"/>
 ##  <Description>
-##    This attribute contains the underlying group of Burnside ring
-##    <A>A</A>.
+##    This is an attribute of a Burnside ring <A>A</A>
+##    which contains the group <E>G</E> from which <A>A</A>
+##    is induced.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
@@ -257,8 +307,16 @@
 ##  <ManSection>
 ##  <Attr Name="BasicDegree" Arg="chi"/>
 ##  <Description>
-##    This attribute contains the basic degree associated to character
-##    <A>chi</A>.
+##  This is an attribute of a character <A>chi</A>
+##  which stores the associated basic degree.
+##  Here is an example.
+##  <Example>
+##  gap> G := SymmetricGroup(4);;
+##  gap> chi := Irr(G)[3];
+##  Character( CharacterTable( Sym( [ 1 .. 4 ] ) ), [ 2, 0, 2, -1, 0 ] )
+##  gap> BasicDegree(chi);
+##  &lt;1(5)-2(9)+1(11)&gt; in Brng( Sym( [ 1 .. 4 ] ) )
+##  </Example>
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
