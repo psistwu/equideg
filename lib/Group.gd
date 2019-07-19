@@ -260,7 +260,6 @@
 #############################################################################
 ##
 #A  RankOfCompactLieGroup( <G> )
-#O  Rank( <G> )
 ##
   DeclareAttribute( "RankOfCompactLieGroup", IsGroup );
 

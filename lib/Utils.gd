@@ -16,13 +16,13 @@
 ##  <ManSection>
 ##  <Attr Name="Abbrv" Arg="obj"/>
 ##  <Description>
-##    This is an attribute for most objects defined in this package,
-##    which provides minimal amount of information.
-##    This attribute can be assigned to an object <A>obj</A> manually
-##    by <C>SetAbbrv(<A>obj</A>,<A>val</A>)</C>.
-##    However, it is generated automatically for
-##    certain types of objects.
-##    If object <A>obj</A> has this attribute,
+##  This is an attribute of new objects defined in this package
+##  which provides minimal amount of information.
+##  This attribute can be assigned to an object <A>obj</A> manually
+##  by <C>SetAbbrv(<A>obj</A>,<A>val</A>)</C>.
+##  However, it is generated automatically for
+##  certain types of objects.
+##  If object <A>obj</A> has this attribute,
 ##    <C>ViewString(<A>obj</A>)</C> will simply return
 ##    <C>Abbrv(<A>obj</A>)</C>.
 ##  </Description>

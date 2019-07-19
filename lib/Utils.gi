@@ -12,23 +12,23 @@
 ##
 #O  ViewString( <obj> )
 ##
-  InstallMethod( ViewString,
-    "delegates to attribute Abbrv",
-    [ IsObject and HasAbbrv ],
-    100,
-    obj -> Abbrv( obj )
-  );
+# InstallMethod( ViewString,
+#   "delegates to attribute Abbrv",
+#   [ IsObject and HasAbbrv ],
+#   100,
+#   obj -> Abbrv( obj )
+# );
 
 #############################################################################
 ##
 #O  DisplayString( <obj> )
 ##
-  InstallMethod( DisplayString,
-    "delegates to attribute Detail",
-    [ IsObject and HasDetail ],
-    100,
-    obj -> Detail( obj )
-  );
+# InstallMethod( DisplayString,
+#   "delegates to attribute Detail",
+#   [ IsObject and HasDetail ],
+#   100,
+#   obj -> Detail( obj )
+# );
 
 #############################################################################
 ##

@@ -86,16 +86,6 @@
     G -> false
   );
 
-#############################################################################
-##
-#O  Rank( <G> )
-##
-  InstallMethod( Rank,
-    "synonym for RankOfCompactLieGroup",
-    [ IsCompactLieGroup ],
-    G -> RankOfCompactLieGroup( G )
-  );
-
 
 ##  Part 2: Conjugacy Class of Subgroups
 
