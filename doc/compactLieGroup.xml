@@ -9,16 +9,45 @@
 <!-- %%									  -->
 
 <Chapter Label="ch:compactLieGroup"><Heading>Compact Lie Group</Heading>
-<Section><Heading>Test</Heading>
+Package &EquiDeg; allows &GAP; to handle
+certain types of compact Lie groups in a similar way as finite groups.
+In the current version, this includes
+<List>
+<Item><M><Alt Only="LaTeX">O(2)\times G</Alt><Alt Not="LaTeX">O(2)xG</Alt></M>
+(including <M>O(2)</M>)</Item>
+<M><Alt Only="LaTeX">SO(2)\times G</Alt><Alt Not="LaTeX">SO(2)xG</Alt></M>
+(including <M>SO(2)</M>)
+where <M>G</M> is a finite group.
+</List>
+
+<Section><Heading>Basic Compact Lie Group</Heading>
+<#Include Label="OrthogonalGroupOverReal">
+<#Include Label="SpecialOrthogonalGroupOverReal">
+<#Include Label="ElementaryCLGId">
+<#Include Label="IdElementaryCLG">
+</Section>
+
+<Section><Heading>General Functions</Heading>
+<!--
 <#Include Label="NewCompactLieGroup">
 <#Include Label="IsCompactLieGroupConjugacyClassSubgroupsRep">
 <#Include Label="NewCompactLieGroupConjugacyClassSubgroups">
 <#Include Label="IsCompactLieGroupConjugacyClassesSubgroupsRep">
 <#Include Label="NewCompactLieGroupConjugacyClassesSubgroups">
+-->
 <#Include Label="CompactLieGroupConjugacyClassesSubgroupsSelector">
 <#Include Label="NumberOfNonzeroModeClasses">
 <#Include Label="NumberOfZeroModeClasses">
+<!--
 <#Include Label="IsCompactLieGroupCharacterTable">
+<#Include Label="IsCompactLieGroupIrrCollection">
+<#Include Label="IsCompactLieGroupClassFunction">
+<#Include Label="IsCompactLieGroupCharacter">
+<#Include Label="IsCompactLieGroupVirtualCharacter">
+<#Include Label="IsIrreducibleCharacter">
+-->
+<#Include Label="CLG_IdIrr">
+<#Include Label="clg_DimensionOfFixedSet">
 </Section>
 </Chapter>
 

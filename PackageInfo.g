@@ -44,7 +44,7 @@ SetPackageInfo( rec(
 
   SourceRepository := rec(
     Type := "git",
-    URL  := "https://github.com/psistwu/GAP-EDL"
+    URL  := "https://github.com/psistwu/GAP-EquiDeg"
   ),
 
   IssueTrackerURL := Concatenation(
@@ -113,7 +113,8 @@ SetPackageInfo( rec(
   Keywords := [
     "Burnside ring",
     "equivariant degree theory",
-    "Euler ring", "group theory",
+    "Euler ring",
+    "group theory",
     "representation theory"
   ]
 

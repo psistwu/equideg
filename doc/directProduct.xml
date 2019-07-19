@@ -10,12 +10,17 @@
 <!-- %%									  -->
 
 <Chapter Label="ch:directProduct"><Heading>Direct Product</Heading>
-<Section Label="sec:directProduct1">
+<Section Label="sec:directProduct">
 <Heading>Dirct Product of Two Finite Groups</Heading>
+<#Include Label="DirectProductDecomposition">
+<#Include Label="TensorProductDecomposition">
+<#Include Label="GoursatInfo">
+<#Include Label="AmalgamationSymbol">
 </Section>
-<Section Label="sec:directProduct2">
+<Section Label="sec:directProductCLG">
 <Heading>Dirct Product of an Elementary Compact Lie Group and
     a Finite Group</Heading>
+<#Include Label="CLG_DirectProduct">
 </Section>
 </Chapter>
 

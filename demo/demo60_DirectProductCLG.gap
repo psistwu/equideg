@@ -53,42 +53,15 @@
   # S4xO(2)
   Print( "Generating CCSs of S4xO(2).... " );
   ccss_g := ConjugacyClassesSubgroups( g );
-  Print( "Done!\n" );
-
-  ccs_g_list0 := [ ];
-  for c in CCSClasses( ccss_g ) do
-    Add( ccs_g_list0, NewCCS( IsDirectProductWithECLGCCSsRep, c ) );
-  od;
-
-  ccs_g_list1 := [ ];
-  for i in [ 1 .. Size( CCSClassesFiltered( ccss_g )( "nonzero_mode" ) ) ] do
-    Add( ccs_g_list1, CCSId( ccss_g )( [ i, 1 ] ) );
-  od;
-
-  ccs_g_list2 := [ ];
-  for i in [ 1 .. Size( CCSClassesFiltered( ccss_g )( "zero_mode" ) ) ] do
-    Add( ccs_g_list2, CCSId( ccss_g )( [ i, 0 ] ) );
-  od;
-
-  Print( "\n" );
+  Print( "Done!\n\n" );
 
   # S4xSO(2)
-  Print( "Generating CCSs of S4xSO(2).... " );
-  ccss_h := ConjugacyClassesSubgroups( h );
-  Print( "Done!\n" );
+# Print( "Generating CCSs of S4xSO(2).... " );
+# ccss_h := ConjugacyClassesSubgroups( h );
+# Print( "Done!\n" );
 
-  ccs_h_list0 := [ ];
-  for c in CCSClasses( ccss_h ) do
-    Add( ccs_h_list0, NewCCS( IsDirectProductWithECLGCCSsRep, c ) );
-  od;
-
-  ccs_h_list1 := [ ];
-  for i in [ 1 .. Size( CCSClassesFiltered( ccss_h )( "nonzero_mode" ) ) ] do
-    Add( ccs_h_list1, CCSId( ccss_h )( [ i, 1 ] ) );
-  od;
-
-  ccs_h_list2 := [ ];
-  for i in [ 1 .. Size( CCSClassesFiltered( ccss_h )( "zero_mode" ) ) ] do
-    Add( ccs_h_list2, CCSId( ccss_h )( [ i, 0 ] ) );
-  od;
-
+  ccss_s4 := ConjugacyClassesSubgroups( s4 );
+  ccss_s4_latexsymbols := [ "\\bbZ_1", "\\bbZ_2", "D_1",
+      "\\bbZ_3", "V_4", "D_2", "\\bbZ_4",
+      "D_3", "D_4", "A_4", "S_4" ];
+  ListA( ccss_s4, ccss_s4_latexsymbols, SetLaTeXString );

@@ -10,10 +10,13 @@
 <!-- %%									  -->
 
 <Appendix Label="app:util"><Heading>Utilities</Heading>
-Here, we list utilities which are used throughout the package.
+We define some utility functions which are used throughout the package.
 <Section><Heading>EquiDeg Info Class</Heading>
 <#Include Label="INFO_LEVEL_EquiDeg">
 <#Include Label="InfoEquiDeg">
+</Section>
+<Section><Heading>New Object Attributes</Heading>
+<#Include Label="Abbrv">
 </Section>
 <Section><Heading>LaTeX Typesettings</Heading>
 <#Include Label="LaTeXString">

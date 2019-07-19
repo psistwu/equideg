@@ -14,7 +14,7 @@ This part of library contains functions dealing with orbit types
 associated to finite groups. Some of these functions may have
 their generalizations to compact Lie groups.
 Please check Chapter <Ref Chap="ch:compactLieGroup"/> and Section
-<Ref Sect="sec:directProduct2"/>.
+<Ref Sect="sec:directProductCLG"/>.
 <Section><Heading>Orbit Type</Heading>
 <#Include Label="IsLatticeOrbitTypesRep">
 <#Include Label="DimensionOfFixedSet">

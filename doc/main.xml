@@ -57,7 +57,6 @@
 <#Include SYSTEM "group.xml">
 <#Include SYSTEM "orbitType.xml">
 <#Include SYSTEM "compactLieGroup.xml">
-<#Include SYSTEM "elementaryCLG.xml">
 <#Include SYSTEM "directProduct.xml">
 <#Include SYSTEM "burnsideRing.xml">
 

@@ -10,11 +10,18 @@
 <!-- %%									  -->
 
 <Chapter Label="ch:burnsideRing"><Heading>Burnside Ring</Heading>
-<Section><Heading>Burnside Ring Elements</Heading>
-</Section>
 <Section><Heading>Burnside Ring</Heading>
+<#Include Label="BurnsideRing">
+<#Include Label="brng_UnderlyingGroup">
+<#Include Label="brng_Basis">
+</Section>
+<Section><Heading>Burnside Ring Elements</Heading>
+<#Include Label="Length">
+<#Include Label="ToDenseList">
+<#Include Label="ToSparseList">
 </Section>
 <Section><Heading>Other Aspects</Heading>
+<#Include Label="BasicDegree">
 </Section>
 </Chapter>
 
