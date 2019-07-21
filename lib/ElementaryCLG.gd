@@ -20,7 +20,7 @@
 ##  <ManSection>
 ##  <Func Name="OrthogonalGroupOverReal" Arg="n"/>
 ##  <Description>
-##    This function creates group O(n,R).
+##    This function creates group <M>O(n)</M>.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>

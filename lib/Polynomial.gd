@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#W  Polynomial.gd		GAP Package `EquiDeg'			    Haopin Wu
+#W  Polynomial.gd	GAP Package `EquiDeg'			    Haopin Wu
 ##
 #Y  Copyright (C) 2017-2019, Haopin Wu
 #Y  Department of Mathematics, National Tsing Hua University, Taiwan
@@ -11,6 +11,15 @@
 #############################################################################
 ##
 #A  LowestDegree( <lpol> )
+##
+##  <#GAPDoc Label="LowestDegree">
+##  <ManSection>
+##  <Attr Name="LowestDegree" Arg="lpol"/>
+##  <Description>
+##  This is an attribute of a Laurent which
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 ##
   DeclareAttribute( "LowestDegree", IsLaurentPolynomial );
 

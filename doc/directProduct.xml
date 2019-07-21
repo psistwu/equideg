@@ -20,7 +20,7 @@
 <Section Label="sec:directProductCLG">
 <Heading>Dirct Product of an Elementary Compact Lie Group and
     a Finite Group</Heading>
-<#Include Label="CLG_DirectProduct">
+<#Include Label="clg_DirectProduct">
 </Section>
 </Chapter>
 

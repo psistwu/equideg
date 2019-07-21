@@ -9,14 +9,11 @@
 <!-- %Y  the University of Texas at Dallas, USA				  -->
 <!-- %%									  -->
 
-<Chapter Label="ch:group"><Heading>Group</Heading>
+<Chapter Label="ch:group"><Heading>Group Theory</Heading>
 <Section><Heading>Basic Groups</Heading>
-<#Include Label="pCyclicGroup">
-<#Include Label="mCyclicGroup">
-<#Include Label="pDihedralGroup">
-<#Include Label="mDihedralGroup">
+<#Include Label="BasicGroups">
 </Section>
-<Section><Heading>Group Theory</Heading>
+<Section><Heading>Conjugacy Classes Subgroups</Heading>
 <#Include Label="LessThan">
 <#Include Label="OrderOfWeylGroup">
 <#Include Label="nLHnumber">

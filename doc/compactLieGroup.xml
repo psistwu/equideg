@@ -11,16 +11,16 @@
 <Chapter Label="ch:compactLieGroup"><Heading>Compact Lie Group</Heading>
 Package &EquiDeg; allows &GAP; to handle
 certain types of compact Lie groups in a similar way as finite groups.
-In the current version, this includes
+This includes (for the current version)
 <List>
 <Item><M><Alt Only="LaTeX">O(2)\times G</Alt><Alt Not="LaTeX">O(2)xG</Alt></M>
 (including <M>O(2)</M>)</Item>
-<M><Alt Only="LaTeX">SO(2)\times G</Alt><Alt Not="LaTeX">SO(2)xG</Alt></M>
-(including <M>SO(2)</M>)
-where <M>G</M> is a finite group.
+<Item><M><Alt Only="LaTeX">SO(2)\times G</Alt><Alt Not="LaTeX">SO(2)xG</Alt></M>
+(including <M>SO(2)</M>)</Item>
 </List>
+where <M>G</M> is a finite group.
 
-<Section><Heading>Basic Compact Lie Group</Heading>
+<Section><Heading>Library of Basic Compact Lie Groups</Heading>
 <#Include Label="OrthogonalGroupOverReal">
 <#Include Label="SpecialOrthogonalGroupOverReal">
 <#Include Label="ElementaryCLGId">

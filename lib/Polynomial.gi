@@ -14,7 +14,7 @@
 #A  LowestDegree( <lpol> )
 ##
   InstallMethod( LowestDegree,
-    "",
+    "returns the lowest degree of a Laurent polynomial <lpol>",
     [ IsLaurentPolynomial ],
     function( lpol )
       if IsZero( lpol ) then
@@ -31,7 +31,7 @@
 #O  Coefficient( <lpol>, <n> )
 ##
   InstallMethod( Coefficient,
-    "",
+    "returns coefficient of degree <n> in Laurent polynomial <lpol>",
     [ IsLaurentPolynomial, IsInt ],
     function( lpol, n )
       local l, h,

@@ -204,7 +204,7 @@
       local list,	# the return list
             dim;	# dimension of the Burnside module (ring)
 
-      dim := FamilyObj( a ).dimension;
+      dim := FamilyObj( a )!.dimension;
       list := ZeroOp( [ 1 .. dim ] );
       list{ a!.ccsIdList } := a!.coeffList;
 

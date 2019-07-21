@@ -115,7 +115,7 @@
 
 #############################################################################
 ##
-#O  AmalgamationSymbol( <C> )
+#F  AmalgamationSymbol( <C> )
 ##
 ##  <#GAPDoc Label="AmalgamationSymbol">
 ##  <ManSection>
