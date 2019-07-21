@@ -22,8 +22,8 @@
   Print( "Done!\n" );
 
   for i in [ 1 .. Size( irrs ) ] do
-    Print( "Computing orbit type lattice and Generating dot file for the ", i ,"-th S4-irreducible representation.... " );
-    dotfile := Concatenation( "demo20_libOrbitType/S4_irr", String( i ), "_latorbt.dot" );
+    PrintFormatted( "Computing orbit type lattice and Generating dot file for the {}-th S4-irreducible representation.... ", i );
+    dotfile := StringFormatted( "demo20_OrbitType/S4_irr{}_latorbt.dot", i );
     irr := irrs[ i ];
     lat_orbtyp := LatticeOrbitTypes( irr );
     DotFileLattice( lat_orbtyp, dotfile );
@@ -32,4 +32,4 @@
     max_orbtyps := MaximalOrbitTypes( irr );
     Print( max_orbtyps, "\n\n" );
   od;
-  Print( "(Please check folder ./demo20_libOrbitType)" );
+  Print( "(Please check folder ./demo20_OrbitType)" );

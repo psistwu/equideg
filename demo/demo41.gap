@@ -29,39 +29,39 @@
   # setup names for CCSs of grp1 (D3)
   Print( "Setup names for CCSs of grp1 (D3).... " );
   ccss_grp1_names := [ "Z_1", "D_1", "Z_3", "D_3" ];
-  ListF( ccss_grp1, ccss_grp1_names, SetName );
+  ListA( ccss_grp1, ccss_grp1_names, SetName );
   Print( "Done!\n" );
 
   # setup LaTeX typesettings for CCSs of grp1 (D3)
   Print( "Setup LaTeX typesettings for CCSs of grp1 (D3).... " );
   ccss_grp1_latex := [ "\\mathbb{Z}_1", "D_1", "\\mathbb{Z}_3", "D_3" ];
-  ListF( ccss_grp1, ccss_grp1_latex, SetLaTeXString );
+  ListA( ccss_grp1, ccss_grp1_latex, SetLaTeXString );
   Print( "Done!\n" );
 
   # setup names for CCSs of grp3 (D3xZ2)
   Print( "Setup names for CCSs of grp4 (D3xZ2).... " );
   ccss_grp3_names := [ "Z_1", "Z_1^p", "D_1", "D_1^z", "Z_3",
       "D_1^p", "Z_3^p", "D_3", "D_3^z", "D_3^p" ];
-  ListF( ccss_grp3, ccss_grp3_names, SetName );
+  ListA( ccss_grp3, ccss_grp3_names, SetName );
   Print( "Done!\n" );
 
   # setup LaTeX typesettings for CCSs of grp3 (D3xZ2)
   Print( "Setup LaTeX typesettings for CCSs of grp4 (D3xZ2).... " );
   ccss_grp3_latex := [ "\\mathbb{Z}_1", "\\mathbb{Z}_1^p", "D_1", "D_1^z",
       "\\mathbb{Z}_3", "D_1^p", "\\mathbb{Z}_3^p", "D_3", "D_3^z", "D_3^p" ];
-  ListF( ccss_grp3, ccss_grp3_latex, SetLaTeXString );
+  ListA( ccss_grp3, ccss_grp3_latex, SetLaTeXString );
   Print( "Done!\n" );
 
   # setup names for CCSs of grp (D3x(D3xZ2))
   Print( "Setup names for CCSs of grp (D3x(D3xZ2)).... " );
   ccss_grp_names := List( ccss_grp, AmalgamationSymbol );
-  ListF( ccss_grp, ccss_grp_names, SetName );
+  ListA( ccss_grp, ccss_grp_names, SetName );
   Print( "Done!\n" );
 
   # setup LaTeX typesettings for CCSs of grp (D3x(D3xZ2))
   Print( "Setup LaTeX typesettings for CCSs of grp (D3x(D3xZ2)).... " );
-  ccss_grp_latex := List( ccss_grp, LaTeXTypesetting );
-  ListF( ccss_grp, ccss_grp_latex, SetLaTeXString );
+  ccss_grp_latex := List( ccss_grp, C -> LaTeXTypesetting( C, "" ) );
+  ListA( ccss_grp, ccss_grp_latex, SetLaTeXString );
   Print( "Done!\n\n\n" );
 
 
@@ -145,10 +145,10 @@
   for k in [ 1 .. 35 ] do
     AppendTo( texfile, "      " );
     AppendTo( texfile, "$", 2*k-1, "$ & " );
-    AppendTo( texfile, "$", LaTeXTypesetting( ccss_grp[2*k-1]), "$ & " );
+    AppendTo( texfile, "$", LaTeXTypesetting( ccss_grp[2*k-1], "" ), "$ & " );
     if ( k < 35 ) then
       AppendTo( texfile, "$", 2*k, "$ & " );
-      AppendTo( texfile, "$", LaTeXTypesetting( ccss_grp[2*k] ), "$ " );
+      AppendTo( texfile, "$", LaTeXTypesetting( ccss_grp[2*k], "" ), "$ " );
     else
       AppendTo( texfile, "& " );
     fi;

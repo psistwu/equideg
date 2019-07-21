@@ -1,17 +1,17 @@
 digraph lattice {
 size = "6,6";
-"rt" [label="Dim", color=white];
+"rt" [label="Dim(Fixed Set)", color=white];
 "rt" -> "s0" [color=white, arrowhead=none];
 "s0" [label="0", color=white];
 "s0" -> "s1" [color=white, arrowhead=none];
 "s1" [label="1", color=white];
 "s1" -> "s2" [color=white, arrowhead=none];
 "s2" [label="2", color=white];
-"1" [label="5", shape=square];
+"1" [label="5", shape=circle];
 { rank=same; "s2" "1"; }
 "2" [label="9", shape=circle];
 { rank=same; "s1" "2"; }
-"3" [label="11", shape=square];
+"3" [label="11", shape=circle];
 { rank=same; "s0" "3"; }
 "2" -> "1" [arrowhead=none];
 "3" -> "2" [arrowhead=none];

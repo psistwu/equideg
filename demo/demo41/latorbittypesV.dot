@@ -1,6 +1,6 @@
 digraph lattice {
 size = "6,6";
-"rt" [label="Dim", color=white];
+"rt" [label="Dim(Fixed Set)", color=white];
 "rt" -> "s0" [color=white, arrowhead=none];
 "s0" [label="0", color=white];
 "s0" -> "s1" [color=white, arrowhead=none];
@@ -17,7 +17,7 @@ size = "6,6";
 "s6" [label="6", color=white];
 "s6" -> "s9" [color=white, arrowhead=none];
 "s9" [label="9", color=white];
-"1" [label="1", shape=square];
+"1" [label="1", shape=circle];
 { rank=same; "s9" "1"; }
 "2" [label="3", shape=circle];
 { rank=same; "s5" "2"; }
@@ -41,9 +41,9 @@ size = "6,6";
 { rank=same; "s2" "11"; }
 "12" [label="18", shape=circle];
 { rank=same; "s4" "12"; }
-"13" [label="22", shape=square];
+"13" [label="22", shape=circle];
 { rank=same; "s3" "13"; }
-"14" [label="26", shape=square];
+"14" [label="26", shape=circle];
 { rank=same; "s3" "14"; }
 "15" [label="28", shape=circle];
 { rank=same; "s1" "15"; }
@@ -57,9 +57,9 @@ size = "6,6";
 { rank=same; "s1" "19"; }
 "20" [label="51", shape=circle];
 { rank=same; "s1" "20"; }
-"21" [label="67", shape=square];
+"21" [label="67", shape=circle];
 { rank=same; "s1" "21"; }
-"22" [label="69", shape=square];
+"22" [label="69", shape=circle];
 { rank=same; "s0" "22"; }
 "2" -> "1" [arrowhead=none];
 "3" -> "1" [arrowhead=none];
