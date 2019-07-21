@@ -123,6 +123,20 @@
 
 #############################################################################
 ##
+#O  SetCCSsAbbrv( <G>, <namelist> )
+##
+  DeclareOperation( "SetCCSsAbbrv",
+      [ IsGroup, IsHomogeneousList ] );
+
+#############################################################################
+##
+#O  SetCCSsLaTeXString( <G>, <namelist> )
+##
+  DeclareOperation( "SetCCSsLaTeXString",
+      [ IsGroup, IsHomogeneousList ] );
+
+#############################################################################
+##
 #A  OrderOfRepresentative( <C> )
 ##
   DeclareAttribute( "OrderOfRepresentative", IsConjugacyClassSubgroupsRep );

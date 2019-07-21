@@ -168,7 +168,7 @@
 
 #############################################################################
 ##
-#O  IdCCSPartialOrder( <id1>, <id2> )
+#F  IdCCSPartialOrder( <id1>, <id2> )
 ##
   InstallGlobalFunction( IdCCSPartialOrder,
     function( id1, id2 )
@@ -204,6 +204,66 @@
       CCSs := ConjugacyClassesSubgroups( G );
 
       return First( CCSs, C -> U in C );
+    end
+  );
+
+#############################################################################
+##
+#O  ViewObj( <C> )
+##
+  InstallMethod( ViewObj,
+    "view CCS with abbrv",
+    [ IsConjugacyClassSubgroupsRep and HasAbbrv ],
+    function( C )
+      Print( StringFormatted( "({})", Abbrv( C ) ) );
+    end
+  );
+
+#############################################################################
+##
+#O  SetCCSsAbbrv( <G>, <namelist> )
+##
+  InstallMethod( SetCCSsAbbrv,
+    "set abbrviations of CCSs for a finite group",
+    [ IsGroup and IsFinite, IsHomogeneousList ],
+    function( G, namelist )
+      local CCSs_G;
+
+      if not ForAll( namelist, IsString ) then
+        Error( "<namelist> must be a list of strings." );
+      fi;
+
+      CCSs_G := ConjugacyClassesSubgroups( G );
+
+      if not ( Length( CCSs_G ) = Length( namelist ) ) then
+        Error( "The number of strings in <namelist> and the the number of CCSs in G must coincide." );
+      fi;
+
+      ListA( CCSs_G, namelist, SetAbbrv );
+    end
+  );
+
+#############################################################################
+##
+#O  SetCCSsLaTeXString( <G>, <namelist> )
+##
+  InstallMethod( SetCCSsLaTeXString,
+    "set LaTeX symbols of CCSs for a finite group",
+    [ IsGroup and IsFinite, IsHomogeneousList ],
+    function( G, namelist )
+      local CCSs_G;
+
+      if not ForAll( namelist, IsString ) then
+        Error( "<namelist> must be a list of strings." );
+      fi;
+
+      CCSs_G := ConjugacyClassesSubgroups( G );
+
+      if not ( Length( CCSs_G ) = Length( namelist ) ) then
+        Error( "The number of strings in <namelist> and the the number of CCSs in G must coincide." );
+      fi;
+
+      ListA( CCSs_G, namelist, SetLaTeXString );
     end
   );
 

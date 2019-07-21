@@ -325,6 +325,7 @@
             C2,
             H1,
             H2,
+            CZ1,
             Z2,
             CZ2,
             name_H2,
@@ -341,6 +342,7 @@
             L_to_LL,
             LL_to_L,
             class,
+            amal,
             proto;
             
       # test if <G> is a direct product of two groups
@@ -368,6 +370,9 @@
       # setup CCS classes
       data := rec( ccsClasses := [ ] );
       x := X( Integers, "x" );
+
+      # define amalgamation template
+      amal := "\\amal{{{{{}}}}}{{{{{}}}}}{{{{{}}}}}{{{{{}}}}}{{{{{}}}}}";
 
       # define <NLxGa> action on <epis> when L=Z_n
       actfunc1 := function( epi, g )
@@ -399,8 +404,7 @@
         H2 := Representative( C2 );
         # take a representative from a given CCS
         if HasAbbrv( C2 ) then
-          name_H2 := ShallowCopy( Abbrv( C2 ) );
-          RemoveCharacters( name_H2, "()" );
+          name_H2 := Abbrv( C2 );
         else
           name_H2 := String( H2 );
         fi;
@@ -436,8 +440,7 @@
             Z2 := Kernel( epi2 );
             CZ2 := First( CCSs_Ga, C -> Z2 in C );
             if HasAbbrv( CZ2 ) then
-              name_Z2 := ShallowCopy( Abbrv( CZ2 ) );
-              RemoveCharacters( name_Z2, "()" );
+              name_Z2 := Abbrv( CZ2 );
             else
               name_Z2 := String( Z2 );
             fi;
@@ -457,15 +460,19 @@
               class	:= rec(
                 is_zero_mode		:= true,
                 order_of_weyl_group	:= 2*OrderOfWeylGroup( C2 ),
-                abbrv			:= StringFormatted( "(SO(2) x {})", name_H2 ),
+                abbrv			:= StringFormatted( "{} x {}", Abbrv( C1 ), name_H2 ),
                 goursat_info		:= rec( C1		:= C1,
+                                                CZ1		:= C1,
                                                 C2		:= C2,
+						CZ2		:= CZ2,
                                                 epi1_list	:= epi1_list,
                                                 epi2_list	:= epi2_list,
                                                 L		:= L		) );
-              proto		:= NewCompactLieGroupConjugacyClassSubgroups(
+              if ForAll( [ C2, CZ2 ], HasLaTeXString ) then
+                class.latex_string := StringFormatted( StringFormatted( amal, "\\mathrm{{SO}}(2)", "", "", "", LaTeXString( C2 ) ) );
+              fi;
+              class.proto	:= NewCompactLieGroupConjugacyClassSubgroups(
                                    IsMatrixGroup, G, class );
-              class.proto	:= proto;
               Add( data.ccsClasses, class );
 
               # H1 = Z1 = O(2)
@@ -481,12 +488,17 @@
               class := rec(
                 is_zero_mode		:= true,
                 order_of_weyl_group	:= OrderOfWeylGroup( C2 ),
-                abbrv			:= StringFormatted( "(O(2) x {})", name_H2 ),
+                abbrv			:= StringFormatted( "{} x {}", Abbrv( C1 ), name_H2 ),
                 goursat_info		:= rec( C1		:= C1,
+                                                CZ1		:= C1,
                                                 C2		:= C2,
+						CZ2		:= CZ2,
                                                 epi1_list	:= epi1_list,
                                                 epi2_list	:= epi2_list,
                                                 L		:= L		) );
+              if ForAll( [ C2, CZ2 ], HasLaTeXString ) then
+                class.latex_string := StringFormatted( StringFormatted( amal, "\\mathrm{{O}}(2)", "", "", "", LaTeXString( C2 ) ) );
+              fi;
               class.proto := NewCompactLieGroupConjugacyClassSubgroups(
                              IsMatrixGroup, G, class );
               Add( data.ccsClasses, class );
@@ -499,12 +511,17 @@
               class := rec(
                 is_zero_mode		:= false,
                 order_of_weyl_group	:= 2*x*OrderOfWeylGroup( C2 ),
-                abbrv			:= StringFormatted( "(Z_{{}} x {})", name_H2 ),
+                abbrv			:= StringFormatted( "{} x {}", "Z_{}", name_H2 ),
                 goursat_info		:= rec( C1		:= C1,
+                                                CZ1		:= C1,
                                                 C2		:= C2,
+						CZ2		:= CZ2,
                                                 epi1_list	:= epi1_list,
                                                 epi2_list	:= epi2_list,
                                                 L		:= L		) );
+              if ForAll( [ C2, CZ2 ], HasLaTeXString ) then
+                class.latex_string := StringFormatted( amal, "\\bbZ_{}", "", "", "", LaTeXString( C2 ) );
+              fi;
               class.proto := NewCompactLieGroupConjugacyClassSubgroups(
                              IsMatrixGroup, G, class );
               Add( data.ccsClasses, class );
@@ -517,12 +534,17 @@
               class := rec(
                 is_zero_mode		:= false,
                 order_of_weyl_group	:= 2*OrderOfWeylGroup( C2 ),
-                abbrv			:= StringFormatted( "(D_{{}} x {})", name_H2 ),
+                abbrv			:= StringFormatted( "{} x {}", "D_{}", name_H2 ),
                 goursat_info		:= rec( C1		:= C1,
+                                                CZ1		:= C1,
                                                 C2		:= C2,
+						CZ2		:= CZ2,
                                                 epi1_list	:= epi1_list,
                                                 epi2_list	:= epi2_list,
                                                 L		:= L		) );
+              if ForAll( [ C2, CZ2 ], HasLaTeXString ) then
+                class.latex_string := StringFormatted( amal, "D_{}", "", "", "", LaTeXString( C2 ) );
+              fi;
               class.proto := NewCompactLieGroupConjugacyClassSubgroups(
                              IsMatrixGroup, G, class );
               Add( data.ccsClasses, class );
@@ -531,6 +553,7 @@
             else
               # H1 = Z_{kl}, Z1 = Z_l
               C1 := CCSs_O2[ k, 1 ];
+              CZ1 := CCSs_O2[ 1, 1 ];
               H1 := Representative( C1 );
               epi1_list := [ GroupHomomorphismByImages( H1, L ) ];
 
@@ -538,13 +561,17 @@
                 is_zero_mode		:= false,
                 order_of_weyl_group	:= 2*x*OrderOfWeylGroup( C2 )/
                                            Number( epi2_list, epi -> Source( epi ) = H2 ),
-                abbrv			:= StringFormatted( "(Z_{{}}|Z_{{}} x {}|{})",
-                                                            name_Z2, name_H2 ),
+                abbrv			:= StringFormatted( "{}|{} x {}|{}", "Z_{}", "Z_{}", name_Z2, name_H2 ),
                 goursat_info		:= rec( C1		:= C1,
+                                                CZ1		:= CZ1,
                                                 C2		:= C2,
+						CZ2		:= CZ2,
                                                 epi1_list	:= epi1_list,
                                                 epi2_list	:= epi2_list,
                                                 L		:= L		) );
+              if ForAll( [ C2, CZ2 ], HasLaTeXString ) then
+                class.latex_string := StringFormatted( amal, "\\bbZ_{}", "\\bbZ_{}", "", LaTeXString( CZ2 ), LaTeXString( C2 ) );
+              fi;
               class.proto := NewCompactLieGroupConjugacyClassSubgroups(
                              IsMatrixGroup, G, class );
               Add( data.ccsClasses, class );
@@ -552,6 +579,7 @@
               if ( k = 2 ) then
                 # H1 = D_{2l}, Z1 = D_l
                 C1 := CCSs_O2[ 2, 2 ];
+		CZ1 := CCSs_O2[ 2, 1 ];
                 H1 := Representative( C1 );
                 epi1_list := [
                   GroupHomomorphismByImages( H1, L, [ L.1, One( L ) ] ),
@@ -562,13 +590,17 @@
                   is_zero_mode		:= false,
                   order_of_weyl_group	:= 2*OrderOfWeylGroup( C2 )/
                                            Number( epi2_list, epi -> Source( epi ) = H2 ),
-                  abbrv			:= StringFormatted( "(D_{{}}|D_{{}} x {}|{})",
-                                                            name_Z2, name_H2 ),
+                  abbrv			:= StringFormatted( "{}|{} x {}|{}", "D_{}", "D_{}", name_Z2, name_H2 ),
                   goursat_info		:= rec( C1		:= C1,
+                                                CZ1		:= CZ1,
                                                 C2		:= C2,
+						CZ2		:= CZ2,
                                                 epi1_list	:= epi1_list,
                                                 epi2_list	:= epi2_list,
                                                 L		:= L		) );
+                if ForAll( [ C2, CZ2 ], HasLaTeXString ) then
+                  class.latex_string := StringFormatted( amal, "D_{}", "D_{}", "", LaTeXString( CZ2 ), LaTeXString( C2 ) );
+                fi;
                 class.proto := NewCompactLieGroupConjugacyClassSubgroups(
                                IsMatrixGroup, G, class );
                 Add( data.ccsClasses, class );
@@ -611,8 +643,7 @@
             Z2 := Kernel( epi2 );
             CZ2 := First( CCSs_Ga, C -> Z2 in C );
             if HasAbbrv( CZ2 ) then
-              name_Z2 := ShallowCopy( Abbrv( CZ2 ) );
-              RemoveCharacters( name_Z2, "()" );
+              name_Z2 := Abbrv( CZ2 );
             else
               name_Z2 := String( Z2 );
             fi;
@@ -621,6 +652,7 @@
             if ( j = 1 ) then
               # H1 = O(2), Z1 = SO(2)
               C1 := CCSs_O2[ 0, 2 ];
+	      CZ1 := CCSs_O2[ 0, 1 ];
               H1 := Representative( C1 );
               epi1_list := [ ];
               epi1 := GroupHomomorphismByFunction( H1, L,
@@ -634,13 +666,17 @@
                 is_zero_mode		:= true,
                 order_of_weyl_group	:= 2*OrderOfWeylGroup( C2 )/
                                            Number( epi2_list, epi -> Source( epi ) = H2 ),
-                abbrv			:= StringFormatted( "(O(2)|SO(2) x {}|{})",
-                                                            name_Z2, name_H2 ),
+                abbrv			:= StringFormatted( "{}|{} x {}|{}", "O(2)", "SO(2)", name_Z2, name_H2 ),
                 goursat_info		:= rec( C1		:= C1,
+						CZ1		:= CZ1,
                                                 C2		:= C2,
+						CZ2		:= CZ2,
                                                 epi1_list	:= epi1_list,
                                                 epi2_list	:= epi2_list,
                                                 L		:= L		) );
+              if ForAll( [ C2, CZ2 ], HasLaTeXString ) then
+                class.latex_string := StringFormatted( StringFormatted( amal, "\\mathrm{{O}}(2)", "\\mathrm{{SO}}(2)", "", LaTeXString( CZ2 ), LaTeXString( C2 ) ) );
+              fi;
               class.proto := NewCompactLieGroupConjugacyClassSubgroups(
                              IsMatrixGroup, G, class );
               Add( data.ccsClasses, class );
@@ -648,6 +684,7 @@
 
             # K = D_{jl}, Z_l (l >= 1)
             C1 := CCSs_O2[ j, 2 ];
+            CZ1 := CCSs_O2[ 1, 1 ];
             H1 := Representative( C1 );
             epi1_list := [ GroupHomomorphismByImages( H1, L ) ];
 
@@ -655,13 +692,17 @@
               is_zero_mode		:= false,
               order_of_weyl_group	:= 2*j*OrderOfWeylGroup( C2 )/
                                            Number( epi2_list, epi -> Source( epi ) = H2 ),
-              abbrv			:= StringFormatted( "(D_{{}}|Z_{{}} x {}|{})",
-                                                            name_Z2, name_H2 ),
+              abbrv			:= StringFormatted( "{}|{} x {}|{}", "D_{}", "Z_{}", name_Z2, name_H2 ),
               goursat_info		:= rec( C1		:= C1,
+						CZ1		:= CZ1,
                                                 C2		:= C2,
+						CZ2		:= CZ2,
                                                 epi1_list	:= epi1_list,
                                                 epi2_list	:= epi2_list,
                                                 L		:= L		) );
+            if ForAll( [ C2, CZ2 ], HasLaTeXString ) then
+              class.latex_string := StringFormatted( amal, "D_{}", "\\bbZ_{}", "", LaTeXString( CZ2 ), LaTeXString( C2 ) );
+            fi;
             class.proto := NewCompactLieGroupConjugacyClassSubgroups(
                            IsMatrixGroup, G, class );
             Add( data.ccsClasses, class );
@@ -678,6 +719,37 @@
     end
   );
 
+#############################################################################
+##
+#O  LaTeXTypesetting( <C>, <str> )
+##
+# InstallOtherMethod( LaTeXTypesetting,
+#   "LaTeX typesetting of CCS of direct product of C x G, where C = O(2) or SO(2) and G is a finite group",
+#   [ IsCompactLieGroupConjugacyClassSubgroupsRep, IsString ],
+#   function( C, str )
+#     local G,
+#           U,
+#           info,
+#           latex_list;
+
+#     G := ActingDomain( C );
+#     if not ( Size( DirectProductDecomposition( G ) ) = 2 ) then
+#       TryNextMethod( );
+#     fi;
+
+#     info := GoursatInfo( C );
+#     CZ1 := ;
+#     latex_list := List( [ infoU.H1, infoU.Z1, infoU.Z2, infoU.H2 ],
+#         S -> LaTeXString( ConjugacyClassSubgroups( S ) ) );
+
+#     return StringFormatted( "\\amal{{{}}}{{{}}}{{{}}}{{{}}}{{{}}}",
+#       latex_list[ 1 ],
+#       latex_list[ 2 ],
+#       str,
+#       latex_list[ 3 ],
+#       latex_list[ 4 ]  );
+#   end
+# );
 
 ##  Part 4: Character and Representation Theory
 

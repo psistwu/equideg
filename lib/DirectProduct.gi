@@ -247,7 +247,7 @@
 #O  LaTeXTypesetting( <C>, <str> )
 ##
   InstallOtherMethod( LaTeXTypesetting,
-    "return LaTeX typesetting of a CCS",
+    "LaTeX typesetting of CCS of direct product of two finite groups",
     [ IsConjugacyClassSubgroupsRep, IsString ],
     function( C, str )
       local G,
@@ -257,6 +257,10 @@
 
       G := ActingDomain( C );
       if not ( Size( DirectProductDecomposition( G ) ) = 2 ) then
+        TryNextMethod( );
+      fi;
+
+      if not IsFinite( G ) then
         TryNextMethod( );
       fi;
 

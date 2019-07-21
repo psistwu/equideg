@@ -64,13 +64,13 @@
   Print( "Setup abbrv for CCSs of <G1> = S4.... " );
   CCSs_G1_abbrv := [ "Z1", "Z2", "D1", "Z3", "V4",
       "D2", "Z4", "D3", "D4", "A4", "S4" ];
-  ListA( CCSs_G1, CCSs_G1_abbrv, SetAbbrv );
+  SetCCSsAbbrv( G1, CCSs_G1_abbrv );
   Print( "Done!\n" );
 
   # setup names of all CCSs of grp2 (D3)
   Print( "Setup names for CCSs of <G2> = D3.... " );
   CCSs_G2_abbrv := [ "Z1", "D1", "Z3", "D3" ];
-  ListA( CCSs_G2, CCSs_G2_abbrv, SetAbbrv );
+  SetCCSsAbbrv( G2, CCSs_G2_abbrv );
   Print( "Done!\n\n" );
 
   # show the amalgamation notation of the CCS
@@ -87,13 +87,13 @@
   CCSs_G1_latexsymbols := [ "\\bbZ_1", "\\bbZ_2", "D_1",
       "\\bbZ_3", "V_4", "D_2", "\\bbZ_4",
       "D_3", "D_4", "A_4", "S_4" ];
-  ListA( CCSs_G1, CCSs_G1_latexsymbols, SetLaTeXString );
+  SetCCSsLaTeXString( G1, CCSs_G1_latexsymbols );
   Print( "Done!\n" );
 
   # setup LaTeX names of all CCSs of grp2 (D3)
   Print( "Setup LaTeX symbols for CCSs of <G2> = D3.... " );
   CCSs_G2_latexsymbols := [ "\\bbZ_1", "D_1", "\\bbZ_3", "D_3" ];
-  ListA( CCSs_G2, CCSs_G2_latexsymbols, SetLaTeXString );
+  SetCCSsLaTeXString( G2, CCSs_G2_latexsymbols );
   Print( "Done!\n\n" );
 
   # show the amalgamation notation of the CCS

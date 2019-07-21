@@ -140,6 +140,10 @@
         SetAbbrv( C, attr.abbrv );
       fi;
 
+      if IsBound( attr.latex_string ) then
+        SetLaTeXString( C, attr.latex_string );
+      fi;
+
       if IsBound( attr.order_of_representative ) then
         SetOrderOfRepresentative( C, attr.order_of_representative );
       fi;
@@ -150,13 +154,63 @@
 
 #############################################################################
 ##
-#O  ViewObj( C )
+#O  SetCCSsAbbrv( <G>, <namelist> )
 ##
-  InstallMethod( ViewObj,
-    "delegates to attribute Abbrv",
-    [ IsCompactLieGroupConjugacyClassSubgroupsRep and HasAbbrv ],
-    function( C )
-      Print( Abbrv( C ) );
+  InstallMethod( SetCCSsAbbrv,
+    "Set abbriviations of CCSs for a compact Lie group",
+    [ IsCompactLieGroup, IsHomogeneousList ],
+    function( G, namelist )
+      local i,
+            class,
+            CCSs_G;
+
+      if not ForAll( namelist, IsString ) then
+        Error( "<namelist> must be a list of strings." );
+      fi;
+
+      CCSs_G := ConjugacyClassesSubgroups( G );
+
+      if not ( Length( CCSs_G!.ccsClasses ) = Length( namelist ) ) then
+        Error( "The length of <namelist> and the length of CCSs in G must coincide." );
+      fi;
+
+      for i in [ 1 .. Length( namelist ) ] do
+        class := CCSs_G!.ccsClasses[ i ];
+        class.abbrv := namelist[ i ];
+        class.proto := NewCompactLieGroupConjugacyClassSubgroups(
+            IsMatrixGroup, G, class );
+      od;
+    end
+  );
+
+#############################################################################
+##
+#O  SetCCSsLaTeXString( <G>, <namelist> )
+##
+  InstallMethod( SetCCSsLaTeXString,
+    "Set LaTeX symbols of CCSs for a compact Lie group",
+    [ IsCompactLieGroup, IsHomogeneousList ],
+    function( G, namelist )
+      local i,
+            class,
+            CCSs_G;
+
+      if not ForAll( namelist, IsString ) then
+        Error( "<namelist> must be a list of strings." );
+      fi;
+
+      CCSs_G := ConjugacyClassesSubgroups( G );
+
+      if not ( Length( CCSs_G!.ccsClasses ) = Length( namelist ) ) then
+        Error( "The number of strings in <namelist> and the the number of CCSs in G must coincide." );
+      fi;
+
+      for i in [ 1 .. Length( namelist ) ] do
+        class := CCSs_G!.ccsClasses[ i ];
+        class.latex_string := namelist[ i ];
+        class.proto := NewCompactLieGroupConjugacyClassSubgroups(
+            IsMatrixGroup, G, class );
+      od;
     end
   );
 
@@ -214,7 +268,7 @@
 
 #############################################################################
 ##
-#U  NewCompactLieGroupConjugacyClassesSubgroups( IsGroup, <G> )
+#U  NewCompactLieGroupConjugacyClassesSubgroups( IsGroup, <G>, <data> )
 ##
   InstallMethod( NewCompactLieGroupConjugacyClassesSubgroups,
     "constructs CCSs of a compact Lie group",
@@ -275,9 +329,11 @@
             cl,
             attr,
             CCSs_ECLG,
-            C1_proto,
             idC1,
+	    C1_proto,
             C1,
+            idCZ1,
+            CZ1,
             H1,
             L,
             epi,
@@ -300,6 +356,11 @@
           idC1[ 1 ] := l*idC1[ 1 ];
           C1 := CCSs_ECLG[ idC1 ];
 
+          CZ1 := cl.goursat_info.CZ1;
+          idCZ1 := ShallowCopy( IdCCS( CZ1 ) );
+          idCZ1[ 1 ] := l;
+          CZ1 := CCSs_ECLG[ idCZ1 ];
+
           epi := GroupHomomorphismByImages(
             Representative( C1 ),
             Representative( C1_proto )
@@ -307,7 +368,9 @@
 
           attr.goursat_info := rec(
             C1		:= C1,
+	    CZ1		:= CZ1,
             C2		:= cl.goursat_info.C2,
+            CZ2		:= cl.goursat_info.CZ2,
             epi1_list	:= epi*cl.goursat_info.epi1_list,
             epi2_list	:= cl.goursat_info.epi2_list,
             L		:= cl.goursat_info.L
@@ -327,6 +390,14 @@
             attr.abbrv := StringFormatted( cl.abbrv, idC1[ 1 ], l );
           else
             attr.abbrv := StringFormatted( cl.abbrv, l );
+          fi;
+        fi;
+
+        if IsBound( cl.latex_string ) then
+          if IsBound( cl.goursat_info ) and ( Order( cl.goursat_info.L ) > 1 ) then
+            attr.latex_string := StringFormatted( cl.latex_string, idC1[ 1 ], l );
+          else
+            attr.latex_string := StringFormatted( cl.latex_string, l );
           fi;
         fi;
 
