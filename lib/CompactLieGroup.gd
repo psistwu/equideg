@@ -20,9 +20,9 @@
 ##  <ManSection>
 ##  <Filt Name="IsCompcatLieGroup" Type="category"/>
 ##  <Description>
-##    This is the category of (infinite) compact Lie group.
-##    Objects in this Category admits the following <E>attribtues</E>
-##    and <E>properties</E>.
+##  This is the category of (infinite) compact Lie group.
+##  Objects in this Category admits the following <E>attribtues</E>
+##  and <E>properties</E>.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
@@ -57,7 +57,7 @@
 ##  <Filt Name="IsCompactLieGroupConjugacyClassSubgroupsRep"
 ##      Type="representation"/>
 ##  <Description>
-##    This is a representation of CCS of (infinite) compact Lie group.
+##  This is a representation of CCS of (infinite) compact Lie group.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
@@ -74,7 +74,7 @@
 ##  <Constr Name="NewCompactLieGroupConjugacyClassSubgroups"
 ##      Arg="IsGroup, G, r"/>
 ##  <Description>
-##    This is the constructor of CCS of (infinite) compact Lie group.
+##  This is the constructor of CCS of (infinite) compact Lie group.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>

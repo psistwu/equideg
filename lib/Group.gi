@@ -120,7 +120,7 @@
   );
 
 
-## Part 2: conjugacy class of subgroups
+## Part 2: Conjugacy Class of Elements
 
 #############################################################################
 ##
@@ -143,6 +143,9 @@
       return Position( CCs, c );
     end
   );
+
+
+## Part 3: Conjugacy Class of Subgroups
 
 #############################################################################
 ##
@@ -201,6 +204,11 @@
             CCSs;	# conjugacy classes of subgroups of <grp>
 
       G := ParentAttr( U );
+
+      if not IsFinite( G ) then
+        TryNextMethod( );
+      fi;
+
       CCSs := ConjugacyClassesSubgroups( G );
 
       return First( CCSs, C -> U in C );

@@ -8,7 +8,6 @@
 ##  This file contains declarations for procedures related to group theory.
 ##
 ##  Todo:
-##    1. Fix the naming of components.
 ##
 
 #############################################################################
@@ -67,17 +66,53 @@
       "generates a dihedral group which consists of 2-by-2 matices." );
 
 
-## Part 2: conjugacy class of subgroups
+## Part 2: Conjugacy Class of Elements
 
 #############################################################################
 ##
 #A  IdCC( <c> )
 ##
+##  <#GAPDoc Label="IdCC">
+##  <ManSection>
+##  <Attr Name="IdCC" Arg="c"/>
+##  <Description>
+##  This is an attribute of a <E>conjugacy class</E> <A>c</A>
+##  of a <E>finite group</E> <A>G</A> which stores its id
+##  with respect to <C>ConjugacyClasses( <A>G</A> )</C>.
+##  The following example illustrates what it does.
+##  <Example>
+##  gap> G := SymmetricGroup( 4 );;
+##  gap> c := (1,2,3)^G;; # take a conjugacy class in &lt;g&gt;
+##  gap> IdCC( c );
+##  4
+##  gap> CCs := ConjugacyClasses( G );;
+##  gap> CCs[ 4 ] = c;
+##  true
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
   DeclareAttribute( "IdCC", IsConjugacyClassGroupRep );
+
+
+## Part 3: Conjugacy Class of Subgroups
 
 #############################################################################
 ##
 #A  IdCCS( <C> )
+##
+##  <#GAPDoc Label="IdCCS">
+##  <ManSection>
+##  <Attr Name="IdCCS" Arg="C"/>
+##  <Description>
+##  This is an attribute of a <E>conjugacy class of subgroups</E>
+##  <A>C</A> of a group <A>G</A> which stores its id with respect to
+##  <C>ConjugacyClassesSubgroups( <A>G</A> )</C>.
+##  The following example illustrates what it does.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 ##
   DeclareAttribute( "IdCCS", IsConjugacyClassSubgroupsRep );
 
@@ -99,7 +134,8 @@
 ##  This alternative of
 ##  <Ref Oper="ConjugacyClassSubgroups" BookName="Reference"/>,
 ##  points to the CCS in
-##  <C>ConjugacyClassesSubgroups(ParentAttr(<A>U</A>))</C>.
+##  <C>ConjugacyClassesSubgroups(ParentAttr(<A>U</A>))</C>
+##  associated to <A>U</A>.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
@@ -203,14 +239,14 @@
 ##  <ManSection>
 ##  <Attr Name="LatticeCCSs" Arg="grp"/>
 ##  <Description>
-##    This attribute contains lattice of CCSs of <A>grp</A>.
-##    Its return object <C>lat</C> admits attribute
-##    <Ref Attr="ConjugacyClassesSubgroups" BookName="Reference"/>
-##    for retriving the underlying CCS list.
-##    In addition, one can call <Ref Oper="DotFileLattice"/>
-##    on <C>lat</C> to export <C>.dot</C> files,
-##    which can be later converted
-##    into <C>.eps</C> or <C>.pdf</C> files.
+##  This attribute contains lattice of CCSs of <A>grp</A>.
+##  Its return object <C>lat</C> admits attribute
+##  <Ref Attr="ConjugacyClassesSubgroups" BookName="Reference"/>
+##  for retriving the underlying CCS list.
+##  In addition, one can call <Ref Oper="DotFileLattice"/>
+##  on <C>lat</C> to export <C>.dot</C> files,
+##  which can be later converted
+##  into <C>.eps</C> or <C>.pdf</C> files.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>

@@ -10,10 +10,12 @@
 <!-- %%									  -->
 
 <Chapter Label="ch:group"><Heading>Group Theory</Heading>
-<Section><Heading>Basic Groups</Heading>
+<Section><Heading>Group</Heading>
 <#Include Label="BasicGroups">
+<#Include Label="IdCC">
 </Section>
 <Section><Heading>Conjugacy Classes Subgroups</Heading>
+<#Include Label="IdCCS">
 <#Include Label="LessThan">
 <#Include Label="OrderOfWeylGroup">
 <#Include Label="nLHnumber">
