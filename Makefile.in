@@ -1,0 +1,18 @@
+SHELL := /bin/bash -O extglob
+
+CC=cc
+GAPARCH=@GAPARCH@
+
+clean:
+	rm -rf bin
+
+distclean: clean
+	rm -rf Makefile
+
+doc:
+	gap -A -q -T < makedocrel.g
+
+cleandoc:
+	rm -f doc/!(*.xml)
+
+.PHONY: clean distclean doc cleandoc
