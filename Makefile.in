@@ -3,16 +3,20 @@ SHELL := /bin/bash -O extglob
 CC=cc
 GAPARCH=@GAPARCH@
 
-clean:
-	rm -rf bin
-
-distclean: clean
-	rm -rf Makefile
+default:
 
 doc:
 	gap -A -q -T < makedocrel.g
 
+cleanbin:
+	rm -rf bin
+
 cleandoc:
 	rm -f doc/!(*.xml)
 
-.PHONY: clean distclean doc cleandoc
+cleanall: cleanbin cleandoc
+
+distclean: cleanall
+	rm -rf Makefile
+
+.PHONY: doc clean cleanbin cleandoc distclean
