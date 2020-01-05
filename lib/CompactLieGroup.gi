@@ -806,6 +806,22 @@
 
 #############################################################################
 ##
+#A  MaximalOrbitTypes(<chi>)
+##
+  InstallMethod(MaximalOrbitTypes,
+    "maximal orbit types associated to compact Lie group character <chi>",
+    [IsCompactLieGroupCharacter],
+    function(chi)
+      local orbtyps;
+
+      orbtyps := ShallowCopy(OrbitTypes(chi));
+      Remove(orbtyps);
+      return MaximalElements(orbtyps);
+    end
+  );
+
+#############################################################################
+##
 #A  LatticeOrbitTypes( <chi> )
 ##
   InstallMethod( LatticeOrbitTypes,

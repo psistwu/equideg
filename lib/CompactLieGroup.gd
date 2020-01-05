@@ -385,6 +385,12 @@
 
 #############################################################################
 ##
+#A  MaximalOrbitTypes( <chi> )
+##
+  DeclareAttribute("MaximalOrbitTypes", IsCompactLieGroupCharacter);
+
+#############################################################################
+##
 #A  LatticeOrbitTypes( <chi> )
 ##
   DeclareAttribute( "LatticeOrbitTypes", IsCompactLieGroupCharacter );

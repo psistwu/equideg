@@ -144,11 +144,12 @@
     "return ccs indices of maximal orbit types of the given representation",
     [ IsCharacter ],
     function( chi )
-      local maxsub;
+      local orbtyps;
 
-      maxsub := ShallowCopy( MaximalSubElementsLattice( LatticeOrbitTypes( chi ) ) );
+      orbtyps := ShallowCopy( OrbitTypes( chi ) );
+      Remove( orbtyps );
 
-      return OrbitTypes( chi ){ Remove( maxsub ) };
+      return MaximalElements( orbtyps );
     end
   );
 
