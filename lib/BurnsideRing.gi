@@ -745,9 +745,9 @@
 
 #############################################################################
 ##
-#O  \[\]( <basis>, <l>, <j> )
+#O  \[\,\]( <basis>, <l>, <j> )
 ##
-  InstallOtherMethod( \[\],
+  InstallOtherMethod( \[\,\],
     "",
     [ CategoryCollections( IsBurnsideRingByCompactLieGroupElement ) and
       IsBurnsideRingByCompactLieGroupBasis, IsInt, IsInt ],

@@ -27,4 +27,22 @@
 
 #############################################################################
 ##
+#O  \[\,\]( <irrs>, <l>, <j> )
+##
+##  <#GAPDoc Label="CompactLieGroupIrrCollectionSelector">
+##  <ManSection>
+##  <Oper Name="\[\,\]"
+##      Arg="irrs, l, j"/>
+##  <Description>
+##    This is the selector of complete list of irreducible representations
+##    of a compact Lie group.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+DeclareOperation( "[,]",
+    [ IsCompactLieGroupIrrCollection, IsInt, IsPosInt ] );
+
+#############################################################################
+##
 #E  DirectProductCLG.gd . . . . . . . . . . . . . . . . . . . . . . ends here

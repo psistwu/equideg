@@ -125,11 +125,11 @@
 
 #############################################################################
 ##
-#O  \[\]( <CCSs>, <l>, <j> )
+#O  \[\,\]( <CCSs>, <l>, <j> )
 ##
 ##  <#GAPDoc Label="CompactLieGroupConjugacyClassesSubgroupsSelector">
 ##  <ManSection>
-##  <Oper Name="\[\]"
+##  <Oper Name="\[\,\]"
 ##      Arg="CCSs, l, j"/>
 ##  <Description>
 ##    This is the selector of list of CCSs of compact Lie group.
@@ -137,8 +137,8 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareOperation( "\[\]",
-      [ IsCompactLieGroupConjugacyClassesSubgroupsRep, IsInt, IsInt ] );
+  DeclareOperation( "[,]",
+      [ IsCompactLieGroupConjugacyClassesSubgroupsRep, IsInt, IsPosInt ] );
 
 #############################################################################
 ##
@@ -320,7 +320,7 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareOperation( "\[\]", [ IsCompactLieGroupIrrCollection, IsInt ] );
+  DeclareOperation( "[]", [ IsCompactLieGroupIrrCollection, IsInt ] );
 
 #############################################################################
 ##

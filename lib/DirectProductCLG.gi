@@ -755,11 +755,11 @@
 
 #############################################################################
 ##
-#O  \[\]( <irrs>, <l>, <j> )
+#O  \[\,\]( <irrs>, <l>, <j> )
 ##
-  InstallOtherMethod( \[\],
+  InstallMethod( \[\,\],
     "",
-    [ IsCompactLieGroupIrrCollection, IsInt, IsInt ],
+    [ IsCompactLieGroupIrrCollection, IsInt, IsPosInt ],
     function( irrs, l, j )
       local G,
             decomp,

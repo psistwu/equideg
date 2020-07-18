@@ -75,7 +75,7 @@
     "for multi-component indices",
     [ IsObject, IsList ],
     function( obj, list )
-      return CallFuncList( \[\], Flat( [ obj, list ] ) );
+      return CallFuncList( \[\,\], Flat( [ obj, list ] ) );
     end
   );
 

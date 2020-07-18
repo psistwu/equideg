@@ -321,9 +321,9 @@
 ##
 #O  \[\]( <CCSs>, <l>, <j> )
 ##
-  InstallMethod( \[\],
+  InstallMethod( \[\,\],
     "CCS selector for compact Lie group",
-    [ IsCompactLieGroupConjugacyClassesSubgroupsRep, IsInt, IsInt ],
+    [ IsCompactLieGroupConjugacyClassesSubgroupsRep, IsInt, IsPosInt ],
     function( CCSs, l, j )
       local G,
             cl,
