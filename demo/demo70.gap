@@ -44,6 +44,6 @@
   Print( bdeg_psi );
 
   # find maximal orbit types of the product
-  max_orbts := MaximalOrbitTypes( prod );
+  max_orbts := MaximalCCSs( prod );
   View( max_orbts );
   Print( "\n" );

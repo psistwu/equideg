@@ -64,4 +64,4 @@
   ccss_s4_latexsymbols := [ "\\bbZ_1", "\\bbZ_2", "D_1",
       "\\bbZ_3", "V_4", "D_2", "\\bbZ_4",
       "D_3", "D_4", "A_4", "S_4" ];
-  SetCCSsLaTeXSymbol( s4, ccss_s4_latexsymbols );
+  SetCCSsLaTeXString( s4, ccss_s4_latexsymbols );
