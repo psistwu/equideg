@@ -1,0 +1,22 @@
+version: '3'
+services:
+  equideg-test:
+    image: ${IMAGE}
+    container_name: "equideg-test"
+    volumes:
+      - "..:${GAP_HOME}/pkg/equideg"
+      - "..:/srv/equideg"
+    command:
+      [
+        "gap",
+        "-A",
+        "-x",
+        "80",
+        "-m",
+        "100m",
+        "-o",
+        "1g",
+        "-K",
+        "2g",
+        "equideg/tst/testall.g"
+      ]
