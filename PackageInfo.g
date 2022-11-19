@@ -38,7 +38,7 @@ Subtitle := "GAP package for equivariant degree computation",
 ##  See '?Extending: Version Numbers' in GAP help for an explanation
 ##  of valid version numbers. For an automatic package distribution update
 ##  you must provide a new version number even after small changes.
-Version := "0.3.0",
+Version := "0.4.0",
 
 ##  Release date of the current version in dd/mm/yyyy format.
 Date := "26/12/2018",
