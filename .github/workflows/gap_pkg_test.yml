@@ -1,14 +1,14 @@
-name: GAP package test
+name: Regular test
 
 on: [push]
 
 jobs:
-  build:
+  test:
 
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
-    - name: run test in docker test env
+    - name: run test in docker env
       run: |
         docker-compose -f deployment/docker-compose-test.yml up --exit-code-from equideg-test
