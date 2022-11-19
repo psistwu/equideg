@@ -579,7 +579,7 @@
               if ( k = 2 ) then
                 # H1 = D_{2l}, Z1 = D_l
                 C1 := CCSs_O2[ 2, 2 ];
-		CZ1 := CCSs_O2[ 2, 1 ];
+		            CZ1 := CCSs_O2[ 2, 1 ];
                 H1 := Representative( C1 );
                 epi1_list := [
                   GroupHomomorphismByImages( H1, L, [ L.1, One( L ) ] ),
@@ -718,6 +718,231 @@
       return NewCompactLieGroupConjugacyClassesSubgroups( IsGroup, G, data );
     end
   );
+
+
+########################################################################
+##
+#A  ConjugacyClassesSubgroups( <G> )
+##
+  InstallMethod( ConjugacyClassesSubgroups,
+    "return CCS list of SO(2)xGamma",
+    [ IsCompactLieGroup and HasDirectProductInfo ],
+    function( G )
+      local decomp,		# direct product decomposition of <G>
+            Ga,			# finite group
+            SO2,			# O(2)
+            CCSs_Ga,		# CCS list of gamma
+            CCSs_SO2,		# CCS list of SO(2)
+            
+            # The following local variables are related to CCS classes
+            data,
+            epis,
+            epi2_classes,
+            epi2_list,
+            epi2,
+            epi1_list,
+            epi1,
+            C1,
+            C2,
+            H1,
+            H2,
+            CZ1,
+            Z2,
+            CZ2,
+            name_H2,
+            name_Z2,
+            L,
+            NL,
+            NLxGa,
+            actfunc,
+            x,
+            k,
+            j,
+            LL,
+            L_to_LL,
+            LL_to_L,
+            class,
+            amal,
+            proto;
+            
+      # test if <G> is a direct product of two groups
+      decomp := DirectProductInfo( G ).groups;
+      if not ( Length( decomp ) = 2 ) then
+        TryNextMethod( );
+      fi;
+
+      # test if the first component is SO(2)
+      SO2 := decomp[ 1 ];
+      if not ( IdElementaryCLG( SO2 ) = [ 1, 2 ] ) then
+        TryNextMethod( );
+      fi;
+
+      # test if the second component is a finite group
+      Ga := decomp[ 2 ];
+      if not ( IsFinite( Ga ) ) then
+        TryNextMethod( );
+      fi;
+
+      # objectify CCSs of the group
+      CCSs_SO2 := ConjugacyClassesSubgroups( SO2 );
+      CCSs_Ga := ConjugacyClassesSubgroups( Ga );
+
+      # setup CCS classes
+      data := rec( ccsClasses := [] );
+      x := X( Integers, "x" );
+
+      # define amalgamation template
+      amal := "\\amal{{{{{}}}}}{{{{{}}}}}{{{{{}}}}}{{{{{}}}}}{{{{{}}}}}";
+
+      # define <NLxGa> action on <epis> when L=Z_n
+      actfunc := function( epi, g )
+        local dg,
+              iso_H2;
+
+        dg := DirectProductDecomposition( NLxGa, g );
+        iso_H2 := ConjugatorIsomorphism( Source( epi ), dg[ 2 ] );
+
+        return InverseGeneralMapping( iso_H2 )*epi;
+      end;
+
+
+      for C2 in CCSs_Ga do
+        H2 := Representative( C2 );
+        # take a representative from a given CCS
+        if HasAbbrv( C2 ) then
+          name_H2 := Abbrv( C2 );
+        else
+          name_H2 := String( H2 );
+        fi;
+
+        for k in DivisorsInt( Order( H2 ) ) do
+          # when L is a cyclic group
+          L := pCyclicGroup( k );
+
+          # find all epimorphisms from H2 to L
+          epis := [ ];
+          for H2 in C2 do
+            Append( epis, GQuotients( H2, L ) );
+          od;
+            
+          if not IsEmpty( epis ) then
+            epis := ListX( epis, AllAutomorphisms( L ), \* );
+
+            # Take NL to be the trivial subgroup of L
+            NL := TrivialSubgroup( L );
+
+            # Take the direct product of <NL> and <Ga>
+            NLxGa := DirectProduct( NL, Ga );
+
+            # divide epimorphisms into conjugacy classes
+            epi2_classes := Orbits( NLxGa, epis, actfunc );
+          else
+            epi2_classes := [ ];
+          fi;
+
+          for epi2_list in epi2_classes do
+            epi2 := Representative( epi2_list );
+            Z2 := Kernel( epi2 );
+            CZ2 := First( CCSs_Ga, C -> Z2 in C );
+            if HasAbbrv( CZ2 ) then
+              name_Z2 := Abbrv( CZ2 );
+            else
+              name_Z2 := String( Z2 );
+            fi;
+
+            # L = Z_1
+            if ( k = 1 ) then
+              # H1 = Z1 = SO(2)
+              C1 := CCSs_SO2[ 0, 1 ];
+              H1 := Representative( C1 );
+              epi1_list := [ ];
+              epi1 := GroupHomomorphismByFunction( H1, L,
+                  g -> One( pCyclicGroup( 1 ) ),
+                  false, y -> One( Representative( CCSs_SO2[ 0, 1 ] ) ) );
+              SetKernelOfMultiplicativeGeneralMapping( epi1, H1 );
+              Add( epi1_list, epi1 );
+              
+              class	:= rec(
+                is_zero_mode := true,
+                order_of_weyl_group	:= OrderOfWeylGroup( C2 ),
+                abbrv := StringFormatted( "{} x {}", Abbrv( C1 ), name_H2 ),
+                goursat_info := rec( C1 := C1,
+                                     CZ1 := C1,
+                                     C2 := C2,
+						                                    CZ2		:= CZ2,
+                                                epi1_list	:= epi1_list,
+                                                epi2_list	:= epi2_list,
+                                                L		:= L		) );
+              if ForAll( [ C2, CZ2 ], HasLaTeXString ) then
+                class.latex_string := StringFormatted( StringFormatted( amal, "\\mathrm{{SO}}(2)", "", "", "", LaTeXString( C2 ) ) );
+              fi;
+              class.proto	:= NewCompactLieGroupConjugacyClassSubgroups(
+                                   IsMatrixGroup, G, class );
+              Add( data.ccsClasses, class );
+
+              # H1 = Z1 = Z_l
+              C1 := CCSs_SO2[ 1, 1 ];
+              H1 := Representative( C1 );
+              epi1_list := [ GroupHomomorphismByImagesNC( H1, L ) ];
+
+              class := rec(
+                is_zero_mode		:= false,
+                order_of_weyl_group	:= x*OrderOfWeylGroup( C2 ),
+                abbrv			:= StringFormatted( "{} x {}", "Z_{}", name_H2 ),
+                goursat_info		:= rec( C1		:= C1,
+                                                CZ1		:= C1,
+                                                C2		:= C2,
+						CZ2		:= CZ2,
+                                                epi1_list	:= epi1_list,
+                                                epi2_list	:= epi2_list,
+                                                L		:= L		) );
+              if ForAll( [ C2, CZ2 ], HasLaTeXString ) then
+                class.latex_string := StringFormatted( amal, "\\bbZ_{}", "", "", "", LaTeXString( C2 ) );
+              fi;
+              class.proto := NewCompactLieGroupConjugacyClassSubgroups(
+                             IsMatrixGroup, G, class );
+              Add( data.ccsClasses, class );
+
+            # L = Z_k (k>1)
+            else
+              # H1 = Z_{kl}, Z1 = Z_l
+              C1 := CCSs_SO2[ k, 1 ];
+              CZ1 := CCSs_SO2[ 1, 1 ];
+              H1 := Representative( C1 );
+              epi1_list := [ GroupHomomorphismByImages( H1, L ) ];
+
+              class := rec(
+                is_zero_mode		:= false,
+                order_of_weyl_group	:= x*OrderOfWeylGroup( C2 )/
+                                           Number( epi2_list, epi -> Source( epi ) = H2 ),
+                abbrv			:= StringFormatted( "{}|{} x {}|{}", "Z_{}", "Z_{}", name_Z2, name_H2 ),
+                goursat_info		:= rec( C1		:= C1,
+                                                CZ1		:= CZ1,
+                                                C2		:= C2,
+						CZ2		:= CZ2,
+                                                epi1_list	:= epi1_list,
+                                                epi2_list	:= epi2_list,
+                                                L		:= L		) );
+              if ForAll( [ C2, CZ2 ], HasLaTeXString ) then
+                class.latex_string := StringFormatted( amal, "\\bbZ_{}", "\\bbZ_{}", "", LaTeXString( CZ2 ), LaTeXString( C2 ) );
+              fi;
+              class.proto := NewCompactLieGroupConjugacyClassSubgroups(
+                             IsMatrixGroup, G, class );
+              Add( data.ccsClasses, class );
+            fi;
+          od;
+        od;
+      od;
+
+      # sort ccs_classes
+      PSort( data.ccsClasses, { cl1, cl2 } -> cl1.proto < cl2.proto );
+      StableSort( data.ccsClasses, { cl1, cl2 } ->
+          OrderOfRepresentative( cl1.proto ) < OrderOfRepresentative( cl2.proto ) );
+
+      return NewCompactLieGroupConjugacyClassesSubgroups( IsGroup, G, data );
+    end
+  );
+
 
 #############################################################################
 ##
