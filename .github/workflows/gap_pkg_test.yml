@@ -1,0 +1,14 @@
+name: GAP package test
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: run test in docker test env
+      run: |
+        docker-compose -f deployment/docker-compose-test.yml --exit-code-from equideg-test
