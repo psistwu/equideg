@@ -2,10 +2,8 @@ version: '3'
 services:
   gap-equideg-test:
     image: ${IMAGE}
-    container_name: "equideg-test"
     volumes:
-      - "..:${GAP_HOME}/pkg/equideg"
-      - "..:/srv/equideg"
+      - "${HOST_PACKAGE_DIR}:${CONTAINER_PACKAGE_DIR}"
     command:
       [
         "gap",

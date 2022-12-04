@@ -5,7 +5,8 @@ services:
     ports:
       - "8888:8888"
     volumes:
-      - "..:${GAP_HOME}/pkg/equideg"
+      - "${HOST_PACKAGE_DIR}:${CONTAINER_PACKAGE_DIR}"
+      - "${HOST_EXAMPLE_DIR}:${CONTAINER_EXAMPLE_DIR}"
     command:
       [
         "jupyter",
