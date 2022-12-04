@@ -22,3 +22,12 @@ gap> Display(2*(a + b));
 Erng( <group with 1 generators> ) element:
 2	(1,1)	Z_1
 2	(0,1)	SO(2)
+
+# test inverse
+gap> Display(-a);
+Erng( <group with 1 generators> ) element:
+-1	(0,1)	SO(2)
+gap> Display(a-b);
+Erng( <group with 1 generators> ) element:
+-1	(1,1)	Z_1
+1	(0,1)	SO(2)
