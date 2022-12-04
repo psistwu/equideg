@@ -361,88 +361,6 @@
   InstallMethod( \*,
     "multiplication in a Euler ring",
     IsIdenticalObj,
-    [ IsEulerRingByFiniteGroupElement,
-      IsEulerRingByFiniteGroupElement  ],
-    function( a, b )
-      local fam,		# family of Euler ring element
-            cat,		# category of Euler ring element
-            G,			# group
-            A,			# Euler ring
-            CCSs,		# CCSs of G
-            basis,		# basis of Euler ring
-            idCa,		# id of CCS a (when a is in the basis )
-            idCb,		# id of CCS b (when b is in the basis )
-            Ca,			# CCS of a (when a is in the basis)
-            Cb,			# CCS of b (when b is in the basis)
-            ccs_list,		# ccs list of the product
-            ccs_id_list,	# ccs id list of the product
-            coeff_list,		# coefficient list of the product
-            coeff,		# a coefficient in the product
-            i, j,		# indices
-            Ci, Cj;		# i-th and j-th CCSs
-
-      fam := FamilyObj( a );
-      cat := IsEulerRingByFiniteGroupElement;
-
-      G := fam!.group;
-      A := fam!.burnsideRing;
-      CCSs := fam!.CCSs;
-      basis := Basis( A );
-
-      if IsEulerRingGenerator( a ) and IsEulerRingGenerator( b ) then
-        idCa	:= a!.ccsIdList[ 1 ];
-        idCb	:= b!.ccsIdList[ 1 ];
-        Ca	:= a!.ccsList[ 1 ];
-        Cb	:= b!.ccsList[ 1 ];
-
-        ccs_list := [ ];
-        ccs_id_list := [ ];
-        coeff_list := [ ];
-
-        for i in Reversed( [ 1 .. Minimum( idCa, idCb ) ] ) do
-          Ci := CCSs[ i ];
-          coeff := nLHnumber( Ci, Ca ) * OrderOfWeylGroup( Ca ) *
-                   nLHnumber( Ci, Cb ) * OrderOfWeylGroup( Cb );
-
-          if IsZero( coeff ) then
-            continue;
-          fi;
-
-          for j in [ 1 .. Size( ccs_list ) ] do
-            Cj := ccs_list[ j ];
-            coeff := coeff - nLHnumber( Ci, Cj )*coeff_list[ j ];
-          od;
-
-          if not IsZero( coeff ) then
-            Add( ccs_list, Ci, 1 );
-            Add( ccs_id_list, i, 1 );
-            Add( coeff_list, coeff, 1 );
-          fi;
-        od;
-        coeff_list := ListN( coeff_list, List( ccs_list, OrderOfWeylGroup ), \/ );
-        coeff_list := List( coeff_list, LeadingCoefficient );
-
-        return NewEulerRingElement( cat,
-          rec( fam		:= fam,
-               ccs_list		:= ccs_list,
-               ccs_id_list 	:= ccs_id_list,
-               coeff_list 	:= coeff_list   )
-        );
-      else
-        return Sum( ListX( ToSparseList( a ), ToSparseList( b ),
-          { x, y } -> x[ 2 ] * y[ 2 ] * ( basis[ x[ 1 ] ] * basis[ y[ 1 ] ] )
-        ) );
-      fi;
-    end
-  );
-
-#############################################################################
-##
-#O  \*( <a>, <b> )
-##
-  InstallMethod( \*,
-    "multiplication in a Euler ring",
-    IsIdenticalObj,
     [ IsEulerRingByCompactLieGroupElement,
       IsEulerRingByCompactLieGroupElement  ],
     function( a, b )
@@ -571,12 +489,11 @@
 
 #############################################################################
 ##
-#U  NewEulerRing( IsEulerRingByFiniteGroup and
-#U      IsEulerRingByCompactLieGroup, <r> )
+#U  NewEulerRing( IsEulerRingByCompactLieGroup, <r> )
 ##
   InstallMethod( NewEulerRing,
     "create a Euler ring induced by a small group",
-    [ IsEulerRingByFiniteGroup and IsEulerRingByCompactLieGroup,
+    [ IsEulerRingByCompactLieGroup,
       IsRecord ],
     function( filt, r )
       local G,		# the group
@@ -610,82 +527,6 @@
 
       # other attributes related to its Euler ring sturcture
       SetUnderlyingGroup( A, G );
-
-      return A;
-    end
-  );
-
-#############################################################################
-##
-#A  EulerRing( <G> )
-##
-  InstallMethod( EulerRing,
-    "This attribute contains the Euler ring induced by finite group <G>",
-    [ IsGroup and IsFinite ],
-    function( G )
-      local CCSs,	# CCSs of <G>
-            d,		# size of <CCSs>
-            fam_elmt,   # family of Euler ring elements
-            cat_elmt,	# category of Euler ring elements
-            fam,	# family of the Euler ring
-	    cat,	# category of the Euler ring
-            A,		# the Euler ring
-            zero,	# zero of the Euler ring
-            basis;	# basis of the module (ring)
-
-      # extract info of <G>
-      CCSs	:= ConjugacyClassesSubgroups( G );
-      d		:= Size( CCSs );
-
-      # family and category of Euler ring element
-      cat_elmt := IsEulerRingByFiniteGroupElement;
-      fam_elmt := NewFamily(
-        StringFormatted( "EulerRing( {} )Family", String( G ) ),
-        cat_elmt
-      );
-
-      # family and category of the Euler ring
-      cat := IsEulerRingByFiniteGroup;
-      fam := CollectionsFamily( fam_elmt );
-
-      # construct the Euler ring
-      A := NewEulerRing(
-        cat,
-        rec( group	:= G,
-             fam	:= fam )
-      );
-
-      # generate zero of the Euler ring
-      zero := NewEulerRingElement(
-        cat_elmt,
-        rec( fam		:= fam_elmt,
-             ccs_list		:= [ ],
-             ccs_id_list	:= [ ],
-             coeff_list		:= [ ]       )
-      );
-
-      # generate the basis of the Euler ring
-      basis := List( [ 1 .. d ],
-        i -> NewEulerRingElement(
-          cat_elmt,
-          rec( fam		:= fam_elmt,
-               ccs_list		:= [ CCSs[ i ] ],
-               ccs_id_list	:= [ i ],
-               coeff_list	:= [ 1 ]          )
-        )
-      );
-
-      # other attributes related to its module structure
-      SetDimension( A, d );
-      SetIsFiniteDimensional( A, true );
-      SetBasis( A, basis );
-
-      # other attributes related to its Euler ring sturcture
-      SetZeroAttr( fam_elmt, zero );
-      SetZeroAttr( A, zero );
-      SetOneImmutable( fam_elmt, basis[ d ] );
-      SetOneImmutable( A, basis[ d ] );
-      SetGeneratorsOfRing( A, basis );
 
       return A;
     end
@@ -833,71 +674,6 @@
 #A  BasicDegree( <chi> )
 ##
   InstallMethod( BasicDegree,
-    "return the basic degree associated to finite group character <chi>",
-    [ IsCharacter ],
-    function( chi )
-      local G,			# group
-            CCSs,		# CCSs
-            A,			# Euler ring
-            orbts,		# orbit types
-            coeff,		# coefficent
-            j,			# index
-            n,			# dimension factor
-            Oi, Oj,		# orbit types
-            ccs_list,		# CCS list of basic degree
-            ccs_id_list,	# CCS id list of basic degree
-            coeff_list;		# coefficient list of basic degree
-
-      if not IsIrreducibleCharacter( chi ) then
-        TryNextMethod( );
-      fi;
-
-      G := UnderlyingGroup( chi );
-      CCSs := ConjugacyClassesSubgroups( G );
-      A := EulerRing( G );
-      orbts := OrbitTypes( chi );
-
-      if not ( SchurIndicator( chi, 2 ) = 1 ) then
-        return OneImmutable( A );
-      fi;
-
-      ccs_list := [ ];
-      ccs_id_list := [ ];
-      coeff_list := [ ];
-
-      for Oi in Reversed( orbts ) do
-        coeff := (-1)^DimensionOfFixedSet( chi, Oi );
-        for j in [ 1 .. Size( ccs_list ) ] do
-          Oj := ccs_list[ j ];
-          coeff := coeff - coeff_list[ j ]*nLHnumber( Oi, Oj );
-        od;
-
-        if not IsZero( coeff ) then
-          Add( ccs_list, Oi, 1 );
-          Add( ccs_id_list, IdCCS( Oi ), 1 );
-          Add( coeff_list, coeff, 1 );
-        fi;
-      od;
-
-      coeff_list := ListN( coeff_list,
-          List( ccs_list, OrderOfWeylGroup ), \/ );
-      coeff_list := List( coeff_list, LeadingCoefficient );
-
-      return NewEulerRingElement(
-        IsEulerRingByFiniteGroupElement,
-        rec( fam		:= ElementsFamily( FamilyObj( A ) ),
-             ccs_list		:= ccs_list,
-             ccs_id_list	:= ccs_id_list,
-             coeff_list		:= coeff_list                       )
-      );
-    end
-  );
-
-#############################################################################
-##
-#A  BasicDegree( <chi> )
-##
-  InstallMethod( BasicDegree,
     "return the Basic Degree associated to compact Lie group character <chi>",
     [ IsCompactLieGroupCharacter ],
     function( chi )
@@ -963,7 +739,7 @@
   InstallMethod( ViewString,
     "view string of a Euler ring",
     [ IsEulerRing ],
-    A -> StringFormatted( "Brng( {} )", ViewString( UnderlyingGroup( A ) ) )
+    A -> StringFormatted( "Erng( {} )", ViewString( UnderlyingGroup( A ) ) )
   );
 
 #############################################################################
