@@ -107,3 +107,199 @@
 ##  <#/GAPDoc>
 ##
   DeclareOperation( "ToSparseList", [ IsEulerRingElement ] );
+
+#############################################################################
+##
+#O  MaximalCCSs( <a> )
+##
+##  <#GAPDoc Label="MaximalCCSs">
+##  <ManSection>
+##  <Oper Name="MaximalOrbitTypes"
+##      Arg="a"/>
+##  <Description>
+##    This operation returns the maximal CCSs in <A>a</A>.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+  DeclareOperation( "MaximalCCSs", [ IsEulerRingElement ] );
+
+
+##  Part 2: Brunside Ring
+
+#############################################################################
+##
+#C  IsEulerRing
+##
+##  <#GAPDoc Label="IsEulerRing">
+##  <ManSection>
+##  <Filt Type="category" Name="IsEulerRing"/>
+##  <Description>
+##    This is the category of Euler ring.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+  DeclareCategory( "IsEulerRing",
+      CategoryCollections( IsEulerRingElement ) and
+      IsRingWithOne and
+      IsFreeLeftModule );
+
+#############################################################################
+##
+#C  IsEulerRingByFiniteGroup
+##
+##  <#GAPDoc Label="IsEulerRingByFiniteGroup">
+##  <ManSection>
+##  <Filt Type="category" Name="IsEulerRingByFiniteGroup"/>
+##  <Description>
+##    This is the category of Euler ring induced by a finite group.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+  DeclareCategory( "IsEulerRingByFiniteGroup",
+      IsEulerRing and
+      CategoryCollections( IsEulerRingByFiniteGroupElement ) );
+
+#############################################################################
+##
+#C  IsEulerRingByCompactLieGroup
+##
+  DeclareCategory( "IsEulerRingByCompactLieGroup",
+      IsEulerRing and
+      CategoryCollections( IsEulerRingByCompactLieGroupElement ) );
+
+#############################################################################
+##
+#U  NewEulerRing( IsEulerRing, <r> )
+##
+##  <#GAPDoc Label="NewEulerRing">
+##  <ManSection>
+##  <Constr Name="NewEulerRing" Arg="filt, r"/>
+##  <Description>
+##  constructs a Euler ring object induced by group <A>r.group</A>.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+  DeclareConstructor( "NewEulerRing", [ IsEulerRing, IsRecord ] );
+
+#############################################################################
+##
+#A  EulerRing( <G> )
+##
+##  <#GAPDoc Label="EulerRing">
+##  <ManSection>
+##  <Attr Name="EulerRing" Arg="G"/>
+##  <Description>
+##  This is an attribute of a group <A>G</A> which
+##  contains the induced Euler ring <E>A</E>.
+##  The additive and multiplicative identities of <E>A</E>
+##  are stored in attributes
+##  <Ref BookName="Reference" Attr="ZeroImmutable"/>
+##  and <Ref BookName="Reference" Attr="OneImmutable"/>,
+##  respectively.
+##  Here is an example of creating a Euler ring
+##  induced by a finite group and printing
+##  its additive and multiplicative idenities.
+##  <Example>
+##  gap> G := SymmetricGroup( 4 );
+##  Sym( [ 1 .. 4 ] )
+##  gap> A := EulerRing( G );
+##  Brng( Sym( [ 1 .. 4 ] ) )
+##  gap> Zero(A);
+##  &lt;&gt; in Brng( Sym( [ 1 .. 4 ] ) )
+##  gap> One(A);
+##  &lt;1(11)&gt; in Brng( Sym( [ 1 .. 4 ] ) )
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+  DeclareAttribute( "EulerRing", IsGroup );
+
+#############################################################################
+##
+#A  Basis( <A> )
+##
+##  <#GAPDoc Label="brng_Basis">
+##  <ManSection>
+##  <Attr Name="Basis" Label="Euler ring" Arg="A"/>
+##  <Description>
+##  This is an attribute of a Euler ring <A>A</A>
+##  which stores its basis.
+##  Here is an example of selecting certain element
+##  in the basis of <A>A</A> induced by a finite group.
+##  <Example>
+##  gap> B := Basis( A );;
+##  gap> b := B[2];
+##  &lt;1(2)&gt; in Brng( Sym( [ 1 .. 4 ] ) )
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+
+#############################################################################
+##
+#A  UnderlyingGroup( <A> )
+##
+##  <#GAPDoc Label="brng_UnderlyingGroup">
+##  <ManSection>
+##  <Attr Name="UnderlyingGroup" Label="Euler ring" Arg="A"/>
+##  <Description>
+##    This is an attribute of a Euler ring <A>A</A>
+##    which contains the group <E>G</E> from which <A>A</A>
+##    is induced.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+  DeclareAttribute( "UnderlyingGroup", IsEulerRing );
+
+#############################################################################
+##
+#P  IsEulerRingByCompactLieGroupBasis
+##
+  DeclareProperty( "IsEulerRingByCompactLieGroupBasis",
+      CategoryCollections( IsEulerRingByCompactLieGroupElement ) );
+
+#############################################################################
+##
+#U  NewEulerRingByCompactLieGroupBasis(
+#U      IsEulerRingByCompactLieGroupElement, <r> )
+##
+  DeclareConstructor( "NewEulerRingByCompactLieGroupBasis",
+      [ IsEulerRingByCompactLieGroup, IsRecord ] );
+
+
+##  Part 3: Other Aspects
+
+#############################################################################
+##
+#A  BasicDegree( <chi> )
+##
+##  <#GAPDoc Label="BasicDegree">
+##  <ManSection>
+##  <Attr Name="BasicDegree" Arg="chi"/>
+##  <Description>
+##  This is an attribute of a character <A>chi</A>
+##  which stores the associated basic degree.
+##  Here is an example.
+##  <Example>
+##  gap> G := SymmetricGroup(4);;
+##  gap> chi := Irr(G)[3];
+##  Character( CharacterTable( Sym( [ 1 .. 4 ] ) ), [ 2, 0, 2, -1, 0 ] )
+##  gap> BasicDegree(chi);
+##  &lt;1(5)-2(9)+1(11)&gt; in Brng( Sym( [ 1 .. 4 ] ) )
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+  # DeclareAttribute( "BasicDegree", IsVirtualCharacter );
+  # DeclareAttribute( "BasicDegree", IsCompactLieGroupVirtualCharacter );
+
+
+#############################################################################
+##
+#E  EulerRing.gd . . . . . . . . . . . . . . . . . . . . . . . . ends here
