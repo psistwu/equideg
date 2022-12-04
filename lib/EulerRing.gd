@@ -146,23 +146,6 @@
 
 #############################################################################
 ##
-#C  IsEulerRingByFiniteGroup
-##
-##  <#GAPDoc Label="IsEulerRingByFiniteGroup">
-##  <ManSection>
-##  <Filt Type="category" Name="IsEulerRingByFiniteGroup"/>
-##  <Description>
-##    This is the category of Euler ring induced by a finite group.
-##  </Description>
-##  </ManSection>
-##  <#/GAPDoc>
-##
-  DeclareCategory( "IsEulerRingByFiniteGroup",
-      IsEulerRing and
-      CategoryCollections( IsEulerRingByFiniteGroupElement ) );
-
-#############################################################################
-##
 #C  IsEulerRingByCompactLieGroup
 ##
   DeclareCategory( "IsEulerRingByCompactLieGroup",
