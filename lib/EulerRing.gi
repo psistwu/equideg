@@ -388,7 +388,7 @@
       cat := IsEulerRingByCompactLieGroupElement;
 
       G := fam!.group;
-      A := fam!.burnsideRing;
+      A := fam!.ring;
       CCSs := fam!.CCSs;
       basis := Basis( A );
 
@@ -471,7 +471,7 @@
             C,
             n;
 
-      A := FamilyObj( a )!.burnsideRing;
+      A := FamilyObj( a )!.ring;
 
       ccs_list := ShallowCopy( a!.ccsList );
       C := One( A )!.ccsList[ 1 ];
@@ -520,7 +520,7 @@
       fam_elmt!.group		:= G;
       fam_elmt!.CCSs		:= CCSs;
       fam_elmt!.dimension	:= d;
-      fam_elmt!.burnsideRing	:= A;
+      fam_elmt!.ring	:= A;
 
       # other attributes related to its module structure
       SetLeftActingDomain( A, Integers );
@@ -548,7 +548,7 @@
             G,
             basis;
 
-      A := r.burnside_ring;
+      A := r.ring;
       G := UnderlyingGroup( A );
 
       fam := FamilyObj( A );
@@ -581,9 +581,6 @@
       G := fam!.group;
       CCSs := ConjugacyClassesSubgroups( G );
       C := CCSs[ l, j ];
-      if ( Degree( OrderOfWeylGroup( C ) ) > 0 ) then
-        return fail;
-      fi;
 
       return NewEulerRingElement(
         IsEulerRingByCompactLieGroupElement,
@@ -647,7 +644,7 @@
       # generate the basis of the Euler ring
       basis := NewEulerRingByCompactLieGroupBasis(
         IsEulerRingByCompactLieGroup,
-        rec( burnside_ring := A )
+        rec( ring := A )
       );
 
       # other attributes related to its module structure
@@ -778,7 +775,7 @@
             fam_elmt;
 
       fam_elmt := ElementsFamily( FamilyObj( basis ) );
-      A := fam_elmt!.burnsideRing;
+      A := fam_elmt!.ring;
 
       return StringFormatted( "Basis( {} )", ViewString( A ) );
     end
