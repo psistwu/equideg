@@ -404,7 +404,8 @@
         coeff_list := [ ];
 
         if Degree( OrderOfWeylGroup( Ca ) ) > 0 and Degree( OrderOfWeylGroup( Cb ) ) > 0 then
-          Print("Two 1-dimensional case");
+          # two 1-dimensional case
+          ;
         elif Degree( OrderOfWeylGroup( Ca ) ) = 0 and Degree( OrderOfWeylGroup( Cb ) ) = 0 then
           # two 0-dimensional case
           l := Gcd( idCa[ 1 ], idCb[ 1 ] );
@@ -446,8 +447,9 @@
           coeff_list := ListN( coeff_list,
               List( ccs_list, C -> OrderOfWeylGroup( C ) ), \/ );
           coeff_list := List( coeff_list, LeadingCoefficient );
-        else
-          Print("One 1-dimensional, one 0-dimensional case");
+        elif Degree( OrderOfWeylGroup( Ca ) ) * Degree( OrderOfWeylGroup( Cb ) ) = 0 then
+          # one 1-dimensional, one 0-dimensional case
+          ;
         fi;
 
         return NewEulerRingElement( cat,
