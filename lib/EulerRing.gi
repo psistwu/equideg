@@ -525,7 +525,7 @@
       rep := IsComponentObjectRep and IsAttributeStoringRep;
       erng := Objectify( NewType( r.fam, filt and rep ), rec( ) );
       SetIsWholeFamily( erng, true );
-      SetString( erng, StringFormatted( "EulerRing( {} )", String( G ) ) );
+      SetString( erng, StringFormatted( "EulerRing( {} )", String( grp ) ) );
 
       # assign values to instance variables of the family of element
       fam_elmt!.group		:= grp;
