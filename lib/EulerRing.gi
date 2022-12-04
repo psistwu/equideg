@@ -196,8 +196,8 @@
 #O  ZeroOp( <a> )
 ##
   InstallMethod( ZeroOp,
-    "additive identity of a Burnside ring",
-    [ IsBurnsideRingElement ],
+    "additive identity of a Euler ring",
+    [ IsEulerRingElement ],
     function( a )
       return ZeroAttr( FamilyObj( a ) );
     end
@@ -208,8 +208,8 @@
 #O  OneOp( <a> )
 ##
   InstallMethod( OneOp,
-    "multiplicative identity of a Burnside ring",
-    [ IsBurnsideRingElement ],
+    "multiplicative identity of a Euler ring",
+    [ IsEulerRingElement ],
     function( a )
       return OneAttr( FamilyObj( a ) );
     end
@@ -220,8 +220,8 @@
 #O  AdditiveInverseOp( <a> )
 ##
   InstallMethod( AdditiveInverseOp,
-    "additive inverse in a Burnside ring",
-    [ IsBurnsideRingElement ],
+    "additive inverse in a Euler ring",
+    [ IsEulerRingElement ],
     function( a )
       local fam,
             cat,
@@ -231,7 +231,7 @@
       fam := FamilyObj( a );
       cat := First( EquiDeg_BRNG_ELMT_CAT_LIST, filt -> filt( a ) );
 
-      addinv := NewBurnsideRingElement( cat,
+      addinv := NewEulerRingElement( cat,
         rec( fam := fam,
              ccs_list		:=  a!.ccsList,
              ccs_id_list	:=  a!.ccsIdList,
@@ -248,9 +248,9 @@
 #O  \=( <a>, <b> )
 ##
   InstallMethod( \=,
-    "identical relation in a Burnside ring",
+    "identical relation in a Euler ring",
     IsIdenticalObj,
-    [ IsBurnsideRingElement, IsBurnsideRingElement ],
+    [ IsEulerRingElement, IsEulerRingElement ],
     function( a, b )
       return ( a!.ccsIdList	= b!.ccsIdList	) and
              ( a!.coeffList	= b!.coeffList 	);
@@ -262,9 +262,9 @@
 #O  \+( <a>, <b> )
 ##
   InstallMethod( \+,
-    "addition in a Burnside ring",
+    "addition in a Euler ring",
     IsIdenticalObj,
-    [ IsBurnsideRingElement, IsBurnsideRingElement ],
+    [ IsEulerRingElement, IsEulerRingElement ],
     function( a, b )
       local fam,
             cat,
@@ -312,7 +312,7 @@
       ccs_list := List( ccs_id_list, id -> \[\]( fam!.CCSs, id ) );
       coeff_list := List( sum_sparse_list, x -> x[ 2 ] );
 
-      sum := NewBurnsideRingElement( cat,
+      sum := NewEulerRingElement( cat,
         rec( fam		:= fam,
              ccs_list		:= ccs_list,
              ccs_id_list	:= ccs_id_list,
@@ -328,8 +328,8 @@
 #O  \*( <n>, <a> )
 ##
   InstallMethod( \*,
-    "scalar multiplication in a Burnside ring",
-    [ IsInt, IsBurnsideRingElement ],
+    "scalar multiplication in a Euler ring",
+    [ IsInt, IsEulerRingElement ],
     function( n, a )
       local fam,
             cat,
@@ -338,12 +338,12 @@
 
       fam := FamilyObj( a );
       cat := First( EquiDeg_BRNG_ELMT_CAT_LIST, filt -> filt( a ) );
-      rep := IsBurnsideRingElementRep;
+      rep := IsEulerRingElementRep;
 
       if IsZero( n ) then
         return Zero( a );
       else
-        return NewBurnsideRingElement(
+        return NewEulerRingElement(
           cat,
           rec( fam		:= fam,
                ccs_list		:= a!.ccsList,
@@ -359,17 +359,17 @@
 #O  \*( <a>, <b> )
 ##
   InstallMethod( \*,
-    "multiplication in a Burnside ring",
+    "multiplication in a Euler ring",
     IsIdenticalObj,
-    [ IsBurnsideRingByFiniteGroupElement,
-      IsBurnsideRingByFiniteGroupElement  ],
+    [ IsEulerRingByFiniteGroupElement,
+      IsEulerRingByFiniteGroupElement  ],
     function( a, b )
-      local fam,		# family of Burnside ring element
-            cat,		# category of Burnside ring element
+      local fam,		# family of Euler ring element
+            cat,		# category of Euler ring element
             G,			# group
-            A,			# Burnside ring
+            A,			# Euler ring
             CCSs,		# CCSs of G
-            basis,		# basis of Burnside ring
+            basis,		# basis of Euler ring
             idCa,		# id of CCS a (when a is in the basis )
             idCb,		# id of CCS b (when b is in the basis )
             Ca,			# CCS of a (when a is in the basis)
@@ -382,14 +382,14 @@
             Ci, Cj;		# i-th and j-th CCSs
 
       fam := FamilyObj( a );
-      cat := IsBurnsideRingByFiniteGroupElement;
+      cat := IsEulerRingByFiniteGroupElement;
 
       G := fam!.group;
       A := fam!.burnsideRing;
       CCSs := fam!.CCSs;
       basis := Basis( A );
 
-      if IsBurnsideRingGenerator( a ) and IsBurnsideRingGenerator( b ) then
+      if IsEulerRingGenerator( a ) and IsEulerRingGenerator( b ) then
         idCa	:= a!.ccsIdList[ 1 ];
         idCb	:= b!.ccsIdList[ 1 ];
         Ca	:= a!.ccsList[ 1 ];
@@ -422,7 +422,7 @@
         coeff_list := ListN( coeff_list, List( ccs_list, OrderOfWeylGroup ), \/ );
         coeff_list := List( coeff_list, LeadingCoefficient );
 
-        return NewBurnsideRingElement( cat,
+        return NewEulerRingElement( cat,
           rec( fam		:= fam,
                ccs_list		:= ccs_list,
                ccs_id_list 	:= ccs_id_list,
@@ -441,17 +441,17 @@
 #O  \*( <a>, <b> )
 ##
   InstallMethod( \*,
-    "multiplication in a Burnside ring",
+    "multiplication in a Euler ring",
     IsIdenticalObj,
-    [ IsBurnsideRingByCompactLieGroupElement,
-      IsBurnsideRingByCompactLieGroupElement  ],
+    [ IsEulerRingByCompactLieGroupElement,
+      IsEulerRingByCompactLieGroupElement  ],
     function( a, b )
-      local fam,		# family of Burnside ring element
-            cat,		# category of Burnside ring element
+      local fam,		# family of Euler ring element
+            cat,		# category of Euler ring element
             G,			# group
-            A,			# Burnside ring
+            A,			# Euler ring
             CCSs,		# CCSs of G
-            basis,		# basis of Burnside ring
+            basis,		# basis of Euler ring
             idCa,		# id of CCS a (when a is in the basis )
             idCb,		# id of CCS b (when b is in the basis )
             idmin,
@@ -467,14 +467,14 @@
             Ci, Cj;		# i-th and j-th CCSs
 
       fam := FamilyObj( a );
-      cat := IsBurnsideRingByCompactLieGroupElement;
+      cat := IsEulerRingByCompactLieGroupElement;
 
       G := fam!.group;
       A := fam!.burnsideRing;
       CCSs := fam!.CCSs;
       basis := Basis( A );
 
-      if IsBurnsideRingGenerator( a ) and IsBurnsideRingGenerator( b ) then
+      if IsEulerRingGenerator( a ) and IsEulerRingGenerator( b ) then
         idCa	:= a!.ccsIdList[ 1 ];
         idCb	:= b!.ccsIdList[ 1 ];
         Ca	:= a!.ccsList[ 1 ];
@@ -524,7 +524,7 @@
             List( ccs_list, C -> OrderOfWeylGroup( C ) ), \/ );
         coeff_list := List( coeff_list, LeadingCoefficient );
 
-        return NewBurnsideRingElement( cat,
+        return NewEulerRingElement( cat,
           rec( fam:= fam,
                ccs_list		:= ccs_list,
                ccs_id_list 	:= ccs_id_list,
@@ -545,7 +545,7 @@
 ##
   InstallMethod( MaximalCCSs,
     "",
-    [ IsBurnsideRingElement ],
+    [ IsEulerRingElement ],
     function( a )
       local A,
             G,
@@ -567,25 +567,25 @@
   );
 
 
-##  Part 2: Burnside ring
+##  Part 2: Euler ring
 
 #############################################################################
 ##
-#U  NewBurnsideRing( IsBurnsideRingByFiniteGroup and
-#U      IsBurnsideRingByCompactLieGroup, <r> )
+#U  NewEulerRing( IsEulerRingByFiniteGroup and
+#U      IsEulerRingByCompactLieGroup, <r> )
 ##
-  InstallMethod( NewBurnsideRing,
-    "create a Burnside ring induced by a small group",
-    [ IsBurnsideRingByFiniteGroup and IsBurnsideRingByCompactLieGroup,
+  InstallMethod( NewEulerRing,
+    "create a Euler ring induced by a small group",
+    [ IsEulerRingByFiniteGroup and IsEulerRingByCompactLieGroup,
       IsRecord ],
     function( filt, r )
       local G,		# the group
             CCSs,	# conjugacy classes of subgroups
             d,		# dimension of the module (ring)
-            fam_elmt,	# family of Burnside ring element
-            rep,	# representation of Burnside ring
-            A,		# the Burnside ring
-            zero;	# zero of the Burnside ring
+            fam_elmt,	# family of Euler ring element
+            rep,	# representation of Euler ring
+            A,		# the Euler ring
+            zero;	# zero of the Euler ring
 
       # extract info of <G>
       G		:= r.group;
@@ -593,11 +593,11 @@
       d         := Size( CCSs );
       fam_elmt	:= ElementsFamily( r.fam );
 
-      # objectify the Burnside ring
+      # objectify the Euler ring
       rep := IsComponentObjectRep and IsAttributeStoringRep;
       A := Objectify( NewType( r.fam, filt and rep ), rec( ) );
       SetIsWholeFamily( A, true );
-      SetString( A, StringFormatted( "BurnsideRing( {} )", String( G ) ) );
+      SetString( A, StringFormatted( "EulerRing( {} )", String( G ) ) );
 
       # assign values to instance variables of the family of element
       fam_elmt!.group		:= G;
@@ -608,7 +608,7 @@
       # other attributes related to its module structure
       SetLeftActingDomain( A, Integers );
 
-      # other attributes related to its Burnside ring sturcture
+      # other attributes related to its Euler ring sturcture
       SetUnderlyingGroup( A, G );
 
       return A;
@@ -617,46 +617,46 @@
 
 #############################################################################
 ##
-#A  BurnsideRing( <G> )
+#A  EulerRing( <G> )
 ##
-  InstallMethod( BurnsideRing,
-    "This attribute contains the Burnside ring induced by finite group <G>",
+  InstallMethod( EulerRing,
+    "This attribute contains the Euler ring induced by finite group <G>",
     [ IsGroup and IsFinite ],
     function( G )
       local CCSs,	# CCSs of <G>
             d,		# size of <CCSs>
-            fam_elmt,   # family of Burnside ring elements
-            cat_elmt,	# category of Burnside ring elements
-            fam,	# family of the Burnside ring
-	    cat,	# category of the Burnside ring
-            A,		# the Burnside ring
-            zero,	# zero of the Burnside ring
+            fam_elmt,   # family of Euler ring elements
+            cat_elmt,	# category of Euler ring elements
+            fam,	# family of the Euler ring
+	    cat,	# category of the Euler ring
+            A,		# the Euler ring
+            zero,	# zero of the Euler ring
             basis;	# basis of the module (ring)
 
       # extract info of <G>
       CCSs	:= ConjugacyClassesSubgroups( G );
       d		:= Size( CCSs );
 
-      # family and category of Burnside ring element
-      cat_elmt := IsBurnsideRingByFiniteGroupElement;
+      # family and category of Euler ring element
+      cat_elmt := IsEulerRingByFiniteGroupElement;
       fam_elmt := NewFamily(
-        StringFormatted( "BurnsideRing( {} )Family", String( G ) ),
+        StringFormatted( "EulerRing( {} )Family", String( G ) ),
         cat_elmt
       );
 
-      # family and category of the Burnside ring
-      cat := IsBurnsideRingByFiniteGroup;
+      # family and category of the Euler ring
+      cat := IsEulerRingByFiniteGroup;
       fam := CollectionsFamily( fam_elmt );
 
-      # construct the Burnside ring
-      A := NewBurnsideRing(
+      # construct the Euler ring
+      A := NewEulerRing(
         cat,
         rec( group	:= G,
              fam	:= fam )
       );
 
-      # generate zero of the Burnside ring
-      zero := NewBurnsideRingElement(
+      # generate zero of the Euler ring
+      zero := NewEulerRingElement(
         cat_elmt,
         rec( fam		:= fam_elmt,
              ccs_list		:= [ ],
@@ -664,9 +664,9 @@
              coeff_list		:= [ ]       )
       );
 
-      # generate the basis of the Burnside ring
+      # generate the basis of the Euler ring
       basis := List( [ 1 .. d ],
-        i -> NewBurnsideRingElement(
+        i -> NewEulerRingElement(
           cat_elmt,
           rec( fam		:= fam_elmt,
                ccs_list		:= [ CCSs[ i ] ],
@@ -680,7 +680,7 @@
       SetIsFiniteDimensional( A, true );
       SetBasis( A, basis );
 
-      # other attributes related to its Burnside ring sturcture
+      # other attributes related to its Euler ring sturcture
       SetZeroAttr( fam_elmt, zero );
       SetZeroAttr( A, zero );
       SetOneImmutable( fam_elmt, basis[ d ] );
@@ -693,12 +693,12 @@
 
 #############################################################################
 ##
-#U  NewBurnsideRingByCompactLieGroupBasis( 
-#U      IsBurnsideRingByCompactLieGroup, <r> )
+#U  NewEulerRingByCompactLieGroupBasis( 
+#U      IsEulerRingByCompactLieGroup, <r> )
 ##
-  InstallMethod( NewBurnsideRingByCompactLieGroupBasis,
-    "constructs basis of a Burnside ring induced by a compact Lie group",
-    [ IsBurnsideRingByCompactLieGroup, IsRecord ],
+  InstallMethod( NewEulerRingByCompactLieGroupBasis,
+    "constructs basis of a Euler ring induced by a compact Lie group",
+    [ IsEulerRingByCompactLieGroup, IsRecord ],
     function( filt, r )
       local fam,
             cat,
@@ -711,12 +711,12 @@
       G := UnderlyingGroup( A );
 
       fam := FamilyObj( A );
-      cat := CategoryCollections( IsBurnsideRingByCompactLieGroupElement );
+      cat := CategoryCollections( IsEulerRingByCompactLieGroupElement );
       rep := IsComponentObjectRep and IsAttributeStoringRep;
       
       basis := Objectify( NewType( fam, cat and rep ), rec( ) );
       SetString( basis, StringFormatted( "Basis( {} )", String( A ) ) );
-      SetIsBurnsideRingByCompactLieGroupBasis( basis, true );
+      SetIsEulerRingByCompactLieGroupBasis( basis, true );
 
       return( basis );
     end
@@ -728,8 +728,8 @@
 ##
   InstallOtherMethod( \[\,\],
     "",
-    [ CategoryCollections( IsBurnsideRingByCompactLieGroupElement ) and
-      IsBurnsideRingByCompactLieGroupBasis, IsInt, IsInt ],
+    [ CategoryCollections( IsEulerRingByCompactLieGroupElement ) and
+      IsEulerRingByCompactLieGroupBasis, IsInt, IsInt ],
     function( basis, l, j )
       local fam,
             G,
@@ -744,8 +744,8 @@
         return fail;
       fi;
 
-      return NewBurnsideRingElement(
-        IsBurnsideRingByCompactLieGroupElement,
+      return NewEulerRingElement(
+        IsEulerRingByCompactLieGroupElement,
         rec( fam := fam,
              ccs_list		:= [ CCSs[ l, j ] ],
              ccs_id_list	:= [ [ l, j ] ],
@@ -756,46 +756,46 @@
 
 #############################################################################
 ##
-#A  BurnsideRing( <G> )
+#A  EulerRing( <G> )
 ##
-  InstallMethod( BurnsideRing,
-    "This attribute contains the Burnside ring induced by compact Lie group <G>",
+  InstallMethod( EulerRing,
+    "This attribute contains the Euler ring induced by compact Lie group <G>",
     [ IsCompactLieGroup ],
     function( G )
       local CCSs,	# CCSs of <G>
             d,		# size of <CCSs>
-            fam_elmt,   # family of Burnside ring elements
-            cat_elmt,	# category of Burnside ring elements
-            fam,	# family of the Burnside ring
-	    cat,	# category of the Burnside ring
-            A,		# the Burnside ring
-            zero,	# zero of the Burnside ring
+            fam_elmt,   # family of Euler ring elements
+            cat_elmt,	# category of Euler ring elements
+            fam,	# family of the Euler ring
+	    cat,	# category of the Euler ring
+            A,		# the Euler ring
+            zero,	# zero of the Euler ring
             basis;	# basis of the module (ring)
 
       # extract info of <G>
       CCSs	:= ConjugacyClassesSubgroups( G );
       d		:= Size( CCSs );
 
-      # family and category of Burnside ring element
-      cat_elmt := IsBurnsideRingByCompactLieGroupElement;
+      # family and category of Euler ring element
+      cat_elmt := IsEulerRingByCompactLieGroupElement;
       fam_elmt := NewFamily(
-        StringFormatted( "BurnsideRing( {} )Family", String( G ) ),
+        StringFormatted( "EulerRing( {} )Family", String( G ) ),
         cat_elmt
       );
 
-      # family and category of the Burnside ring
-      cat := IsBurnsideRingByCompactLieGroup;
+      # family and category of the Euler ring
+      cat := IsEulerRingByCompactLieGroup;
       fam := CollectionsFamily( fam_elmt );
 
-      # construct the Burnside ring
-      A := NewBurnsideRing(
+      # construct the Euler ring
+      A := NewEulerRing(
         cat,
         rec( group	:= G,
              fam	:= fam )
       );
 
-      # generate zero of the Burnside ring
-      zero := NewBurnsideRingElement(
+      # generate zero of the Euler ring
+      zero := NewEulerRingElement(
         cat_elmt,
         rec( fam		:= fam_elmt,
              ccs_list		:= [ ],
@@ -803,9 +803,9 @@
              coeff_list		:= [ ]       )
       );
 
-      # generate the basis of the Burnside ring
-      basis := NewBurnsideRingByCompactLieGroupBasis(
-        IsBurnsideRingByCompactLieGroup,
+      # generate the basis of the Euler ring
+      basis := NewEulerRingByCompactLieGroupBasis(
+        IsEulerRingByCompactLieGroup,
         rec( burnside_ring := A )
       );
 
@@ -814,7 +814,7 @@
       SetIsFiniteDimensional( A, false );
       SetBasis( A, basis );
 
-      # other attributes related to its Burnside ring sturcture
+      # other attributes related to its Euler ring sturcture
       SetZeroAttr( fam_elmt, zero );
       SetZeroAttr( A, zero );
       SetOneImmutable( fam_elmt, basis[ 0, NumberOfZeroModeClasses( CCSs ) ] );
@@ -838,7 +838,7 @@
     function( chi )
       local G,			# group
             CCSs,		# CCSs
-            A,			# Burnside ring
+            A,			# Euler ring
             orbts,		# orbit types
             coeff,		# coefficent
             j,			# index
@@ -854,7 +854,7 @@
 
       G := UnderlyingGroup( chi );
       CCSs := ConjugacyClassesSubgroups( G );
-      A := BurnsideRing( G );
+      A := EulerRing( G );
       orbts := OrbitTypes( chi );
 
       if not ( SchurIndicator( chi, 2 ) = 1 ) then
@@ -883,8 +883,8 @@
           List( ccs_list, OrderOfWeylGroup ), \/ );
       coeff_list := List( coeff_list, LeadingCoefficient );
 
-      return NewBurnsideRingElement(
-        IsBurnsideRingByFiniteGroupElement,
+      return NewEulerRingElement(
+        IsEulerRingByFiniteGroupElement,
         rec( fam		:= ElementsFamily( FamilyObj( A ) ),
              ccs_list		:= ccs_list,
              ccs_id_list	:= ccs_id_list,
@@ -903,7 +903,7 @@
     function( chi )
       local G,			# group
             CCSs,		# CCSs
-            A,			# Burnside ring
+            A,			# Euler ring
             orbts,		# orbit types
             coeff,		# coefficent
             j,			# index
@@ -914,7 +914,7 @@
 
       G := UnderlyingGroup( chi );
       CCSs := ConjugacyClassesSubgroups( G );
-      A := BurnsideRing( G );
+      A := EulerRing( G );
       orbts := OrbitTypes( chi );
 
       ccs_list := [ ];
@@ -943,8 +943,8 @@
           List( ccs_list, OrderOfWeylGroup ), \/ );
       coeff_list := List( coeff_list, LeadingCoefficient );
 
-      return NewBurnsideRingElement(
-        IsBurnsideRingByCompactLieGroupElement,
+      return NewEulerRingElement(
+        IsEulerRingByCompactLieGroupElement,
         rec( fam		:= ElementsFamily( FamilyObj( A ) ),
              ccs_list		:= ccs_list,
              ccs_id_list	:= ccs_id_list,
@@ -961,8 +961,8 @@
 #A  ViewString( <A> )
 ##
   InstallMethod( ViewString,
-    "view string of a Burnside ring",
-    [ IsBurnsideRing ],
+    "view string of a Euler ring",
+    [ IsEulerRing ],
     A -> StringFormatted( "Brng( {} )", ViewString( UnderlyingGroup( A ) ) )
   );
 
@@ -971,8 +971,8 @@
 #O  ViewObj( <A> )
 ##
   InstallMethod( ViewObj,
-    "view a Burnside ring",
-    [ IsBurnsideRing ],
+    "view a Euler ring",
+    [ IsEulerRing ],
     function( A )
       Print( ViewString( A ) );
     end
@@ -983,8 +983,8 @@
 #O  PrintObj( <A> )
 ##
   InstallMethod( PrintObj,
-    "print a Burnside ring",
-    [ IsBurnsideRing ],
+    "print a Euler ring",
+    [ IsEulerRing ],
     function( A )
       Print( String( A ) );
     end
@@ -995,8 +995,8 @@
 #O  ViewString( <basis> )
 ##
   InstallMethod( ViewString,
-    "view string of basis of Burnside ring induced by a compact Lie group",
-    [ IsBurnsideRingByCompactLieGroupBasis ],
+    "view string of basis of Euler ring induced by a compact Lie group",
+    [ IsEulerRingByCompactLieGroupBasis ],
     function( basis )
       local A,
             fam_elmt;
@@ -1011,4 +1011,4 @@
 
 #############################################################################
 ##
-#E  BurnsideRing.gi . . . . . . . . . . . . . . . . . . . . . . . . ends here
+#E  EulerRing.gi . . . . . . . . . . . . . . . . . . . . . . . . ends here
