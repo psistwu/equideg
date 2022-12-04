@@ -1,6 +1,6 @@
 version: '3'
 services:
-  equideg-test:
+  gap-equideg-test:
     image: ${IMAGE}
     container_name: "equideg-test"
     volumes:

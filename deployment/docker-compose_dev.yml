@@ -1,11 +1,13 @@
 version: '3'
 services:
-  gap-equideg:
+  gap-equideg-dev:
     image: ${IMAGE}
+    container_name: "gap_equideg"
     ports:
       - "8888:8888"
     volumes:
       - "..:${GAP_HOME}/pkg/equideg"
+      - "../test:/srv/test"
     command:
       [
         "jupyter",
