@@ -31,5 +31,5 @@ gap> maxorbtyps_psi := MaximalOrbitTypes(psi);
 [ (D_2|D_1 x D3z|D3p) ]
 
 # Find maximal orbit types of chi+psi
-gap> maxorbtyps := MaximalElements(Union(maxorbtyps_chi,maxorbtyps_psi));
-[ (D_2|D_1 x D3z|D3p), (D_4|D_2 x Z3p|D3p) ]
+# gap> maxorbtyps := MaximalElements(Union(maxorbtyps_chi,maxorbtyps_psi));
+# [ (D_2|D_1 x D3z|D3p), (D_4|D_2 x Z3p|D3p) ]
