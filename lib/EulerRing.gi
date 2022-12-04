@@ -83,7 +83,7 @@
     function( a )
       local A;     # the Euler ring
 
-      A := FamilyObj( a )!.EulerRing;
+      A := FamilyObj( a )!.ring;
 
       return Concatenation( String( a ), " in ", ViewString( A ) );
     end
@@ -105,7 +105,7 @@
             ccs_name,		# name of CCS
             str;		# name string
 
-      Print( ViewString( FamilyObj( a )!.EulerRing ), " element:\n" );
+      Print( ViewString( FamilyObj( a )!.ring ), " element:\n" );
       for i in [ 1 .. Length( a ) ] do
         coeff	:= a!.coeffList[ i ];
         ccs_id	:= a!.ccsIdList[ i ];
@@ -605,7 +605,7 @@
             fam_elmt,   # family of Euler ring elements
             cat_elmt,	# category of Euler ring elements
             fam,	# family of the Euler ring
-	    cat,	# category of the Euler ring
+	          cat,	# category of the Euler ring
             A,		# the Euler ring
             zero,	# zero of the Euler ring
             basis;	# basis of the module (ring)
