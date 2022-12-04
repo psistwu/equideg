@@ -229,7 +229,7 @@
             addinv;
 
       fam := FamilyObj( a );
-      cat := First( EquiDeg_BRNG_ELMT_CAT_LIST, filt -> filt( a ) );
+      cat := First( EquiDeg_ERNG_ELMT_CAT_LIST, filt -> filt( a ) );
 
       addinv := NewEulerRingElement( cat,
         rec( fam := fam,
