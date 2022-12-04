@@ -507,39 +507,39 @@
     [ IsEulerRingByCompactLieGroup,
       IsRecord ],
     function( filt, r )
-      local G,		# the group
-            CCSs,	# conjugacy classes of subgroups
+      local grp,		# the group
+            ccss,	# conjugacy classes of subgroups
             d,		# dimension of the module (ring)
             fam_elmt,	# family of Euler ring element
             rep,	# representation of Euler ring
-            A,		# the Euler ring
+            erng,		# the Euler ring
             zero;	# zero of the Euler ring
 
       # extract info of <G>
-      G		:= r.group;
-      CCSs	:= ConjugacyClassesSubgroups( G );
-      d         := Size( CCSs );
+      grp		:= r.group;
+      ccss	:= ConjugacyClassesSubgroups( grp );
+      d         := Size( ccss );
       fam_elmt	:= ElementsFamily( r.fam );
 
       # objectify the Euler ring
       rep := IsComponentObjectRep and IsAttributeStoringRep;
-      A := Objectify( NewType( r.fam, filt and rep ), rec( ) );
-      SetIsWholeFamily( A, true );
-      SetString( A, StringFormatted( "EulerRing( {} )", String( G ) ) );
+      erng := Objectify( NewType( r.fam, filt and rep ), rec( ) );
+      SetIsWholeFamily( erng, true );
+      SetString( erng, StringFormatted( "EulerRing( {} )", String( G ) ) );
 
       # assign values to instance variables of the family of element
-      fam_elmt!.group		:= G;
-      fam_elmt!.CCSs		:= CCSs;
+      fam_elmt!.group		:= grp;
+      fam_elmt!.CCSs		:= ccss;
       fam_elmt!.dimension	:= d;
-      fam_elmt!.ring	:= A;
+      fam_elmt!.ring	:= erng;
 
       # other attributes related to its module structure
-      SetLeftActingDomain( A, Integers );
+      SetLeftActingDomain( erng, Integers );
 
       # other attributes related to its Euler ring sturcture
-      SetUnderlyingGroup( A, G );
+      SetUnderlyingGroup( erng, grp );
 
-      return A;
+      return erng;
     end
   );
 
