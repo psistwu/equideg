@@ -280,7 +280,7 @@
             coeff_list;
 
       fam := FamilyObj( a );
-      cat := First( EquiDeg_BRNG_ELMT_CAT_LIST, filt -> filt( a ) );
+      cat := First( EquiDeg_ERNG_ELMT_CAT_LIST, filt -> filt( a ) );
 
       a_sparse_list := ToSparseList( a );
       b_sparse_list := ToSparseList( b );
@@ -337,7 +337,7 @@
             mul;	# result
 
       fam := FamilyObj( a );
-      cat := First( EquiDeg_BRNG_ELMT_CAT_LIST, filt -> filt( a ) );
+      cat := First( EquiDeg_ERNG_ELMT_CAT_LIST, filt -> filt( a ) );
       rep := IsEulerRingElementRep;
 
       if IsZero( n ) then
@@ -366,9 +366,9 @@
     function( a, b )
       local fam,		# family of Euler ring element
             cat,		# category of Euler ring element
-            G,			# group
-            A,			# Euler ring
-            CCSs,		# CCSs of G
+            grp,			# group
+            erng,			# Euler ring
+            ccss,		# CCSs of G
             basis,		# basis of Euler ring
             idCa,		# id of CCS a (when a is in the basis )
             idCb,		# id of CCS b (when b is in the basis )
@@ -387,10 +387,10 @@
       fam := FamilyObj( a );
       cat := IsEulerRingByCompactLieGroupElement;
 
-      G := fam!.group;
-      A := fam!.ring;
-      CCSs := fam!.CCSs;
-      basis := Basis( A );
+      grp := fam!.group;
+      erng := fam!.ring;
+      ccss := fam!.CCSs;
+      basis := Basis( erng );
 
       if IsEulerRingGenerator( a ) and IsEulerRingGenerator( b ) then
         idCa	:= a!.ccsIdList[ 1 ];
@@ -416,7 +416,7 @@
         coeff_list := [ ];
 
         for i in Reversed( [ 1 .. imax ] ) do
-          Ci := CCSs[ l, i ];
+          Ci := ccss[ l, i ];
           if ( Degree( OrderOfWeylGroup( Ci ) ) > 0 ) then
             continue;
           fi;
@@ -670,61 +670,61 @@
 ##
 #A  BasicDegree( <chi> )
 ##
-  InstallMethod( BasicDegree,
-    "return the Basic Degree associated to compact Lie group character <chi>",
-    [ IsCompactLieGroupCharacter ],
-    function( chi )
-      local G,			# group
-            CCSs,		# CCSs
-            A,			# Euler ring
-            orbts,		# orbit types
-            coeff,		# coefficent
-            j,			# index
-            Oi, Oj,		# orbit types
-            ccs_list,		# ccs_list of the basic degree
-            ccs_id_list,	# indices of basic degree
-            coeff_list;		# coefficient of basic degree
+  # InstallMethod( BasicDegree,
+  #   "return the Basic Degree associated to compact Lie group character <chi>",
+  #   [ IsCompactLieGroupCharacter ],
+  #   function( chi )
+  #     local G,			# group
+  #           CCSs,		# CCSs
+  #           A,			# Euler ring
+  #           orbts,		# orbit types
+  #           coeff,		# coefficent
+  #           j,			# index
+  #           Oi, Oj,		# orbit types
+  #           ccs_list,		# ccs_list of the basic degree
+  #           ccs_id_list,	# indices of basic degree
+  #           coeff_list;		# coefficient of basic degree
 
-      G := UnderlyingGroup( chi );
-      CCSs := ConjugacyClassesSubgroups( G );
-      A := EulerRing( G );
-      orbts := OrbitTypes( chi );
+  #     G := UnderlyingGroup( chi );
+  #     CCSs := ConjugacyClassesSubgroups( G );
+  #     A := EulerRing( G );
+  #     orbts := OrbitTypes( chi );
 
-      ccs_list := [ ];
-      ccs_id_list := [ ];
-      coeff_list := [ ];
+  #     ccs_list := [ ];
+  #     ccs_id_list := [ ];
+  #     coeff_list := [ ];
 
-      for Oi in Reversed( orbts ) do
-        if ( Degree( OrderOfWeylGroup( Oi ) ) > 0 ) then
-          continue;
-        fi;
+  #     for Oi in Reversed( orbts ) do
+  #       if ( Degree( OrderOfWeylGroup( Oi ) ) > 0 ) then
+  #         continue;
+  #       fi;
 
-        coeff := (-1)^DimensionOfFixedSet( chi, Oi );
-        for j in [ 1 .. Size( ccs_list ) ] do
-          Oj := ccs_list[ j ];
-          coeff := coeff - coeff_list[ j ]*nLHnumber( Oi, Oj );
-        od;
+  #       coeff := (-1)^DimensionOfFixedSet( chi, Oi );
+  #       for j in [ 1 .. Size( ccs_list ) ] do
+  #         Oj := ccs_list[ j ];
+  #         coeff := coeff - coeff_list[ j ]*nLHnumber( Oi, Oj );
+  #       od;
 
-        if not IsZero( coeff ) then
-          Add( ccs_list, Oi, 1 );
-          Add( ccs_id_list, IdCCS( Oi ), 1 );
-          Add( coeff_list, coeff, 1 );
-        fi;
-      od;
+  #       if not IsZero( coeff ) then
+  #         Add( ccs_list, Oi, 1 );
+  #         Add( ccs_id_list, IdCCS( Oi ), 1 );
+  #         Add( coeff_list, coeff, 1 );
+  #       fi;
+  #     od;
 
-      coeff_list := ListN( coeff_list,
-          List( ccs_list, OrderOfWeylGroup ), \/ );
-      coeff_list := List( coeff_list, LeadingCoefficient );
+  #     coeff_list := ListN( coeff_list,
+  #         List( ccs_list, OrderOfWeylGroup ), \/ );
+  #     coeff_list := List( coeff_list, LeadingCoefficient );
 
-      return NewEulerRingElement(
-        IsEulerRingByCompactLieGroupElement,
-        rec( fam		:= ElementsFamily( FamilyObj( A ) ),
-             ccs_list		:= ccs_list,
-             ccs_id_list	:= ccs_id_list,
-             coeff_list		:= coeff_list                       )
-      );
-    end
-  );
+  #     return NewEulerRingElement(
+  #       IsEulerRingByCompactLieGroupElement,
+  #       rec( fam		:= ElementsFamily( FamilyObj( A ) ),
+  #            ccs_list		:= ccs_list,
+  #            ccs_id_list	:= ccs_id_list,
+  #            coeff_list		:= coeff_list                       )
+  #     );
+  #   end
+  # );
 
 
 ##  Appendix: Print, View and Display
