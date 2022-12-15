@@ -307,11 +307,11 @@
     "return CCS list of O2xGamma",
     [ IsCompactLieGroup and HasDirectProductInfo ],
     function( G )
-      local decomp,		# direct product decomposition of <G>
-            Ga,			# finite group
-            O2,			# O(2)
-            CCSs_Ga,		# CCS list of gamma
-            CCSs_O2,		# CCS list of O(2)
+      local decomp,   # direct product decomposition of <G>
+            Ga,       # finite group
+            O2,       # O(2)
+            CCSs_Ga,  # CCS list of gamma
+            CCSs_O2,  # CCS list of O(2)
             
             # The following local variables are related to CCS classes
             data,
@@ -437,8 +437,8 @@
 
           for epi2_list in epi2_classes do
             epi2 := Representative( epi2_list );
-            Z2 := Kernel( epi2 );
-            CZ2 := First( CCSs_Ga, C -> Z2 in C );
+            Z2   := Kernel( epi2 );
+            CZ2  := First( CCSs_Ga, C -> Z2 in C );
             if HasAbbrv( CZ2 ) then
               name_Z2 := Abbrv( CZ2 );
             else
@@ -458,16 +458,16 @@
               Add( epi1_list, epi1 );
               
               class	:= rec(
-                is_zero_mode		:= true,
+                is_zero_mode := true,
                 order_of_weyl_group	:= 2*OrderOfWeylGroup( C2 ),
-                abbrv			:= StringFormatted( "{} x {}", Abbrv( C1 ), name_H2 ),
-                goursat_info		:= rec( C1		:= C1,
-                                                CZ1		:= C1,
-                                                C2		:= C2,
-						CZ2		:= CZ2,
-                                                epi1_list	:= epi1_list,
-                                                epi2_list	:= epi2_list,
-                                                L		:= L		) );
+                abbrv := StringFormatted( "{} x {}", Abbrv( C1 ), name_H2 ),
+                goursat_info := rec( C1  := C1,
+                                     CZ1 := C1,
+                                     C2  := C2,
+                                     CZ2 := CZ2,
+                                     epi1_list := epi1_list,
+                                     epi2_list := epi2_list,
+                                     L := L ) );
               if ForAll( [ C2, CZ2 ], HasLaTeXString ) then
                 class.latex_string := StringFormatted( StringFormatted( amal, "\\mathrm{{SO}}(2)", "", "", "", LaTeXString( C2 ) ) );
               fi;
@@ -486,16 +486,16 @@
               Add( epi1_list, epi1 );
 
               class := rec(
-                is_zero_mode		:= true,
+                is_zero_mode := true,
                 order_of_weyl_group	:= OrderOfWeylGroup( C2 ),
-                abbrv			:= StringFormatted( "{} x {}", Abbrv( C1 ), name_H2 ),
-                goursat_info		:= rec( C1		:= C1,
-                                                CZ1		:= C1,
-                                                C2		:= C2,
-						CZ2		:= CZ2,
-                                                epi1_list	:= epi1_list,
-                                                epi2_list	:= epi2_list,
-                                                L		:= L		) );
+                abbrv := StringFormatted( "{} x {}", Abbrv( C1 ), name_H2 ),
+                goursat_info := rec( C1  := C1,
+                                     CZ1 := C1,
+                                     C2  := C2,
+                                     CZ2 := CZ2,
+                                     epi1_list := epi1_list,
+                                     epi2_list := epi2_list,
+                                     L := L ) );
               if ForAll( [ C2, CZ2 ], HasLaTeXString ) then
                 class.latex_string := StringFormatted( StringFormatted( amal, "\\mathrm{{O}}(2)", "", "", "", LaTeXString( C2 ) ) );
               fi;
@@ -509,16 +509,16 @@
               epi1_list := [ GroupHomomorphismByImagesNC( H1, L ) ];
 
               class := rec(
-                is_zero_mode		:= false,
+                is_zero_mode := false,
                 order_of_weyl_group	:= 2*x*OrderOfWeylGroup( C2 ),
-                abbrv			:= StringFormatted( "{} x {}", "Z_{}", name_H2 ),
-                goursat_info		:= rec( C1		:= C1,
-                                                CZ1		:= C1,
-                                                C2		:= C2,
-						CZ2		:= CZ2,
-                                                epi1_list	:= epi1_list,
-                                                epi2_list	:= epi2_list,
-                                                L		:= L		) );
+                abbrv := StringFormatted( "{} x {}", "Z_{}", name_H2 ),
+                goursat_info := rec( C1  := C1,
+                                     CZ1 := C1,
+                                     C2  := C2,
+                                     CZ2 := CZ2,
+                                     epi1_list := epi1_list,
+                                     epi2_list := epi2_list,
+                                     L := L ) );
               if ForAll( [ C2, CZ2 ], HasLaTeXString ) then
                 class.latex_string := StringFormatted( amal, "\\bbZ_{}", "", "", "", LaTeXString( C2 ) );
               fi;
@@ -532,16 +532,16 @@
               epi1_list := [ GroupHomomorphismByImagesNC( H1, L, [ One( L ), One( L ) ] ) ];
 
               class := rec(
-                is_zero_mode		:= false,
+                is_zero_mode := false,
                 order_of_weyl_group	:= 2*OrderOfWeylGroup( C2 ),
-                abbrv			:= StringFormatted( "{} x {}", "D_{}", name_H2 ),
-                goursat_info		:= rec( C1		:= C1,
-                                                CZ1		:= C1,
-                                                C2		:= C2,
-						CZ2		:= CZ2,
-                                                epi1_list	:= epi1_list,
-                                                epi2_list	:= epi2_list,
-                                                L		:= L		) );
+                abbrv := StringFormatted( "{} x {}", "D_{}", name_H2 ),
+                goursat_info := rec( C1        := C1,
+                                     CZ1       := C1,
+                                     C2        := C2,
+                                     CZ2       := CZ2,
+                                     epi1_list := epi1_list,
+                                     epi2_list := epi2_list,
+                                     L         := L ) );
               if ForAll( [ C2, CZ2 ], HasLaTeXString ) then
                 class.latex_string := StringFormatted( amal, "D_{}", "", "", "", LaTeXString( C2 ) );
               fi;
@@ -552,23 +552,23 @@
             # L = Z_k (k>1)
             else
               # H1 = Z_{kl}, Z1 = Z_l
-              C1 := CCSs_O2[ k, 1 ];
+              C1  := CCSs_O2[ k, 1 ];
               CZ1 := CCSs_O2[ 1, 1 ];
-              H1 := Representative( C1 );
+              H1  := Representative( C1 );
               epi1_list := [ GroupHomomorphismByImages( H1, L ) ];
 
               class := rec(
-                is_zero_mode		:= false,
+                is_zero_mode := false,
                 order_of_weyl_group	:= 2*x*OrderOfWeylGroup( C2 )/
                                            Number( epi2_list, epi -> Source( epi ) = H2 ),
-                abbrv			:= StringFormatted( "{}|{} x {}|{}", "Z_{}", "Z_{}", name_Z2, name_H2 ),
-                goursat_info		:= rec( C1		:= C1,
-                                                CZ1		:= CZ1,
-                                                C2		:= C2,
-						CZ2		:= CZ2,
-                                                epi1_list	:= epi1_list,
-                                                epi2_list	:= epi2_list,
-                                                L		:= L		) );
+                abbrv := StringFormatted( "{}|{} x {}|{}", "Z_{}", "Z_{}", name_Z2, name_H2 ),
+                goursat_info  := rec( C1        := C1,
+                                      CZ1       := CZ1,
+                                      C2        := C2,
+		                                  CZ2       := CZ2,
+                                      epi1_list	:= epi1_list,
+                                      epi2_list	:= epi2_list,
+                                      L         :=  L ) );
               if ForAll( [ C2, CZ2 ], HasLaTeXString ) then
                 class.latex_string := StringFormatted( amal, "\\bbZ_{}", "\\bbZ_{}", "", LaTeXString( CZ2 ), LaTeXString( C2 ) );
               fi;
@@ -578,26 +578,26 @@
 
               if ( k = 2 ) then
                 # H1 = D_{2l}, Z1 = D_l
-                C1 := CCSs_O2[ 2, 2 ];
+                C1  := CCSs_O2[ 2, 2 ];
 		            CZ1 := CCSs_O2[ 2, 1 ];
-                H1 := Representative( C1 );
+                H1  := Representative( C1 );
                 epi1_list := [
                   GroupHomomorphismByImages( H1, L, [ L.1, One( L ) ] ),
                   GroupHomomorphismByImages( H1, L, [ L.1, L.1 ] )
                 ];
 
                 class := rec(
-                  is_zero_mode		:= false,
-                  order_of_weyl_group	:= 2*OrderOfWeylGroup( C2 )/
-                                           Number( epi2_list, epi -> Source( epi ) = H2 ),
-                  abbrv			:= StringFormatted( "{}|{} x {}|{}", "D_{}", "D_{}", name_Z2, name_H2 ),
-                  goursat_info		:= rec( C1		:= C1,
-                                                CZ1		:= CZ1,
-                                                C2		:= C2,
-						CZ2		:= CZ2,
-                                                epi1_list	:= epi1_list,
-                                                epi2_list	:= epi2_list,
-                                                L		:= L		) );
+                  is_zero_mode  := false,
+                  order_of_weyl_group	:=  2*OrderOfWeylGroup( C2 )/
+                                          Number( epi2_list, epi -> Source( epi ) = H2 ),
+                  abbrv := StringFormatted( "{}|{} x {}|{}", "D_{}", "D_{}", name_Z2, name_H2 ),
+                  goursat_info := rec( C1        := C1,
+                                       CZ1       := CZ1,
+                                       C2        := C2,
+		                                   CZ2       := CZ2,
+                                       epi1_list := epi1_list,
+                                       epi2_list := epi2_list,
+                                       L         := L ) );
                 if ForAll( [ C2, CZ2 ], HasLaTeXString ) then
                   class.latex_string := StringFormatted( amal, "D_{}", "D_{}", "", LaTeXString( CZ2 ), LaTeXString( C2 ) );
                 fi;
@@ -615,7 +615,7 @@
             continue;
           fi;
 
-          L := pDihedralGroup( j );
+          L  := pDihedralGroup( j );
           NL := pDihedralGroup( 2*j );
           LL := Subgroup( NL, [ (NL.1)^2, NL.2 ] );
           L_to_LL := GroupHomomorphismByImagesNC( L, LL );
@@ -640,8 +640,8 @@
 
           for epi2_list in epi2_classes do
             epi2 := Representative( epi2_list );
-            Z2 := Kernel( epi2 );
-            CZ2 := First( CCSs_Ga, C -> Z2 in C );
+            Z2   := Kernel( epi2 );
+            CZ2  := First( CCSs_Ga, C -> Z2 in C );
             if HasAbbrv( CZ2 ) then
               name_Z2 := Abbrv( CZ2 );
             else
@@ -651,9 +651,9 @@
             # L = D_1
             if ( j = 1 ) then
               # H1 = O(2), Z1 = SO(2)
-              C1 := CCSs_O2[ 0, 2 ];
-	      CZ1 := CCSs_O2[ 0, 1 ];
-              H1 := Representative( C1 );
+              C1  := CCSs_O2[ 0, 2 ];
+              CZ1 := CCSs_O2[ 0, 1 ];
+              H1  := Representative( C1 );
               epi1_list := [ ];
               epi1 := GroupHomomorphismByFunction( H1, L,
                   g -> ( pDihedralGroup( 2 ).2 )^( ( 1-DeterminantMat( g ) )/2 ),
@@ -663,17 +663,17 @@
               Add( epi1_list, epi1 );
 
               class := rec(
-                is_zero_mode		:= true,
+                is_zero_mode := true,
                 order_of_weyl_group	:= 2*OrderOfWeylGroup( C2 )/
                                            Number( epi2_list, epi -> Source( epi ) = H2 ),
-                abbrv			:= StringFormatted( "{}|{} x {}|{}", "O(2)", "SO(2)", name_Z2, name_H2 ),
-                goursat_info		:= rec( C1		:= C1,
-						CZ1		:= CZ1,
-                                                C2		:= C2,
-						CZ2		:= CZ2,
-                                                epi1_list	:= epi1_list,
-                                                epi2_list	:= epi2_list,
-                                                L		:= L		) );
+                abbrv := StringFormatted( "{}|{} x {}|{}", "O(2)", "SO(2)", name_Z2, name_H2 ),
+                goursat_info := rec( C1  := C1,
+						                         CZ1 := CZ1,
+                                     C2  := C2,
+						                         CZ2 := CZ2,
+                                     epi1_list := epi1_list,
+                                     epi2_list := epi2_list,
+                                     L := L ) );
               if ForAll( [ C2, CZ2 ], HasLaTeXString ) then
                 class.latex_string := StringFormatted( StringFormatted( amal, "\\mathrm{{O}}(2)", "\\mathrm{{SO}}(2)", "", LaTeXString( CZ2 ), LaTeXString( C2 ) ) );
               fi;
@@ -683,23 +683,23 @@
             fi;
 
             # K = D_{jl}, Z_l (l >= 1)
-            C1 := CCSs_O2[ j, 2 ];
+            C1  := CCSs_O2[ j, 2 ];
             CZ1 := CCSs_O2[ 1, 1 ];
-            H1 := Representative( C1 );
+            H1  := Representative( C1 );
             epi1_list := [ GroupHomomorphismByImages( H1, L ) ];
 
             class := rec(
               is_zero_mode		:= false,
               order_of_weyl_group	:= 2*j*OrderOfWeylGroup( C2 )/
                                            Number( epi2_list, epi -> Source( epi ) = H2 ),
-              abbrv			:= StringFormatted( "{}|{} x {}|{}", "D_{}", "Z_{}", name_Z2, name_H2 ),
-              goursat_info		:= rec( C1		:= C1,
-						CZ1		:= CZ1,
-                                                C2		:= C2,
-						CZ2		:= CZ2,
-                                                epi1_list	:= epi1_list,
-                                                epi2_list	:= epi2_list,
-                                                L		:= L		) );
+              abbrv := StringFormatted( "{}|{} x {}|{}", "D_{}", "Z_{}", name_Z2, name_H2 ),
+              goursat_info := rec( C1  := C1,
+	                                 CZ1 := CZ1,
+                                   C2  := C2,
+			                             CZ2 := CZ2,
+                                   epi1_list := epi1_list,
+                                   epi2_list := epi2_list,
+                                   L := L ) );
             if ForAll( [ C2, CZ2 ], HasLaTeXString ) then
               class.latex_string := StringFormatted( amal, "D_{}", "\\bbZ_{}", "", LaTeXString( CZ2 ), LaTeXString( C2 ) );
             fi;
@@ -728,11 +728,11 @@
     "return CCS list of SO(2)xGamma",
     [ IsCompactLieGroup and HasDirectProductInfo ],
     function( G )
-      local decomp,		# direct product decomposition of <G>
-            Ga,			# finite group
-            SO2,			# O(2)
-            CCSs_Ga,		# CCS list of gamma
-            CCSs_SO2,		# CCS list of SO(2)
+      local decomp,   # direct product decomposition of <G>
+            Ga,       # finite group
+            SO2,      # O(2)
+            CCSs_Ga,  # CCS list of gamma
+            CCSs_SO2, # CCS list of SO(2)
             
             # The following local variables are related to CCS classes
             data,
@@ -866,13 +866,13 @@
                 is_zero_mode := true,
                 order_of_weyl_group	:= OrderOfWeylGroup( C2 ),
                 abbrv := StringFormatted( "{} x {}", Abbrv( C1 ), name_H2 ),
-                goursat_info := rec( C1 := C1,
+                goursat_info := rec( C1  := C1,
                                      CZ1 := C1,
-                                     C2 := C2,
-						                                    CZ2		:= CZ2,
-                                                epi1_list	:= epi1_list,
-                                                epi2_list	:= epi2_list,
-                                                L		:= L		) );
+                                     C2  := C2,
+						                         CZ2 := CZ2,
+                                     epi1_list := epi1_list,
+                                     epi2_list := epi2_list,
+                                     L := L ) );
               if ForAll( [ C2, CZ2 ], HasLaTeXString ) then
                 class.latex_string := StringFormatted( StringFormatted( amal, "\\mathrm{{SO}}(2)", "", "", "", LaTeXString( C2 ) ) );
               fi;
@@ -886,16 +886,16 @@
               epi1_list := [ GroupHomomorphismByImagesNC( H1, L ) ];
 
               class := rec(
-                is_zero_mode		:= false,
-                order_of_weyl_group	:= x*OrderOfWeylGroup( C2 ),
-                abbrv			:= StringFormatted( "{} x {}", "Z_{}", name_H2 ),
-                goursat_info		:= rec( C1		:= C1,
-                                                CZ1		:= C1,
-                                                C2		:= C2,
-						CZ2		:= CZ2,
-                                                epi1_list	:= epi1_list,
-                                                epi2_list	:= epi2_list,
-                                                L		:= L		) );
+                is_zero_mode := false,
+                order_of_weyl_group := x*OrderOfWeylGroup( C2 ),
+                abbrv := StringFormatted( "{} x {}", "Z_{}", name_H2 ),
+                goursat_info := rec( C1  := C1,
+                                     CZ1 := C1,
+                                     C2  := C2,
+						                         CZ2 := CZ2,
+                                     epi1_list := epi1_list,
+                                     epi2_list := epi2_list,
+                                     L := L ) );
               if ForAll( [ C2, CZ2 ], HasLaTeXString ) then
                 class.latex_string := StringFormatted( amal, "\\bbZ_{}", "", "", "", LaTeXString( C2 ) );
               fi;
@@ -906,23 +906,23 @@
             # L = Z_k (k>1)
             else
               # H1 = Z_{kl}, Z1 = Z_l
-              C1 := CCSs_SO2[ k, 1 ];
+              C1  := CCSs_SO2[ k, 1 ];
               CZ1 := CCSs_SO2[ 1, 1 ];
-              H1 := Representative( C1 );
+              H1  := Representative( C1 );
               epi1_list := [ GroupHomomorphismByImages( H1, L ) ];
 
               class := rec(
                 is_zero_mode		:= false,
                 order_of_weyl_group	:= x*OrderOfWeylGroup( C2 )/
                                            Number( epi2_list, epi -> Source( epi ) = H2 ),
-                abbrv			:= StringFormatted( "{}|{} x {}|{}", "Z_{}", "Z_{}", name_Z2, name_H2 ),
-                goursat_info		:= rec( C1		:= C1,
-                                                CZ1		:= CZ1,
-                                                C2		:= C2,
-						CZ2		:= CZ2,
-                                                epi1_list	:= epi1_list,
-                                                epi2_list	:= epi2_list,
-                                                L		:= L		) );
+                abbrv := StringFormatted( "{}|{} x {}|{}", "Z_{}", "Z_{}", name_Z2, name_H2 ),
+                goursat_info := rec( C1  := C1,
+                                     CZ1 := CZ1,
+                                     C2  := C2,
+				                             CZ2 := CZ2,
+                                     epi1_list := epi1_list,
+                                     epi2_list := epi2_list,
+                                     L := L ) );
               if ForAll( [ C2, CZ2 ], HasLaTeXString ) then
                 class.latex_string := StringFormatted( amal, "\\bbZ_{}", "\\bbZ_{}", "", LaTeXString( CZ2 ), LaTeXString( C2 ) );
               fi;
