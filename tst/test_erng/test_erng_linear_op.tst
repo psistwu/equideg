@@ -1,4 +1,4 @@
-gap> START_TEST("test_NewEulerRing.tst");
+gap> START_TEST("test_erng_linear_op.tst");
 
 
 # Create Euler ring of SO2

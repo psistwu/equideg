@@ -1,4 +1,4 @@
-gap> START_TEST("test_NewEulerRing.tst");
+gap> START_TEST("test_erng_new.tst");
 
 # Create Euler ring of SO2
 gap> so2 := SpecialOrthogonalGroupOverReal(2);;

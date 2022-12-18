@@ -364,25 +364,25 @@
     [ IsEulerRingByCompactLieGroupElement,
       IsEulerRingByCompactLieGroupElement  ],
     function( a, b )
-      local fam,		# family of Euler ring element
-            cat,		# category of Euler ring element
-            grp,			# group
-            erng,			# Euler ring
-            ccss,		# CCSs of G
-            basis,		# basis of Euler ring
-            idCa,		# id of CCS a (when a is in the basis )
-            idCb,		# id of CCS b (when b is in the basis )
+      local fam,		      # family of Euler ring element
+            cat,		      # category of Euler ring element
+            grp,		      # group
+            erng,		      # Euler ring
+            ccss,		      # CCSs of G
+            basis,	      # basis of Euler ring
+            idCa,		      # id of CCS a (when a is in the basis )
+            idCb,		      # id of CCS b (when b is in the basis )
             idmin,
-            Ca,			# CCS of a (when a is in the basis)
-            Cb,			# CCS of b (when b is in the basis)
-            l,			# mode of the product
+            Ca,			      # CCS of a (when a is in the basis)
+            Cb,			      # CCS of b (when b is in the basis)
+            l,			      # mode of the product
             imax,
-            ccs_list,		# ccs list of the product
+            ccs_list,		  # ccs list of the product
             ccs_id_list,	# ccs id list of the product
             coeff_list,		# coefficient list of the product
-            coeff,		# a coefficient in the product
-            i, j,		# indices
-            Ci, Cj;		# i-th and j-th CCSs
+            coeff,		    # a coefficient in the product
+            i, j,		      # indices
+            Ci, Cj;		    # i-th and j-th CCSs
 
       fam := FamilyObj( a );
       cat := IsEulerRingByCompactLieGroupElement;
@@ -391,6 +391,119 @@
       erng := fam!.ring;
       ccss := fam!.CCSs;
       basis := Basis( erng );
+
+      # apply only on SO(2)
+      if not ( IdElementaryCLG( grp ) = [ 1,  ] ) then
+         TryNextMethod( );
+      fi;
+
+      # multiplication for two generators
+      if IsEulerRingGenerator( a ) and IsEulerRingGenerator( b ) then
+        idCa	:= a!.ccsIdList[ 1 ];
+        idCb	:= b!.ccsIdList[ 1 ];
+        Ca	:= a!.ccsList[ 1 ];
+        Cb	:= b!.ccsList[ 1 ];
+
+        ccs_list := [ ];
+        ccs_id_list := [ ];
+        coeff_list := [ ];
+
+        if Degree( OrderOfWeylGroup( Ca ) ) = 1 and Degree( OrderOfWeylGroup( Cb ) ) = 1 then
+          # two 1-dim case
+          ;
+        elif Degree( OrderOfWeylGroup( Ca ) ) = 0 and Degree( OrderOfWeylGroup( Cb ) ) = 0 then
+          # two 0-dim case
+          Add( ccs_list, Ca );
+          Add( ccs_id_list, idCa );
+          Add( coeff_list, 1 );
+        elif ( Degree( OrderOfWeylGroup( Ca ) ) = 1 ) then
+          # one 1-dim, one 0-dim case
+          Add( ccs_list, Ca );
+          Add( ccs_id_list, idCa );
+          Add( coeff_list, 1 );
+        elif ( Degree( OrderOfWeylGroup( Cb ) ) = 1 ) then
+          # one 0-dim, one 1-dim case
+          Add( ccs_list, Cb );
+          Add( ccs_id_list, idCb );
+          Add( coeff_list, 1 );
+        fi;
+
+        return NewEulerRingElement( cat,
+          rec( fam:= fam,
+               ccs_list		:= ccs_list,
+               ccs_id_list 	:= ccs_id_list,
+               coeff_list 	:= coeff_list   )
+        );
+      # recursive computation for other cases
+      else
+        return Sum( ListX( ToSparseList( a ), ToSparseList( b ),
+          { x, y } -> ( x[ 2 ] * y[ 2 ] ) *
+                      ( basis[ x[ 1 ] ] * basis[ y[ 1 ] ] )
+        ) );
+      fi;
+    end
+  );
+
+#############################################################################
+##
+#O  \*( <a>, <b> )
+##
+  InstallMethod( \*,
+    "multiplication in a Euler ring",
+    IsIdenticalObj,
+    [ IsEulerRingByCompactLieGroupElement,
+      IsEulerRingByCompactLieGroupElement  ],
+    function( a, b )
+      local fam,		      # family of Euler ring element
+            cat,		      # category of Euler ring element
+            grp,		      # group
+            erng,		      # Euler ring
+            ccss,		      # CCSs of G
+            basis,	      # basis of Euler ring
+            decomp,       # decomposition of direct product
+            SO2,          # compact Lie group SO(2)
+            Ga,           # Finite group
+            idCa,		      # id of CCS a (when a is in the basis )
+            idCb,		      # id of CCS b (when b is in the basis )
+            idmin,
+            Ca,			      # CCS of a (when a is in the basis)
+            Cb,			      # CCS of b (when b is in the basis)
+            l,			      # mode of the product
+            imax,
+            ccs_list,		  # ccs list of the product
+            ccs_id_list,	# ccs id list of the product
+            coeff_list,		# coefficient list of the product
+            coeff,		    # a coefficient in the product
+            i, j,		      # indices
+            Ci, Cj;		    # i-th and j-th CCSs
+
+      fam := FamilyObj( a );
+      cat := IsEulerRingByCompactLieGroupElement;
+
+      grp := fam!.group;
+      erng := fam!.ring;
+      ccss := fam!.CCSs;
+      basis := Basis( erng );
+
+      # apply only on SO(2)xGamma where Gamma is a finite group
+      if not (IsCompactLieGroup(grp) and HasDirectProductInfo(grp)) then
+         TryNextMethod( );
+      fi;
+
+      decomp := DirectProductInfo( grp ).groups;
+      if not ( Length( decomp ) = 2 ) then
+        # check if there are exactly 2 direct product components
+        TryNextMethod( );
+      elif not ( IdElementaryCLG( decomp[ 1 ] ) = [ 2, 1 ] ) then
+        # check if the first component of direct project is SO(2)
+        TryNextMethod( );
+      elif not IsFinite( decomp[ 2 ] ) then
+        # check if the second component of direct project is a finite group
+        TryNextMethod( );
+      fi;
+
+      SO2 := decomp[ 1 ];
+      Ga := decomp[ 2 ];
 
       # multiplication for two generators
       if IsEulerRingGenerator( a ) and IsEulerRingGenerator( b ) then
