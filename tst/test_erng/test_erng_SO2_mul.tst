@@ -1,4 +1,4 @@
-gap> START_TEST("test_erng_mul_E-SO2.tst");
+gap> START_TEST("test_erng_SO2_mul.tst");
 
 
 # Create Euler ring of SO2
@@ -7,7 +7,7 @@ gap> erng := EulerRing(so2);;
 gap> ring_gens := GeneratorsOfRing(erng);;
 
 
-# take elements of the Euler ring
+# take some ring elements
 gap> a := ring_gens[0,1];;
 gap> b := ring_gens[1,1];;
 
