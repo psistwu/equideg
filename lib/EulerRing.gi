@@ -393,7 +393,7 @@
       basis := Basis( erng );
 
       # apply only on SO(2)
-      if not ( IdElementaryCLG( grp ) = [ 1,  ] ) then
+      if not ( IdElementaryCLG( grp ) = [ 1, 2 ] ) then
          TryNextMethod( );
       fi;
 
