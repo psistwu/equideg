@@ -463,6 +463,7 @@
             decomp,       # decomposition of direct product
             SO2,          # compact Lie group SO(2)
             Ga,           # Finite group
+            brng,         # brng(Ga)
             idCa,		      # id of CCS a (when a is in the basis )
             idCb,		      # id of CCS b (when b is in the basis )
             idmin,
@@ -504,6 +505,7 @@
 
       SO2 := decomp[ 1 ];
       Ga := decomp[ 2 ];
+      brng := BurnsideRing( Ga );
 
       # multiplication for two generators
       if IsEulerRingGenerator( a ) and IsEulerRingGenerator( b ) then
@@ -521,45 +523,7 @@
           ;
         elif Degree( OrderOfWeylGroup( Ca ) ) = 0 and Degree( OrderOfWeylGroup( Cb ) ) = 0 then
           # two 0-dimensional case
-          l := Gcd( idCa[ 1 ], idCb[ 1 ] );
-          if IsPosInt( l ) then
-            if IsPosInt( idCa[ 1 ] ) and IsPosInt( idCb[ 1 ] ) then
-              imax := Minimum( idCa[ 2 ], idCb[ 2 ] );
-            elif IsZero( idCa[ 1 ] ) then
-              imax := idCb[ 2 ];
-            elif IsZero( idCb[ 1 ] ) then
-              imax := idCa[ 2 ];
-            fi;
-          else
-            imax := Minimum( idCa[ 2 ], idCb[ 2 ] );
-          fi;
-
-          for i in Reversed( [ 1 .. imax ] ) do
-            Ci := ccss[ l, i ];
-            if ( Degree( OrderOfWeylGroup( Ci ) ) > 0 ) then
-              continue;
-            fi;
-            coeff := nLHnumber( Ci, Ca ) * OrderOfWeylGroup( Ca ) *
-                    nLHnumber( Ci, Cb ) * OrderOfWeylGroup( Cb );
-
-            if IsZero( coeff ) then
-              continue;
-            fi;
-
-            for j in [ 1 .. Size( ccs_list ) ] do
-              Cj := ccs_list[ j ];
-              coeff := coeff - nLHnumber( Ci, Cj )*coeff_list[ j ];
-            od;
-
-            if not IsZero( coeff ) then
-              Add( ccs_list, Ci, 1 );
-              Add( ccs_id_list, [ l, i ], 1 );
-              Add( coeff_list, coeff, 1 );
-            fi;
-          od;
-          coeff_list := ListN( coeff_list,
-              List( ccs_list, C -> OrderOfWeylGroup( C ) ), \/ );
-          coeff_list := List( coeff_list, LeadingCoefficient );
+          ;
         elif Degree( OrderOfWeylGroup( Ca ) ) * Degree( OrderOfWeylGroup( Cb ) ) = 0 then
           # one 1-dimensional, one 0-dimensional case
           ;
