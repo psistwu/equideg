@@ -9,7 +9,7 @@
 ##  direct product of compact Lie groups (including finite groups).
 ##
 
-##  Part 1: Operators related to Direct Product
+##  Part 1: Group operation and attributes
 
 #############################################################################
 ##
@@ -139,7 +139,7 @@
   );
 
 
-##  Part 2: CCS of Direct Product of Compact Lie Groups
+##  Part 2: CCS operations and attributes
 
 #############################################################################
 ##
@@ -297,7 +297,7 @@
   );
 
 
-##  Part 3: CCSs for O(2)xGa
+##  Part 3: CCSs computation
 
 #############################################################################
 ##
