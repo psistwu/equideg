@@ -196,6 +196,27 @@
 
 #############################################################################
 ##
+#O  Projection( <C>, k )
+##
+  InstallOtherMethod( Projection,
+    "return projection of conjugacy class C onto the k-th components.",
+    [ IsConjugacyClassSubgroupsRep and HasGoursatInfo, IsInt ],
+    function( C, k )
+      local info; # Goursat info
+
+      info := GoursatInfo( C );
+      if ( k = 1 ) then
+        return info.C1;
+      elif ( k = 2 ) then
+        return info.C2;
+      else
+        Error( "k can be only 1 or 2." );
+      fi;
+    end
+  );
+
+#############################################################################
+##
 #O  AmalgamationSymbol( <C> )
 ##
   InstallMethod( AmalgamationSymbol,

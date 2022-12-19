@@ -115,7 +115,14 @@
 
 #############################################################################
 ##
-#F  AmalgamationSymbol( <C> )
+#O  Projection( <C>, k )
+##
+  # DeclareOperation( "Projection",
+      # [ IsConjugacyClassSubgroupsRep and HasGoursatInfo, IsInt ] );
+
+#############################################################################
+##
+#O  AmalgamationSymbol( <C> )
 ##
 ##  <#GAPDoc Label="AmalgamationSymbol">
 ##  <ManSection>
