@@ -330,7 +330,7 @@
             attr,
             CCSs_ECLG,
             idC1,
-	    C1_proto,
+            C1_proto,
             C1,
             idCZ1,
             CZ1,
@@ -368,7 +368,7 @@
 
           attr.goursat_info := rec(
             C1		:= C1,
-	    CZ1		:= CZ1,
+            CZ1		:= CZ1,
             C2		:= cl.goursat_info.C2,
             CZ2		:= cl.goursat_info.CZ2,
             epi1_list	:= epi*cl.goursat_info.epi1_list,

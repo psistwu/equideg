@@ -463,6 +463,7 @@
             decomp,       # decomposition of direct product
             SO2,          # compact Lie group SO(2)
             Ga,           # Finite group
+            ccss_Ga,      # CCSs of Gamma  
             brng,         # brng(Ga)
             idCa,		      # id of CCS a (when a is in the basis )
             idCb,		      # id of CCS b (when b is in the basis )
@@ -476,7 +477,8 @@
             coeff_list,		# coefficient list of the product
             coeff,		    # a coefficient in the product
             i, j,		      # indices
-            Ci, Cj;		    # i-th and j-th CCSs
+            Ci, Cj,		    # i-th and j-th CCSs
+            mul;          # multiplication
 
       fam := FamilyObj( a );
       cat := IsEulerRingByCompactLieGroupElement;
@@ -495,7 +497,7 @@
       if not ( Length( decomp ) = 2 ) then
         # check if there are exactly 2 direct product components
         TryNextMethod( );
-      elif not ( IdElementaryCLG( decomp[ 1 ] ) = [ 2, 1 ] ) then
+      elif not ( IdElementaryCLG( decomp[ 1 ] ) = [ 1, 2 ] ) then
         # check if the first component of direct project is SO(2)
         TryNextMethod( );
       elif not IsFinite( decomp[ 2 ] ) then
@@ -506,6 +508,7 @@
       SO2 := decomp[ 1 ];
       Ga := decomp[ 2 ];
       brng := BurnsideRing( Ga );
+      ccss_Ga := ConjugacyClassesSubgroups( Ga );
 
       # multiplication for two generators
       if IsEulerRingGenerator( a ) and IsEulerRingGenerator( b ) then
@@ -523,7 +526,10 @@
           ;
         elif Degree( OrderOfWeylGroup( Ca ) ) = 0 and Degree( OrderOfWeylGroup( Cb ) ) = 0 then
           # two 0-dimensional case
-          ;
+          mul := Basis( brng )[ idCa[ 2 ] ] * Basis( brng )[ idCb[ 2 ] ];
+          coeff_list := mul!.coeffList;
+          ccs_id_list := List( mul!.ccsIdList, i -> [ 0, i ] );
+          ccs_list := List( ccs_id_list, i -> ccss[ i ] );
         elif Degree( OrderOfWeylGroup( Ca ) ) * Degree( OrderOfWeylGroup( Cb ) ) = 0 then
           # one 1-dimensional, one 0-dimensional case
           ;
