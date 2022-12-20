@@ -10,6 +10,24 @@ gap> grp := DirectProduct( so2, z2 );;
 gap> erng := EulerRing( grp );;
 
 
-# take some ring elements
-gap> a := ring_gens[ 0, 1 ];;
-gap> b := ring_gens[ 1, 1 ];;
+# take some ring elements of degree zero
+gap> erng_basis := Basis( erng );;
+gap> a := erng_basis[ 0, 1 ];;
+gap> b := erng_basis[ 0, 2 ];;
+
+# Verify multiplication
+gap> Display( a*a );
+Erng( <group> ) element:
+2	(0,1)	SO(2) x Z1
+
+gap> Display( a*b );
+Erng( <group> ) element:
+1	(0,1)	SO(2) x Z1
+
+gap> Display( b*a );
+Erng( <group> ) element:
+1	(0,1)	SO(2) x Z1
+
+gap> Display( b*b );
+Erng( <group> ) element:
+1	(0,2)	SO(2) x Z2
