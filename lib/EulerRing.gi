@@ -372,7 +372,6 @@
             basis,	      # basis of Euler ring
             idCa,		      # id of CCS a (when a is in the basis )
             idCb,		      # id of CCS b (when b is in the basis )
-            idmin,
             Ca,			      # CCS of a (when a is in the basis)
             Cb,			      # CCS of b (when b is in the basis)
             l,			      # mode of the product
@@ -462,13 +461,12 @@
             basis,	      # basis of Euler ring
             decomp,       # decomposition of direct product
             SO2,          # compact Lie group SO(2)
-            Ga,           # Finite group
-            ccss_Ga,      # CCSs of Gamma  
+            Ga,           # Finite group Gamma
             brng,         # brng(Ga)
             idCa,		      # id of CCS a (when a is in the basis )
             idCb,		      # id of CCS b (when b is in the basis )
-            idmin,
             Ca,			      # CCS of a (when a is in the basis)
+            pCa,          # projection of Ca on Gamma
             Cb,			      # CCS of b (when b is in the basis)
             l,			      # mode of the product
             imax,
@@ -478,6 +476,7 @@
             coeff,		    # a coefficient in the product
             i, j,		      # indices
             Ci, Cj,		    # i-th and j-th CCSs
+            pCi, pCj,     # projection of Ci and Cj on Gamma
             mul;          # multiplication
 
       fam := FamilyObj( a );
@@ -508,7 +507,6 @@
       SO2 := decomp[ 1 ];
       Ga := decomp[ 2 ];
       brng := BurnsideRing( Ga );
-      ccss_Ga := ConjugacyClassesSubgroups( Ga );
 
       # multiplication for two generators
       if IsEulerRingGenerator( a ) and IsEulerRingGenerator( b ) then
@@ -532,7 +530,33 @@
           ccs_list := List( ccs_id_list, i -> ccss[ i ] );
         elif ( Degree( OrderOfWeylGroup( Cb ) ) = 1 ) then
           # one 1-dimensional, one 0-dimensional case
-          ;
+          l := IdCCS( Cb )[ 1 ];
+          imax := IdCCS( Cb )[ 2 ];
+          pCa := Projection( Ca, 2 );
+          for i in Reversed( [ 1 .. imax ] ) do
+            Ci := ccss[ l, i ];
+            pCi := Projection( Ci, 2 );
+            coeff := nLHnumber( pCi, pCa ) * OrderOfWeylGroup( pCa ) *
+                     nLHnumber( Ci, Cb ) * OrderOfWeylGroup( Cb );
+            
+            if IsZero( coeff ) then
+              continue;
+            fi;
+
+            for j in [ 1 .. Size( ccs_list ) ] do
+              Cj := ccs_list[ j ];
+              coeff := coeff - nLHnumber( Ci, Cj ) * coeff_list[ j ];
+            od;
+
+            if not IsZero( coeff ) then
+              Add( ccs_list, Ci, 1 );
+              Add( ccs_id_list, [ l, i ], 1 );
+              Add( coeff_list, coeff, 1 );
+            fi;
+          od;
+          coeff_list := ListN( coeff_list,
+              List( ccs_list, C -> OrderOfWeylGroup( C ) ), \/ );
+          coeff_list := List( coeff_list, LeadingCoefficient );
         elif ( Degree( OrderOfWeylGroup( Ca ) ) = 1 ) then
           return b * a;
         fi;
