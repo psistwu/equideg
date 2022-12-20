@@ -27,3 +27,8 @@ Erng( <group with 1 generators> ) element:
 
 gap> IsZero( b*b );
 true
+
+gap> Display( (a+b)*(a+b) );
+Erng( <group with 1 generators> ) element:
+2	(1,1)	Z_1
+1	(0,1)	SO(2)
