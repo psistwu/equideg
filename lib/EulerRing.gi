@@ -408,24 +408,24 @@
         ccs_id_list := [ ];
         coeff_list := [ ];
 
-        if Degree( OrderOfWeylGroup( Ca ) ) = 1 and Degree( OrderOfWeylGroup( Cb ) ) = 1 then
+        if ( Degree( OrderOfWeylGroup( Ca ) ) = 1 ) and
+           ( Degree( OrderOfWeylGroup( Cb ) ) = 1 ) then
           # two 1-dim case
           ;
-        elif Degree( OrderOfWeylGroup( Ca ) ) = 0 and Degree( OrderOfWeylGroup( Cb ) ) = 0 then
+        elif ( Degree( OrderOfWeylGroup( Ca ) ) = 0 ) and
+             ( Degree( OrderOfWeylGroup( Cb ) ) = 0 ) then
           # two 0-dim case
           Add( ccs_list, Ca );
           Add( ccs_id_list, idCa );
           Add( coeff_list, 1 );
-        elif ( Degree( OrderOfWeylGroup( Ca ) ) = 1 ) then
-          # one 1-dim, one 0-dim case
-          Add( ccs_list, Ca );
-          Add( ccs_id_list, idCa );
-          Add( coeff_list, 1 );
         elif ( Degree( OrderOfWeylGroup( Cb ) ) = 1 ) then
-          # one 0-dim, one 1-dim case
+          # one 1-dim, one 0-dim case
           Add( ccs_list, Cb );
           Add( ccs_id_list, idCb );
           Add( coeff_list, 1 );
+        elif ( Degree( OrderOfWeylGroup( Ca ) ) = 1 ) then
+          # one 0-dim, one 1-dim case
+          return b * a;
         fi;
 
         return NewEulerRingElement( cat,
@@ -530,9 +530,11 @@
           coeff_list := mul!.coeffList;
           ccs_id_list := List( mul!.ccsIdList, i -> [ 0, i ] );
           ccs_list := List( ccs_id_list, i -> ccss[ i ] );
-        elif Degree( OrderOfWeylGroup( Ca ) ) * Degree( OrderOfWeylGroup( Cb ) ) = 0 then
+        elif ( Degree( OrderOfWeylGroup( Cb ) ) = 1 ) then
           # one 1-dimensional, one 0-dimensional case
           ;
+        elif ( Degree( OrderOfWeylGroup( Ca ) ) = 1 ) then
+          return b * a;
         fi;
 
         return NewEulerRingElement( cat,
