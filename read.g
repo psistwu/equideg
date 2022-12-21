@@ -20,6 +20,7 @@
   ReadPackage( "EquiDeg", "lib/ElementaryCLG.gi" );
   ReadPackage( "EquiDeg", "lib/DirectProductCLG.gi" );
   ReadPackage( "EquiDeg", "lib/BurnsideRing.gi" );
+  ReadPackage( "EquiDeg", "lib/EulerRing.gi" );
 
 #############################################################################
 ##

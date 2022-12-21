@@ -7,3 +7,5 @@
 Makefile
 doc/*
 !doc/*.xml
+test/
+*_dev.*

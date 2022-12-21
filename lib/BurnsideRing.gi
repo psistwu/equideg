@@ -788,7 +788,7 @@
             fam_elmt,   # family of Burnside ring elements
             cat_elmt,	# category of Burnside ring elements
             fam,	# family of the Burnside ring
-	    cat,	# category of the Burnside ring
+            cat,	# category of the Burnside ring
             A,		# the Burnside ring
             zero,	# zero of the Burnside ring
             basis;	# basis of the module (ring)
