@@ -1,5 +1,5 @@
 services:
-  gap-equideg-test:
+  package-test:
     image: ${IMAGE}
     volumes:
       - "${HOST_PACKAGE_DIR}:${CONTAINER_PACKAGE_DIR}"
