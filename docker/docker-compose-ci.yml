@@ -1,5 +1,5 @@
 services:
-  package-test:
+  tester:
     image: ${IMAGE}
     volumes:
       - "${HOST_PACKAGE_DIR}:${CONTAINER_PACKAGE_DIR}"
@@ -17,4 +17,4 @@ services:
         "2g",
         "tst/testall.g"
       ]
-    working_dir: ${CONTAINER_PACKAGE_DIR}
+    working_dir: "${CONTAINER_PACKAGE_DIR}"

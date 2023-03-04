@@ -9,3 +9,4 @@ doc/*
 !doc/*.xml
 test/
 *_dev.*
+.ipynb_checkpoints/

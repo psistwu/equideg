@@ -1,0 +1,12 @@
+name: push ci
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: test GAP package
+        run: |
+          docker-compose -f docker/docker-compose-ci.yml up --exit-code-from tester
