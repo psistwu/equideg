@@ -788,63 +788,75 @@
 
 #############################################################################
 ##
-#A  BasicDegree( <chi> )
+#A  TwistedBasicDegree( <chi> )
 ##
-  # InstallMethod( BasicDegree,
-  #   "return the Basic Degree associated to compact Lie group character <chi>",
-  #   [ IsCompactLieGroupCharacter ],
-  #   function( chi )
-  #     local G,			# group
-  #           CCSs,		# CCSs
-  #           A,			# Euler ring
-  #           orbts,		# orbit types
-  #           coeff,		# coefficent
-  #           j,			# index
-  #           Oi, Oj,		# orbit types
-  #           ccs_list,		# ccs_list of the basic degree
-  #           ccs_id_list,	# indices of basic degree
-  #           coeff_list;		# coefficient of basic degree
+  InstallMethod( TwistedBasicDegree,
+    "return the Twisted Basic Degree associated to compact Lie group character <chi>",
+    [ IsCompactLieGroupCharacter ],
+    function( chi )
+      local G,			# group
+            ccss,		# CCSs
+            A,			# Euler ring
+            ccs_components,		# CCS components
+            G1, G2,
+            decomp_G,
+            coeff,		# coefficent
+            l,              # mode of chi
+            j,			# index
+            ci, cj,		# CCS
+            ccs_list,		# ccs_list of the basic degree
+            ccs_id_list,	# indices of basic degree
+            coeff_list;		# coefficient of basic degree
 
-  #     G := UnderlyingGroup( chi );
-  #     CCSs := ConjugacyClassesSubgroups( G );
-  #     A := EulerRing( G );
-  #     orbts := OrbitTypes( chi );
+      G := UnderlyingGroup( chi );
+      ccss := ConjugacyClassesSubgroups( G );
+      A := EulerRing( G );
+      l := IdIrr( chi )[ 1 ];
+      ccs_components := List( [ 1 .. NumberOfNonzeroModeClasses( ccss ) ],
+          x -> ccss[ l, x ] );
 
-  #     ccs_list := [ ];
-  #     ccs_id_list := [ ];
-  #     coeff_list := [ ];
+      decomp_G := DirectProductInfo( G ).groups;
+      G2 := decomp_G[ 2 ];
+      if not IsFinite( G2 ) then
+        TryNextMethod( );
+      fi;
 
-  #     for Oi in Reversed( orbts ) do
-  #       if ( Degree( OrderOfWeylGroup( Oi ) ) > 0 ) then
-  #         continue;
-  #       fi;
+      G1 := decomp_G[ 1 ];
+      if not ( G1 = SpecialOrthogonalGroupOverReal( 2 ) ) then
+        TryNextMethod( );
+      fi;
 
-  #       coeff := (-1)^DimensionOfFixedSet( chi, Oi );
-  #       for j in [ 1 .. Size( ccs_list ) ] do
-  #         Oj := ccs_list[ j ];
-  #         coeff := coeff - coeff_list[ j ]*nLHnumber( Oi, Oj );
-  #       od;
+      ccs_list := [ ];
+      ccs_id_list := [ ];
+      coeff_list := [ ];
 
-  #       if not IsZero( coeff ) then
-  #         Add( ccs_list, Oi, 1 );
-  #         Add( ccs_id_list, IdCCS( Oi ), 1 );
-  #         Add( coeff_list, coeff, 1 );
-  #       fi;
-  #     od;
+      for ci in Reversed( ccs_components ) do
+        coeff := DimensionOfFixedSet( chi, ci );
+        for j in [ 1 .. Size( ccs_list ) ] do
+          cj := ccs_list[ j ];
+          coeff := coeff - coeff_list[ j ]*nLHnumber( ci, cj );
+        od;
 
-  #     coeff_list := ListN( coeff_list,
-  #         List( ccs_list, OrderOfWeylGroup ), \/ );
-  #     coeff_list := List( coeff_list, LeadingCoefficient );
+        if not IsZero( coeff ) then
+          Add( ccs_list, ci, 1 );
+          Add( ccs_id_list, IdCCS( ci ), 1 );
+          Add( coeff_list, coeff, 1 );
+        fi;
+      od;
 
-  #     return NewEulerRingElement(
-  #       IsEulerRingByCompactLieGroupElement,
-  #       rec( fam		:= ElementsFamily( FamilyObj( A ) ),
-  #            ccs_list		:= ccs_list,
-  #            ccs_id_list	:= ccs_id_list,
-  #            coeff_list		:= coeff_list                       )
-  #     );
-  #   end
-  # );
+      coeff_list := ListN( coeff_list,
+          List( ccs_list, OrderOfWeylGroup ), \/ );
+      coeff_list := List( coeff_list, LeadingCoefficient );
+
+      return NewEulerRingElement(
+        IsEulerRingByCompactLieGroupElement,
+        rec( fam		:= ElementsFamily( FamilyObj( A ) ),
+             ccs_list		:= ccs_list,
+             ccs_id_list	:= ccs_id_list,
+             coeff_list		:= coeff_list                       )
+      );
+    end
+  );
 
 
 ##  Appendix: Print, View and Display
