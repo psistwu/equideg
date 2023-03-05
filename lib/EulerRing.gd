@@ -259,28 +259,28 @@
 
 #############################################################################
 ##
-#A  BasicDegree( <chi> )
+#A  TwistedBasicDegree( <chi> )
 ##
 ##  <#GAPDoc Label="BasicDegree">
 ##  <ManSection>
-##  <Attr Name="BasicDegree" Arg="chi"/>
+##  <Attr Name="TwistedBasicDegree" Arg="chi"/>
 ##  <Description>
 ##  This is an attribute of a character <A>chi</A>
-##  which stores the associated basic degree.
+##  which stores the associated twisted basic degree.
 ##  Here is an example.
 ##  <Example>
 ##  gap> G := SymmetricGroup(4);;
 ##  gap> chi := Irr(G)[3];
 ##  Character( CharacterTable( Sym( [ 1 .. 4 ] ) ), [ 2, 0, 2, -1, 0 ] )
-##  gap> BasicDegree(chi);
+##  gap> TwistedBasicDegree(chi);
 ##  &lt;1(5)-2(9)+1(11)&gt; in Brng( Sym( [ 1 .. 4 ] ) )
 ##  </Example>
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  # DeclareAttribute( "BasicDegree", IsVirtualCharacter );
-  # DeclareAttribute( "BasicDegree", IsCompactLieGroupVirtualCharacter );
+  DeclareAttribute( "TwistedBasicDegree", IsVirtualCharacter );
+  DeclareAttribute( "TwistedBasicDegree", IsCompactLieGroupVirtualCharacter );
 
 
 #############################################################################
