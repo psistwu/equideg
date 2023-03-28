@@ -3,12 +3,14 @@ services:
     image: ${IMAGE}
     volumes:
       - "${HOST_PACKAGE_DIR}:${CONTAINER_PACKAGE_DIR}"
+    network_mode: none
     command:
       [
         "gap",
         "-A",
         "-x",
         "80",
+        "-r",
         "-m",
         "100m",
         "-o",
