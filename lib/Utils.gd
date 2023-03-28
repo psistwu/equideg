@@ -2,32 +2,9 @@
 ##
 #W  Utils.gd		GAP package `EquiDeg'			    Haopin Wu
 ##
-#Y  Copyright (C) 2017-2018, Haopin Wu
-#Y  Department of Mathematics, National Tsing Hua University, Taiwan
+#Y  Copyright (C) 2017-2023, Haopin Wu
 ##
-##  This file contains declarations for utilities.
-##
-
-#############################################################################
-##
-#A  Abbrv( <obj> )
-##
-##  <#GAPDoc Label="Abbrv">
-##  <ManSection>
-##  <Attr Name="Abbrv" Arg="obj"/>
-##  <Description>
-##  This is an attribute of new objects defined in this package
-##  which provides minimal amount of information.
-##  This attribute can be assigned to an object <A>obj</A> manually
-##  by <C>SetAbbrv(<A>obj</A>,<A>val</A>)</C>.
-##  However, it is generated automatically for
-##  certain types of objects.
-##  If object <A>obj</A> has this attribute,
-##    <C>ViewString(<A>obj</A>)</C> will simply return
-##    <C>Abbrv(<A>obj</A>)</C>.
-##  </Description>
-##  </ManSection>
-##  <#/GAPDoc>
+##  Utitily functions are declared in this file.
 ##
 
 #############################################################################
@@ -47,7 +24,7 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  BindGlobal( "INFO_LEVEL_EquiDeg", 1 );
+BindGlobal( "INFO_LEVEL_EquiDeg", 1 );
 
 #############################################################################
 ##
@@ -63,20 +40,44 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareInfoClass( "InfoEquiDeg" );
-  SetInfoLevel( InfoEquiDeg, 1 );
+DeclareInfoClass( "InfoEquiDeg" );
+SetInfoLevel( InfoEquiDeg, 1 );
 
 #############################################################################
 ##
-#A  Abbrv( <obj> )
+#O  Abbrv( <obj> )
+#O  SetAbbrv ( <obj>, <str> )
+#O  HasAbbrv ( <obj> )
 ##
-  DeclareAttribute( "Abbrv", IsObject );
+##  <#GAPDoc Label="Abbrv">
+##  <ManSection>
+##  <Attr Name="Abbrv" Arg="obj" />
+##  <Attr Name="SetAbbrv" Arg="obj, abbrvstr" />
+##  <Attr Name="HasAbbrv" Arg="obj" />
+##  <Description>
+##  This is an attribute of new objects defined in this package
+##  which provides minimal amount of information.
+##  This attribute can be assigned to an object <A>obj</A> manually
+##  by <C>SetAbbrv(<A>obj</A>,<A>val</A>)</C>.
+##  However, it is generated automatically for
+##  certain types of objects.
+##  If object <A>obj</A> has this attribute,
+##    <C>ViewString(<A>obj</A>)</C> will simply return
+##    <C>Abbrv(<A>obj</A>)</C>.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+DeclareOperation( "Abbrv", [ IsComponentObjectRep ] );
+DeclareOperation( "SetAbbrv", [ IsComponentObjectRep, IsString ] );
+DeclareOperation( "HasAbbrv", [ IsComponentObjectRep ] );
+DeclareOperation( "ResetAbbrv", [ IsComponentObjectRep ] );
 
 #############################################################################
 ##
 #A  Detail( <obj> )
 ##
-  DeclareAttribute( "Detail", IsObject );
+DeclareAttribute( "Detail", IsObject );
 
 #############################################################################
 ##
@@ -92,7 +93,7 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareAttribute( "LaTeXString", IsObject );
+DeclareAttribute( "LaTeXString", IsObject );
 
 #############################################################################
 ##
@@ -110,20 +111,20 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareOperation( "LaTeXTypesetting", [ IsObject ] );
+DeclareOperation( "LaTeXTypesetting", [ IsObject ] );
 
 #############################################################################
 ##
 #F  ListA( <list1>, <list2>, ..., <listn>, <f> )
 ##
-  DeclareGlobalFunction( "ListA",
-      "Apply action (function with no return value on list of arguments" );
+DeclareGlobalFunction( "ListA",
+    "Apply action (function with no return value on list of arguments" );
 
 #############################################################################
 ##
 #O  Divides( <m>, <n> )
 ##
-  DeclareOperation( "Divides", [ IsInt, IsInt ] );
+DeclareOperation( "Divides", [ IsInt, IsInt ] );
 
 
 #############################################################################

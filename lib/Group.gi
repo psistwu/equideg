@@ -221,9 +221,13 @@
 ##
   InstallMethod( ViewObj,
     "view CCS with abbrv",
-    [ IsConjugacyClassSubgroupsRep and HasAbbrv ],
+    [ IsConjugacyClassSubgroupsRep ],
     function( C )
-      Print( StringFormatted( "({})", Abbrv( C ) ) );
+      if HasAbbrv( C ) then
+        Print( StringFormatted( "({})", Abbrv( C ) ) );
+      else
+        Print( ViewString( C ) );
+      fi;
     end
   );
 

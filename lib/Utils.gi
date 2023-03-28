@@ -10,25 +10,53 @@
 
 #############################################################################
 ##
-#O  ViewString( <obj> )
+#O  Abbrv( <obj> )
 ##
-# InstallMethod( ViewString,
-#   "delegates to attribute Abbrv",
-#   [ IsObject and HasAbbrv ],
-#   100,
-#   obj -> Abbrv( obj )
-# );
+InstallMethod( Abbrv,
+  "Get abbreviation of object",
+  [ IsComponentObjectRep ],
+  function( obj )
+    if HasAbbrv( obj ) then
+      return obj!.abbrv;
+    else
+      Error( "Abbrv of the object is yet to be set." );
+    fi;
+  end
+);
 
 #############################################################################
 ##
-#O  DisplayString( <obj> )
+#O  SetAbbrv( <obj>, <str> )
 ##
-# InstallMethod( DisplayString,
-#   "delegates to attribute Detail",
-#   [ IsObject and HasDetail ],
-#   100,
-#   obj -> Detail( obj )
-# );
+InstallMethod( SetAbbrv,
+  "Set abbreviation of object",
+  [ IsComponentObjectRep, IsString ],
+  function( obj, str )
+    obj!.abbrv := str;
+  end
+);
+
+#############################################################################
+##
+#O  HasAbbrv( <obj> )
+##
+InstallMethod( HasAbbrv,
+  "Chcek if an object has abbreviation",
+  [ IsComponentObjectRep ],
+  obj -> IsBound( obj!.abbrv )
+);
+
+#############################################################################
+##
+#O  ResetAbbrv( <obj> )
+##
+InstallMethod( ResetAbbrv,
+  "Reset abbreviation of object",
+  [ IsComponentObjectRep ],
+  function( obj )
+    Unbind( obj!.abbrv );
+  end
+);
 
 #############################################################################
 ##
