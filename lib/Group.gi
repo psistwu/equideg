@@ -9,115 +9,115 @@
 ##  related to group thoery.
 ##
 
-## Part 1: Basic Groups
+## Part 1: Special Groups
 
 #############################################################################
 ##
 #F  pCyclicGroup( <n> )
 ##
-  InstallGlobalFunction( pCyclicGroup,
-    function( n )
-      local i,		# index
-            gen;	# generator of Z_n
+InstallGlobalFunction( pCyclicGroup,
+  function( n )
+    local i,		# index
+          gen;	# generator of Z_n
 
-      if not IsPosInt( n ) then
-        Error( "n must be a positive integer." );
-      fi;
+    if not IsPosInt( n ) then
+      Error( "n must be a positive integer." );
+    fi;
 
-      gen := ( );
-      for i in [ 1 .. n-1 ] do
-        gen := ( i, i+1 )*gen;
-      od;
+    gen := ( );
+    for i in [ 1 .. n-1 ] do
+      gen := ( i, i+1 )*gen;
+    od;
 
-      return Group( gen );
-    end
-  );
+    return Group( gen );
+  end
+);
 
 #############################################################################
 ##
 #F  mCyclicGroup( <n> )
 ##
-  InstallGlobalFunction( mCyclicGroup,
-    function( n )
-      local z, rz, iz,	# a complex number and its real and imaginary parts
-            gen_mat;	# generator of Z_n
+InstallGlobalFunction( mCyclicGroup,
+  function( n )
+    local z, rz, iz,	# a complex number and its real and imaginary parts
+          gen_mat;    # generator of Z_n
 
-      if not IsPosInt( n ) then
-        Error( "n must be a positive integer." );
-      fi;
+    if not IsPosInt( n ) then
+      Error( "n must be a positive integer." );
+    fi;
 
-      z := E( n );
-      rz := RealPart( z );
-      iz := ImaginaryPart ( z );
-      gen_mat := [ [ rz, -iz ], [ iz, rz ] ];
+    z := E( n );
+    rz := RealPart( z );
+    iz := ImaginaryPart ( z );
+    gen_mat := [ [ rz, -iz ], [ iz, rz ] ];
 
-      return Group( gen_mat );
-    end
-  );
+    return Group( gen_mat );
+  end
+);
 
 #############################################################################
 ##
 #F  pDihedralGroup( <n> )
 ##
-  InstallGlobalFunction( pDihedralGroup,
-    function( n )
-      local i,            # index
-            gen1, gen2;   # generators of Dn
-                          # gen1 associates to rotation
-                          # gen2 associates to reflection
+InstallGlobalFunction( pDihedralGroup,
+  function( n )
+    local i,            # index
+          gen1, gen2;   # generators of Dn
+                        # gen1 associates to rotation
+                        # gen2 associates to reflection
 
-      if not IsPosInt( n ) then
-        Error( "n must be a positive integer." );
-      fi;
+    if not IsPosInt( n ) then
+      Error( "n must be a positive integer." );
+    fi;
 
-      # case 1: n = 1
-      if ( n = 1 ) then
-        gen1 := ( );
-        gen2 := ( 3, 4 );
+    # case 1: n = 1
+    if ( n = 1 ) then
+      gen1 := ( );
+      gen2 := ( 3, 4 );
 
-      # case 2: n = 2
-      elif ( n = 2 ) then
-        gen1 := ( 1, 2 );
-        gen2 := ( 3, 4 );
+    # case 2: n = 2
+    elif ( n = 2 ) then
+      gen1 := ( 1, 2 );
+      gen2 := ( 3, 4 );
 
-      # case 3: n > 2
-      else
-        gen1 := ( );
-        for i in [ 1 .. n-1 ] do
-          gen1 := ( i, i+1 )*gen1;
-        od;
+    # case 3: n > 2
+    else
+      gen1 := ( );
+      for i in [ 1 .. n-1 ] do
+        gen1 := ( i, i+1 )*gen1;
+      od;
 
-        gen2 := ( );
-        for i in [ 1 .. Int( n/2 ) ] do
-          gen2 := ( i, n+1-i )*gen2;
-        od;
-      fi;
+      gen2 := ( );
+      for i in [ 1 .. Int( n/2 ) ] do
+        gen2 := ( i, n+1-i )*gen2;
+      od;
+    fi;
 
-      return Group( [ gen1, gen2 ] );
-    end
-  );
+    return Group( [ gen1, gen2 ] );
+  end
+);
 
 #############################################################################
 ##
 #F  mDihedralGroup( <n> )
 ##
-  InstallGlobalFunction( mDihedralGroup,
-    function( n )
-      local z, rz, iz,     # a complex number and
-                           # its real and imaginary parts
-            gen1, gen2;    # generators of D_n
-                           # gen1 associates to rotation
-                           # gen2 associates to reflection
+InstallGlobalFunction( mDihedralGroup,
+  function( n )
+    local z, rz, iz,     # a complex number and
+                          # its real and imaginary parts
+          gen1, gen2;    # generators of D_n
+                          # gen1 associates to rotation
+                          # gen2 associates to reflection
 
-      z := E( n );
-      rz := RealPart( z );
-      iz := ImaginaryPart ( z );
-      gen1 := [ [ rz, -iz ], [ iz, rz ] ];
-      gen2 := [ [ 1, 0 ], [ 0, -1 ] ];
+    z := E( n );
+    rz := RealPart( z );
+    iz := ImaginaryPart ( z );
+    gen1 := [ [ rz, -iz ], [ iz, rz ] ];
+    gen2 := [ [ 1, 0 ], [ 0, -1 ] ];
 
-      return Group( [ gen1, gen2 ] );
-    end
-  );
+    return Group( [ gen1, gen2 ] );
+  end
+);
 
 
 ## Part 2: Conjugacy Class of Elements
@@ -126,23 +126,23 @@
 ##
 #A  IdCC( <c> )
 ##
-  InstallMethod( IdCC,
-    "id of CC <c> of a finite group",
-    [ IsConjugacyClassGroupRep ],
-    function( c )
-      local G,
-            CCs;
+InstallMethod( IdCC,
+  "id of CC <c> of a finite group",
+  [ IsConjugacyClassGroupRep ],
+  function( c )
+    local G,
+          CCs;
 
-      G := ActingDomain( c );
+    G := ActingDomain( c );
 
-      if not IsFinite( G ) then
-        TryNextMethod( );
-      fi;
+    if not IsFinite( G ) then
+      TryNextMethod( );
+    fi;
 
-      CCs := ConjugacyClasses( G );
-      return Position( CCs, c );
-    end
-  );
+    CCs := ConjugacyClasses( G );
+    return Position( CCs, c );
+  end
+);
 
 
 ## Part 3: Conjugacy Class of Subgroups
@@ -151,85 +151,97 @@
 ##
 #A  IdCCS( <C> )
 ##
-  InstallMethod( IdCCS,
-    "id of CCS <C> of a finite group",
-    [ IsConjugacyClassSubgroupsRep ],
-    function( C )
-      local G,
-            CCSs;
+InstallMethod( IdCCS,
+  "id of CCS <C> of a finite group",
+  [ IsConjugacyClassSubgroupsRep ],
+  function( C )
+    local G,
+          CCSs;
 
-      G := ActingDomain( C );
+    G := ActingDomain( C );
 
-      if not IsFinite( G ) then
-        TryNextMethod( );
-      fi;
+    if not IsFinite( G ) then
+      TryNextMethod( );
+    fi;
 
-      CCSs := ConjugacyClassesSubgroups( G );
-      return Position( CCSs, C );
-    end
-  );
+    CCSs := ConjugacyClassesSubgroups( G );
+    return Position( CCSs, C );
+  end
+);
 
 #############################################################################
 ##
 #F  IdCCSPartialOrder( <id1>, <id2> )
 ##
-  InstallGlobalFunction( IdCCSPartialOrder,
-    function( id1, id2 )
-      if IsPosInt( id1 ) and IsPosInt( id2 ) then
-        return ( id1 < id2 );
-      elif IsHomogeneousList( id1 ) and IsHomogeneousList( id2 ) and
-          ( Length( id1 ) = Length( id2 ) ) then
-        if ( id1[ 1 ] > 0 ) and ( id2[ 1 ] = 0 ) then
-          return true;
-        elif ( id1[ 1 ] = 0 ) and ( id2[ 1 ] > 0 ) then
-          return false;
-        else
-          return id1 < id2;
-        fi;
+InstallGlobalFunction( IdCCSPartialOrder,
+  function( id1, id2 )
+    if IsPosInt( id1 ) and IsPosInt( id2 ) then
+      return ( id1 < id2 );
+    elif IsHomogeneousList( id1 ) and IsHomogeneousList( id2 ) and
+        ( Length( id1 ) = Length( id2 ) ) then
+      if ( id1[ 1 ] > 0 ) and ( id2[ 1 ] = 0 ) then
+        return true;
+      elif ( id1[ 1 ] = 0 ) and ( id2[ 1 ] > 0 ) then
+        return false;
       else
-        Error( "<id1> and <id2> should have the same format." );
+        return id1 < id2;
       fi;
-    end
-  );
+    else
+      Error( "<id1> and <id2> should have the same format." );
+    fi;
+  end
+);
 
 #############################################################################
 ##
 #O  ConjugacyClassSubgroups( <U> )
 ##
-  InstallOtherMethod( ConjugacyClassSubgroups,
-    "return the CCS containing the given subgroup",
-    [ IsGroup and HasParentAttr ],
-    function( U )
-      local G,		# the parent group
-            CCSs;	# conjugacy classes of subgroups of <grp>
+InstallOtherMethod( ConjugacyClassSubgroups,
+  "return the CCS containing the given subgroup",
+  [ IsGroup and HasParentAttr ],
+  function( U )
+    local G,		# the parent group
+          CCSs;	# conjugacy classes of subgroups of <grp>
 
-      G := ParentAttr( U );
+    G := ParentAttr( U );
 
-      if not IsFinite( G ) then
-        TryNextMethod( );
-      fi;
+    if not IsFinite( G ) then
+      TryNextMethod( );
+    fi;
 
-      CCSs := ConjugacyClassesSubgroups( G );
+    CCSs := ConjugacyClassesSubgroups( G );
 
-      return First( CCSs, C -> U in C );
-    end
-  );
+    return First( CCSs, C -> U in C );
+  end
+);
+
+#############################################################################
+##
+#O  ViewString( <C> )
+##
+InstallMethod( ViewString,
+  "view string of CCS",
+  [ IsConjugacyClassSubgroupsRep ],
+  function( C )
+    if HasAbbrv( C ) then
+      return StringFormatted( "({})", Abbrv( C ) );
+    else
+      TryNextMethod( );
+    fi;
+  end
+);
 
 #############################################################################
 ##
 #O  ViewObj( <C> )
 ##
-  InstallMethod( ViewObj,
-    "view CCS with abbrv",
-    [ IsConjugacyClassSubgroupsRep ],
-    function( C )
-      if HasAbbrv( C ) then
-        Print( StringFormatted( "({})", Abbrv( C ) ) );
-      else
-        Print( ViewString( C ) );
-      fi;
-    end
-  );
+InstallMethod( ViewObj,
+  "view a CCS",
+  [ IsConjugacyClassSubgroupsRep ],
+  function( C )
+    Print( ViewString( C ) );
+  end
+);
 
 #############################################################################
 ##
@@ -457,39 +469,27 @@
 ##
 #A  PrintString( <lat> )
 ##
-  InstallMethod( PrintString,
-    "print string for lattice of CCSs",
-    [ IsLatticeCCSsRep ],
-    function( lat )
-      return Concatenation( "LatticeCCSs(", String( lat!.group ), ")" );
-    end
-  );
-
-#############################################################################
-##
-#O  PrintObj( <lat> )
-##
-  InstallMethod( PrintObj,
-    "print lattice of CCSs",
-    [ IsLatticeCCSsRep ],
-    function( lat )
-      Print( PrintString( lat ) );
-    end
-  );
+InstallMethod( PrintString,
+  "print string for lattice of CCSs",
+  [ IsLatticeCCSsRep ],
+  function( lat )
+    return Concatenation( "LatticeCCSs( ", String( lat!.group ), " )" );
+  end
+);
 
 #############################################################################
 ##
 #A  ViewString( <lat> )
 ##
-  InstallMethod( ViewString,
-    "view string for lattice of CCSs",
-    [ IsLatticeCCSsRep ],
-    function( lat )
-      return Concatenation( "<CCS lattice of ", ViewString( lat!.group ),
-          ", ", String( Size( ConjugacyClassesSubgroups( lat ) ) ),
-          " classes>" );
-    end
-  );
+InstallMethod( ViewString,
+  "view string for lattice of CCSs",
+  [ IsLatticeCCSsRep ],
+  function( lat )
+    return Concatenation( "<CCS lattice of ", ViewString( lat!.group ),
+        ", ", String( Size( ConjugacyClassesSubgroups( lat ) ) ),
+        " classes>" );
+  end
+);
 
 
 ##  Part 3: Character and Representation Theory

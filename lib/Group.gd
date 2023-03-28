@@ -2,13 +2,14 @@
 ##
 #W  Group.gd		GAP Package `EquiDeg'			    Haopin Wu
 ##
-#Y  Copyright (C) 2017-2019, Haopin Wu
-#Y  Department of Mathematics, National Tsing Hua University, Taiwan
+#Y  Copyright (C) 2017-2023, Haopin Wu
 ##
 ##  This file contains declarations for procedures related to group theory.
 ##
 ##  Todo:
 ##
+
+## Part 1: Special Groups
 
 #############################################################################
 ##
@@ -129,13 +130,13 @@
 ##
 ##  <#GAPDoc Label="ConjugacyClassSubgroups">
 ##  <ManSection>
-##  <Oper Name="ConjugacyClassSubgroups" Label="alt" Arg="U"/>
+##  <Oper Name="ConjugacyClassSubgroups" Label="alt" Arg="U" />
 ##  <Description>
 ##  This alternative of
-##  <Ref Oper="ConjugacyClassSubgroups" BookName="Reference"/>,
-##  points to the CCS in
+##  <Ref Oper="ConjugacyClassSubgroups" BookName="Reference" />,
+##  returns the CCS in
 ##  <C>ConjugacyClassesSubgroups(ParentAttr(<A>U</A>))</C>
-##  associated to <A>U</A>.
+##  instead of creating a new CCS object.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
@@ -145,21 +146,31 @@
 ##
 #O  SetCCSsAbbrv( <G>, <namelist> )
 ##
-  DeclareOperation( "SetCCSsAbbrv",
-      [ IsGroup, IsHomogeneousList ] );
+##  <#GAPDoc Label="SetCCSsAbbrv">
+##  <ManSection>
+##  <Oper Name="SetCCSsAbbrv" Arg="G, str_list" />
+##  <Description>
+##  This function sets up abbreviations for CCSs of the given group
+##  <A>G</A>.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+DeclareOperation( "SetCCSsAbbrv",
+    [ IsGroup, IsHomogeneousList ] );
 
 #############################################################################
 ##
 #O  SetCCSsLaTeXString( <G>, <namelist> )
 ##
-  DeclareOperation( "SetCCSsLaTeXString",
-      [ IsGroup, IsHomogeneousList ] );
+DeclareOperation( "SetCCSsLaTeXString",
+    [ IsGroup, IsHomogeneousList ] );
 
 #############################################################################
 ##
 #A  OrderOfRepresentative( <C> )
 ##
-  DeclareAttribute( "OrderOfRepresentative", IsConjugacyClassSubgroupsRep );
+DeclareAttribute( "OrderOfRepresentative", IsConjugacyClassSubgroupsRep );
 
 #############################################################################
 ##
