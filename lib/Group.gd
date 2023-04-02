@@ -300,13 +300,13 @@ DeclareAttribute( "OrderOfRepresentative", IsConjugacyClassSubgroupsRep );
 ##
 #A  DimensionOfCompactLieGroup( <G> )
 ##
-  DeclareAttribute( "DimensionOfCompactLieGroup", IsGroup );
+DeclareAttribute( "DimensionOfCompactLieGroup", IsGroup );
 
 #############################################################################
 ##
 #A  RankOfCompactLieGroup( <G> )
 ##
-  DeclareAttribute( "RankOfCompactLieGroup", IsGroup );
+DeclareAttribute( "RankOfCompactLieGroup", IsGroup );
 
 
 #############################################################################

@@ -3,6 +3,7 @@
 #W  CompactLieGroup.gi	GAP Package `EquiDeg'			    Haopin Wu
 ##
 #Y  Copyright (C) 2017-2023, Haopin Wu
+#Y  Department of Mathematics, National Tsing Hua University, Taiwan
 #Y  Department of Mathematical Sciences, the University of Texas at Dallas, USA
 ##
 ##  This file contains declarations for procedures related to
@@ -55,14 +56,18 @@ InstallMethod( NewCompactLieGroup,
 ##
 #O  PrintObj( <G> )
 ##
-# InstallMethod( PrintObj,
-#   "print a compact Lie group",
-#   [ IsCompactLieGroup ],
-#   10,
-#   function( G )
-#     Print( String( G ) );
-#   end
-# );
+InstallMethod( PrintObj,
+  "print for compact Lie group",
+  [ IsCompactLieGroup ],
+  10,
+  function( G )
+    if HasString( G ) then
+      Print( String( G ) );
+    else
+      TryNextMethod( );
+    fi;
+  end
+);
 
 #############################################################################
 ##
