@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#W  ElementaryCLG.gd	GAP Package `EquiDeg'			    Haopin Wu
+#W  ElementaryCompactLieGroup.gd	GAP Package `EquiDeg'			    Haopin Wu
 ##
 #Y  Copyright (C) 2017-2019, Haopin Wu
 #Y  Department of Mathematics, National Tsing Hua University, Taiwan
@@ -25,7 +25,7 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareGlobalFunction( "OrthogonalGroupOverReal", "returns O(n,R)" );
+DeclareGlobalFunction( "OrthogonalGroupOverReal", "returns O(n,R)" );
 
 #############################################################################
 ##
@@ -40,31 +40,31 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareGlobalFunction( "SpecialOrthogonalGroupOverReal", "returns SO(n,R)" );
+DeclareGlobalFunction( "SpecialOrthogonalGroupOverReal", "returns SO(n,R)" );
 
 #############################################################################
 ##
-#F  ElementaryCLGId( <id> )
+#F  ElementaryCompactLieGroupById( <id> )
 ##
-##  <#GAPDoc Label="ElementaryCLGId">
+##  <#GAPDoc Label="ElementaryCompactLieGroupById">
 ##  <ManSection>
-##  <Func Name="ElementaryCLGId" Arg="id"/>
+##  <Func Name="ElementaryCompactLieGroupById" Arg="id"/>
 ##  <Description>
 ##    This function creates elementary compact Lie group of given <A>id</A>.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareGlobalFunction( "ElementaryCLGId",
-      "returns elementary compact Lie group by ID" );
+DeclareGlobalFunction( "ElementaryCompactLieGroupById",
+    "returns elementary compact Lie group by ID" );
 
 #############################################################################
 ##
-#A  IdElementaryCLG( <G> )
+#A  IdOfElementaryCompactLieGroup( <G> )
 ##
-##  <#GAPDoc Label="IdElementaryCLG">
+##  <#GAPDoc Label="IdOfElementaryCompactLieGroup">
 ##  <ManSection>
-##  <Attr Name="IdElementaryCLG" Arg="G"/>
+##  <Attr Name="IdOfElementaryCompactLieGroup" Arg="G"/>
 ##  <Description>
 ##    This attribute contains the ID of elementary compact Lie group
 ##    <A>G</A>.
@@ -72,11 +72,11 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareAttribute( "IdElementaryCLG", IsCompactLieGroup );
+DeclareAttribute( "IdOfElementaryCompactLieGroup", IsCompactLieGroup );
 
 
 ##  Part 4: CCS of ECLG
 
 #############################################################################
 ##
-#E  ElementaryCLG.gd . . . . . . . . . . . . . . . . . . . . . . .  ends here
+#E  ElementaryCompactLieGroup.gd . . . . . . . . . . . . . . . . . . . . . . .  ends here

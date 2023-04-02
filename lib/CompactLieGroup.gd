@@ -10,6 +10,7 @@
 ##  compact Lie group.
 ##
 
+
 ##  Part 1: Compact Lie Group (CLG)
 
 #############################################################################
@@ -27,11 +28,11 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareCategory( "IsCompactLieGroup", IsGroup );
+DeclareCategory( "IsCompactLieGroup", IsGroup );
 
 #############################################################################
 ##
-#U  NewCompactLieGroup( filter, <r> )
+#U  NewCompactLieGroup( filter )
 ##
 ##  <#GAPDoc Label="NewCompactLieGroup">
 ##  <ManSection>
@@ -42,11 +43,11 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareConstructor( "NewCompactLieGroup",
-      [ IsCompactLieGroup, IsRecord ] );
+DeclareConstructor( "NewCompactLieGroup",
+    [ IsCompactLieGroup, IsInt ] );
 
 
-##  Part 2: CCS of CLG
+##  Part 2: CCS and CCS prototypes of CLG
 
 #############################################################################
 ##
@@ -62,8 +63,8 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareRepresentation( "IsCompactLieGroupConjugacyClassSubgroupsRep",
-      IsConjugacyClassSubgroupsRep, [ ] );
+DeclareRepresentation( "IsCompactLieGroupConjugacyClassSubgroupsRep",
+    IsConjugacyClassSubgroupsRep, [ ] );
 
 #############################################################################
 ##
@@ -79,15 +80,15 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareConstructor( "NewCompactLieGroupConjugacyClassSubgroups",
-      [ IsGroup, IsGroup, IsRecord ] );
+DeclareConstructor( "NewCompactLieGroupConjugacyClassSubgroups",
+    [ IsGroup, IsGroup, IsRecord ] );
 
 #############################################################################
 ##
 #O  Refolded( <C>, <l> )
 ##
-  DeclareOperation( "Refolded",
-      [ IsCompactLieGroupConjugacyClassSubgroupsRep, IsInt ] );
+DeclareOperation( "Refolded",
+    [ IsCompactLieGroupConjugacyClassSubgroupsRep, IsInt ] );
 
 #############################################################################
 ##
@@ -103,8 +104,8 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareRepresentation( "IsCompactLieGroupConjugacyClassesSubgroupsRep",
-      IsComponentObjectRep and IsAttributeStoringRep, [ ] );
+DeclareRepresentation( "IsCompactLieGroupConjugacyClassesSubgroupsRep",
+    IsComponentObjectRep and IsAttributeStoringRep, [ ] );
 
 #############################################################################
 ##
@@ -120,8 +121,8 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareConstructor( "NewCompactLieGroupConjugacyClassesSubgroups",
-      [ IsGroup, IsGroup, IsRecord ] );
+DeclareConstructor( "NewCompactLieGroupConjugacyClassesSubgroups",
+    [ IsGroup, IsGroup, IsRecord ] );
 
 #############################################################################
 ##
@@ -137,8 +138,8 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareOperation( "[,]",
-      [ IsCompactLieGroupConjugacyClassesSubgroupsRep, IsInt, IsPosInt ] );
+DeclareOperation( "[,]",
+    [ IsCompactLieGroupConjugacyClassesSubgroupsRep, IsInt, IsPosInt ] );
 
 #############################################################################
 ##
@@ -154,8 +155,8 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareOperation( "NumberOfNonzeroModeClasses",
-      [ IsCompactLieGroupConjugacyClassesSubgroupsRep ] );
+DeclareOperation( "NumberOfNonzeroModeClasses",
+    [ IsCompactLieGroupConjugacyClassesSubgroupsRep ] );
 
 #############################################################################
 ##
@@ -171,8 +172,8 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareOperation( "NumberOfZeroModeClasses",
-      [ IsCompactLieGroupConjugacyClassesSubgroupsRep ] );
+DeclareOperation( "NumberOfZeroModeClasses",
+    [ IsCompactLieGroupConjugacyClassesSubgroupsRep ] );
 
 
 ##  Part 3: Representation Theory of CLG
@@ -191,8 +192,8 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##  
-  DeclareCategory( "IsCompactLieGroupCharacterTable",
-      IsNearlyCharacterTable );
+DeclareCategory( "IsCompactLieGroupCharacterTable",
+    IsNearlyCharacterTable );
 
 #############################################################################
 ##
@@ -209,7 +210,7 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareCategory( "IsCompactLieGroupIrrCollection", IsCollection );
+DeclareCategory( "IsCompactLieGroupIrrCollection", IsCollection );
 
 #############################################################################
 ##
@@ -225,14 +226,14 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareCategory( "IsCompactLieGroupClassFunction", IsObject );
+DeclareCategory( "IsCompactLieGroupClassFunction", IsObject );
 
 #############################################################################
 ##
 #U  NewCompactLieGroupClassFunction( IsCompactLieGroupClassFunction, <G> )
 ##
-  DeclareConstructor( "NewCompactLieGroupClassFunction",
-      [ IsCompactLieGroupClassFunction, IsCompactLieGroup, IsRecord ] );
+DeclareConstructor( "NewCompactLieGroupClassFunction",
+    [ IsCompactLieGroupClassFunction, IsCompactLieGroup, IsRecord ] );
 
 #############################################################################
 ##
@@ -248,8 +249,8 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareProperty( "IsCompactLieGroupCharacter",
-      IsCompactLieGroupClassFunction );
+DeclareProperty( "IsCompactLieGroupCharacter",
+    IsCompactLieGroupClassFunction );
 
 #############################################################################
 ##
@@ -265,10 +266,10 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareProperty( "IsCompactLieGroupVirtualCharacter",
-      IsCompactLieGroupClassFunction );
-  InstallTrueMethod( IsCompactLieGroupVirtualCharacter,
-      IsCompactLieGroupCharacter );
+DeclareProperty( "IsCompactLieGroupVirtualCharacter",
+    IsCompactLieGroupClassFunction );
+InstallTrueMethod( IsCompactLieGroupVirtualCharacter,
+    IsCompactLieGroupCharacter );
 
 #############################################################################
 ##
@@ -284,9 +285,9 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareProperty( "IsIrreducibleCharacter", IsCompactLieGroupClassFunction );
-  InstallTrueMethod( IsCompactLieGroupCharacter,
-      IsCompactLieGroupClassFunction and IsIrreducibleCharacter );
+DeclareProperty( "IsIrreducibleCharacter", IsCompactLieGroupClassFunction );
+InstallTrueMethod( IsCompactLieGroupCharacter,
+    IsCompactLieGroupClassFunction and IsIrreducibleCharacter );
 
 #############################################################################
 ##
@@ -302,7 +303,7 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareAttribute( "IdCompactLieGroupClassFunction",
+DeclareAttribute( "IdCompactLieGroupClassFunction",
     IsCompactLieGroupClassFunction );
 
 #############################################################################
@@ -320,7 +321,7 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareOperation( "[]", [ IsCompactLieGroupIrrCollection, IsInt ] );
+DeclareOperation( "[]", [ IsCompactLieGroupIrrCollection, IsInt ] );
 
 #############################################################################
 ##
@@ -336,20 +337,20 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareAttribute( "IdIrr", IsCompactLieGroupCharacter );
+DeclareAttribute( "IdIrr", IsCompactLieGroupCharacter );
 
 #############################################################################
 ##
 #O  Refolded( <chi>, <l> )
 ##
-  DeclareOperation( "Refolded",
-      [ IsCompactLieGroupClassFunction and IsIrreducibleCharacter, IsInt ] );
+DeclareOperation( "Refolded",
+    [ IsCompactLieGroupClassFunction and IsIrreducibleCharacter, IsInt ] );
 
 #############################################################################
 ##
 #A  DegreeOfCharacter( <chi> )
 ##
-  DeclareAttribute( "DegreeOfCharacter", IsCompactLieGroupVirtualCharacter );
+DeclareAttribute( "DegreeOfCharacter", IsCompactLieGroupVirtualCharacter );
 
 #############################################################################
 ##
@@ -371,29 +372,29 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareOperation( "DimensionOfFixedSet",
-    [ IsCompactLieGroupCharacter, IsGroup ] );
-  DeclareOperation( "DimensionOfFixedSet",
-    [ IsCompactLieGroupCharacter,
-      IsCompactLieGroupConjugacyClassSubgroupsRep ] );
+DeclareOperation( "DimensionOfFixedSet",
+  [ IsCompactLieGroupCharacter, IsGroup ] );
+DeclareOperation( "DimensionOfFixedSet",
+  [ IsCompactLieGroupCharacter,
+    IsCompactLieGroupConjugacyClassSubgroupsRep ] );
 
 #############################################################################
 ##
 #A  OrbitTypes( <chi> )
 ##
-  DeclareAttribute( "OrbitTypes", IsCompactLieGroupCharacter );
+DeclareAttribute( "OrbitTypes", IsCompactLieGroupCharacter );
 
 #############################################################################
 ##
 #A  MaximalOrbitTypes( <chi> )
 ##
-  DeclareAttribute("MaximalOrbitTypes", IsCompactLieGroupCharacter);
+DeclareAttribute("MaximalOrbitTypes", IsCompactLieGroupCharacter);
 
 #############################################################################
 ##
 #A  LatticeOrbitTypes( <chi> )
 ##
-  DeclareAttribute( "LatticeOrbitTypes", IsCompactLieGroupCharacter );
+DeclareAttribute( "LatticeOrbitTypes", IsCompactLieGroupCharacter );
 
 
 #############################################################################

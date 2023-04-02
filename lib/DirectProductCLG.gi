@@ -353,7 +353,7 @@
 
       # test if the first component is O(2)
       O2 := decomp[ 1 ];
-      if not ( IdElementaryCLG( O2 ) = [ 2, 2 ] ) then
+      if not ( IdOfElementaryCompactLieGroup( O2 ) = [ 2, 2 ] ) then
         TryNextMethod( );
       fi;
 
@@ -773,7 +773,7 @@
 
       # test if the first component is SO(2)
       SO2 := decomp[ 1 ];
-      if not ( IdElementaryCLG( SO2 ) = [ 1, 2 ] ) then
+      if not ( IdOfElementaryCompactLieGroup( SO2 ) = [ 1, 2 ] ) then
         TryNextMethod( );
       fi;
 
@@ -1008,8 +1008,8 @@
       G2 := decomp[ 2 ];
 
       # it works for <G1> = SO(2) or O(2)
-      if not HasIdElementaryCLG( G1 ) or
-         not ( IdElementaryCLG( G1 ) in [ [ 1, 2 ], [ 2, 2 ] ] ) then
+      if not HasIdOfElementaryCompactLieGroup( G1 ) or
+         not ( IdOfElementaryCompactLieGroup( G1 ) in [ [ 1, 2 ], [ 2, 2 ] ] ) then
         TryNextMethod( );
       fi;
 

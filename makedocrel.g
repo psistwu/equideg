@@ -14,7 +14,7 @@ MakeGAPDocDoc( "doc",     # path to the directory containing the main file
                  "../lib/Group.gd",
                  "../lib/OrbitType.gd",
                  "../lib/CompactLieGroup.gd",
-                 "../lib/ElementaryCLG.gd",
+                 "../lib/ElementaryCompactLieGroup.gd",
                  "../lib/DirectProduct.gd",
                  "../lib/DirectProductCLG.gd",
                  "../lib/BurnsideRing.gd" ], 

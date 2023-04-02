@@ -23,8 +23,8 @@ where <M>G</M> is a finite group.
 <Section><Heading>Library of Basic Compact Lie Groups</Heading>
 <#Include Label="OrthogonalGroupOverReal">
 <#Include Label="SpecialOrthogonalGroupOverReal">
-<#Include Label="ElementaryCLGId">
-<#Include Label="IdElementaryCLG">
+<#Include Label="ElementaryCompactLieGroupId">
+<#Include Label="IdOfElementaryCompactLieGroup">
 </Section>
 
 <Section><Heading>General Functions</Heading>
