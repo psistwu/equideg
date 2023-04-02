@@ -9,4 +9,5 @@ jobs:
       - uses: actions/checkout@v3
       - name: test GAP package
         run: |
-          docker-compose -f docker/docker-compose-ci.yml up --exit-code-from tester
+          cd tst
+          docker-compose up --exit-code-from tester
