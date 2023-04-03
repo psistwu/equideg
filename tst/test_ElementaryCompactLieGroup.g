@@ -2,7 +2,7 @@ Print("You should start GAP using `gap -A -x 80 -m 100m -o 1g -K 2g'.\n\n");
 
 LoadPackage("equideg");
 
-dir := DirectoriesPackageLibrary("equideg", "tst/test_CompactLieGroup");
+dir := DirectoriesPackageLibrary("equideg", "tst/test_ElementaryCompactLieGroup");
 TestDirectory(dir, rec(exitGAP:=true,
                        earlyStop:=true));
 
