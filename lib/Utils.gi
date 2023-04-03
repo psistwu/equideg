@@ -60,6 +60,23 @@ InstallMethod( ResetAbbrv,
 
 #############################################################################
 ##
+#O  ViewString( <obj> )
+##
+InstallMethod( ViewString,
+  " View string for object admit abbrv",
+  [ IsObject and IsComponentObjectRep ],
+  50,
+  function( obj )
+    if HasAbbrv( obj ) then
+      return Abbrv( obj );
+    else
+      TryNextMethod( );
+    fi;
+  end
+);
+
+#############################################################################
+##
 #O  LaTeXTypesetting( <obj> )
 ##
   InstallMethod( LaTeXTypesetting,
