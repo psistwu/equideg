@@ -145,6 +145,8 @@ InstallImmediateMethod( Size,
   0,
   obj -> infinity
 );
+DeclareAttribute( "Prototypes", IsCompactLieGroupConjugacyClassesSubgroupsRep);
+DeclareAttribute( "UnderlyingPrototype", IsConjugacyClassSubgroupsRep );
 
 #############################################################################
 ##
