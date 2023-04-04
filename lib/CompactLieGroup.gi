@@ -289,17 +289,6 @@ InstallMethod( NewConjugacyClassesSubgroups,
 
 #############################################################################
 ##
-#P  IsFinite( <CCSs> )
-##
-  InstallImmediateMethod( IsFinite,
-    "",
-    IsCompactLieGroupConjugacyClassesSubgroupsRep,
-    0,
-    CCSs -> false
-  );
-
-#############################################################################
-##
 #O  \[\]( <CCSs>, <l>, <j> )
 ##
   InstallMethod( \[\,\],

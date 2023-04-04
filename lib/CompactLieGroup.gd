@@ -140,6 +140,11 @@ DeclareOperation( "Refolded",
 ##
 DeclareRepresentation( "IsCompactLieGroupConjugacyClassesSubgroupsRep",
     IsAttributeStoringRep, [ ] );
+InstallImmediateMethod( Size,
+  IsCompactLieGroupConjugacyClassesSubgroupsRep,
+  0,
+  obj -> infinity
+);
 
 #############################################################################
 ##
