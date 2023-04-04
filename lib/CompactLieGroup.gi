@@ -20,46 +20,12 @@
 
 #############################################################################
 ##
-#U  NewCompactLieGroup( IsCompactLieGroup and IsMatrixGroup, <r> )
-##
-InstallMethod( NewCompactLieGroup,
-  "construct a matrix-CLG",
-  [ IsCompactLieGroup and IsMatrixGroup and IsComponentObjectRep and
-    IsAttributeStoringRep, IsInt ],
-  function( filt, mat_dim )
-    local one,	# identity of the matrix-CLG
-          fam,	# family of the matrix-CLG
-          type,	# representation of the matrix-CLG
-          G;		# matrix-CLG
-
-    # generate the identity of the CLG (a d-by-d identity matrix)
-    one := IdentityMat( mat_dim );
-
-    # define the type of the group
-    fam := CollectionsFamily( FamilyObj( one ) );
-    type := NewType( fam, IsCompactLieGroup and IsMatrixGroup and
-        IsComponentObjectRep and IsAttributeStoringRep );
-
-    # objectify the matrix group
-    G := Objectify( type, rec( ) );
-
-    # setup properties of the (special) orthogonal group
-    SetOneImmutable( G, one );
-    SetDimensionOfMatrixGroup( G, mat_dim );
-
-    return G;
-  end
-);
-
-
-#############################################################################
-##
 #O  PrintObj( <G> )
 ##
 InstallMethod( PrintObj,
   "print for compact Lie group",
   [ IsCompactLieGroup ],
-  10,
+  50,
   function( G )
     if HasString( G ) then
       Print( String( G ) );
@@ -69,82 +35,103 @@ InstallMethod( PrintObj,
   end
 );
 
-#############################################################################
-##
-#O  ViewObj( <G> )
-##
-# InstallMethod( ViewObj,
-#   "view a compact Lie group",
-#   [ IsCompactLieGroup ],
-#   10,
-#   function( G )
-#     Print( ViewString( G ) );
-#   end
-# );
-
 
 ##  Part 2: Conjugacy Class of Subgroups
 
 #############################################################################
 ##
-#U  NewCompactLieGroupConjugacyClassSubgroups(
-#U      IsCompactLieGroupConjugacyClassSubgroupsRep, <G>, <attr> )
+#U  NewConjugacyClassSubgroups( filt, grp )
 ##
-InstallMethod( NewCompactLieGroupConjugacyClassSubgroups,
-  "constructor of CCS of compact Lie group",
-  [ IsGroup and IsMatrixGroup, IsGroup, IsRecord ],
-  function( filt, G, attr )
-    local fam,	# family of CCS
-          cat,	# category of CCS
-          rep,	# representation of CCS
-          C;		# CCS
+InstallMethod( NewConjugacyClassSubgroups,
+  "constructor of CCS for compact Lie group",
+  [ IsCompactLieGroupConjugacyClassSubgroupsRep, IsCompactLieGroup ],
+  function( filt, grp )
+    local cat_grp,  # categary of grp
+          fam,      # family of object
+          cat,	    # category of object
+          rep,	    # representation of object
+          type,     # type of object
+          obj;		  # object consturcted
 
-    # objectify the CCS
-    fam := CollectionsFamily( FamilyObj( G ) );
-    cat := CategoryCollections( filt );
+    # objectify
+    fam := CollectionsFamily( FamilyObj( grp ) );
+    cat := IsObject;
+    for cat_grp in List( CategoriesOfObject( grp ), c->EvalString( c ) ) do
+      cat := cat and CategoryCollections( cat_grp );
+    od;
     rep := IsCompactLieGroupConjugacyClassSubgroupsRep;
-    C := Objectify( NewType( fam, cat and rep ), rec( ) );
+    type := NewType( fam, cat and rep );
+    obj := Objectify( type, rec( ) );
 
-    SetActingDomain( C, G );
-    if IsBound( attr.order_of_weyl_group ) then
-      SetOrderOfWeylGroup( C, attr.order_of_weyl_group );
-    fi;
+    SetActingDomain( obj, grp );
+    # if IsBound( attr.order_of_weyl_group ) then
+    #   SetOrderOfWeylGroup( C, attr.order_of_weyl_group );
+    # fi;
 
-    if IsBound( attr.representative ) then
-      SetRepresentative( C, attr.representative );
-      SetParentAttr( attr.representative, G );
+    # if IsBound( attr.representative ) then
+    #   SetRepresentative( C, attr.representative );
+    #   SetParentAttr( attr.representative, G );
 
-      if IsBound( attr.order_of_weyl_group ) then
-        SetOrderOfWeylGroup( attr.representative, attr.order_of_weyl_group );
-      fi;
+    #   if IsBound( attr.order_of_weyl_group ) then
+    #     SetOrderOfWeylGroup( attr.representative, attr.order_of_weyl_group );
+    #   fi;
 
-      if IsBound( attr.normalizer ) then
-        SetStabilizerOfExternalSet( C, attr.normalizer );
-        SetNormalizerInParent( attr.representative, attr.normalizer );
-      fi;
-    fi;
+    #   if IsBound( attr.normalizer ) then
+    #     SetStabilizerOfExternalSet( C, attr.normalizer );
+    #     SetNormalizerInParent( attr.representative, attr.normalizer );
+    #   fi;
+    # fi;
 
-    if IsBound( attr.goursat_info ) then
-      SetGoursatInfo( C, attr.goursat_info );
-    fi;
+    # if IsBound( attr.goursat_info ) then
+    #   SetGoursatInfo( C, attr.goursat_info );
+    # fi;
 
-    if IsBound( attr.string ) then
-      SetString( C, attr.string );
-    fi;
+    # if IsBound( attr.string ) then
+    #   SetString( C, attr.string );
+    # fi;
 
-    if IsBound( attr.abbrv ) then
-      SetAbbrv( C, attr.abbrv );
-    fi;
+    # if IsBound( attr.abbrv ) then
+    #   SetAbbrv( C, attr.abbrv );
+    # fi;
 
-    if IsBound( attr.latex_string ) then
-      SetLaTeXString( C, attr.latex_string );
-    fi;
+    # if IsBound( attr.latex_string ) then
+    #   SetLaTeXString( C, attr.latex_string );
+    # fi;
 
-    if IsBound( attr.order_of_representative ) then
-      SetOrderOfRepresentative( C, attr.order_of_representative );
-    fi;
+    # if IsBound( attr.order_of_representative ) then
+    #   SetOrderOfRepresentative( C, attr.order_of_representative );
+    # fi;
 
-    return C;
+    return obj;
+  end
+);
+
+#############################################################################
+##
+#U  NewPrototypeConjugacyClassSubgroups( filt, grp )
+##
+InstallMethod( NewPrototypeConjugacyClassSubgroups,
+  "constructor of prototype of conjugacy class of subgroups",
+  [ IsPrototypeConjugacyClassSubgroupsRep, IsGroup ],
+  function( filt, grp )
+    local cat_grp,  # category of grp
+          fam,      # family of object
+          cat,	    # category of object
+          rep,	    # representation of object
+          type,     # type of object
+          obj;		  # obj constructed
+
+    # objectify
+    fam := CollectionsFamily( CollectionsFamily( FamilyObj( grp ) ) );
+    cat := IsObject;
+    for cat_grp in List( CategoriesOfObject( grp ), c->EvalString( c ) ) do
+      cat := cat and CategoryCollections( CategoryCollections( cat_grp ) );
+    od;
+    rep := IsPrototypeConjugacyClassSubgroupsRep;
+    type := NewType( fam, cat and rep );
+    obj := Objectify( type, rec( ) );
+
+    return obj;
   end
 );
 
@@ -173,8 +160,8 @@ InstallMethod( SetCCSsAbbrv,
     for i in [ 1 .. Length( namelist ) ] do
       class := CCSs_G!.ccsClasses[ i ];
       class.abbrv := namelist[ i ];
-      class.proto := NewCompactLieGroupConjugacyClassSubgroups(
-          IsMatrixGroup, G, class );
+      class.proto := NewConjugacyClassSubgroups(
+          IsCompactLieGroupConjugacyClassSubgroupsRep, G, class );
     od;
   end
 );
@@ -204,8 +191,8 @@ InstallMethod( SetCCSsLaTeXString,
     for i in [ 1 .. Length( namelist ) ] do
       class := CCSs_G!.ccsClasses[ i ];
       class.latex_string := namelist[ i ];
-      class.proto := NewCompactLieGroupConjugacyClassSubgroups(
-          IsMatrixGroup, G, class );
+      class.proto := NewConjugacyClassSubgroups(
+          IsCompactLieGroupConjugacyClassSubgroupsRep, G, class );
     od;
   end
 );
@@ -268,37 +255,31 @@ InstallMethod( SetCCSsLaTeXString,
 ##
   InstallMethod( NewCompactLieGroupConjugacyClassesSubgroups,
     "constructs CCSs of a compact Lie group",
-    [ IsMatrixGroup, IsGroup, IsRecord ],
-    function( filt, G, data )
+    [ IsCompactLieGroupConjugacyClassesSubgroupsRep, IsCompactLieGroup ],
+    function( filt, G )
       local fam,
             cat,
             rep,
-            CCSs;
+            obj;
 
       # objectify CCSs of the group
       fam := CollectionsFamily( CollectionsFamily( FamilyObj( G ) ) );
       cat := CategoryCollections( CategoryCollections( filt ) );
       rep := IsCompactLieGroupConjugacyClassesSubgroupsRep;
-      CCSs := Objectify( NewType( fam, cat and rep ), data );
+      obj := Objectify( NewType( fam, cat and rep ), rec( ) );
 
       # assign attributes to CCSs
-      SetUnderlyingGroup( CCSs, G );
-      SetString( CCSs, StringFormatted(
+      SetUnderlyingGroup( obj, G );
+      SetString( obj, StringFormatted(
         "ConjugacyClassesSubgroups( {} )",
         String( G )
       ) );
-      SetAbbrv( CCSs, StringFormatted(
+      SetAbbrv( obj, StringFormatted(
         "ConjugacyClassesSubgroups( {} )",
         ViewString( G )
       ) );
-      SetDetail( CCSs, StringFormatted(
-        "<conjugacy classes of subgroups of {}, {} zero-mode classes and {} nonzero-mode classes>",
-        String( G ),
-        NumberOfZeroModeClasses( CCSs ),
-        NumberOfNonzeroModeClasses( CCSs )
-      ) ); 
 
-      return CCSs;
+      return obj;
     end
   );
 
@@ -407,7 +388,7 @@ InstallMethod( SetCCSsLaTeXString,
 
         cat_list := [ IsMatrixGroup, IsGroup ];
         cat := First( cat_list, filt -> filt( G ) );
-        C := NewCompactLieGroupConjugacyClassSubgroups( cat, G, attr );
+        C := NewConjugacyClassSubgroups( cat, G, attr );
       else
         Error( "Invalid CCS id." );
       fi;

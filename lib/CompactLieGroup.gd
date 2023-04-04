@@ -36,15 +36,14 @@ DeclareCategory( "IsCompactLieGroup", IsGroup );
 ##
 ##  <#GAPDoc Label="NewCompactLieGroup">
 ##  <ManSection>
-##  <Constr Name="NewCompactLieGroup" Arg="IsCompactLieGroupRep, r"/>
+##  <Constr Name="NewCompactLieGroup" Arg="filt" />
 ##  <Description>
-##    This is the constructor of matrix compact Lie group.
+##    Constructor of compact Lie group.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-DeclareConstructor( "NewCompactLieGroup",
-    [ IsCompactLieGroup, IsInt ] );
+DeclareConstructor( "NewCompactLieGroup", [ IsCompactLieGroup ] );
 
 
 ##  Part 2: CCS and CCS prototypes of CLG
@@ -68,11 +67,11 @@ DeclareRepresentation( "IsCompactLieGroupConjugacyClassSubgroupsRep",
 
 #############################################################################
 ##
-#U  NewCompactLieGroupConjugacyClassSubgroups( IsGroup, IsGroup, <r> )
+#U  NewConjugacyClassSubgroups( IsGroup, IsGroup, <r> )
 ##
-##  <#GAPDoc Label="NewCompactLieGroupConjugacyClassSubgroups">
+##  <#GAPDoc Label="NewConjugacyClassSubgroups">
 ##  <ManSection>
-##  <Constr Name="NewCompactLieGroupConjugacyClassSubgroups"
+##  <Constr Name="NewConjugacyClassSubgroups"
 ##      Arg="IsGroup, G, r"/>
 ##  <Description>
 ##  This is the constructor of CCS of (infinite) compact Lie group.
@@ -80,8 +79,43 @@ DeclareRepresentation( "IsCompactLieGroupConjugacyClassSubgroupsRep",
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-DeclareConstructor( "NewCompactLieGroupConjugacyClassSubgroups",
-    [ IsGroup, IsGroup, IsRecord ] );
+DeclareConstructor( "NewConjugacyClassSubgroups",
+    [ IsCompactLieGroupConjugacyClassSubgroupsRep, IsGroup ] );
+
+#############################################################################
+##
+#R  IsPrototypeConjugacyClassSubgroupsRep
+##
+##  <#GAPDoc Label="IsCompactLieGroupPrototypeConjugacyClassSubgroupsRep">
+##  <ManSection>
+##  <Filt Name="IsCompactLieGroupPrototypeConjugacyClassSubgroupsRep"
+##      Type="representation"/>
+##  <Description>
+##  This is a representation for prototype of CCS of compact Lie group.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+DeclareRepresentation( "IsPrototypeConjugacyClassSubgroupsRep",
+    IsAttributeStoringRep, [ ] );
+
+#############################################################################
+##
+#R  NewPrototypeConjugacyClassSubgroups( filt, grp )
+##
+##  <#GAPDoc Label="NewPrototypeConjugacyClassSubgroups">
+##  <ManSection>
+##  <Constr Name="NewPrototypeConjugacyClassSubgroups"
+##      Args="filt" />
+##  <Description>
+##    Constructor of prototype of conjugacy class of subgroups.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+DeclareConstructor( "NewPrototypeConjugacyClassSubgroups",
+  [ IsPrototypeConjugacyClassSubgroupsRep, IsGroup ]
+);
 
 #############################################################################
 ##
@@ -105,7 +139,7 @@ DeclareOperation( "Refolded",
 ##  <#/GAPDoc>
 ##
 DeclareRepresentation( "IsCompactLieGroupConjugacyClassesSubgroupsRep",
-    IsComponentObjectRep and IsAttributeStoringRep, [ ] );
+    IsAttributeStoringRep, [ ] );
 
 #############################################################################
 ##
@@ -122,7 +156,7 @@ DeclareRepresentation( "IsCompactLieGroupConjugacyClassesSubgroupsRep",
 ##  <#/GAPDoc>
 ##
 DeclareConstructor( "NewCompactLieGroupConjugacyClassesSubgroups",
-    [ IsGroup, IsGroup, IsRecord ] );
+    [ IsCompactLieGroupConjugacyClassesSubgroupsRep, IsCompactLieGroup ] );
 
 #############################################################################
 ##
