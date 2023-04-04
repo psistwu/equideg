@@ -31,7 +31,7 @@ where <M>G</M> is a finite group.
 <!--
 <#Include Label="NewCompactLieGroup">
 <#Include Label="IsCompactLieGroupConjugacyClassSubgroupsRep">
-<#Include Label="NewCompactLieGroupConjugacyClassSubgroups">
+<#Include Label="NewConjugacyClassSubgroups">
 <#Include Label="IsCompactLieGroupConjugacyClassesSubgroupsRep">
 <#Include Label="NewCompactLieGroupConjugacyClassesSubgroups">
 -->

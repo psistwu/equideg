@@ -471,7 +471,7 @@
               if ForAll( [ C2, CZ2 ], HasLaTeXString ) then
                 class.latex_string := StringFormatted( StringFormatted( amal, "\\mathrm{{SO}}(2)", "", "", "", LaTeXString( C2 ) ) );
               fi;
-              class.proto	:= NewCompactLieGroupConjugacyClassSubgroups(
+              class.proto	:= NewConjugacyClassSubgroups(
                                    IsMatrixGroup, G, class );
               Add( data.ccsClasses, class );
 
@@ -499,7 +499,7 @@
               if ForAll( [ C2, CZ2 ], HasLaTeXString ) then
                 class.latex_string := StringFormatted( StringFormatted( amal, "\\mathrm{{O}}(2)", "", "", "", LaTeXString( C2 ) ) );
               fi;
-              class.proto := NewCompactLieGroupConjugacyClassSubgroups(
+              class.proto := NewConjugacyClassSubgroups(
                              IsMatrixGroup, G, class );
               Add( data.ccsClasses, class );
 
@@ -522,7 +522,7 @@
               if ForAll( [ C2, CZ2 ], HasLaTeXString ) then
                 class.latex_string := StringFormatted( amal, "\\bbZ_{}", "", "", "", LaTeXString( C2 ) );
               fi;
-              class.proto := NewCompactLieGroupConjugacyClassSubgroups(
+              class.proto := NewConjugacyClassSubgroups(
                              IsMatrixGroup, G, class );
               Add( data.ccsClasses, class );
 
@@ -545,7 +545,7 @@
               if ForAll( [ C2, CZ2 ], HasLaTeXString ) then
                 class.latex_string := StringFormatted( amal, "D_{}", "", "", "", LaTeXString( C2 ) );
               fi;
-              class.proto := NewCompactLieGroupConjugacyClassSubgroups(
+              class.proto := NewConjugacyClassSubgroups(
                              IsMatrixGroup, G, class );
               Add( data.ccsClasses, class );
 
@@ -572,7 +572,7 @@
               if ForAll( [ C2, CZ2 ], HasLaTeXString ) then
                 class.latex_string := StringFormatted( amal, "\\bbZ_{}", "\\bbZ_{}", "", LaTeXString( CZ2 ), LaTeXString( C2 ) );
               fi;
-              class.proto := NewCompactLieGroupConjugacyClassSubgroups(
+              class.proto := NewConjugacyClassSubgroups(
                              IsMatrixGroup, G, class );
               Add( data.ccsClasses, class );
 
@@ -601,7 +601,7 @@
                 if ForAll( [ C2, CZ2 ], HasLaTeXString ) then
                   class.latex_string := StringFormatted( amal, "D_{}", "D_{}", "", LaTeXString( CZ2 ), LaTeXString( C2 ) );
                 fi;
-                class.proto := NewCompactLieGroupConjugacyClassSubgroups(
+                class.proto := NewConjugacyClassSubgroups(
                                IsMatrixGroup, G, class );
                 Add( data.ccsClasses, class );
               fi;
@@ -677,7 +677,7 @@
               if ForAll( [ C2, CZ2 ], HasLaTeXString ) then
                 class.latex_string := StringFormatted( StringFormatted( amal, "\\mathrm{{O}}(2)", "\\mathrm{{SO}}(2)", "", LaTeXString( CZ2 ), LaTeXString( C2 ) ) );
               fi;
-              class.proto := NewCompactLieGroupConjugacyClassSubgroups(
+              class.proto := NewConjugacyClassSubgroups(
                              IsMatrixGroup, G, class );
               Add( data.ccsClasses, class );
             fi;
@@ -703,7 +703,7 @@
             if ForAll( [ C2, CZ2 ], HasLaTeXString ) then
               class.latex_string := StringFormatted( amal, "D_{}", "\\bbZ_{}", "", LaTeXString( CZ2 ), LaTeXString( C2 ) );
             fi;
-            class.proto := NewCompactLieGroupConjugacyClassSubgroups(
+            class.proto := NewConjugacyClassSubgroups(
                            IsMatrixGroup, G, class );
             Add( data.ccsClasses, class );
           od;
@@ -876,7 +876,7 @@
               if ForAll( [ C2, CZ2 ], HasLaTeXString ) then
                 class.latex_string := StringFormatted( StringFormatted( amal, "\\mathrm{{SO}}(2)", "", "", "", LaTeXString( C2 ) ) );
               fi;
-              class.proto	:= NewCompactLieGroupConjugacyClassSubgroups(
+              class.proto	:= NewConjugacyClassSubgroups(
                                    IsMatrixGroup, G, class );
               Add( data.ccsClasses, class );
 
@@ -899,7 +899,7 @@
               if ForAll( [ C2, CZ2 ], HasLaTeXString ) then
                 class.latex_string := StringFormatted( amal, "\\bbZ_{}", "", "", "", LaTeXString( C2 ) );
               fi;
-              class.proto := NewCompactLieGroupConjugacyClassSubgroups(
+              class.proto := NewConjugacyClassSubgroups(
                              IsMatrixGroup, G, class );
               Add( data.ccsClasses, class );
 
@@ -926,7 +926,7 @@
               if ForAll( [ C2, CZ2 ], HasLaTeXString ) then
                 class.latex_string := StringFormatted( amal, "\\bbZ_{}", "\\bbZ_{}", "", LaTeXString( CZ2 ), LaTeXString( C2 ) );
               fi;
-              class.proto := NewCompactLieGroupConjugacyClassSubgroups(
+              class.proto := NewConjugacyClassSubgroups(
                              IsMatrixGroup, G, class );
               Add( data.ccsClasses, class );
             fi;
