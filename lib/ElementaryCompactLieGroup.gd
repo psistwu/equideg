@@ -14,6 +14,13 @@
 
 #############################################################################
 ##
+#C  IsElementaryCompactLieGroup
+##
+DeclareCategory( "IsElementaryCompactLieGroup", IsCompactLieGroup );
+InstallImmediateMethod( Size, IsElementaryCompactLieGroup, 0, obj -> infinity);
+
+#############################################################################
+##
 #F  OrthogonalGroupOverReal( <n> )
 ##
 ##  <#GAPDoc Label="OrthogonalGroupOverReal">
