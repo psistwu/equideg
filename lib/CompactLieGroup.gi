@@ -251,37 +251,41 @@ InstallMethod( SetCCSsLaTeXString,
 
 #############################################################################
 ##
-#U  NewCompactLieGroupConjugacyClassesSubgroups( IsGroup, <G>, <data> )
+#U  NewConjugacyClassesSubgroups( filt, grp )
 ##
-  InstallMethod( NewCompactLieGroupConjugacyClassesSubgroups,
-    "constructs CCSs of a compact Lie group",
-    [ IsCompactLieGroupConjugacyClassesSubgroupsRep, IsCompactLieGroup ],
-    function( filt, G )
-      local fam,
-            cat,
-            rep,
-            obj;
+InstallMethod( NewConjugacyClassesSubgroups,
+  "Constructor of CCSs for compact Lie group",
+  [ IsCompactLieGroupConjugacyClassesSubgroupsRep, IsCompactLieGroup ],
+  function( filt, grp )
+    local cat_grp,
+          fam,
+          cat,
+          rep,
+          type,
+          obj;
 
-      # objectify CCSs of the group
-      fam := CollectionsFamily( CollectionsFamily( FamilyObj( G ) ) );
-      cat := CategoryCollections( CategoryCollections( filt ) );
-      rep := IsCompactLieGroupConjugacyClassesSubgroupsRep;
-      obj := Objectify( NewType( fam, cat and rep ), rec( ) );
+    # objectify
+    fam := CollectionsFamily( CollectionsFamily( FamilyObj( grp ) ) );
+    cat := IsObject;
+    for cat_grp in List( CategoriesOfObject( grp ), c->EvalString( c ) ) do
+      cat := cat and CategoryCollections( CategoryCollections( cat_grp ) );
+    od;
+    rep := IsPrototypeConjugacyClassSubgroupsRep;
+    type := NewType( fam, cat and rep );
+    obj := Objectify( type, rec( ) );
 
-      # assign attributes to CCSs
-      SetUnderlyingGroup( obj, G );
-      SetString( obj, StringFormatted(
-        "ConjugacyClassesSubgroups( {} )",
-        String( G )
-      ) );
-      SetAbbrv( obj, StringFormatted(
-        "ConjugacyClassesSubgroups( {} )",
-        ViewString( G )
-      ) );
+    # assign attributes to CCSs
+    SetUnderlyingGroup( obj, grp );
+    SetString( obj,
+      StringFormatted( "ConjugacyClassesSubgroups( {} )", String( grp ) )
+    );
+    SetAbbrv( obj,
+      StringFormatted( "ConjugacyClassesSubgroups( {} )", ViewString( grp ) )
+    );
 
-      return obj;
-    end
-  );
+    return obj;
+  end
+);
 
 #############################################################################
 ##
