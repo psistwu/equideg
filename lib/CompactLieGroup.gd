@@ -143,11 +143,11 @@ DeclareRepresentation( "IsCompactLieGroupConjugacyClassesSubgroupsRep",
 
 #############################################################################
 ##
-#U  NewCompactLieGroupConjugacyClassesSubgroups( IsGroup, <G> )
+#U  NewConjugacyClassesSubgroups( IsGroup, <G> )
 ##
-##  <#GAPDoc Label="NewCompactLieGroupConjugacyClassesSubgroups">
+##  <#GAPDoc Label="NewConjugacyClassesSubgroups">
 ##  <ManSection>
-##  <Constr Name="NewCompactLieGroupConjugacyClassesSubgroups"
+##  <Constr Name="NewConjugacyClassesSubgroups"
 ##      Arg="IsGroup, G"/>
 ##  <Description>
 ##    This is the constructor of list of CCSs of compact Lie group.
@@ -155,8 +155,8 @@ DeclareRepresentation( "IsCompactLieGroupConjugacyClassesSubgroupsRep",
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-DeclareConstructor( "NewCompactLieGroupConjugacyClassesSubgroups",
-    [ IsCompactLieGroupConjugacyClassesSubgroupsRep, IsCompactLieGroup ] );
+DeclareConstructor( "NewConjugacyClassesSubgroups",
+    [ IsObject, IsGroup ] );
 
 #############################################################################
 ##

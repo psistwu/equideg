@@ -715,7 +715,7 @@
       StableSort( data.ccsClasses, { cl1, cl2 } ->
           OrderOfRepresentative( cl1.proto ) < OrderOfRepresentative( cl2.proto ) );
 
-      return NewCompactLieGroupConjugacyClassesSubgroups( IsGroup, G, data );
+      return NewConjugacyClassesSubgroups( IsGroup, G, data );
     end
   );
 
@@ -939,7 +939,7 @@
       StableSort( data.ccsClasses, { cl1, cl2 } ->
           OrderOfRepresentative( cl1.proto ) < OrderOfRepresentative( cl2.proto ) );
 
-      return NewCompactLieGroupConjugacyClassesSubgroups( IsGroup, G, data );
+      return NewConjugacyClassesSubgroups( IsGroup, G, data );
     end
   );
 

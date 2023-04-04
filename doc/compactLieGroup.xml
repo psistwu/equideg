@@ -33,7 +33,7 @@ where <M>G</M> is a finite group.
 <#Include Label="IsCompactLieGroupConjugacyClassSubgroupsRep">
 <#Include Label="NewConjugacyClassSubgroups">
 <#Include Label="IsCompactLieGroupConjugacyClassesSubgroupsRep">
-<#Include Label="NewCompactLieGroupConjugacyClassesSubgroups">
+<#Include Label="NewConjugacyClassesSubgroups">
 -->
 <#Include Label="CompactLieGroupConjugacyClassesSubgroupsSelector">
 <#Include Label="NumberOfNonzeroModeClasses">
