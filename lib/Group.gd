@@ -94,10 +94,29 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareAttribute( "IdCC", IsConjugacyClassGroupRep );
+DeclareAttribute( "IdCC", IsConjugacyClassGroupRep );
 
 
 ## Part 3: Conjugacy Class of Subgroups
+
+
+#############################################################################
+##
+#U  NewConjugacyClassSubgroups( filt, grp )
+##
+##  <#GAPDoc Label="NewConjugacyClassSubgroups">
+##  <ManSection>
+##  <Constr Name="NewConjugacyClassSubgroups"
+##      Arg="filt, grp"/>
+##  <Description>
+##    This is the constructor of CCS.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+DeclareConstructor( "NewConjugacyClassSubgroups",
+    [ IsConjugacyClassSubgroupsRep, IsGroup ] );
+
 
 #############################################################################
 ##
@@ -115,14 +134,13 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareAttribute( "IdCCS", IsConjugacyClassSubgroupsRep );
+DeclareAttribute( "IdCCS", IsConjugacyClassSubgroupsRep );
 
 #############################################################################
 ##
 #F  IdCCSPartialOrder( <id1>, <id2> )
 ##
-  DeclareGlobalFunction( "IdCCSPartialOrder",
-      "partial order of id of CCS" );
+DeclareGlobalFunction( "IdCCSPartialOrder", "partial order of id of CCS" );
 
 #############################################################################
 ##
@@ -187,10 +205,10 @@ DeclareAttribute( "OrderOfRepresentative", IsConjugacyClassSubgroupsRep );
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareOperation( "nLHnumber",
-      [ IsGroup and HasParentAttr, IsGroup and HasParentAttr ] );
-  DeclareOperation( "nLHnumber",
-      [ IsConjugacyClassSubgroupsRep, IsConjugacyClassSubgroupsRep ] );
+DeclareOperation( "nLHnumber",
+    [ IsGroup and HasParentAttr, IsGroup and HasParentAttr ] );
+DeclareOperation( "nLHnumber",
+    [ IsConjugacyClassSubgroupsRep, IsConjugacyClassSubgroupsRep ] );
 
 #############################################################################
 ##
@@ -223,8 +241,8 @@ DeclareAttribute( "OrderOfRepresentative", IsConjugacyClassSubgroupsRep );
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareAttribute( "OrderOfWeylGroup", IsGroup and HasParentAttr );
-  DeclareAttribute( "OrderOfWeylGroup", IsConjugacyClassSubgroupsRep );
+DeclareAttribute( "OrderOfWeylGroup", IsGroup and HasParentAttr );
+DeclareAttribute( "OrderOfWeylGroup", IsConjugacyClassSubgroupsRep );
 
 
 #############################################################################
@@ -240,7 +258,7 @@ DeclareAttribute( "OrderOfRepresentative", IsConjugacyClassSubgroupsRep );
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareRepresentation( "IsLatticeCCSsRep", IsLatticeRep, [ ] );
+DeclareRepresentation( "IsLatticeCCSsRep", IsLatticeRep, [ ] );
 
 #############################################################################
 ##
@@ -262,13 +280,13 @@ DeclareAttribute( "OrderOfRepresentative", IsConjugacyClassSubgroupsRep );
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareAttribute( "LatticeCCSs", IsGroup );
+DeclareAttribute( "LatticeCCSs", IsGroup );
 
 #############################################################################
 ##
 #A  ConjugacyClassesSubgroups( <lat_ccss> )
 ##
-  DeclareAttribute( "ConjugacyClassesSubgroups", IsLatticeCCSsRep );
+DeclareAttribute( "ConjugacyClassesSubgroups", IsLatticeCCSsRep );
 
 
 ##  Part 3: Character and Representation Theory
@@ -277,21 +295,20 @@ DeclareAttribute( "OrderOfRepresentative", IsConjugacyClassSubgroupsRep );
 ##
 #A  IdIrr( <chi> )
 ##
-  DeclareAttribute( "IdIrr", IsIrreducibleCharacter );
+DeclareAttribute( "IdIrr", IsIrreducibleCharacter );
 
 #############################################################################
 ##
 #O  ImageElm( <chi>, <e> )
 ##
-  DeclareOperation( "ImageElm",
-      [ IsClassFunction, IsMultiplicativeElementWithInverse ] );
+DeclareOperation( "ImageElm",
+    [ IsClassFunction, IsMultiplicativeElementWithInverse ] );
 
 #############################################################################
 ##
 #O  SchurIndicator( <chi>, <n> )
 ##
-  DeclareOperation( "SchurIndicator",
-      [ IsCharacter, IsInt ] );
+DeclareOperation( "SchurIndicator", [ IsCharacter, IsInt ] );
 
 
 ##  Part 4: Concepts Related to Compact Lie Group

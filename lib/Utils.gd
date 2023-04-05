@@ -75,12 +75,6 @@ DeclareOperation( "ResetAbbrv", [ IsComponentObjectRep ] );
 
 #############################################################################
 ##
-#A  Detail( <obj> )
-##
-DeclareAttribute( "Detail", IsObject );
-
-#############################################################################
-##
 #A  LaTeXString( <obj> )
 ##
 ##  <#GAPDoc Label="LaTeXString">

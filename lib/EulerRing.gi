@@ -392,7 +392,7 @@
       basis := Basis( erng );
 
       # apply only on SO(2)
-      if not ( IdOfElementaryCompactLieGroup( grp ) = [ 1, 2 ] ) then
+      if not ( IdElementaryCompactLieGroup( grp ) = [ 1, 2 ] ) then
          TryNextMethod( );
       fi;
 
@@ -496,7 +496,7 @@
       if not ( Length( decomp ) = 2 ) then
         # check if there are exactly 2 direct product components
         TryNextMethod( );
-      elif not ( IdOfElementaryCompactLieGroup( decomp[ 1 ] ) = [ 1, 2 ] ) then
+      elif not ( IdElementaryCompactLieGroup( decomp[ 1 ] ) = [ 1, 2 ] ) then
         # check if the first component of direct project is SO(2)
         TryNextMethod( );
       elif not IsFinite( decomp[ 2 ] ) then

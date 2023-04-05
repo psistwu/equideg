@@ -67,11 +67,11 @@ DeclareGlobalFunction( "ElementaryCompactLieGroupById",
 
 #############################################################################
 ##
-#A  IdOfElementaryCompactLieGroup( <G> )
+#A  IdElementaryCompactLieGroup( <G> )
 ##
-##  <#GAPDoc Label="IdOfElementaryCompactLieGroup">
+##  <#GAPDoc Label="IdElementaryCompactLieGroup">
 ##  <ManSection>
-##  <Attr Name="IdOfElementaryCompactLieGroup" Arg="G"/>
+##  <Attr Name="IdElementaryCompactLieGroup" Arg="G"/>
 ##  <Description>
 ##    This attribute contains the ID of elementary compact Lie group
 ##    <A>G</A>.
@@ -79,7 +79,7 @@ DeclareGlobalFunction( "ElementaryCompactLieGroupById",
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-DeclareAttribute( "IdOfElementaryCompactLieGroup", IsCompactLieGroup );
+DeclareAttribute( "IdElementaryCompactLieGroup", IsCompactLieGroup );
 
 
 ##  Part 4: CCS of ECLG

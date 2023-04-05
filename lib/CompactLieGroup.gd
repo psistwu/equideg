@@ -46,7 +46,7 @@ DeclareCategory( "IsCompactLieGroup", IsGroup );
 DeclareConstructor( "NewCompactLieGroup", [ IsCompactLieGroup ] );
 
 
-##  Part 2: CCS and CCS prototypes of CLG
+##  Part 2: CCS of CLG
 
 #############################################################################
 ##
@@ -82,6 +82,9 @@ DeclareRepresentation( "IsCompactLieGroupConjugacyClassSubgroupsRep",
 DeclareConstructor( "NewConjugacyClassSubgroups",
     [ IsCompactLieGroupConjugacyClassSubgroupsRep, IsGroup ] );
 
+
+##  Part 3: Prototype of CCS
+
 #############################################################################
 ##
 #R  IsPrototypeConjugacyClassSubgroupsRep
@@ -97,15 +100,15 @@ DeclareConstructor( "NewConjugacyClassSubgroups",
 ##  <#/GAPDoc>
 ##
 DeclareRepresentation( "IsPrototypeConjugacyClassSubgroupsRep",
-    IsAttributeStoringRep, [ ] );
+    IsConjugacyClassSubgroupsRep, [ ] );
 
 #############################################################################
 ##
-#R  NewPrototypeConjugacyClassSubgroups( filt, grp )
+#R  NewConjugacyClassSubgroups( filt, grp )
 ##
-##  <#GAPDoc Label="NewPrototypeConjugacyClassSubgroups">
+##  <#GAPDoc Label="NewConjugacyClassSubgroups">
 ##  <ManSection>
-##  <Constr Name="NewPrototypeConjugacyClassSubgroups"
+##  <Constr Name="NewConjugacyClassSubgroups"
 ##      Args="filt" />
 ##  <Description>
 ##    Constructor of prototype of conjugacy class of subgroups.
@@ -113,8 +116,8 @@ DeclareRepresentation( "IsPrototypeConjugacyClassSubgroupsRep",
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-DeclareConstructor( "NewPrototypeConjugacyClassSubgroups",
-  [ IsPrototypeConjugacyClassSubgroupsRep, IsGroup ]
+DeclareConstructor( "NewConjugacyClassSubgroups",
+  [ IsConjugacyClassSubgroupsRep, IsGroup ]
 );
 
 #############################################################################

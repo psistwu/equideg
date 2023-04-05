@@ -14,34 +14,69 @@
 
 #############################################################################
 ##
+#U  NewCompactLieGroup( IsElementaryCompactLieGroup and IsMatrixGroup, <r> )
+##
+InstallOtherMethod( NewCompactLieGroup,
+  "construct a matrix elementary compact Lie group",
+  [ IsElementaryCompactLieGroup and IsMatrixGroup, IsInt ],
+  function( filt, rank )
+    local one,	# identity of the group
+          fam,	# family of the object
+          cat,  # category of the object
+          rep,  # representation of the object
+          type, # type of the object
+          obj;	# object contructed
+
+    # generate the identity of the CLG (a d-by-d identity matrix)
+    one := IdentityMat( rank );
+
+    # define the type of the group
+    fam := CollectionsFamily( FamilyObj( one ) );
+    cat := IsElementaryCompactLieGroup and IsMatrixGroup;
+    rep := IsAttributeStoringRep;
+    type := NewType( fam, cat and rep );
+
+    # objectify the matrix group
+    obj := Objectify( type, rec( ) );
+
+    # setup properties of the (special) orthogonal group
+    SetOneImmutable( obj, one );
+    SetDimensionOfMatrixGroup( obj, rank );
+
+    return obj;
+  end
+);
+
+#############################################################################
+##
 #F  OrthogonalGroupOverReal( <n> )
 ##
 InstallGlobalFunction( OrthogonalGroupOverReal,
   function( n )
-    local G;		# the orthogonal group
+    local obj;		# the orthogonal group
 
     # objectify the group
-    G := NewCompactLieGroup( IsCompactLieGroup and IsMatrixGroup, n );
+    obj := NewCompactLieGroup( IsElementaryCompactLieGroup and IsMatrixGroup, n );
 
     # setup property(s) and attribute(s) of the group
-    SetIsAbelian( G, false );
-    SetDimensionOfCompactLieGroup( G, n*(n-1)/2 );
-    SetRankOfCompactLieGroup( G, Int( n/2 ) );
-    SetIdOfElementaryCompactLieGroup( G, [ 2, n ] );
-    SetString( G, StringFormatted( "OrthogonalGroupOverReal( {} )", n ) );
-    SetAbbrv( G, StringFormatted( "O( {} ,R )", n ) );
+    SetIsAbelian( obj, false );
+    SetDimensionOfCompactLieGroup( obj, n*(n-1)/2 );
+    SetRankOfCompactLieGroup( obj, Int( n/2 ) );
+    SetIdElementaryCompactLieGroup( obj, [ 2, n ] );
+    SetString( obj, StringFormatted( "OrthogonalGroupOverReal( {} )", n ) );
+    SetAbbrv( obj, StringFormatted( "O({};R)", n ) );
 
     # the follow clause is an ad hoc approach for
     # comparing epimorphisms from O(2) to a finite group
     # certainly, the given set does not generate O(2)
     if ( n = 2 ) then
-      SetGeneratorsOfGroup( G,
+      SetGeneratorsOfGroup( obj,
         [ [ [ 0, -1 ],[ 1, 0 ] ],
           [ [ 1, 0 ], [ 0, -1 ] ] ]
       );
     fi;
 
-    return G;
+    return obj;
   end
 );
 
@@ -51,33 +86,34 @@ InstallGlobalFunction( OrthogonalGroupOverReal,
 ##
 InstallGlobalFunction( SpecialOrthogonalGroupOverReal,
   function( n )
-    local G;		# the special orthogonal group
+    local obj;		# the special orthogonal group
 
     # objectify the group
-    G := NewCompactLieGroup( IsCompactLieGroup and IsMatrixGroup, n );
+    obj := NewCompactLieGroup( IsElementaryCompactLieGroup and
+        IsMatrixGroup, n );
 
     # setup property(s) and attribute(s) of the group
     if ( n = 2 ) then
-      SetIsAbelian( G, true );
+      SetIsAbelian( obj, true );
     else
-      SetIsAbelian( G, false );
+      SetIsAbelian( obj, false );
     fi;
-    SetDimensionOfCompactLieGroup( G, n*(n-1)/2 );
-    SetRankOfCompactLieGroup( G, Int( n/2 ) );
-    SetIdOfElementaryCompactLieGroup( G, [ 1, n ] );
-    SetString( G,
+    SetDimensionOfCompactLieGroup( obj, n*(n-1)/2 );
+    SetRankOfCompactLieGroup( obj, Int( n/2 ) );
+    SetIdElementaryCompactLieGroup( obj, [ 1, n ] );
+    SetString( obj,
       StringFormatted( "SpecialOrthogonalGroupOverReal( {} )", n )
     );
-    SetAbbrv( G, StringFormatted( "SO( {} ,R )", n ) );
+    SetAbbrv( obj, StringFormatted( "SO({};R)", n ) );
 
     # the follow clause is an ad hoc approach for
     # comparing epimorphisms from SO(2) to a finite group
     # certainly, the given set does not generate SO(2)
     if ( n = 2 ) then
-      SetGeneratorsOfGroup( G, [ [ [ 0, -1 ], [ 1, 0 ] ] ] );
+      SetGeneratorsOfGroup( obj, [ [ [ 0, -1 ], [ 1, 0 ] ] ] );
     fi;
 
-    return G;
+    return obj;
   end
 );
 
@@ -108,11 +144,10 @@ InstallGlobalFunction( ElementaryCompactLieGroupById,
 ##
 InstallMethod( \=,
   "equivalence relation of ECLGs",
-  [ IsCompactLieGroup and HasIdOfElementaryCompactLieGroup,
-    IsCompactLieGroup and HasIdOfElementaryCompactLieGroup ],
+  [ IsElementaryCompactLieGroup, IsElementaryCompactLieGroup ],
   function( G, H )
-    return IdOfElementaryCompactLieGroup( G ) =
-        IdOfElementaryCompactLieGroup( H );
+    return IdElementaryCompactLieGroup( G ) =
+        IdElementaryCompactLieGroup( H );
   end
 );
 
@@ -122,9 +157,9 @@ InstallMethod( \=,
 ##
 InstallMethod( \in,
   "Membership test for SO(n)",
-  [ IsObject, IsCompactLieGroup and HasIdOfElementaryCompactLieGroup ],
+  [ IsObject, IsElementaryCompactLieGroup ],
   function( obj, G )
-    if not ( IdOfElementaryCompactLieGroup( G )[ 1 ] = 1 ) then
+    if not ( IdElementaryCompactLieGroup( G )[ 1 ] = 1 ) then
       TryNextMethod( );
     fi;
     
@@ -145,9 +180,9 @@ InstallMethod( \in,
 ##
 InstallMethod( \in,
   "Membership test for O(n)",
-  [ IsObject, IsCompactLieGroup and HasIdOfElementaryCompactLieGroup ],
+  [ IsObject, IsElementaryCompactLieGroup ],
   function( obj, G )
-    if not ( IdOfElementaryCompactLieGroup( G )[ 1 ] = 2 ) then
+    if not ( IdElementaryCompactLieGroup( G )[ 1 ] = 2 ) then
       TryNextMethod( );
     fi;
 
@@ -161,28 +196,28 @@ InstallMethod( \in,
   end
 );
 
-#############################################################################
-##
-#O  IsSubset( <G>, <col> )
-##
-InstallMethod( IsSubset,
-  "Test if a finite group is a subgroup of a CLG",
-  [ IsCompactLieGroup, IsCollection ],
-  function( G, col )
-    local elmt;
+# #############################################################################
+# ##
+# #O  IsSubset( <G>, <col> )
+# ##
+# InstallMethod( IsSubset,
+#   "Test if a finite group is a subgroup of a CLG",
+#   [ IsCompactLieGroup, IsCollection ],
+#   function( G, col )
+#     local elmt;
 
-    if IsFinite( col ) then
-      TryNextMethod( );
-    fi;
+#     if not IsFinite( col ) then
+#       TryNextMethod( );
+#     fi;
 
-    for elmt in List( col ) do
-      if not ( elmt in G ) then
-        return false;
-      fi;
-    od;
-    return true;
-  end
-);
+#     for elmt in List( col ) do
+#       if not ( elmt in G ) then
+#         return false;
+#       fi;
+#     od;
+#     return true;
+#   end
+# );
 
 #############################################################################
 ##
@@ -190,18 +225,17 @@ InstallMethod( IsSubset,
 ##
 InstallMethod( IsSubset,
   "subset test of O(n) and SO(n)",
-  [ IsCompactLieGroup and HasIdOfElementaryCompactLieGroup,
-    IsCompactLieGroup and HasIdOfElementaryCompactLieGroup ],
+  [ IsElementaryCompactLieGroup, IsElementaryCompactLieGroup ],
   function( G, U )
     local type_G,	# type of G
           type_U,	# type of U
           d_G,	# matrix dimension of G
           d_U;	# matrix dimension of U
 
-    type_G := IdOfElementaryCompactLieGroup( G )[ 1 ];
-    type_U := IdOfElementaryCompactLieGroup( U )[ 1 ];
-    d_G := IdOfElementaryCompactLieGroup( G )[ 2 ];
-    d_U := IdOfElementaryCompactLieGroup( U )[ 2 ];
+    type_G := IdElementaryCompactLieGroup( G )[ 1 ];
+    type_U := IdElementaryCompactLieGroup( U )[ 1 ];
+    d_G := IdElementaryCompactLieGroup( G )[ 2 ];
+    d_U := IdElementaryCompactLieGroup( U )[ 2 ];
 
     if not ( ( type_G in [ 1, 2 ] ) and ( type_U in [ 1, 2 ] ) ) then
       TryNextMethod( );
@@ -225,30 +259,37 @@ InstallMethod( IsSubset,
 ##
 InstallMethod( ConjugacyClassesSubgroups,
   "CCSs of SO(2)",
-  [ IsCompactLieGroup and HasIdOfElementaryCompactLieGroup ],
-  function( G )
-    local data,	# CCSs data
-          class,	# CCS classes
-          x;		# indeterminate
+  [ IsElementaryCompactLieGroup ],
+  function( grp )
+    local prototypes, # all class prototypes
+          proto,      # class prototype
+          x;		      # indeterminate
 
-    if not ( IdOfElementaryCompactLieGroup( G ) = [ 1, 2 ] ) then
+    
+    if not ( IdElementaryCompactLieGroup( grp ) = [ 1, 2 ] ) then
       TryNextMethod( );
     fi;
 
-    # generate CCS classes for SO(2)
-    data := rec( );
     x := X( Integers, "x" );
-    data.ccsClasses := [ ];
+    # generate CCS classes for SO(2)
+    # data := rec( );
+    # data.ccsClasses := [ ];
 
-    # SO(2)
+    prototypes := [ ];
+    # prototype class: SO(2)
+    proto := NewConjugacyClassSubgroups(
+        IsPrototypeConjugacyClassSubgroupsRep, grp );
+    SetOrderOfWeylGroup( proto, One( x ) );
+    SetIsZeroModePrototype( proto, true );
+    SetRepresentative( proto, grp );
+    SetNormalizerInParent( proto, grp );
+
     class := rec(
-      is_zero_mode			:= true,
-      order_of_weyl_group		:= One( x ),
       representative			:= SpecialOrthogonalGroupOverReal( 2 ),
-      normalizer			:= G,
+      normalizer			:= ,
       order_of_representative		:= x,
       abbrv				:= "SO(2)"			);
-    class.proto := NewCompactLieGroupConjugacyClassSubgroups(
+    class.proto := NewConjugacyClassSubgroups(
                     IsMatrixGroup, G, class );
     Add( data.ccsClasses, class );
 
@@ -260,14 +301,14 @@ InstallMethod( ConjugacyClassesSubgroups,
       normalizer		:= G,
       order_of_representative	:= One( x ),
       abbrv			:= "Z_{}"			);
-    class.proto := NewCompactLieGroupConjugacyClassSubgroups(
+    class.proto := NewConjugacyClassSubgroups(
                     IsMatrixGroup, G, class );
     class.representative	:= l -> mCyclicGroup( l );
     class.normalizer		:= l -> G;
     Add( data.ccsClasses, class );
 
     # return the CCSs object
-    return NewCompactLieGroupConjugacyClassesSubgroups(
+    return NewConjugacyClassesSubgroups(
         IsMatrixGroup, G, data );
   end
 );
@@ -278,13 +319,13 @@ InstallMethod( ConjugacyClassesSubgroups,
 ##
 InstallMethod( ConjugacyClassesSubgroups,
   "CCSs of O(2)",
-  [ IsCompactLieGroup and HasIdOfElementaryCompactLieGroup ],
+  [ IsCompactLieGroup and HasIdElementaryCompactLieGroup ],
   function( G )
     local data,	# CCSs data
           class,	# CCS classes
           x;		# indeterminate
 
-    if not ( IdOfElementaryCompactLieGroup( G ) = [ 2, 2 ] ) then
+    if not ( IdElementaryCompactLieGroup( G ) = [ 2, 2 ] ) then
       TryNextMethod( );
     fi;
 
@@ -301,7 +342,7 @@ InstallMethod( ConjugacyClassesSubgroups,
       normalizer		:= G,
       order_of_representative	:= x,
       abbrv			:= "SO(2)"				);
-    class.proto := NewCompactLieGroupConjugacyClassSubgroups(
+    class.proto := NewConjugacyClassSubgroups(
                     IsMatrixGroup, G, class );
     Add( data.ccsClasses, class );
 
@@ -313,7 +354,7 @@ InstallMethod( ConjugacyClassesSubgroups,
       normalizer		:= G,
       order_of_representative	:= 2*x,
       abbrv			:= "O(2)"			);
-    class.proto := NewCompactLieGroupConjugacyClassSubgroups(
+    class.proto := NewConjugacyClassSubgroups(
                     IsMatrixGroup, G, class );
     Add( data.ccsClasses, class );
 
@@ -325,7 +366,7 @@ InstallMethod( ConjugacyClassesSubgroups,
       normalizer		:= G,
       order_of_representative	:= One( x ),
       abbrv			:= "Z_{}"		);
-    class.proto := NewCompactLieGroupConjugacyClassSubgroups(
+    class.proto := NewConjugacyClassSubgroups(
                     IsMatrixGroup, G, class );
     class.representative	:= l -> mCyclicGroup( l );
     class.normalizer		:= l -> G;
@@ -339,14 +380,14 @@ InstallMethod( ConjugacyClassesSubgroups,
       normalizer		:= mDihedralGroup( 2 ),
       order_of_representative	:= 2*One( x ),
       abbrv			:= "D_{}"		);
-    class.proto := NewCompactLieGroupConjugacyClassSubgroups(
+    class.proto := NewConjugacyClassSubgroups(
                     IsMatrixGroup, G, class );
     class.representative	:= l -> mDihedralGroup( l );
     class.normalizer		:= l -> mDihedralGroup( 2*l );
     Add( data.ccsClasses, class );
 
     # objectify the CCSs object
-    return NewCompactLieGroupConjugacyClassesSubgroups(
+    return NewConjugacyClassesSubgroups(
         IsMatrixGroup, G, data );
   end
 );
@@ -372,8 +413,8 @@ InstallMethod( nLHnumber,
       Error( "CL and CH must be from the same group." );
     fi;
 
-    if not HasIdOfElementaryCompactLieGroup( G ) or
-        not ( IdOfElementaryCompactLieGroup( G ) in [ [ 1, 2 ], [ 2, 2 ] ] ) then
+    if not HasIdElementaryCompactLieGroup( G ) or
+        not ( IdElementaryCompactLieGroup( G ) in [ [ 1, 2 ], [ 2, 2 ] ] ) then
       TryNextMethod( );
     fi;
 
@@ -417,8 +458,8 @@ InstallMethod( \[\],
 
     G := UnderlyingGroup( irrs );
 
-    if not HasIdOfElementaryCompactLieGroup( G ) or
-        not ( IdOfElementaryCompactLieGroup( G ) = [ 1, 2 ] ) then
+    if not HasIdElementaryCompactLieGroup( G ) or
+        not ( IdElementaryCompactLieGroup( G ) = [ 1, 2 ] ) then
       TryNextMethod( );
     fi;
 
@@ -454,8 +495,8 @@ InstallMethod( \[\],
 
     G := UnderlyingGroup( irrs );
 
-    if not HasIdOfElementaryCompactLieGroup( G ) or
-        not ( IdOfElementaryCompactLieGroup( G ) = [ 2, 2 ] ) then
+    if not HasIdElementaryCompactLieGroup( G ) or
+        not ( IdElementaryCompactLieGroup( G ) = [ 2, 2 ] ) then
       TryNextMethod( );
     fi;
 
@@ -504,8 +545,8 @@ InstallMethod( \[\],
       G1 := DirectProductDecomposition( G )[ 1 ];
       id := Flat( [ ShallowCopy( IdIrr( chi ) ) ] );
 
-      if not HasIdOfElementaryCompactLieGroup( G1 ) or
-         not ( IdOfElementaryCompactLieGroup( G1 ) = [ 1, 2 ] ) then
+      if not HasIdElementaryCompactLieGroup( G1 ) or
+         not ( IdElementaryCompactLieGroup( G1 ) = [ 1, 2 ] ) then
         TryNextMethod( );
       fi;
 
@@ -534,8 +575,8 @@ InstallMethod( \[\],
       G1 := DirectProductDecomposition( G )[ 1 ];
       id := Flat( [ ShallowCopy( IdIrr( chi ) ) ] );
 
-      if not HasIdOfElementaryCompactLieGroup( G1 ) or
-         not ( IdOfElementaryCompactLieGroup( G1 ) = [ 2, 2 ] ) then
+      if not HasIdElementaryCompactLieGroup( G1 ) or
+         not ( IdElementaryCompactLieGroup( G1 ) = [ 2, 2 ] ) then
       fi;
 
       if IsPosInt( id[ 1 ] ) and IsPosInt( l ) then
@@ -567,12 +608,12 @@ InstallMethod( \[\],
         Error( "<H> must be a subgroup of <G>." );
       fi;
 
-      if not HasIdOfElementaryCompactLieGroup( G ) or
-         not IdOfElementaryCompactLieGroup( G ) in [ [ 1, 2 ], [ 2, 2 ] ] then
+      if not HasIdElementaryCompactLieGroup( G ) or
+         not IdElementaryCompactLieGroup( G ) in [ [ 1, 2 ], [ 2, 2 ] ] then
         TryNextMethod( );
       fi;
 
-      if ( IdOfElementaryCompactLieGroup( G ) = SpecialOrthogonalGroupOverReal( 2 ) ) then
+      if ( IdElementaryCompactLieGroup( G ) = SpecialOrthogonalGroupOverReal( 2 ) ) then
         if ( H = G ) then
           return Coefficient( id[ 1 ], 0 );
         fi;
@@ -680,8 +721,8 @@ InstallMethod( \[\],
             l;
 
       G := UnderlyingGroup( chi );
-      if not HasIdOfElementaryCompactLieGroup( G ) or
-          not ( IdOfElementaryCompactLieGroup( G ) = [ 1, 2 ] ) then
+      if not HasIdElementaryCompactLieGroup( G ) or
+          not ( IdElementaryCompactLieGroup( G ) = [ 1, 2 ] ) then
         TryNextMethod( );
       fi;
 
@@ -706,8 +747,8 @@ InstallMethod( \[\],
             l;
 
       G := UnderlyingGroup( chi );
-      if not HasIdOfElementaryCompactLieGroup( G ) and
-          not ( IdOfElementaryCompactLieGroup( G ) = [ 2, 2 ] ) then
+      if not HasIdElementaryCompactLieGroup( G ) and
+          not ( IdElementaryCompactLieGroup( G ) = [ 2, 2 ] ) then
         TryNextMethod( );
       fi;
 

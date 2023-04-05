@@ -24,7 +24,7 @@ where <M>G</M> is a finite group.
 <#Include Label="OrthogonalGroupOverReal">
 <#Include Label="SpecialOrthogonalGroupOverReal">
 <#Include Label="ElementaryCompactLieGroupId">
-<#Include Label="IdOfElementaryCompactLieGroup">
+<#Include Label="IdElementaryCompactLieGroup">
 </Section>
 
 <Section><Heading>General Functions</Heading>

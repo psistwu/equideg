@@ -108,9 +108,9 @@ InstallMethod( NewConjugacyClassSubgroups,
 
 #############################################################################
 ##
-#U  NewPrototypeConjugacyClassSubgroups( filt, grp )
+#U  NewConjugacyClassSubgroups( filt, grp )
 ##
-InstallMethod( NewPrototypeConjugacyClassSubgroups,
+InstallMethod( NewConjugacyClassSubgroups,
   "constructor of prototype of conjugacy class of subgroups",
   [ IsPrototypeConjugacyClassSubgroupsRep, IsGroup ],
   function( filt, grp )
