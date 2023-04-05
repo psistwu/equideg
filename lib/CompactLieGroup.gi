@@ -131,6 +131,8 @@ InstallMethod( NewConjugacyClassSubgroups,
     type := NewType( fam, cat and rep );
     obj := Objectify( type, rec( ) );
 
+    SetActingDomain( obj, grp );
+
     return obj;
   end
 );

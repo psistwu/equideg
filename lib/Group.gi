@@ -171,9 +171,9 @@ InstallMethod( IdCCS,
 
 #############################################################################
 ##
-#F  IdCCSPartialOrder( <id1>, <id2> )
+#F  CCSOrderByID( <id1>, <id2> )
 ##
-InstallGlobalFunction( IdCCSPartialOrder,
+InstallGlobalFunction( CCSOrderByID,
   function( id1, id2 )
     if IsPosInt( id1 ) and IsPosInt( id2 ) then
       return ( id1 < id2 );

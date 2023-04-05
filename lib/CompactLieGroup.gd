@@ -64,23 +64,7 @@ DeclareConstructor( "NewCompactLieGroup", [ IsCompactLieGroup ] );
 ##
 DeclareRepresentation( "IsCompactLieGroupConjugacyClassSubgroupsRep",
     IsConjugacyClassSubgroupsRep, [ ] );
-
-#############################################################################
-##
-#U  NewConjugacyClassSubgroups( IsGroup, IsGroup, <r> )
-##
-##  <#GAPDoc Label="NewConjugacyClassSubgroups">
-##  <ManSection>
-##  <Constr Name="NewConjugacyClassSubgroups"
-##      Arg="IsGroup, G, r"/>
-##  <Description>
-##  This is the constructor of CCS of (infinite) compact Lie group.
-##  </Description>
-##  </ManSection>
-##  <#/GAPDoc>
-##
-DeclareConstructor( "NewConjugacyClassSubgroups",
-    [ IsCompactLieGroupConjugacyClassSubgroupsRep, IsGroup ] );
+DeclareAttribute( "UnderlyingPrototype", IsConjugacyClassSubgroupsRep );
 
 
 ##  Part 3: Prototype of CCS
@@ -102,23 +86,8 @@ DeclareConstructor( "NewConjugacyClassSubgroups",
 DeclareRepresentation( "IsPrototypeConjugacyClassSubgroupsRep",
     IsConjugacyClassSubgroupsRep, [ ] );
 
-#############################################################################
-##
-#R  NewConjugacyClassSubgroups( filt, grp )
-##
-##  <#GAPDoc Label="NewConjugacyClassSubgroups">
-##  <ManSection>
-##  <Constr Name="NewConjugacyClassSubgroups"
-##      Args="filt" />
-##  <Description>
-##    Constructor of prototype of conjugacy class of subgroups.
-##  </Description>
-##  </ManSection>
-##  <#/GAPDoc>
-##
-DeclareConstructor( "NewConjugacyClassSubgroups",
-  [ IsConjugacyClassSubgroupsRep, IsGroup ]
-);
+
+##  Part 4: attributes & operations for CCS and prototype of CCS
 
 #############################################################################
 ##
@@ -126,6 +95,9 @@ DeclareConstructor( "NewConjugacyClassSubgroups",
 ##
 DeclareOperation( "Refolded",
     [ IsCompactLieGroupConjugacyClassSubgroupsRep, IsInt ] );
+
+
+##  Part 5: CCSs
 
 #############################################################################
 ##
@@ -149,24 +121,7 @@ InstallImmediateMethod( Size,
   obj -> infinity
 );
 DeclareAttribute( "Prototypes", IsCompactLieGroupConjugacyClassesSubgroupsRep);
-DeclareAttribute( "UnderlyingPrototype", IsConjugacyClassSubgroupsRep );
 
-#############################################################################
-##
-#U  NewConjugacyClassesSubgroups( IsGroup, <G> )
-##
-##  <#GAPDoc Label="NewConjugacyClassesSubgroups">
-##  <ManSection>
-##  <Constr Name="NewConjugacyClassesSubgroups"
-##      Arg="IsGroup, G"/>
-##  <Description>
-##    This is the constructor of list of CCSs of compact Lie group.
-##  </Description>
-##  </ManSection>
-##  <#/GAPDoc>
-##
-DeclareConstructor( "NewConjugacyClassesSubgroups",
-    [ IsObject, IsGroup ] );
 
 #############################################################################
 ##

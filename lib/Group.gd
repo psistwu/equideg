@@ -99,7 +99,6 @@ DeclareAttribute( "IdCC", IsConjugacyClassGroupRep );
 
 ## Part 3: Conjugacy Class of Subgroups
 
-
 #############################################################################
 ##
 #U  NewConjugacyClassSubgroups( filt, grp )
@@ -116,7 +115,6 @@ DeclareAttribute( "IdCC", IsConjugacyClassGroupRep );
 ##
 DeclareConstructor( "NewConjugacyClassSubgroups",
     [ IsConjugacyClassSubgroupsRep, IsGroup ] );
-
 
 #############################################################################
 ##
@@ -138,9 +136,15 @@ DeclareAttribute( "IdCCS", IsConjugacyClassSubgroupsRep );
 
 #############################################################################
 ##
-#F  IdCCSPartialOrder( <id1>, <id2> )
+#A  OrderOfRepresentative( <C> )
 ##
-DeclareGlobalFunction( "IdCCSPartialOrder", "partial order of id of CCS" );
+DeclareAttribute( "OrderOfRepresentative", IsConjugacyClassSubgroupsRep );
+
+#############################################################################
+##
+#F  CCSOrderByID( <id1>, <id2> )
+##
+DeclareGlobalFunction( "CCSOrderByID", "partial order of id of CCS" );
 
 #############################################################################
 ##
@@ -183,12 +187,6 @@ DeclareOperation( "SetCCSsAbbrv",
 ##
 DeclareOperation( "SetCCSsLaTeXString",
     [ IsGroup, IsHomogeneousList ] );
-
-#############################################################################
-##
-#A  OrderOfRepresentative( <C> )
-##
-DeclareAttribute( "OrderOfRepresentative", IsConjugacyClassSubgroupsRep );
 
 #############################################################################
 ##
@@ -243,6 +241,25 @@ DeclareOperation( "nLHnumber",
 ##
 DeclareAttribute( "OrderOfWeylGroup", IsGroup and HasParentAttr );
 DeclareAttribute( "OrderOfWeylGroup", IsConjugacyClassSubgroupsRep );
+
+
+##  Part
+
+#############################################################################
+##
+#U  NewConjugacyClassesSubgroups( IsGroup, <G> )
+##
+##  <#GAPDoc Label="NewConjugacyClassesSubgroups">
+##  <ManSection>
+##  <Constr Name="NewConjugacyClassesSubgroups"
+##      Arg="IsGroup, G"/>
+##  <Description>
+##    This is the constructor of list of CCSs of compact Lie group.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+DeclareConstructor( "NewConjugacyClassesSubgroups", [ IsObject, IsGroup ] );
 
 
 #############################################################################
