@@ -5,8 +5,10 @@ services:
       CONTAINER_WORKSPACE:
       USER:
       USER_ID:
+      JUPYTER_TOKEN:
+      JUPYTER_PORT:
     ports:
-      - "8888:8888"
+      - "${JUPYTER_PORT}:${JUPYTER_PORT}"
     volumes:
       - "${HOST_PACKAGE_DIR}:${CONTAINER_PACKAGE_DIR}"
       - "${HOST_EXAMPLE_DIR}:${CONTAINER_EXAMPLE_DIR}"
