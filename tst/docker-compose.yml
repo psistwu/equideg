@@ -17,6 +17,6 @@ services:
         "1g",
         "-K",
         "2g",
-        "tst/testall.g"
+        "tst/${TEST_FILE:-testall.g}"
       ]
     working_dir: "${CONTAINER_PACKAGE_DIR}"
