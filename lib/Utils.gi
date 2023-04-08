@@ -91,26 +91,29 @@ InstallMethod( ViewString,
 ##
 #F  ListA( <list1>, <list2>, ..., <listn>, f )
 ##
-# InstallGlobalFunction( ListA,
-#   function( args... )
-#     local f,
-#           m,
-#           i,
-#           argf;
+InstallGlobalFunction( ListA,
+  function( args... )
+    local f,
+          m,
+          i,
+          argf,
+          result;
 
-#     f := Remove( args );
-#     m := Length( args[ 1 ] );
+    f := Remove( args );
+    m := Length( args[ 1 ] );
 
-#     if ForAny( args, list -> not ( Length( list ) = m ) ) then
-#       Error( "<list1>, <list2>, ..., <listn> should have the same length." );
-#     fi;
+    if ForAny( args, list -> not ( Length( list ) = m ) ) then
+      Error( "<list1>, <list2>, ..., <listn> should have the same length." );
+    fi;
 
-#     for i in [ 1 .. m ] do
-#       argf := List( args, x -> x[ i ] );
-#       CallFuncListWrap( f, argf );
-#     od;
-#   end
-# );
+    result := [ ];
+    for argf in TransposedMat(args) do
+      Add( result, CallFuncListWrap( f, argf ) );
+    od;
+    
+    return result;
+  end
+);
 
 #############################################################################
 ##
