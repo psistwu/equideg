@@ -26,8 +26,8 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-DeclareRepresentation( "IsLatticeRep",
-    IsComponentObjectRep and IsAttributeStoringRep, [ ] );
+DeclareRepresentation( "IsLatticeRep", IsAttributeStoringRep, [ ] );
+
 
 #############################################################################
 ##
@@ -80,6 +80,7 @@ DeclareRepresentation( "IsLatticeRep",
 ##  </ManSection>
 ##  <#/GAPDoc>
 DeclareGlobalFunction( "NewLattice", "constructor of Lattice" );
+
 
 #############################################################################
 ##
