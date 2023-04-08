@@ -87,7 +87,7 @@ DeclareOperation( "ResetAbbrv", [ IsComponentObjectRep ] );
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-DeclareAttribute( "LaTeXString", IsObject );
+# DeclareAttribute( "LaTeXString", IsObject );
 
 #############################################################################
 ##
@@ -105,14 +105,14 @@ DeclareAttribute( "LaTeXString", IsObject );
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-DeclareOperation( "LaTeXTypesetting", [ IsObject ] );
+# DeclareOperation( "LaTeXTypesetting", [ IsObject ] );
 
 #############################################################################
 ##
 #F  ListA( <list1>, <list2>, ..., <listn>, <f> )
 ##
-DeclareGlobalFunction( "ListA",
-    "Apply action (function with no return value on list of arguments" );
+# DeclareGlobalFunction( "ListA",
+#     "Apply action (function with no return value on list of arguments" );
 
 #############################################################################
 ##

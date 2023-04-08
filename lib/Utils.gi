@@ -79,66 +79,66 @@ InstallMethod( ViewString,
 ##
 #O  LaTeXTypesetting( <obj> )
 ##
-  InstallMethod( LaTeXTypesetting,
-    "return LaTeX typesetting of an object",
-    [ IsObject and HasLaTeXString ],
-    function( obj )
-      return LaTeXString( obj );
-    end
-  );
+# InstallMethod( LaTeXTypesetting,
+#   "return LaTeX typesetting of an object",
+#   [ IsObject and HasLaTeXString ],
+#   function( obj )
+#     return LaTeXString( obj );
+#   end
+# );
 
 #############################################################################
 ##
 #F  ListA( <list1>, <list2>, ..., <listn>, f )
 ##
-  InstallGlobalFunction( ListA,
-    function( args... )
-      local f,
-            m,
-            i,
-            argf;
+# InstallGlobalFunction( ListA,
+#   function( args... )
+#     local f,
+#           m,
+#           i,
+#           argf;
 
-      f := Remove( args );
-      m := Length( args[ 1 ] );
+#     f := Remove( args );
+#     m := Length( args[ 1 ] );
 
-      if ForAny( args, list -> not ( Length( list ) = m ) ) then
-        Error( "<list1>, <list2>, ..., <listn> should have the same length." );
-      fi;
+#     if ForAny( args, list -> not ( Length( list ) = m ) ) then
+#       Error( "<list1>, <list2>, ..., <listn> should have the same length." );
+#     fi;
 
-      for i in [ 1 .. m ] do
-        argf := List( args, x -> x[ i ] );
-        CallFuncListWrap( f, argf );
-      od;
-    end
-  );
+#     for i in [ 1 .. m ] do
+#       argf := List( args, x -> x[ i ] );
+#       CallFuncListWrap( f, argf );
+#     od;
+#   end
+# );
 
 #############################################################################
 ##
 #O  \[\]( <obj>, <list> )
 ##
-  InstallOtherMethod( \[\],
-    "for multi-component indices",
-    [ IsObject, IsList ],
-    function( obj, list )
-      return CallFuncList( \[\,\], Flat( [ obj, list ] ) );
-    end
-  );
+InstallOtherMethod( \[\],
+  "for multi-component indices",
+  [ IsObject, IsList ],
+  function( obj, list )
+    return CallFuncList( \[\,\], Flat( [ obj, list ] ) );
+  end
+);
 
 #############################################################################
 ##
 #O  Divides( <m>, <n> )
 ##
-  InstallMethod( Divides,
-    "test if <m> divides <n>",
-    [ IsInt, IsInt ],
-    function( m, n )
-      if IsZero( m ) then
-        return IsZero( n );
-      else
-        return ( n mod m = 0 );
-      fi;
-    end
-  );
+InstallMethod( Divides,
+  "test if <m> divides <n>",
+  [ IsInt, IsInt ],
+  function( m, n )
+    if IsZero( m ) then
+      return IsZero( n );
+    else
+      return ( n mod m = 0 );
+    fi;
+  end
+);
 
 #############################################################################
 ##

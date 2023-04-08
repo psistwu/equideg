@@ -13,43 +13,43 @@
 ##
 #A  LowestDegree( <lpol> )
 ##
-  InstallMethod( LowestDegree,
-    "returns the lowest degree of a Laurent polynomial <lpol>",
-    [ IsLaurentPolynomial ],
-    function( lpol )
-      if IsZero( lpol ) then
-        return -infinity;
-      else
-        return -DegreeOfLaurentPolynomial(
-               DenominatorOfRationalFunction( lpol ) );
-      fi;
-    end
-  );
+InstallMethod( LowestDegree,
+  "returns the lowest degree of a Laurent polynomial <lpol>",
+  [ IsLaurentPolynomial ],
+  function( lpol )
+    if IsZero( lpol ) then
+      return -infinity;
+    else
+      return -DegreeOfLaurentPolynomial(
+              DenominatorOfRationalFunction( lpol ) );
+    fi;
+  end
+);
 
 #############################################################################
 ##
 #O  Coefficient( <lpol>, <n> )
 ##
-  InstallMethod( Coefficient,
-    "returns coefficient of degree <n> in Laurent polynomial <lpol>",
-    [ IsLaurentPolynomial, IsInt ],
-    function( lpol, n )
-      local l, h,
-            coeffs;
+InstallMethod( Coefficient,
+  "returns coefficient of degree <n> in Laurent polynomial <lpol>",
+  [ IsLaurentPolynomial, IsInt ],
+  function( lpol, n )
+    local l, h,
+          coeffs;
 
-      l := LowestDegree( lpol );
-      h := DegreeOfLaurentPolynomial( lpol );
+    l := LowestDegree( lpol );
+    h := DegreeOfLaurentPolynomial( lpol );
 
-      if IsZero( lpol ) then
-        return 0;
-      elif ( n > h ) or ( n < l ) then
-	return 0;
-      else
-        coeffs := CoefficientsOfLaurentPolynomial( lpol );
-        return coeffs[ 1 ][ n - l + 1 ];
-      fi;
-    end
-  );
+    if IsZero( lpol ) then
+      return 0;
+    elif ( n > h ) or ( n < l ) then
+      return 0;
+    else
+      coeffs := CoefficientsOfLaurentPolynomial( lpol );
+      return coeffs[ 1 ][ n - l + 1 ];
+    fi;
+  end
+);
 
 
 #############################################################################

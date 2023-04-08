@@ -10,17 +10,19 @@
 ##
 #R  Read the implementation files
 ##
-  ReadPackage( "EquiDeg", "lib/Utils.gi" );
-  ReadPackage( "EquiDeg", "lib/Lattice.gi" );
-  ReadPackage( "EquiDeg", "lib/Polynomial.gi" );
-  ReadPackage( "EquiDeg", "lib/Group.gi" );
-  ReadPackage( "EquiDeg", "lib/OrbitType.gi" );
-  ReadPackage( "EquiDeg", "lib/DirectProduct.gi" );
-  ReadPackage( "EquiDeg", "lib/CompactLieGroup.gi" );
-  ReadPackage( "EquiDeg", "lib/ElementaryCompactLieGroup.gi" );
-  ReadPackage( "EquiDeg", "lib/DirectProductCLG.gi" );
-  ReadPackage( "EquiDeg", "lib/BurnsideRing.gi" );
-  ReadPackage( "EquiDeg", "lib/EulerRing.gi" );
+ReadPackage( "EquiDeg", "lib/Utils.gi" );
+ReadPackage( "EquiDeg", "lib/Poset.gi" );
+ReadPackage( "EquiDeg", "lib/Lattice.gi" );
+ReadPackage( "EquiDeg", "lib/Polynomial.gi" );
+ReadPackage( "EquiDeg", "lib/Group.gi" );
+ReadPackage( "EquiDeg", "lib/ElementaryGroup.gi" );
+# ReadPackage( "EquiDeg", "lib/OrbitType.gi" );
+# ReadPackage( "EquiDeg", "lib/DirectProduct.gi" );
+# ReadPackage( "EquiDeg", "lib/CompactLieGroup.gi" );
+# ReadPackage( "EquiDeg", "lib/ElementaryCompactLieGroup.gi" );
+# ReadPackage( "EquiDeg", "lib/DirectProductCLG.gi" );
+# ReadPackage( "EquiDeg", "lib/BurnsideRing.gi" );
+# ReadPackage( "EquiDeg", "lib/EulerRing.gi" );
 
 #############################################################################
 ##
