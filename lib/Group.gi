@@ -9,116 +9,6 @@
 ##  related to group thoery.
 ##
 
-## Part 1: Special Groups
-
-#############################################################################
-##
-#F  pCyclicGroup( <n> )
-##
-InstallGlobalFunction( pCyclicGroup,
-  function( n )
-    local i,		# index
-          gen;	# generator of Z_n
-
-    if not IsPosInt( n ) then
-      Error( "n must be a positive integer." );
-    fi;
-
-    gen := ( );
-    for i in [ 1 .. n-1 ] do
-      gen := ( i, i+1 )*gen;
-    od;
-
-    return Group( gen );
-  end
-);
-
-#############################################################################
-##
-#F  mCyclicGroup( <n> )
-##
-InstallGlobalFunction( mCyclicGroup,
-  function( n )
-    local z, rz, iz,	# a complex number and its real and imaginary parts
-          gen_mat;    # generator of Z_n
-
-    if not IsPosInt( n ) then
-      Error( "n must be a positive integer." );
-    fi;
-
-    z := E( n );
-    rz := RealPart( z );
-    iz := ImaginaryPart ( z );
-    gen_mat := [ [ rz, -iz ], [ iz, rz ] ];
-
-    return Group( gen_mat );
-  end
-);
-
-#############################################################################
-##
-#F  pDihedralGroup( <n> )
-##
-InstallGlobalFunction( pDihedralGroup,
-  function( n )
-    local i,            # index
-          gen1, gen2;   # generators of Dn
-                        # gen1 associates to rotation
-                        # gen2 associates to reflection
-
-    if not IsPosInt( n ) then
-      Error( "n must be a positive integer." );
-    fi;
-
-    # case 1: n = 1
-    if ( n = 1 ) then
-      gen1 := ( );
-      gen2 := ( 3, 4 );
-
-    # case 2: n = 2
-    elif ( n = 2 ) then
-      gen1 := ( 1, 2 );
-      gen2 := ( 3, 4 );
-
-    # case 3: n > 2
-    else
-      gen1 := ( );
-      for i in [ 1 .. n-1 ] do
-        gen1 := ( i, i+1 )*gen1;
-      od;
-
-      gen2 := ( );
-      for i in [ 1 .. Int( n/2 ) ] do
-        gen2 := ( i, n+1-i )*gen2;
-      od;
-    fi;
-
-    return Group( [ gen1, gen2 ] );
-  end
-);
-
-#############################################################################
-##
-#F  mDihedralGroup( <n> )
-##
-InstallGlobalFunction( mDihedralGroup,
-  function( n )
-    local z, rz, iz,     # a complex number and
-                          # its real and imaginary parts
-          gen1, gen2;    # generators of D_n
-                          # gen1 associates to rotation
-                          # gen2 associates to reflection
-
-    z := E( n );
-    rz := RealPart( z );
-    iz := ImaginaryPart ( z );
-    gen1 := [ [ rz, -iz ], [ iz, rz ] ];
-    gen2 := [ [ 1, 0 ], [ 0, -1 ] ];
-
-    return Group( [ gen1, gen2 ] );
-  end
-);
-
 
 ## Part 2: Conjugacy Class of Elements
 
@@ -130,17 +20,15 @@ InstallMethod( IdCC,
   "id of CC <c> of a finite group",
   [ IsConjugacyClassGroupRep ],
   function( c )
-    local G,
-          CCs;
+    local grp;
 
-    G := ActingDomain( c );
+    grp := ActingDomain( c );
 
-    if not IsFinite( G ) then
+    if not IsFinite( grp ) then
       TryNextMethod( );
     fi;
 
-    CCs := ConjugacyClasses( G );
-    return Position( CCs, c );
+    return Position( ConjugacyClasses( grp ), c );
   end
 );
 
@@ -155,25 +43,23 @@ InstallMethod( IdCCS,
   "id of CCS <C> of a finite group",
   [ IsConjugacyClassSubgroupsRep ],
   function( C )
-    local G,
-          CCSs;
+    local grp;
 
-    G := ActingDomain( C );
+    grp := ActingDomain( C );
 
-    if not IsFinite( G ) then
+    if not IsFinite( grp ) then
       TryNextMethod( );
     fi;
 
-    CCSs := ConjugacyClassesSubgroups( G );
-    return Position( CCSs, C );
+    return Position( ConjugacyClassesSubgroups( grp ), C );
   end
 );
 
 #############################################################################
 ##
-#F  CCSOrderByID( <id1>, <id2> )
+#F  OrderForIdCCS( <id1>, <id2> )
 ##
-InstallGlobalFunction( CCSOrderByID,
+InstallGlobalFunction( OrderForIdCCS,
   function( id1, id2 )
     if IsPosInt( id1 ) and IsPosInt( id2 ) then
       return ( id1 < id2 );
@@ -187,31 +73,8 @@ InstallGlobalFunction( CCSOrderByID,
         return id1 < id2;
       fi;
     else
-      Error( "<id1> and <id2> should have the same format." );
+      Error( "Id format error." );
     fi;
-  end
-);
-
-#############################################################################
-##
-#O  ConjugacyClassSubgroups( <U> )
-##
-InstallOtherMethod( ConjugacyClassSubgroups,
-  "return the CCS containing the given subgroup",
-  [ IsGroup and HasParentAttr ],
-  function( U )
-    local G,		# the parent group
-          CCSs;	# conjugacy classes of subgroups of <grp>
-
-    G := ParentAttr( U );
-
-    if not IsFinite( G ) then
-      TryNextMethod( );
-    fi;
-
-    CCSs := ConjugacyClassesSubgroups( G );
-
-    return First( CCSs, C -> U in C );
   end
 );
 
@@ -245,9 +108,9 @@ InstallMethod( ViewObj,
 
 #############################################################################
 ##
-#O  SetCCSsAbbrv( <G>, <namelist> )
+#O  SetAbbrv( CCSs, <namelist> )
 ##
-  InstallMethod( SetCCSsAbbrv,
+  InstallOtherMethod( SetCCSsAbbrv,
     "set abbrviations of CCSs for a finite group",
     [ IsGroup and IsFinite, IsHomogeneousList ],
     function( G, namelist )
@@ -271,35 +134,35 @@ InstallMethod( ViewObj,
 ##
 #O  SetCCSsLaTeXString( <G>, <namelist> )
 ##
-  InstallMethod( SetCCSsLaTeXString,
-    "set LaTeX symbols of CCSs for a finite group",
-    [ IsGroup and IsFinite, IsHomogeneousList ],
-    function( G, namelist )
-      local CCSs_G;
+# InstallMethod( SetCCSsLaTeXString,
+#   "set LaTeX symbols of CCSs for a finite group",
+#   [ IsGroup and IsFinite, IsHomogeneousList ],
+#   function( G, namelist )
+#     local CCSs_G;
 
-      if not ForAll( namelist, IsString ) then
-        Error( "<namelist> must be a list of strings." );
-      fi;
+#     if not ForAll( namelist, IsString ) then
+#       Error( "<namelist> must be a list of strings." );
+#     fi;
 
-      CCSs_G := ConjugacyClassesSubgroups( G );
+#     CCSs_G := ConjugacyClassesSubgroups( G );
 
-      if not ( Length( CCSs_G ) = Length( namelist ) ) then
-        Error( "The number of strings in <namelist> and the the number of CCSs in G must coincide." );
-      fi;
+#     if not ( Length( CCSs_G ) = Length( namelist ) ) then
+#       Error( "The number of strings in <namelist> and the the number of CCSs in G must coincide." );
+#     fi;
 
-      ListA( CCSs_G, namelist, SetLaTeXString );
-    end
-  );
+#     ListA( CCSs_G, namelist, SetLaTeXString );
+#   end
+# );
 
 #############################################################################
 ##
 #A  OrderOfRepresentative( <C> )
 ##
-  InstallMethod( OrderOfRepresentative,
-    "order of represetative of CCS of finite group",
-    [ IsConjugacyClassSubgroupsRep and HasRepresentative ],
-    C -> Order( Representative( C ) )
-  );
+InstallMethod( OrderOfRepresentative,
+  "order of represetative of CCS of finite group",
+  [ IsConjugacyClassSubgroupsRep and HasRepresentative ],
+  C -> Order( Representative( C ) )
+);
 
 ##############################################################################
 ##
