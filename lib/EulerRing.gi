@@ -297,10 +297,10 @@
           fi;
           Remove( a_sparse_list, 1 );
           Remove( b_sparse_list, 1 );
-        elif CCSOrderByID( a_term[ 1 ], b_term[ 1 ] ) then
+        elif OrderForIdCCS( a_term[ 1 ], b_term[ 1 ] ) then
           Add( sum_sparse_list, a_term );
           Remove( a_sparse_list, 1 );
-        elif CCSOrderByID( b_term[ 1 ], a_term[ 1 ] ) then
+        elif OrderForIdCCS( b_term[ 1 ], a_term[ 1 ] ) then
           Add( sum_sparse_list, b_term );
           Remove( b_sparse_list, 1 );
         fi;
