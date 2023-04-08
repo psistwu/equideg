@@ -10,7 +10,8 @@
 ##
 
 
-## Part 2: Conjugacy Class of Elements
+
+## Part 1: Conjugacy Class of Elements
 
 #############################################################################
 ##
@@ -40,7 +41,8 @@
 DeclareAttribute( "IdCC", IsConjugacyClassGroupRep );
 
 
-## Part 3: Conjugacy Class of Subgroups
+
+## Part 2: Conjugacy Class of Subgroups
 
 #############################################################################
 ##
@@ -58,6 +60,7 @@ DeclareAttribute( "IdCC", IsConjugacyClassGroupRep );
 ##
 DeclareConstructor( "NewConjugacyClassSubgroups",
     [ IsConjugacyClassSubgroupsRep, IsGroup ] );
+
 
 #############################################################################
 ##
@@ -77,11 +80,13 @@ DeclareConstructor( "NewConjugacyClassSubgroups",
 ##
 DeclareAttribute( "IdCCS", IsConjugacyClassSubgroupsRep );
 
+
 #############################################################################
 ##
 #A  OrderOfRepresentative( <C> )
 ##
 DeclareAttribute( "OrderOfRepresentative", IsConjugacyClassSubgroupsRep );
+
 
 #############################################################################
 ##
@@ -89,12 +94,6 @@ DeclareAttribute( "OrderOfRepresentative", IsConjugacyClassSubgroupsRep );
 ##
 DeclareGlobalFunction( "OrderForIdCCS", "Order for id of CCS" );
 
-#############################################################################
-##
-#O  SetCCSsLaTeXString( <G>, <namelist> )
-##
-# DeclareOperation( "SetCCSsLaTeXString",
-    # [ IsGroup, IsHomogeneousList ] );
 
 #############################################################################
 ##
@@ -116,6 +115,7 @@ DeclareOperation( "nLHnumber",
 DeclareOperation( "nLHnumber",
     [ IsConjugacyClassSubgroupsRep, IsConjugacyClassSubgroupsRep ] );
 
+
 #############################################################################
 ##
 #O  \<( <C1>, <C2> )
@@ -130,6 +130,7 @@ DeclareOperation( "nLHnumber",
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
+
 
 #############################################################################
 ##
@@ -151,7 +152,8 @@ DeclareAttribute( "OrderOfWeylGroup", IsGroup and HasParentAttr );
 DeclareAttribute( "OrderOfWeylGroup", IsConjugacyClassSubgroupsRep );
 
 
-##  Part
+
+##  Part 3: Conjugacy Classes Subgroups
 
 #############################################################################
 ##
@@ -185,6 +187,7 @@ DeclareConstructor( "NewConjugacyClassesSubgroups", [ IsObject, IsGroup ] );
 ##
 DeclareRepresentation( "IsLatticeCCSsRep", IsLatticeRep, [ ] );
 
+
 #############################################################################
 ##
 #A  LatticeCCSs( <grp> )
@@ -207,6 +210,7 @@ DeclareRepresentation( "IsLatticeCCSsRep", IsLatticeRep, [ ] );
 ##
 DeclareAttribute( "LatticeCCSs", IsGroup );
 
+
 #############################################################################
 ##
 #A  ConjugacyClassesSubgroups( <lat_ccss> )
@@ -214,13 +218,15 @@ DeclareAttribute( "LatticeCCSs", IsGroup );
 DeclareAttribute( "ConjugacyClassesSubgroups", IsLatticeCCSsRep );
 
 
-##  Part 3: Character and Representation Theory
+
+##  Part 4: Character and Representation Theory
 
 #############################################################################
 ##
 #A  IdIrr( <chi> )
 ##
 DeclareAttribute( "IdIrr", IsIrreducibleCharacter );
+
 
 #############################################################################
 ##
@@ -229,6 +235,7 @@ DeclareAttribute( "IdIrr", IsIrreducibleCharacter );
 DeclareOperation( "ImageElm",
     [ IsClassFunction, IsMultiplicativeElementWithInverse ] );
 
+
 #############################################################################
 ##
 #O  SchurIndicator( <chi>, <n> )
@@ -236,7 +243,8 @@ DeclareOperation( "ImageElm",
 DeclareOperation( "SchurIndicator", [ IsCharacter, IsInt ] );
 
 
-##  Part 4: Concepts Related to Compact Lie Group
+
+##  Part 5: Concepts Related to Compact Lie Group
 
 #############################################################################
 ##

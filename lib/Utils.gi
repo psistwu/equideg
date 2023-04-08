@@ -64,8 +64,7 @@ InstallMethod( ResetAbbrv,
 ##
 InstallMethod( ViewString,
   " View string for object admit abbrv",
-  [ IsObject and IsComponentObjectRep ],
-  50,
+  [ IsComponentObjectRep ],
   function( obj )
     if HasAbbrv( obj ) then
       return Abbrv( obj );

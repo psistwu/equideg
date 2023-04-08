@@ -106,29 +106,6 @@ InstallMethod( ViewObj,
   end
 );
 
-#############################################################################
-##
-#O  SetAbbrv( CCSs, <namelist> )
-##
-  InstallOtherMethod( SetCCSsAbbrv,
-    "set abbrviations of CCSs for a finite group",
-    [ IsGroup and IsFinite, IsHomogeneousList ],
-    function( G, namelist )
-      local CCSs_G;
-
-      if not ForAll( namelist, IsString ) then
-        Error( "<namelist> must be a list of strings." );
-      fi;
-
-      CCSs_G := ConjugacyClassesSubgroups( G );
-
-      if not ( Length( CCSs_G ) = Length( namelist ) ) then
-        Error( "The number of strings in <namelist> and the the number of CCSs in G must coincide." );
-      fi;
-
-      ListA( CCSs_G, namelist, SetAbbrv );
-    end
-  );
 
 #############################################################################
 ##
