@@ -38,18 +38,6 @@ InstallMethod( PrintObj,
 
 #############################################################################
 ##
-#O  LaTeXTypesetting( <obj> )
-##
-# InstallMethod( LaTeXTypesetting,
-#   "return LaTeX typesetting of an object",
-#   [ IsObject and HasLaTeXString ],
-#   function( obj )
-#     return LaTeXString( obj );
-#   end
-# );
-
-#############################################################################
-##
 #F  ListA( <list1>, <list2>, ..., <listn>, f )
 ##
 InstallGlobalFunction( ListA,
@@ -76,6 +64,7 @@ InstallGlobalFunction( ListA,
   end
 );
 
+
 #############################################################################
 ##
 #O  \[\]( <obj>, <list> )
@@ -87,6 +76,7 @@ InstallOtherMethod( \[\],
     return CallFuncList( \[\,\], Flat( [ obj, list ] ) );
   end
 );
+
 
 #############################################################################
 ##
@@ -103,6 +93,7 @@ InstallMethod( Divides,
     fi;
   end
 );
+
 
 #############################################################################
 ##

@@ -7,6 +7,7 @@
 ##  Utitily functions are declared in this file.
 ##
 
+
 #############################################################################
 ##
 #V  INFO_LEVEL_EquiDeg
@@ -26,6 +27,7 @@
 ##
 BindGlobal( "INFO_LEVEL_EquiDeg", 1 );
 
+
 #############################################################################
 ##
 #I  InfoEquiDeg
@@ -42,6 +44,7 @@ BindGlobal( "INFO_LEVEL_EquiDeg", 1 );
 ##
 DeclareInfoClass( "InfoEquiDeg" );
 SetInfoLevel( InfoEquiDeg, 1 );
+
 
 #############################################################################
 ##
@@ -66,6 +69,7 @@ SetInfoLevel( InfoEquiDeg, 1 );
 ##
 DeclareAttribute( "Abbrv", IsAttributeStoringRep, true );
 
+
 #############################################################################
 ##
 #A  LaTeXString( <obj> )
@@ -80,25 +84,8 @@ DeclareAttribute( "Abbrv", IsAttributeStoringRep, true );
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-# DeclareAttribute( "LaTeXString", IsObject );
+DeclareAttribute( "LaTeXString", IsAttributeStoringRep, true );
 
-#############################################################################
-##
-#O  LaTeXTypesetting( <obj> )
-##
-##  <#GAPDoc Label="LaTeXTypesetting">
-##  <ManSection>
-##  <Attr Name="LaTeXTypesetting" Arg="obj"/>
-##  <Description>
-##    returns the LaTeX typesetting of an object.
-##    In default, it simply calls <Ref Attr="LaTeXString"/>.
-##    However, it may behave differently for
-##    objects of different categories.
-##  </Description>
-##  </ManSection>
-##  <#/GAPDoc>
-##
-# DeclareOperation( "LaTeXTypesetting", [ IsObject ] );
 
 #############################################################################
 ##
@@ -106,6 +93,7 @@ DeclareAttribute( "Abbrv", IsAttributeStoringRep, true );
 ##
 DeclareGlobalFunction( "ListA",
     "Apply action (function with no return value on list of arguments" );
+
 
 #############################################################################
 ##
