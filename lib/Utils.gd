@@ -46,14 +46,10 @@ SetInfoLevel( InfoEquiDeg, 1 );
 #############################################################################
 ##
 #O  Abbrv( <obj> )
-#O  SetAbbrv ( <obj>, <str> )
-#O  HasAbbrv ( <obj> )
 ##
 ##  <#GAPDoc Label="Abbrv">
 ##  <ManSection>
 ##  <Attr Name="Abbrv" Arg="obj" />
-##  <Attr Name="SetAbbrv" Arg="obj, abbrvstr" />
-##  <Attr Name="HasAbbrv" Arg="obj" />
 ##  <Description>
 ##  This is an attribute of new objects defined in this package
 ##  which provides minimal amount of information.
@@ -68,10 +64,7 @@ SetInfoLevel( InfoEquiDeg, 1 );
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-DeclareOperation( "Abbrv", [ IsComponentObjectRep ] );
-DeclareOperation( "SetAbbrv", [ IsComponentObjectRep, IsString ] );
-DeclareOperation( "HasAbbrv", [ IsComponentObjectRep ] );
-DeclareOperation( "ResetAbbrv", [ IsComponentObjectRep ] );
+DeclareAttribute( "Abbrv", IsAttributeStoringRep, true );
 
 #############################################################################
 ##
