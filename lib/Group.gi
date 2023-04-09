@@ -55,6 +55,7 @@ InstallMethod( IdCCS,
   end
 );
 
+
 #############################################################################
 ##
 #F  OrderForIdCCS( <id1>, <id2> )
@@ -78,6 +79,7 @@ InstallGlobalFunction( OrderForIdCCS,
   end
 );
 
+
 #############################################################################
 ##
 #O  ViewString( <C> )
@@ -93,6 +95,7 @@ InstallMethod( ViewString,
     fi;
   end
 );
+
 
 #############################################################################
 ##
@@ -141,169 +144,163 @@ InstallMethod( OrderOfRepresentative,
   C -> Order( Representative( C ) )
 );
 
+
 ##############################################################################
 ##
 #O  nLHnumber( <L>, <H> )
 ##
-  InstallMethod( nLHnumber,
-    "return n(L,H)",
-    IsIdenticalObj,
-    [ IsGroup and HasParentAttr, IsGroup and HasParentAttr ],
-    function( L, H )
-      local G,		# the parent group
-            x,		# indeterminate
-            CH;		# Conjugacy Class of H
+InstallMethod( nLHnumber,
+  "return n(L,H)",
+  IsIdenticalObj,
+  [ IsGroup and HasParentAttr, IsGroup and HasParentAttr ],
+  function( L, H )
+    local G,		# the parent group
+          x,		# indeterminate
+          CH;		# Conjugacy Class of H
 
-      G := ParentAttr( L );
-      x := X( Integers, "x" );
+    G := ParentAttr( L );
+    x := X( Integers, "x" );
 
-      if not ( ParentAttr( H ) = G ) then
-        Error( "L and H need to have the same parent group." );
-      fi;
+    if not ( ParentAttr( H ) = G ) then
+      Error( "L and H need to have the same parent group." );
+    fi;
 
-      if not IsFinite( G ) then
-        TryNextMethod( );
-      fi;
+    if not IsFinite( G ) then
+      TryNextMethod( );
+    fi;
 
-      if not IsZero( Order( H ) mod Order( L ) ) then
-        return Zero( x );
-      else
-        CH := ConjugacyClassSubgroups( G, H );
-        return Number( CH, U -> IsSubset( U, L ) )*One( x );
-      fi;
-    end
-  );
+    if not IsZero( Order( H ) mod Order( L ) ) then
+      return Zero( x );
+    else
+      CH := ConjugacyClassSubgroups( G, H );
+      return Number( CH, U -> IsSubset( U, L ) )*One( x );
+    fi;
+  end
+);
+
 
 #############################################################################
 ##
 #O  nLHnumber( <CL>, <CH> )
 ##
-  InstallMethod( nLHnumber,
-    "return n(L,H)",
-    IsIdenticalObj,
-    [ IsConjugacyClassSubgroupsRep, IsConjugacyClassSubgroupsRep ],
-    function( CL, CH )
-      local G,		# the group
-            L, H,	# representatives of CL and CH
-            x;		# indeterminate
+InstallMethod( nLHnumber,
+  "return n(L,H)",
+  IsIdenticalObj,
+  [ IsConjugacyClassSubgroupsRep and HasRepresentative,
+    IsConjugacyClassSubgroupsRep and HasRepresentative ],
+  function( CL, CH )
+    local G;		# the group
 
-      G := ActingDomain( CL );
-      x := X( Integers, "x" );
+    G := ActingDomain( CL );
 
-      if not ( ActingDomain( CH ) = G ) then
-        Error( "<CL> and <CH> have to be CCSs of the same group." );
-      fi;
+    if not ( ActingDomain( CH ) = G ) then
+      Error( "<CL> and <CH> have to be CCSs of the same group." );
+    fi;
 
-      if not IsFinite( G ) then
-        TryNextMethod( );
-      fi;
+    return nLHnumber( Representative( CL ), Representative( CH ) );
+  end
+);
 
-      L := Representative( CL );
-      H := Representative( CH );
-
-      if not IsZero( Order( H ) mod Order( L ) ) then
-        return Zero( x );
-      else
-        return Number( CH, U -> IsSubset( U, L ) )*One( x );
-      fi;
-    end
-  );
 
 #############################################################################
 ##
 #O  \<( <C1>, <C2> )
 ##
-  InstallMethod( \<,
-    "the partial order of conjugacy classes of subgroups of a finite group",
-    [ IsConjugacyClassSubgroupsRep, IsConjugacyClassSubgroupsRep ],
-    function( C1, C2 )
-      local x;
+InstallMethod( \<,
+  "the partial order of conjugacy classes of subgroups of a finite group",
+  [ IsConjugacyClassSubgroupsRep, IsConjugacyClassSubgroupsRep ],
+  function( C1, C2 )
+    local x;
 
-      x := X( Integers, "x" );
+    x := X( Integers, "x" );
 
-      return ( nLHnumber( C1, C2 ) > Zero( x ) );
-    end
-  );
+    return ( nLHnumber( C1, C2 ) > Zero( x ) );
+  end
+);
+
 
 #############################################################################
 ##
 #A  OrderOfWeylGroup( <H> )
 ##
-  InstallMethod( OrderOfWeylGroup,
-    "return order of weyl group",
-    [ IsGroup and HasParentAttr ],
-    function( H )
-      local x;
+InstallMethod( OrderOfWeylGroup,
+  "return order of weyl group",
+  [ IsGroup and HasParentAttr ],
+  function( H )
+    local x;
 
-      x := X( Integers, "x" );
+    x := X( Integers, "x" );
 
-      return Order( NormalizerInParent( H ) ) / Order( H ) * One( x );
-    end
-  );
+    return Order( NormalizerInParent( H ) ) / Order( H ) * One( x );
+  end
+);
+
 
 #############################################################################
 ##
 #A  OrderOfWeylGroup( <C> )
 ##
-  InstallMethod( OrderOfWeylGroup,
-    "return order of weyl group",
-    [ IsConjugacyClassSubgroupsRep ],
-    function( C )
-      local x;
+InstallMethod( OrderOfWeylGroup,
+  "return order of weyl group",
+  [ IsConjugacyClassSubgroupsRep ],
+  function( C )
+    local x;
 
-      x := X( Integers, "x" );
+    x := X( Integers, "x" );
 
-      return Order( StabilizerOfExternalSet( C ) ) /
-          Order( Representative( C ) ) * One( x );
-    end
-  );
+    return Order( StabilizerOfExternalSet( C ) ) /
+        Order( Representative( C ) ) * One( x );
+  end
+);
+
 
 #############################################################################
 ##
 #A  LatticeCCSs( <G> )
 ##
-  InstallMethod( LatticeCCSs,
-    "returns the lattice of CCSs of <grp>",
-    [ IsGroup ],
-    function( G )
-      local CCSs,		# CCS list
-            lat,		# lattice of CCSs
-            C,			# a CCS
-            node_shape_list,	# define the node shape of
-				# each CCS in the lattice diagram
-				# normal subgroups -> squares
-				# others -> circles
-            rank_list;		# define the rank of each CCS,
-				# which is the order of the subgroup
+InstallMethod( LatticeCCSs,
+  "returns the lattice of CCSs of <grp>",
+  [ IsGroup ],
+  function( G )
+    local CCSs,		# CCS list
+          lat,		# lattice of CCSs
+          C,			# a CCS
+          node_shape_list,	# define the node shape of
+      # each CCS in the lattice diagram
+      # normal subgroups -> squares
+      # others -> circles
+          rank_list;		# define the rank of each CCS,
+      # which is the order of the subgroup
 
-      CCSs := ConjugacyClassesSubgroups( G );
-      node_shape_list := [ ];
-      rank_list := [ ];
-      for C in CCSs do
-        if ( Size( C ) = 1 ) then
-          Add( node_shape_list, "square" );
-        else
-          Add( node_shape_list, "circle" );
-        fi;
-        Add( rank_list, Order( Representative( C ) ) );
-      od;
+    CCSs := ConjugacyClassesSubgroups( G );
+    node_shape_list := [ ];
+    rank_list := [ ];
+    for C in CCSs do
+      if ( Size( C ) = 1 ) then
+        Add( node_shape_list, "square" );
+      else
+        Add( node_shape_list, "circle" );
+      fi;
+      Add( rank_list, Order( Representative( C ) ) );
+    od;
 
-      lat := NewLattice( IsLatticeCCSsRep,
-        rec(
-          poset := CCSs,
-          node_labels := [ 1 .. Size( CCSs ) ],
-          node_shapes := node_shape_list,
-          rank_label := "Order",
-          ranks := rank_list,
-          is_rank_reversed := true,
-          group := G
-        )
-      );
-      SetConjugacyClassesSubgroups( lat, CCSs );
+    lat := NewLattice( IsLatticeCCSsRep,
+      rec(
+        poset := CCSs,
+        node_labels := [ 1 .. Size( CCSs ) ],
+        node_shapes := node_shape_list,
+        rank_label := "Order",
+        ranks := rank_list,
+        is_rank_reversed := true,
+        group := G
+      )
+    );
+    SetConjugacyClassesSubgroups( lat, CCSs );
 
-      return lat;
-    end
-  );
+    return lat;
+  end
+);
+
 
 #############################################################################
 ##
@@ -316,6 +313,7 @@ InstallMethod( PrintString,
     return Concatenation( "LatticeCCSs( ", String( lat!.group ), " )" );
   end
 );
+
 
 #############################################################################
 ##
@@ -338,67 +336,69 @@ InstallMethod( ViewString,
 ##
 #A  IdIrr( <chi> )
 ##
-  InstallMethod( IdIrr,
-    "id of a finite group irreducible representation",
-    [ IsIrreducibleCharacter ],
-    function( chi )
-      local G;
+InstallMethod( IdIrr,
+  "id of a finite group irreducible representation",
+  [ IsIrreducibleCharacter ],
+  function( chi )
+    local G;
 
-      if not IsFinite( G ) then
-        TryNextMethod( );
-      fi;
+    if not IsFinite( G ) then
+      TryNextMethod( );
+    fi;
 
-      G := UnderlyingGroup( chi );
-      return Position( Irr( chi ), chi );
-    end
-  );
+    G := UnderlyingGroup( chi );
+    return Position( Irr( chi ), chi );
+  end
+);
+
 
 #############################################################################
 ##
 #O  ImageElm( <chi>, <e> )
 ##
-  InstallMethod( ImageElm,
-    "",
-    [ IsClassFunction, IsMultiplicativeElementWithInverse ],
-    function( chi, e )
-      local G,
-            tbl,
-            n;
+InstallMethod( ImageElm,
+  "",
+  [ IsClassFunction, IsMultiplicativeElementWithInverse ],
+  function( chi, e )
+    local G,
+          tbl,
+          n;
 
-      G := UnderlyingGroup( chi );
-      if not ( e in G ) then
-        Info( InfoEquiDeg, INFO_LEVEL_EquiDeg,
-	    "<e> is not in the underlying group of <chi>." );
-        return fail;
-      fi;
+    G := UnderlyingGroup( chi );
+    if not ( e in G ) then
+      Info( InfoEquiDeg, INFO_LEVEL_EquiDeg,
+    "<e> is not in the underlying group of <chi>." );
+      return fail;
+    fi;
 
-      tbl := UnderlyingCharacterTable( chi );
-      n := PositionProperty( ConjugacyClasses( tbl ), c -> e in c );
-      return ValuesOfClassFunction( chi )[ n ];
-    end
-  );
+    tbl := UnderlyingCharacterTable( chi );
+    n := PositionProperty( ConjugacyClasses( tbl ), c -> e in c );
+    return ValuesOfClassFunction( chi )[ n ];
+  end
+);
+
 
 #############################################################################
 ##
 #O  SchurIndicator( <chi>, <n> )
 ##
-  InstallMethod( SchurIndicator,
-    "<n>-th Schur Indicator of character <chi>",
-    [ IsCharacter, IsInt ],
-    function( chi, n )
-      local G,
-            tbl,
-            pmap,
-            CC_list;
+InstallMethod( SchurIndicator,
+  "<n>-th Schur Indicator of character <chi>",
+  [ IsCharacter, IsInt ],
+  function( chi, n )
+    local G,
+          tbl,
+          pmap,
+          CC_list;
 
-      G := UnderlyingGroup( chi );
-      tbl := UnderlyingCharacterTable( chi );
-      pmap := PowerMap( tbl, n );
-      CC_list := ConjugacyClasses( G );
+    G := UnderlyingGroup( chi );
+    tbl := UnderlyingCharacterTable( chi );
+    pmap := PowerMap( tbl, n );
+    CC_list := ConjugacyClasses( G );
 
-      return Sum( [ 1 .. Size( CC_list ) ], i -> Size( CC_list[ i ] ) * chi[ pmap[ i ] ] )/Order( G );
-    end
-  );
+    return Sum( [ 1 .. Size( CC_list ) ], i -> Size( CC_list[ i ] ) * chi[ pmap[ i ] ] )/Order( G );
+  end
+);
 
 
 ##  Part 4: Concepts Related to Compact Lie Group
@@ -407,23 +407,25 @@ InstallMethod( ViewString,
 ##
 #A  DimensionOfCompactLieGroup( <G> )
 ##
-  InstallImmediateMethod( DimensionOfCompactLieGroup,
-    "dimension of finite group <G>",
-    IsGroup and IsFinite,
-    0,
-    G -> 0
-  );
+InstallImmediateMethod( DimensionOfCompactLieGroup,
+  "dimension of finite group <G>",
+  IsGroup and IsFinite,
+  0,
+  G -> 0
+);
+
 
 #############################################################################
 ##
 #A  RankOfCompactLieGroup( <G> )
 ##
-  InstallImmediateMethod( RankOfCompactLieGroup,
-    "rank of finite group <G>",
-    IsGroup and IsFinite,
-    0,
-    G -> 0
-  );
+InstallImmediateMethod( RankOfCompactLieGroup,
+  "rank of finite group <G>",
+  IsGroup and IsFinite,
+  0,
+  G -> 0
+);
+
 
 #############################################################################
 ##

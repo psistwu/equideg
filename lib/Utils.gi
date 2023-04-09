@@ -8,6 +8,7 @@
 ##  This file contains implementations of utilities.
 ##
 
+
 #############################################################################
 ##
 #O  Abbrv( <obj> )
@@ -24,6 +25,7 @@ InstallMethod( Abbrv,
   end
 );
 
+
 #############################################################################
 ##
 #O  SetAbbrv( <obj>, <str> )
@@ -36,6 +38,7 @@ InstallMethod( SetAbbrv,
   end
 );
 
+
 #############################################################################
 ##
 #O  HasAbbrv( <obj> )
@@ -45,6 +48,7 @@ InstallMethod( HasAbbrv,
   [ IsComponentObjectRep ],
   obj -> IsBound( obj!.abbrv )
 );
+
 
 #############################################################################
 ##
@@ -58,12 +62,13 @@ InstallMethod( ResetAbbrv,
   end
 );
 
+
 #############################################################################
 ##
 #O  ViewString( <obj> )
 ##
 InstallMethod( ViewString,
-  " View string for object admit abbrv",
+  "View string for object admit abbrv",
   [ IsComponentObjectRep ],
   function( obj )
     if HasAbbrv( obj ) then
@@ -73,6 +78,25 @@ InstallMethod( ViewString,
     fi;
   end
 );
+
+
+#############################################################################
+##
+#O  PrintObj( <obj> )
+##
+InstallMethod( PrintObj,
+  "",
+  [ IsComponentObjectRep ],
+  50,
+  function( obj )
+    if HasString( obj ) then
+      Print( String( obj ) );
+    else
+      TryNextMethod( );
+    fi;
+  end
+);
+
 
 #############################################################################
 ##

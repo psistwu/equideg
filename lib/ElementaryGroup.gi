@@ -9,6 +9,7 @@
 ##  related to group thoery.
 ##
 
+
 ## Part 1: Special Groups
 
 #############################################################################
@@ -17,8 +18,9 @@
 ##
 InstallGlobalFunction( pCyclicGroup,
   function( n )
-    local i,		# index
-          gen;	# generator of Z_n
+    local i,		  # index
+          gen,    # generator of Z_n
+          result;
 
     if not IsPosInt( n ) then
       Error( "n must be a positive integer." );
@@ -29,9 +31,14 @@ InstallGlobalFunction( pCyclicGroup,
       gen := ( i, i+1 )*gen;
     od;
 
-    return Group( gen );
+    result := Group( gen );
+
+    SetString( result, StringFormatted( "pCyclicGroup( {} )", n ) );
+
+    return result;
   end
 );
+
 
 #############################################################################
 ##
@@ -40,7 +47,8 @@ InstallGlobalFunction( pCyclicGroup,
 InstallGlobalFunction( mCyclicGroup,
   function( n )
     local z, rz, iz,	# a complex number and its real and imaginary parts
-          gen_mat;    # generator of Z_n
+          gen_mat,    # generator of Z_n
+          result;
 
     if not IsPosInt( n ) then
       Error( "n must be a positive integer." );
@@ -51,9 +59,13 @@ InstallGlobalFunction( mCyclicGroup,
     iz := ImaginaryPart ( z );
     gen_mat := [ [ rz, -iz ], [ iz, rz ] ];
 
-    return Group( gen_mat );
+    result := Group( gen_mat );
+    SetString( result, StringFormatted( "mCyclicGroup( {} )", n ) );
+
+    return result;
   end
 );
+
 
 #############################################################################
 ##
@@ -62,9 +74,10 @@ InstallGlobalFunction( mCyclicGroup,
 InstallGlobalFunction( pDihedralGroup,
   function( n )
     local i,            # index
-          gen1, gen2;   # generators of Dn
+          gen1, gen2,   # generators of Dn
                         # gen1 associates to rotation
                         # gen2 associates to reflection
+          result;
 
     if not IsPosInt( n ) then
       Error( "n must be a positive integer." );
@@ -93,9 +106,13 @@ InstallGlobalFunction( pDihedralGroup,
       od;
     fi;
 
-    return Group( [ gen1, gen2 ] );
+    result := Group( [ gen1, gen2 ] );
+    SetString( result, StringFormatted( "pDihedralGroup( {} )", n ) );
+
+    return result;
   end
 );
+
 
 #############################################################################
 ##
@@ -103,11 +120,12 @@ InstallGlobalFunction( pDihedralGroup,
 ##
 InstallGlobalFunction( mDihedralGroup,
   function( n )
-    local z, rz, iz,     # a complex number and
-                          # its real and imaginary parts
-          gen1, gen2;    # generators of D_n
-                          # gen1 associates to rotation
-                          # gen2 associates to reflection
+    local z, rz, iz,    # a complex number and
+                        # its real and imaginary parts
+          gen1, gen2,   # generators of D_n
+                        # gen1 associates to rotation
+                        # gen2 associates to reflection
+          result;
 
     z := E( n );
     rz := RealPart( z );
@@ -115,7 +133,10 @@ InstallGlobalFunction( mDihedralGroup,
     gen1 := [ [ rz, -iz ], [ iz, rz ] ];
     gen2 := [ [ 1, 0 ], [ 0, -1 ] ];
 
-    return Group( [ gen1, gen2 ] );
+    result := Group( [ gen1, gen2 ] );
+    SetString( result, StringFormatted( "mDihedralGroup( {} )", n ) );
+
+    return result;
   end
 );
 
