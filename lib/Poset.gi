@@ -8,17 +8,20 @@
 ##  This file contains implementations of procedures related to lattice.
 ##
 
-##  Part 1: Poset
 
 #############################################################################
 ##
-#O  IsPSortedList( <list>, <func> )
+#O  IsPoset( <list>, <func> )
 ##
-InstallOtherMethod( IsPSortedList,
-  "check whether <list> is sorted with respect to partial order <func>",
-  [ IsHomogeneousList, IsFunction ],
+InstallOtherMethod( IsPoset,
+  "checks whether <list> is a poset with respect to partial order <func>",
+  [ IsList, IsFunction ],
   function( list, func )
     local i, j;
+
+    if not ( IsHomogeneousList and IsDuplicateFree )( list ) then
+      return false;
+    fi;
 
     for i in [ 1 .. Size( list ) ] do
       if ForAny( [ i+1 .. Size( list ) ],
@@ -30,49 +33,37 @@ InstallOtherMethod( IsPSortedList,
   end
 );
 
-#############################################################################
-##
-#O  IsPSortedList( <list> )
-##
-InstallMethod( IsPSortedList,
-  "checks whether <list> is sorted with respect to \\<",
-  [ IsHomogeneousList ],
-  list -> IsPSortedList( list, \< )
-);
 
 #############################################################################
 ##
-#O  IsPoset( <list>, <func> )
-##
-InstallOtherMethod( IsPoset,
-  "checks whether <list> is a poset with respect to partial order <func>",
-  [ IsHomogeneousList, IsFunction ],
-  { list, func } -> IsPSortedList( list, func ) and IsDuplicateFree( list )
-);
-
-#############################################################################
-##
-#O  IsPoset( <list> )
+#P  IsPoset( <list> )
 ##
 InstallMethod( IsPoset,
   "checks whether <list> is a poset with respect to \\<",
-  [ IsHomogeneousList ],
+  [ IsList ],
   list -> IsPoset( list, \< )
 );
 
+
 #############################################################################
 ##
-#O  PSort( <list>, <func> )
+#O  Poset( <list>, <func> )
 ##
-InstallOtherMethod( PSort,
-  "sorts <list> with respect to partial order <func>",
-  [ IsHomogeneousList and IsMutable, IsFunction ],
+InstallOtherMethod( Poset,
+  "return poset with respect to partial order <func>",
+  [ IsList, IsFunction ],
   function( list, lt )
     local E,
           S,
           v, vv,
           i,
           slist;
+
+    if not IsHomogeneousList( list ) then
+      return fail;
+    fi;
+
+    list := DuplicateFreeList( list );
 
     # find all (directed) edges
     E := [ ];
@@ -109,7 +100,7 @@ InstallOtherMethod( PSort,
     od;
 
     if IsEmpty( E ) then
-      list{ [ 1 .. Size( list ) ] } := slist;
+      return slist;
     else
       Info( InfoEquiDeg, INFO_LEVEL_EquiDeg,
           "( <list>, <lt> ) do not form a poset." );
@@ -118,44 +109,19 @@ InstallOtherMethod( PSort,
   end
 );
 
+
 #############################################################################
 ##
 #O  PSort( <list> )
 ##
-InstallMethod( PSort,
+InstallMethod( Poset,
   "sorts <list> with respect to \\<",
-  [ IsHomogeneousList and IsMutable ],
+  [ IsList ],
   function( list )
-    PSort( list, \< );
+    return Poset( list, \< );
   end
 );
 
-#############################################################################
-##
-#O  PSortedList( <list>, <func> )
-##
-InstallOtherMethod( PSortedList,
-  "returns a shallow copy of <list> sorted with respect to partial order <func>",
-  [ IsHomogeneousList, IsFunction ],
-  function( list, func )
-    local tmp;
-
-    tmp := ShallowCopy( list );
-    PSort( tmp, func );
-
-    return tmp;
-  end
-);
-
-#############################################################################
-##
-#O  PSortedList( <list> )
-##
-InstallMethod( PSortedList,
-  "returns a shallow copy of <list> sorted with respect to partial order \\<",
-  [ IsHomogeneousList ],
-  list -> PSortedList( list, \< )
-);
 
 #############################################################################
 ##
@@ -208,6 +174,7 @@ InstallOtherMethod( MaximalElements,
     return list2;
   end
 );
+
 
 #############################################################################
 ##

@@ -27,11 +27,13 @@
 ##  <#/GAPDoc>
 ##
 DeclareRepresentation( "IsLatticeRep", IsAttributeStoringRep, [ ] );
+DeclareAttribute( "Size", IsLatticeRep );
+DeclareOperation( "[]", [ IsLatticeRep, IsPosInt ] );
 
 
 #############################################################################
 ##
-#F  NewLattice( <filter>, <r> )
+#U  NewLattice( <filter>, <poset> )
 ##
 ##  <#GAPDoc Label="NewLattice">
 ##  <ManSection>
@@ -79,7 +81,8 @@ DeclareRepresentation( "IsLatticeRep", IsAttributeStoringRep, [ ] );
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
-DeclareGlobalFunction( "NewLattice", "constructor of Lattice" );
+# DeclareGlobalFunction( "NewLattice", "constructor of Lattice" );
+DeclareConstructor( "NewLattice", [ IsLatticeRep, IsHomogeneousList ] );
 
 
 #############################################################################
@@ -96,6 +99,11 @@ DeclareGlobalFunction( "NewLattice", "constructor of Lattice" );
 ##  <#/GAPDoc>
 ##
 DeclareAttribute( "UnderlyingPoset", IsLatticeRep );
+DeclareAttribute( "NodeRanks", IsLatticeRep );
+DeclareAttribute( "RankLegend", IsLatticeRep );
+DeclareAttribute( "NodeLabels", IsLatticeRep );
+DeclareAttribute( "NodeShapes", IsLatticeRep );
+
 
 #############################################################################
 ##
@@ -115,6 +123,7 @@ DeclareAttribute( "UnderlyingPoset", IsLatticeRep );
 DeclareAttribute( "MaximalSubElementsLattice",
     IsCollection and IsLatticeRep );
 
+
 #############################################################################
 ##
 #A  MinimalSupElementsLattice( <lat> )	(not yet implemented)
@@ -132,6 +141,7 @@ DeclareAttribute( "MaximalSubElementsLattice",
 ##
 # DeclareAttribute( "MinimalSupElementsLattice",
 #     IsCollection and IsLatticeRep );
+
 
 #############################################################################
 ##

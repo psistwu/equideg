@@ -26,7 +26,7 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareRepresentation( "IsLatticeOrbitTypesRep", IsLatticeRep, [ ] );
+DeclareRepresentation( "IsLatticeOrbitTypesRep", IsLatticeRep, [ ] );
 
 #############################################################################
 ##

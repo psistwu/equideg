@@ -13,51 +13,46 @@
 ##
 #F  NewLattice( <filter>, <r> )
 ##
-InstallGlobalFunction( NewLattice,
-  function( filter, r )
-    local n;		# size of the poset
+InstallMethod( NewLattice,
+  "",
+  [ IsLatticeRep, IsHomogeneousList ],
+  function( filter, list )
+    local poset, cat_poset,
+          fam, cat, rep, type,
+          obj;
 
-    # check input arguments
-    if not IsFilter( filter ) then
-      Error( "The first argument should be a filter." );
-    elif not IsRecord( r ) then
-      Error( "The second argument should be a record." );
-    fi;
+    poset := Poset( list );
+    fam := FamilyObj( poset );
+    cat := IsObject;
+    for cat_poset in List( CategoriesOfObject( poset ), c->EvalString( c ) ) do
+      cat := cat and cat_poset;
+    od;
+    rep := IsLatticeRep;
+    type := NewType( fam, cat and rep );
 
-    # check the components in <r>
-    if not IsPoset( r.poset ) then
-      Error( "<r.poset> must be a poset." );
-    fi;
+    obj := Objectify( type, rec( ) );
+  end
+);
 
-    n := Size( r.poset );
 
-    if not IsHomogeneousList( r.node_labels ) then
-      Error( "<r.node_labels> must be a list." );
-    elif not ( Size( r.node_labels ) = n ) then
-      Error( "<r.node_labels> and <r.poset> must be of the same size." );
-    fi;
+#############################################################################
+##
+#A  Size( <lat> )
+##
+InstallMethod( Size,
+  "",
+  [ IsLatticeRep ],
+  function( lat )
+    return Size( UnderlyingPoset( lat ) );
+  end
+);
 
-    if not IsHomogeneousList( r.node_shapes ) then
-      Error( "<r.node_shapes> must be a list." );
-    elif not ( Size( r.node_shapes ) = n ) then
-      Error( "<r.node_shapes> and <r.poset> must be of the same size." );
-    fi;
 
-    if not IsString( r.rank_label ) then
-      Error( "<r.rank_label> must be a string." );
-    fi;
-
-    if not ( IsHomogeneousList( r.ranks ) and
-        Size( r.ranks ) = n ) then
-      Error( "<r.ranks> must be a list having the same size as <r.poset>." );
-    fi;
-
-    if not IsBool( r.is_rank_reversed ) then
-      Error( "<r.is_rank_reversed> must be true or false." );
-    fi;
-
-    # generate the lattice object
-    return Objectify( NewType( FamilyObj( r.poset ), filter ), r );
+InstallMethod( \[\],
+  "",
+  [ IsLatticeRep, IsPosInt ],
+  function( lat, ind )
+    return UnderlyingPoset( lat )[ ind ];
   end
 );
 

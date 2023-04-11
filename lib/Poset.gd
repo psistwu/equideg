@@ -11,85 +11,50 @@
 ##    1. Fix the naming of components.
 ##
 
-#############################################################################
-##
-#O  IsPSortedList( <list>[, <func>] )
-##
-##  <#GAPDoc Label="IsPSortedList">
-##  <ManSection>
-##  <Oper Name="IsPSortedList" Arg="list[, func]"/>
-##  <Description>
-##    checks whether <A>list</A> is sorted
-##    with respect to partial order <A>func</A>
-##    (or <C>&bslash;&lt;</C> if <A>func</A>
-##    is not given).
-##  </Description>
-##  </ManSection>
-##  <#/GAPDoc>
-##
-DeclareOperation( "IsPSortedList", [ IsHomogeneousList ] );
 
 #############################################################################
 ##
-#O  IsPoset( <list> )
+#P  IsPoset( <list> )
 ##
 ##  <#GAPDoc Label="IsPoset">
 ##  <ManSection>
-##  <Oper Name="IsPoset" Arg="list[, func]"/>
+##  <Prop Name="IsPoset" Arg="list[, func]"/>
 ##  <Description>
 ##    checks whether <A>list</A> is a poset, i.e.,
-##    a non-repeating sorted homogeneous list,
+##    a duplicate-free sorted homogeneous list,
 ##    with respect to partial order <A>func</A>
 ##    (or <C>&bslash;&lt;</C> if <A>func</A> is not given).
-##    In other words, it is a synonym for
-##    <C>IsPSortedList and IsDuplicateFree</C>.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-DeclareOperation( "IsPoset", [ IsHomogeneousList ] );
+DeclareProperty( "IsPoset", IsList );
+
 
 #############################################################################
 ##
-#O  PSort( <list>[, <func>] )
+#O  Poset( <list>[, <func>] )
 ##
 ##  <#GAPDoc Label="PSort">
 ##  <ManSection>
 ##  <Oper Name="PSort" Arg="list[, func]"/>
 ##  <Description>
-##    sorts <A>list</A> with respect to partial order <A>func</A>
-##    (or <C>&bslash;&lt;</C> if <A>func</A> is not given).
+##    Return a poset based on <A>list</A> with respect to partial order
+##    <A>func</A> (or <C>&bslash;&lt;</C> if <A>func</A> is not given).
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-DeclareOperation( "PSort", [ IsHomogeneousList and IsMutable ] );
+DeclareOperation( "Poset", [ IsList ] );
+
 
 #############################################################################
 ##
-#O  PSortedList( <list>[, <func>] )
-##
-##  <#GAPDoc Label="PSortedList">
-##  <ManSection>
-##  <Oper Name="PSortedList" Arg="list[, func]"/>
-##  <Description>
-##    returns a shallow copy of <A>list</A>
-##    which is sorted
-##    with respect to partial order <A>func</A>
-##    (or <C>&bslash;&lt;</C> if <A>func</A> is not given).
-##  </Description>
-##  </ManSection>
-##  <#/GAPDoc>
-##
-DeclareOperation( "PSortedList", [ IsHomogeneousList ] );
-
-#############################################################################
-##
-#O  MaximalElements( <list>[, <func>] )
+#P  MaximalElements( <list>[, <func>] )
 ##
 ##  <#GAPDoc Label="MaximalElements">
 ##  <ManSection>
-##  <Oper Name="MaximalElements" Arg="list[, func]"/>
+##  <Prop Name="MaximalElements" Arg="list[, func]"/>
 ##  <Description>
 ##    returns the list of maximal elements in <A>list</A>
 ##    with respect to partial order <A>func</A>
@@ -98,7 +63,7 @@ DeclareOperation( "PSortedList", [ IsHomogeneousList ] );
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-DeclareOperation( "MaximalElements", [ IsList ] );
+DeclareProperty( "MaximalElements", IsList );
 
 
 #############################################################################
