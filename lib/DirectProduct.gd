@@ -110,7 +110,7 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareAttribute( "GoursatInfo", IsGroup and HasParentAttr );
+  DeclareAttribute( "GoursatInfo", IsGroup );
   DeclareAttribute( "GoursatInfo", IsConjugacyClassSubgroupsRep );
 
 #############################################################################

@@ -149,7 +149,7 @@
 ##
   InstallMethod( GoursatInfo,
     "return the Goursat info of a subgroup",
-    [ IsGroup and HasParentAttr ],
+    [ IsGroup ],
     function( U )
       local G,		# the parent group G=G1xG2
 	    proj1,	# projection to G1
@@ -162,6 +162,9 @@
             proj1_U;	# restricted projection1 to <U>
 
       # take the parent group
+      if not HasParentAttr( U ) then
+        U := AsSubgroup(U, U);
+      fi;
       G := ParentAttr( U );
 
       # the procedure works only when
@@ -250,11 +253,11 @@
       od;
 
       if ( Size( infoU.L ) = 1 ) then
-        return StringFormatted( "[{} x {}]",
+        return StringFormatted( "({}x{})",
             name_list[ 1 ],
             name_list[ 4 ]  );
       else
-        return StringFormatted( "[{}|{} x {}|{}]",
+        return StringFormatted( "({}|{} x {}|{})",
             name_list[ 1 ],
             name_list[ 2 ],
             name_list[ 3 ],
