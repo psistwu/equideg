@@ -20,12 +20,12 @@
 ##  <ManSection>
 ##  <Func Name="OrthogonalGroupOverReal" Arg="n"/>
 ##  <Description>
-##    This function creates group <M>O(n)</M>.
+##    This function creates group <M>O(n,R)</M>.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareGlobalFunction( "OrthogonalGroupOverReal", "returns O(n,R)" );
+  DeclareGlobalFunction( "OrthogonalGroupOverReal" );
 
 #############################################################################
 ##
@@ -35,12 +35,12 @@
 ##  <ManSection>
 ##  <Func Name="SpecialOrthogonalGroupOverReal" Arg="n"/>
 ##  <Description>
-##    This function creates group SO(n,R).
+##    This function creates group <M>SO(n,R)</M>.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareGlobalFunction( "SpecialOrthogonalGroupOverReal", "returns SO(n,R)" );
+  DeclareGlobalFunction( "SpecialOrthogonalGroupOverReal" );
 
 #############################################################################
 ##
@@ -55,8 +55,7 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareGlobalFunction( "ElementaryCLGId",
-      "returns elementary compact Lie group by ID" );
+  DeclareGlobalFunction( "ElementaryCLGId" );
 
 #############################################################################
 ##

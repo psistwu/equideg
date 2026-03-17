@@ -80,8 +80,7 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##  
-  DeclareGlobalFunction( "NewLatticeOrbitTypes",
-      "constructor of lattice of orbit types" );
+  DeclareGlobalFunction( "NewLatticeOrbitTypes" );
 
 #############################################################################
 ##

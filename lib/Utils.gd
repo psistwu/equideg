@@ -115,9 +115,16 @@
 #############################################################################
 ##
 #F  ListA( <list1>, <list2>, ..., <listn>, <f> )
+##  <#GAPDoc Label="ListA">
+##  <ManSection>
+##  <Func Name="ListA" Arg="list1,list2,...,listn,f"/>
+##  <Description>
+##    applies function <A>f</A> to each element of the lists <A>list1</A>, <A>list2</A>, ..., <A>listn</A> and returns the result as a list.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 ##
-  DeclareGlobalFunction( "ListA",
-      "Apply action (function with no return value on list of arguments" );
+  DeclareGlobalFunction( "ListA" );
 
 #############################################################################
 ##

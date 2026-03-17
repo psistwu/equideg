@@ -702,8 +702,8 @@
       SetBasis( A, basis );
 
       # other attributes related to its Burnside ring sturcture
-      SetZeroAttr( fam_elmt, zero );
-      SetZeroAttr( A, zero );
+      SetZeroImmutable( fam_elmt, zero );
+      SetZeroImmutable( A, zero );
       SetOneImmutable( fam_elmt, basis[ d ] );
       SetOneImmutable( A, basis[ d ] );
       SetGeneratorsOfRing( A, basis );
@@ -836,8 +836,8 @@
       SetBasis( A, basis );
 
       # other attributes related to its Burnside ring sturcture
-      SetZeroAttr( fam_elmt, zero );
-      SetZeroAttr( A, zero );
+      SetZeroImmutable( fam_elmt, zero );
+      SetZeroImmutable( A, zero );
       SetOneImmutable( fam_elmt, basis[ 0, NumberOfZeroModeClasses( CCSs ) ] );
       SetOneImmutable( A, basis[ 0, NumberOfZeroModeClasses( CCSs ) ] );
       SetGeneratorsOfRing( A, basis );
