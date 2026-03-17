@@ -10,3 +10,4 @@ doc/*
 test/
 *_dev.*
 .ipynb_checkpoints/
+workspace/

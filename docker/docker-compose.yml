@@ -2,13 +2,12 @@ services:
   runner:
     image: ${IMAGE}
     environment:
-      CONTAINER_WORKSPACE:
-      USER:
-      USER_ID:
+      JUPYTER_TOKEN:
     ports:
       - "8888:8888"
     volumes:
       - "${HOST_PACKAGE_DIR}:${CONTAINER_PACKAGE_DIR}"
       - "${HOST_EXAMPLE_DIR}:${CONTAINER_EXAMPLE_DIR}"
-      - "${PWD}/start.sh:/start.sh"
-    command: "/start.sh"
+      - "${HOST_WORKDIR}:${CONTAINER_WORKDIR}"
+    working_dir: "${CONTAINER_WORKDIR}"
+    command: [ "jupyter", "lab", "--allow-root", "--no-browser", "--ip=0.0.0.0" ]
