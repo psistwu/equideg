@@ -547,11 +547,12 @@
             pmap,
             CC_list;
 
+      G := UnderlyingGroup( chi );
+
       if not IsFinite( G ) then
         TryNextMethod( );
       fi;
 
-      G := UnderlyingGroup( chi );
       tbl := UnderlyingCharacterTable( chi );
       pmap := PowerMap( tbl, n );
       CC_list := ConjugacyClasses( G );

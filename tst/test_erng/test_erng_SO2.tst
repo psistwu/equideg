@@ -13,9 +13,9 @@ EulerRing( SpecialOrthogonalGroupOverReal( 2 ) )
 # Show ring generators
 gap> ring_gens := GeneratorsOfRing( erng );;
 gap> Display( ring_gens[ 0, 1 ] );
-Erng( <group with 1 generators> ) element:
+Erng( <group with 1 generator> ) element:
 1	(0,1)	SO(2)
 
 gap> Display( ring_gens[ 1, 1 ] );
-Erng( <group with 1 generators> ) element:
+Erng( <group with 1 generator> ) element:
 1	(1,1)	Z_1

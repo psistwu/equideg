@@ -57,7 +57,7 @@
 ##  <Filt Name="IsCompactLieGroupConjugacyClassSubgroupsRep"
 ##      Type="representation"/>
 ##  <Description>
-##  This is a representation of CCS of (infinite) compact Lie group.
+##    This is a representation of CCS of (infinite) compact Lie group.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
@@ -348,6 +348,15 @@
 #############################################################################
 ##
 #A  DegreeOfCharacter( <chi> )
+##
+##  <#GAPDoc Label="DegreeOfCharacter">
+##  <ManSection>
+##  <Attr Name="DegreeOfCharacter" Arg="chi"/>
+##  <Description>
+##    This attribute contains the degree of compact Lie group character <A>chi</A>.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 ##
   DeclareAttribute( "DegreeOfCharacter", IsCompactLieGroupVirtualCharacter );
 

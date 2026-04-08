@@ -878,7 +878,7 @@
       A := BurnsideRing( G );
       orbts := OrbitTypes( chi );
 
-      if not ( SchurIndicator( chi, 2 ) = 1 ) then
+      if not ( SchurIndicator( chi ) = 1 ) then
         return OneImmutable( A );
       fi;
 

@@ -1,0 +1,27 @@
+name: CI Pipeline
+
+on:
+  pull_request:
+    branches: [ master ]
+  push:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    container:
+      image: ghcr.io/psistwu/gap-docker:latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Link package into GAP
+        run: ln -s "${GITHUB_WORKSPACE}" /opt/gap/pkg/$(basename "${GITHUB_WORKSPACE}")
+
+      - name: Show GAP version
+        run: gap -q -c 'Print(GAPInfo.Version, "\n");'
+
+      - name: Run GAP package tests
+        run: gap -q -A -x 80 -m 100m -o 1g -K 2g tst/testall.g

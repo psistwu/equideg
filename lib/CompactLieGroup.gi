@@ -779,11 +779,11 @@
         Error( "<H> must be a subgroup of <G>." );
       fi;
 
-      if IsFinite( H ) then
-        return Sum( List( H ), x -> Image( chi, x ) )/Order( H );
+      if not IsFinite( H ) then
+        TryNextMethod( );
       fi;
 
-      TryNextMethod( );
+      return Sum( List( H ), x -> Image( chi, x ) )/Order( H );
     end
   );
 

@@ -26,9 +26,9 @@ gap> irr_list := Irr(G);;
 gap> chi := irr_list[2, 4];;
 gap> psi := irr_list[1, 2];;
 gap> maxorbtyps_chi := MaximalOrbitTypes(chi);
-[ (D_4|D_2 x Z3p|D3p) ]
+[ (D_4|D_2 x D3z|D3p) ]
 gap> maxorbtyps_psi := MaximalOrbitTypes(psi);
-[ (D_2|D_1 x D3z|D3p) ]
+[ (D_2|D_1 x D3|D3p) ]
 
 # Find maximal orbit types of chi+psi
 # gap> maxorbtyps := MaximalElements(Union(maxorbtyps_chi,maxorbtyps_psi));
