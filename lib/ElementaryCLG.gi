@@ -503,6 +503,51 @@
 
 #############################################################################
 ##
+#O  SchurIndicator( <chi> )
+##
+  InstallOtherMethod( SchurIndicator,
+    "returns (2nd) Schur indicator of a character of SO(2)",
+    [ IsCompactLieGroupCharacter and IsIrreducibleCharacter ],
+    function( chi )
+      local G;
+
+      G := UnderlyingGroup( chi );
+      if not HasIdElementaryCLG( G ) or
+          not ( IdElementaryCLG( G ) = [ 1, 2 ] ) then
+        TryNextMethod( );
+      fi;
+
+      # for SO(2), all but the trivial representation are of complex type
+      if IdIrr( chi ) = 0 then
+        return 1;
+      else
+        return 0;
+      fi;
+    end
+  );
+
+#############################################################################
+##
+#O  SchurIndicator( <chi> )
+##
+  InstallOtherMethod( SchurIndicator,
+    "returns (2nd) Schur indicator of a character of O(2)",
+    [ IsCompactLieGroupCharacter and IsIrreducibleCharacter ],
+    function( chi )
+      local G;
+
+      G := UnderlyingGroup( chi );
+      if not HasIdElementaryCLG( G ) or
+         not ( IdElementaryCLG( G ) = [ 2, 2 ] ) then
+        TryNextMethod( );
+      fi;
+
+      return 1;
+    end
+  );
+
+#############################################################################
+##
 #O  Refolded( <chi>, <l> )
 ##
   InstallMethod( Refolded,
@@ -549,6 +594,7 @@
 
       if not HasIdElementaryCLG( G1 ) or
          not ( IdElementaryCLG( G1 ) = [ 2, 2 ] ) then
+        TryNextMethod( );
       fi;
 
       if IsPosInt( id[ 1 ] ) and IsPosInt( l ) then
@@ -611,9 +657,9 @@
     function( chi, C )
       local G,
             idchi,
-	    l, h,
+	          l, h,
             idC,
-	    degs;
+	          degs;
 
       G := UnderlyingGroup( chi );
       if not ( G = SpecialOrthogonalGroupOverReal( 2 ) ) then
@@ -646,10 +692,10 @@
     function( chi, C )
       local G,
             idchi,
-	    l, h,
+	          l, h,
             idC,
-	    degs,
-	    dim;
+	          degs,
+	          dim;
 
       G := UnderlyingGroup( chi );
       if not ( G = OrthogonalGroupOverReal( 2 ) ) then
