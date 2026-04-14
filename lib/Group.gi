@@ -536,12 +536,12 @@
 
 #############################################################################
 ##
-#O  SchurIndicator( <chi>, <n> )
+#O  SchurIndicator( <chi> )
 ##
   InstallMethod( SchurIndicator,
-    "<n>-th Schur Indicator of character <chi>",
-    [ IsCharacter, IsPosInt ],
-    function( chi, n )
+    "2nd Schur Indicator of character <chi>",
+    [ IsCharacter ],
+    function( chi )
       local G,
             tbl,
             pmap,
@@ -554,24 +554,12 @@
       fi;
 
       tbl := UnderlyingCharacterTable( chi );
-      pmap := PowerMap( tbl, n );
+      pmap := PowerMap( tbl, 2 );
       CC_list := ConjugacyClasses( G );
 
       return Sum( [ 1 .. Size( CC_list ) ], i -> Size( CC_list[ i ] ) * chi[ pmap[ i ] ] )/Order( G );
     end
   );
-
-
-  InstallOtherMethod( SchurIndicator,
-    "2nd Schur Indicator of character <chi>",
-    [ IsCharacter ],
-    function( chi )
-      local G;
-
-      return SchurIndicator( chi, 2 );
-    end
-  );
-
 
 ##  Part 4: Concepts Related to Compact Lie Group
 

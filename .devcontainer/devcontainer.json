@@ -18,7 +18,8 @@
                 "ms-python.python",
                 "ms-toolsai.jupyter",
                 "gap.gap",
-                "wdhongtw.gpg-indicator"
+                "wdhongtw.gpg-indicator",
+                "github.vscode-github-actions"
             ]
         }
     },

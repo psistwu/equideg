@@ -505,9 +505,9 @@
 ##
 #O  SchurIndicator( <chi> )
 ##
-  InstallOtherMethod( SchurIndicator,
+  InstallMethod( SchurIndicator,
     "returns (2nd) Schur indicator of a character of SO(2)",
-    [ IsCompactLieGroupCharacter and IsIrreducibleCharacter ],
+    [ IsCharacter and IsCompactLieGroupCharacter and IsIrreducibleCharacter ],
     function( chi )
       local G;
 
@@ -530,9 +530,9 @@
 ##
 #O  SchurIndicator( <chi> )
 ##
-  InstallOtherMethod( SchurIndicator,
+  InstallMethod( SchurIndicator,
     "returns (2nd) Schur indicator of a character of O(2)",
-    [ IsCompactLieGroupCharacter and IsIrreducibleCharacter ],
+    [ IsCharacter and IsCompactLieGroupCharacter and IsIrreducibleCharacter ],
     function( chi )
       local G;
 

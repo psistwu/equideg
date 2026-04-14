@@ -282,15 +282,15 @@
 
 #############################################################################
 ##
-#O  SchurIndicator( <chi>, <n> )
+#O  SchurIndicator( <chi> )
 ##
 ##  <#GAPDoc Label="SchurIndicator">
 ##  <ManSection>
-##  <Oper Name="SchurIndicator" Args="chi, n" />
+##  <Oper Name="SchurIndicator" Args="chi" />
 ##  <Description>
-##    returns the nth Schur indicator of a character <A>chi</A>,
+##    returns the 2nd Schur indicator of a character <A>chi</A>,
 ##    which is defined as
-##    \[ \frac{1}{|G|} \sum_{g\in G} \chi(g^n). \]
+##    \[ \frac{1}{|G|} \sum_{g\in G} \chi(g^2). \]
 ##    It is known that the 2nd Schur indicator of an irreducible character
 ##    is either 0, 1 or -1:
 ##    <ItemizedList>
@@ -307,7 +307,7 @@
 ##      Character( CharacterTable( Sym( [ 1 .. 4 ] ) ), [ 2, 0, 2, 0, 0 ] ),
 ##      Character( CharacterTable( Sym( [ 1 .. 4 ] ) ), [ 3, -1, 0, -1, 1 ] ),
 ##      Character( CharacterTable( Sym( [ 1 .. 4 ] ) ), [ 1, -1, 1, 1, -1 ] ) ]
-##    gap> List( Irr( G ), chi -> SchurIndicator( chi, 2 ) );
+##    gap> List( Irr( G ), chi -> SchurIndicator( chi ) );
 ##    [ 1, 1, -1, 1, 1 ]
 ##    </Example>
 ##  </Description>
@@ -315,7 +315,7 @@
 ##  <#/GAPDoc>
 ##
   DeclareOperation( "SchurIndicator",
-      [ IsCharacter, IsPosInt ] );
+      [ IsCharacter ] );
 
 
 ##  Part 4: Concepts Related to Compact Lie Group
