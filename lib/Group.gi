@@ -542,22 +542,22 @@
     "2nd Schur Indicator of character <chi>",
     [ IsCharacter ],
     function( chi )
-      local G,
+      local underlying_group,
             tbl,
             pmap,
             CC_list;
 
-      G := UnderlyingGroup( chi );
+      underlying_group := UnderlyingGroup( chi );
 
-      if not IsFinite( G ) then
+      if not IsFinite( underlying_group ) then
         TryNextMethod( );
       fi;
 
       tbl := UnderlyingCharacterTable( chi );
       pmap := PowerMap( tbl, 2 );
-      CC_list := ConjugacyClasses( G );
+      CC_list := ConjugacyClasses( underlying_group );
 
-      return Sum( [ 1 .. Size( CC_list ) ], i -> Size( CC_list[ i ] ) * chi[ pmap[ i ] ] )/Order( G );
+      return Sum( [ 1 .. Size( CC_list ) ], i -> Size( CC_list[ i ] ) * chi[ pmap[ i ] ] )/Order( underlying_group );
     end
   );
 

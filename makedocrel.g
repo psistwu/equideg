@@ -12,6 +12,7 @@ MakeGAPDocDoc( "doc",     # path to the directory containing the main file
                  "../lib/Utils.gd",
                  "../lib/Lattice.gd",
                  "../lib/Group.gd",
+                 "../lib/RepresentationTheory.gd",
                  "../lib/OrbitType.gd",
                  "../lib/CompactLieGroup.gd",
                  "../lib/ElementaryCLG.gd",
