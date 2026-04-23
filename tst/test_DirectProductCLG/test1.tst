@@ -1,3 +1,5 @@
+gap> START_TEST( "test.tst" );
+
 # setup <gr1>=O(2)
 # irreducible representations of <gr1> is indexed by -1, 0, 1, 2, ...
 gap> gr1 := OrthogonalGroupOverReal(2);;
