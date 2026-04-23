@@ -1115,6 +1115,42 @@
 
 #############################################################################
 ##
+#A  SchurIndicator( <chi> )
+##
+  InstallOtherMethod( SchurIndicator,
+    "Schur indicator of character of an elementary compact Lie group",
+    [ IsCompactLieGroupCharacter and
+      IsIrreducibleCharacter and
+      HasTensorProductDecomposition ],
+    function( chi )
+      local G,
+            decomp_G,
+            chi1,
+            chi2;
+
+      G := UnderlyingGroup( chi );
+      decomp_G := DirectProductDecomposition( G );
+      if not ( Size( decomp_G ) = 2 ) then
+        TryNextMethod( );
+      fi;
+
+      if not ( IdElementaryCLG( decomp_G[ 1 ] ) in [ [ 1, 2 ], [ 2, 2 ] ] ) then
+        TryNextMethod( );
+      fi;
+
+      if not IsFinite( decomp_G[ 2 ] ) then
+        TryNextMethod( );
+      fi;
+
+      chi1 := TensorProductDecomposition( chi )[ 1 ];
+      chi2 := TensorProductDecomposition( chi )[ 2 ];
+
+      return SchurIndicator( chi1 )*SchurIndicator( chi2 );
+    end
+  );
+
+#############################################################################
+##
 #A  OrbitTypes( <chi> );
 ##
   InstallOtherMethod( OrbitTypes,
