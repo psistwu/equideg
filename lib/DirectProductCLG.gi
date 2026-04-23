@@ -1044,11 +1044,10 @@
 ##
 #O  DimensionOfFixedSet( <chi>, <C> )
 ##
-  InstallOtherMethod( DimensionOfFixedSet,
-    "DimensionOfFixedSet",
+  InstallMethod( DimensionOfFixedSet, "for compact Lie group formed by direct product",
     [ IsCompactLieGroupCharacter and HasTensorProductDecomposition,
-      IsCompactLieGroupConjugacyClassSubgroupsRep and HasGoursatInfo ],
-    function( chi, C )
+      IsCompactLieGroupConjugacyClassSubgroupsRep and HasGoursatInfo, IsString ],
+    function( chi, C, type )
       local G,
             decomp_G,
             G1,
@@ -1057,10 +1056,10 @@
             chi1,
             chi2,
             info,
-            Z1,
-            Z2,
-            epi1,
-            epi2,
+            # Z1,
+            # Z2,
+            # epi1,
+            # epi2,
             dfsH1,
             dfsH2,
             dfsZ1,
@@ -1094,18 +1093,18 @@
       info := GoursatInfo( C );
 
       if ( Order( info.L ) = 1 ) then
-        return DimensionOfFixedSet( chi1, info.C1 ) *
-               DimensionOfFixedSet( chi2, info.C2 );
+        return DimensionOfFixedSet( chi1, info.C1, type ) *
+               DimensionOfFixedSet( chi2, info.C2, type );
       elif ( Order( info.L ) = 2 ) then
-        epi1 := Representative( info.epi1_list );
-        epi2 := Representative( info.epi2_list );
-        Z1 := Kernel( epi1 );
-        Z2 := Kernel( epi2 );
+        # epi1 := Representative( info.epi1_list );
+        # epi2 := Representative( info.epi2_list );
+        # Z1 := Kernel( epi1 );
+        # Z2 := Kernel( epi2 );
 
-        dfsH1 := DimensionOfFixedSet( chi1, info.C1 );
-        dfsZ1 := DimensionOfFixedSet( chi1, Z1 );
-        dfsH2 := DimensionOfFixedSet( chi2, info.C2 );
-        dfsZ2 := DimensionOfFixedSet( chi2, Z2 );
+        dfsH1 := DimensionOfFixedSet( chi1, info.C1, type );
+        dfsZ1 := DimensionOfFixedSet( chi1, info.CZ1, type );
+        dfsH2 := DimensionOfFixedSet( chi2, info.C2, type );
+        dfsZ2 := DimensionOfFixedSet( chi2, info.CZ2, type );
 
         return ( 4*dfsH1*dfsH2 + 2*dfsZ1*dfsZ2
                  - 2*dfsH1*dfsZ2 - 2*dfsH2*dfsZ1 )/2;
@@ -1184,7 +1183,7 @@
         ccs_list := List( [ 1 .. NumberOfNonzeroModeClasses( CCSs ) ], j -> CCSs[ 1, j ] );
         Add( ccs_list, CCSs[ 0, NumberOfZeroModeClasses( CCSs ) ] );
       fi;
-      fixeddim_list := List( ccs_list, C -> DimensionOfFixedSet( Refolded( chi, 1 ), C ) );
+      fixeddim_list := List( ccs_list, C -> DimensionOfFixedSet( Refolded( chi, 1 ), C , "real" ) );
 
       orbt_list := [ ];
       for i in Reversed( [ 1 .. Size( ccs_list ) ] ) do

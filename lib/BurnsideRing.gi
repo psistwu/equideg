@@ -887,7 +887,7 @@
       coeff_list := [ ];
 
       for Oi in Reversed( orbts ) do
-        coeff := (-1)^DimensionOfFixedSet( chi, Oi );
+        coeff := (-1)^DimensionOfFixedSet( chi, Oi, "real" );
         for j in [ 1 .. Size( ccs_list ) ] do
           Oj := ccs_list[ j ];
           coeff := coeff - coeff_list[ j ]*nLHnumber( Oi, Oj );
@@ -947,7 +947,7 @@
           continue;
         fi;
 
-        coeff := (-1)^DimensionOfFixedSet( chi, Oi );
+        coeff := (-1)^DimensionOfFixedSet( chi, Oi, "real" );
         for j in [ 1 .. Size( ccs_list ) ] do
           Oj := ccs_list[ j ];
           coeff := coeff - coeff_list[ j ]*nLHnumber( Oi, Oj );

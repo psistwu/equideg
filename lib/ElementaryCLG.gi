@@ -608,53 +608,103 @@
 
 #############################################################################
 ##
-#O  DimensionOfFixedSet( <chi>, <H> );
+#O  DimensionOfFixedSet( <chi>, <H>, <type> )
 ##
-  InstallMethod( DimensionOfFixedSet,
-    "dimension of fixed set of <H>; H = O(2) or SO(2)",
+  # InstallMethod( DimensionOfFixedSet, "for subgroups being finite groups",
+  #   [ IsCompactLieGroupCharacter and HasIdCompactLieGroupClassFunction,
+  #     IsGroup, IsString ],
+  #   10,
+  #   function( chi, H, type )
+  #     local G;
+
+  #     G := UnderlyingGroup( chi );
+
+  #     if not Parent( H ) = G then
+  #       Error( "The underlying group of <chi> and <H> must be the same." );
+  #     fi;
+
+  #     return DimensionOfFixedSet( chi, ConjugacyClassSubgroups( G, H ), type );
+  #   end
+  # );
+
+#############################################################################
+##
+#O  DimensionOfFixedSet( <chi>, <H>, <type> )
+##
+  # InstallMethod( DimensionOfFixedSet, "for subgroups being SO(2) and O(2)",
+  #   [ IsCompactLieGroupCharacter and HasIdCompactLieGroupClassFunction,
+  #     IsCompactLieGroup and HasParentAttr, IsString ],
+  #   10,
+  #   function( chi, H, type )
+  #     local G;
+
+  #     G := UnderlyingGroup( chi );
+
+  #     if not Parent( H ) = G then
+  #       Error( "The underlying group of <chi> and <H> must be the same." );
+  #     fi;
+
+  #     C := ConjugacyClassSubgroups( G, H );
+  #     Print( IsCompactLieGroupConjugacyClassSubgroupsRep( C ), "\n" );
+  #     return DimensionOfFixedSet( chi, C, type );
+  #   end
+  # );
+
+#############################################################################
+##
+#O  DimensionOfFixedSet( <chi>, <C>, <type> )
+##
+  InstallMethod( DimensionOfFixedSet, "for SO(2)",
     [ IsCompactLieGroupCharacter and HasIdCompactLieGroupClassFunction,
-      IsGroup ],
-    function( chi, H )
+      IsCompactLieGroupConjugacyClassSubgroupsRep, IsString ],
+    20,
+    function( chi, C, type )
       local G,
-            c,
-            id;
+            idchi,
+            l, h,
+            idC,
+            degs;
 
       G := UnderlyingGroup( chi );
-      id := IdCompactLieGroupClassFunction( chi );
 
-      if not IsSubgroup( G, H ) then
-        Error( "<H> must be a subgroup of <G>." );
+      if not ActingDomain( C ) = G then
+        Error( "The underlying group of <chi> and <C> must be the same." );
       fi;
 
       if not HasIdElementaryCLG( G ) or
-         not IdElementaryCLG( G ) in [ [ 1, 2 ], [ 2, 2 ] ] then
+         not IdElementaryCLG( G ) = [ 1, 2 ] then
         TryNextMethod( );
       fi;
 
-      if ( IdElementaryCLG( G ) = SpecialOrthogonalGroupOverReal( 2 ) ) then
-        if ( H = G ) then
-          return Coefficient( id[ 1 ], 0 );
-        fi;
-      elif ( G = OrthogonalGroupOverReal( 2 ) ) then
-        if ( H = G ) then
-          return ( Coefficient( id[ 1 ], 0 ) + id[ 2 ] )/2;
-        elif ( H = SpecialOrthogonalGroupOverReal( 2 ) ) then
-          return Coefficient( id[ 1 ], 0 );
-        fi;
+      idchi := IdCompactLieGroupClassFunction( chi );
+      if IsZero( idchi[ 1 ] ) then
+        return 0;
+      fi;
+
+      l := LowestDegree( idchi[ 1 ] );
+      h := DegreeOfLaurentPolynomial( idchi[ 1 ] );
+      idC := IdCCS( C );
+
+      degs := Filtered( [ l .. h ], d -> Divides( idC[ 1 ], d ) and not d = 0 );
+      if type = "real" then
+        return 2*Sum( List( degs, d -> Coefficient( idchi[ 1 ], d ) ) ) + Coefficient( idchi[ 1 ], 0 );
+      elif type = "complex" then
+        return Sum( List( degs, d -> Coefficient( idchi[ 1 ], d ) ) ) + Coefficient( idchi[ 1 ], 0 );
+      else
+        Error( "Invalid type." );
       fi;
     end
   );
 
 #############################################################################
 ##
-#O  DimensionOfFixedSet( <chi>, <C> );
+#O  DimensionOfFixedSet( <chi>, <C>, <type> );
 ##
-  InstallMethod( DimensionOfFixedSet,
-    "returns dimension of fixed set of <C> w.r.t. SO(2)-character <chi>",
+  InstallMethod( DimensionOfFixedSet, "for O(2)",
     [ IsCompactLieGroupCharacter and HasIdCompactLieGroupClassFunction,
-      IsCompactLieGroupConjugacyClassSubgroupsRep ],
+      IsCompactLieGroupConjugacyClassSubgroupsRep, IsString ],
     20,
-    function( chi, C )
+    function( chi, C, type )
       local G,
             idchi,
 	          l, h,
@@ -662,7 +712,13 @@
 	          degs;
 
       G := UnderlyingGroup( chi );
-      if not ( G = SpecialOrthogonalGroupOverReal( 2 ) ) then
+
+      if not ActingDomain( C ) = G then
+        Error( "The underlying group of <chi> and <C> must be the same." );
+      fi;
+
+      if not HasIdElementaryCLG( G ) or
+         not IdElementaryCLG( G ) = [ 2, 2 ] then
         TryNextMethod( );
       fi;
       
@@ -675,47 +731,15 @@
       h := DegreeOfLaurentPolynomial( idchi[ 1 ] );
       idC := IdCCS( C );
 
-      degs := Filtered( [ l .. h ], d -> Divides( idC[ 1 ], d ) );
-      return Sum( List( degs, d -> Coefficient( idchi[ 1 ], d ) ) );
-    end
-  );
-
-#############################################################################
-##
-#O  DimensionOfFixedSet( <chi>, <C> );
-##
-  InstallMethod( DimensionOfFixedSet,
-    "returns dimension of fixed set of <C> w.r.t. O(2)-character <chi>",
-    [ IsCompactLieGroupCharacter and HasIdCompactLieGroupClassFunction,
-      IsCompactLieGroupConjugacyClassSubgroupsRep ],
-    20,
-    function( chi, C )
-      local G,
-            idchi,
-	          l, h,
-            idC,
-	          degs,
-	          dim;
-
-      G := UnderlyingGroup( chi );
-      if not ( G = OrthogonalGroupOverReal( 2 ) ) then
-        TryNextMethod( );
+      if not type in [ "real", "complex" ] then
+        Error( "Invalid type." );
       fi;
-      
-      idchi := IdCompactLieGroupClassFunction( chi );
-      if IsZero( idchi[ 1 ] ) then
-        return 0;
-      fi;
-
-      l := LowestDegree( idchi[ 1 ] );
-      h := DegreeOfLaurentPolynomial( idchi[ 1 ] );
-      idC := IdCCS( C );
 
       if ( idC[ 2 ] = 1 ) then
         degs := Filtered( [ l .. h ], d -> Divides( idC[ 1 ], d ) );
         return Sum( List( degs, d -> Coefficient( idchi[ 1 ], d ) ) );
       elif ( idC[ 2 ] = 2 ) then
-        degs := Filtered( [ 1 .. h ], d -> Divides( idC[ 1 ], d ) );
+        degs := Filtered( [ 1 .. h ], d -> Divides( idC[ 1 ], d ) and not d = 0 );
         return Sum( List( degs, d -> Coefficient( idchi[ 1 ], d ) ) ) +
 	       ( Coefficient( idchi[ 1 ], 0 ) + idchi[ 2 ] )/2;
       else

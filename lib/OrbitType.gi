@@ -14,8 +14,8 @@
 ##
   InstallMethod( DimensionOfFixedSet,
     "return the dimension of fixed set for given character and subgroup",
-    [ IsCharacter, IsGroup and IsFinite ],
-    function( chi, U )
+    [ IsCharacter, IsGroup and IsFinite, IsString ],
+    function( chi, U, type )
       # local variable(s)
       local G,		# the parent group
             chi_U;	# restriction of chi on U
@@ -28,19 +28,23 @@
 
       chi_U := RestrictedClassFunction( chi, U );
 
-      return ScalarProduct( chi_U, TrivialCharacter( U ) );
+      if ( type = "real" ) and ( SchurIndicator( chi ) in [ -1, 0 ] ) then
+        return 2*ScalarProduct( chi_U, TrivialCharacter( U ) );
+      else
+        return ScalarProduct( chi_U, TrivialCharacter( U ) );
+      fi;
     end
   );
 
 #############################################################################
 ##
-#O  DimensionOfFixedSet( <chi>, <ccsubg> )
+#O  DimensionOfFixedSet( <chi>, <ccsubg>, <type> )
 ##
   InstallMethod( DimensionOfFixedSet,
     "return the dimension of fixed set for given character and CCS",
-    [ IsCharacter, IsConjugacyClassSubgroupsRep ],
-    function( chi, C )
-      return DimensionOfFixedSet( chi, Representative( C ) );
+    [ IsCharacter, IsConjugacyClassSubgroupsRep, IsString ],
+    function( chi, C, type )
+      return DimensionOfFixedSet( chi, Representative( C ), type );
     end
   );
 
@@ -62,7 +66,7 @@
       orbt_list := [ ];
       G := UnderlyingGroup( chi );
       ccs_list := ConjugacyClassesSubgroups( G );
-      fixeddim_list := List( ccs_list, c -> DimensionOfFixedSet( chi, c ) );
+      fixeddim_list := List( ccs_list, c -> DimensionOfFixedSet( chi, c, "real" ) );
 
       for i in Reversed( [ 1 .. Size( ccs_list ) ] ) do
         is_orbittype := true;
@@ -104,7 +108,7 @@
       for orbt in orbt_list do
         Add( node_label_list, IdCCS( orbt ) );
         Add( node_shape_list, "circle" );
-        Add( rank_list, DimensionOfFixedSet( chi, orbt ) );
+        Add( rank_list, DimensionOfFixedSet( chi, orbt, "real" ) );
       od;
 
       lat := NewLattice( IsLatticeOrbitTypesRep,
