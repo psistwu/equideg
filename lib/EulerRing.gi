@@ -773,8 +773,8 @@
       SetBasis( A, basis );
 
       # other attributes related to its Euler ring sturcture
-      SetZeroAttr( fam_elmt, zero );
-      SetZeroAttr( A, zero );
+      SetZeroImmutable( fam_elmt, zero );
+      SetZeroImmutable( A, zero );
       SetOneImmutable( fam_elmt, basis[ 0, NumberOfZeroModeClasses( CCSs ) ] );
       SetOneImmutable( A, basis[ 0, NumberOfZeroModeClasses( CCSs ) ] );
       SetGeneratorsOfRing( A, basis );
@@ -831,7 +831,7 @@
       coeff_list := [ ];
 
       for ci in Reversed( ccs_components ) do
-        coeff := DimensionOfFixedSet( chi, ci );
+        coeff := DimensionOfFixedSet( chi, ci, "real" );
         for j in [ 1 .. Size( ccs_list ) ] do
           cj := ccs_list[ j ];
           coeff := coeff - coeff_list[ j ]*nLHnumber( ci, cj );

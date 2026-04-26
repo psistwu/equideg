@@ -57,7 +57,7 @@
 ##  <Filt Name="IsCompactLieGroupConjugacyClassSubgroupsRep"
 ##      Type="representation"/>
 ##  <Description>
-##  This is a representation of CCS of (infinite) compact Lie group.
+##    This is a representation of CCS of (infinite) compact Lie group.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
@@ -349,22 +349,32 @@
 ##
 #A  DegreeOfCharacter( <chi> )
 ##
+##  <#GAPDoc Label="DegreeOfCharacter">
+##  <ManSection>
+##  <Attr Name="DegreeOfCharacter" Arg="chi"/>
+##  <Description>
+##    This attribute contains the degree of compact Lie group character <A>chi</A>.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
   DeclareAttribute( "DegreeOfCharacter", IsCompactLieGroupVirtualCharacter );
 
 #############################################################################
 ##
-#O  DimensionOfFixedSet( <chi>, <H> );
-#O  DimensionOfFixedSet( <chi>, <C> );
+#O  DimensionOfFixedSet( <chi>, <H>, <type> );
+#O  DimensionOfFixedSet( <chi>, <C>, <type> );
 ##
 ##  <#GAPDoc Label="clg_DimensionOfFixedSet">
 ##  <ManSection Label="DimensionOfFixedSet:clg">
 ##  <Heading>DimensionOfFixedSet</Heading>
 ##  <Oper Name="DimensionOfFixedSet" Label="clg subgroup"
-##      Arg="chi, H"/>
+##      Arg="chi, H, type"/>
 ##  <Oper Name="DimensionOfFixedSet" Label="clg CCS"
-##      Arg="chi, C"/>
+##      Arg="chi, C, type"/>
 ##  <Description>
-##    This operation returns the dimension of fixed set
+##    This operation returns the real or complex dimension
+##    (indicated by the <A>type</A> argument) of fixed set
 ##    of subgroup <A>H</A> or conjugacy class of subgroups
 ##    <A>C</A> with repect to character <A>chi</A>.
 ##  </Description>
@@ -372,10 +382,10 @@
 ##  <#/GAPDoc>
 ##
   DeclareOperation( "DimensionOfFixedSet",
-    [ IsCompactLieGroupCharacter, IsGroup ] );
+    [ IsCompactLieGroupCharacter, IsGroup, IsString ] );
   DeclareOperation( "DimensionOfFixedSet",
     [ IsCompactLieGroupCharacter,
-      IsCompactLieGroupConjugacyClassSubgroupsRep ] );
+      IsCompactLieGroupConjugacyClassSubgroupsRep, IsString ] );
 
 #############################################################################
 ##

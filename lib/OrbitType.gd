@@ -30,23 +30,24 @@
 
 #############################################################################
 ##
-#O  DimensionOfFixedSet( <chi>, <H> )
-#O  DimensionOfFixedSet( <chi>, <cH> )
+#O  DimensionOfFixedSet( <chi>, <H>, <type> )
+#O  DimensionOfFixedSet( <chi>, <C>, <type> )
 ##
 ##  <#GAPDoc Label="DimensionOfFixedSet">
 ##  <ManSection>
-##  <Oper Name="DimensionOfFixedSet" Arg="chi, H"/>
-##  <Oper Name="DimensionOfFixedSet" Arg="chi, cH" Label="ccs"/>
+##  <Oper Name="DimensionOfFixedSet" Arg="chi, H, type"/>
+##  <Oper Name="DimensionOfFixedSet" Arg="chi, C, type" Label="ccs"/>
 ##  <Description>
-##    This operation computes dimension of fixed point space
+##    This operation computes real or complex dimension
+##    (which is indicated by the <A>type</A> argument) of fixed point space
 ##    of <A>H</A> with respect to character <A>chi</A>.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareOperation( "DimensionOfFixedSet", [ IsCharacter, IsGroup ] );
+  DeclareOperation( "DimensionOfFixedSet", [ IsCharacter, IsGroup, IsString ] );
   DeclareOperation( "DimensionOfFixedSet",
-      [ IsCharacter, IsConjugacyClassSubgroupsRep ] );
+      [ IsCharacter, IsConjugacyClassSubgroupsRep, IsString ] );
 
 #############################################################################
 ##
@@ -80,8 +81,7 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##  
-  DeclareGlobalFunction( "NewLatticeOrbitTypes",
-      "constructor of lattice of orbit types" );
+  DeclareGlobalFunction( "NewLatticeOrbitTypes" );
 
 #############################################################################
 ##

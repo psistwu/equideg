@@ -56,14 +56,10 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-  DeclareGlobalFunction( "pCyclicGroup",
-      "generates a cyclic group which consists of permutations" );
-  DeclareGlobalFunction( "mCyclicGroup",
-      "generates a cyclic group which consists of 2-by-2 matrices" );
-  DeclareGlobalFunction( "pDihedralGroup",
-      "generates a dihedral group which consists of permutations." );
-  DeclareGlobalFunction( "mDihedralGroup",
-      "generates a dihedral group which consists of 2-by-2 matices." );
+  DeclareGlobalFunction( "pCyclicGroup" );
+  DeclareGlobalFunction( "mCyclicGroup" );
+  DeclareGlobalFunction( "pDihedralGroup" );
+  DeclareGlobalFunction( "mDihedralGroup" );
 
 
 ## Part 2: Conjugacy Class of Elements
@@ -120,8 +116,17 @@
 ##
 #F  IdCCSPartialOrder( <id1>, <id2> )
 ##
-  DeclareGlobalFunction( "IdCCSPartialOrder",
-      "partial order of id of CCS" );
+##  <#GAPDoc Label="IdCCSPartialOrder">
+##  <ManSection>
+##  <Func Name="IdCCSPartialOrder" Arg="id1, id2"/>
+##  <Description>
+##  This global function implements the partial order relation defined
+##  on the ids of CCSs.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+  DeclareGlobalFunction( "IdCCSPartialOrder" );
 
 #############################################################################
 ##
@@ -277,10 +282,40 @@
 
 #############################################################################
 ##
-#O  SchurIndicator( <chi>, <n> )
+#O  SchurIndicator( <chi> )
+##
+##  <#GAPDoc Label="SchurIndicator">
+##  <ManSection>
+##  <Oper Name="SchurIndicator" Args="chi" />
+##  <Description>
+##    returns the 2nd Schur indicator of a character <A>chi</A>,
+##    which is defined as
+##    \[ \frac{1}{|G|} \sum_{g\in G} \chi(g^2). \]
+##    It is known that the 2nd Schur indicator of an irreducible character
+##    is either 0, 1 or -1:
+##    <ItemizedList>
+##      <Item><A>chi</A> is of real type if its 2nd Schur indicator is 1;</Item>
+##      <Item><A>chi</A> is of complex type if its 2nd Schur indicator is 0;</Item>
+##      <Item><A>chi</A> is of quaternionic type if its 2nd Schur indicator is -1.</Item>
+##    </ItemizedList>
+##    The following example illustrates how to use this operation.
+##    <Example>
+##    gap> G := SymmetricGroup( 4 );;
+##    gap> Irr( G );
+##    [ Character( CharacterTable( Sym( [ 1 .. 4 ] ) ), [ 1, 1, 1, 1, 1 ] ),
+##      Character( CharacterTable( Sym( [ 1 .. 4 ] ) ), [ 3, 1, 0, -1, -1 ] ),
+##      Character( CharacterTable( Sym( [ 1 .. 4 ] ) ), [ 2, 0, 2, 0, 0 ] ),
+##      Character( CharacterTable( Sym( [ 1 .. 4 ] ) ), [ 3, -1, 0, -1, 1 ] ),
+##      Character( CharacterTable( Sym( [ 1 .. 4 ] ) ), [ 1, -1, 1, 1, -1 ] ) ]
+##    gap> List( Irr( G ), chi -> SchurIndicator( chi ) );
+##    [ 1, 1, -1, 1, 1 ]
+##    </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 ##
   DeclareOperation( "SchurIndicator",
-      [ IsCharacter, IsInt ] );
+      [ IsCharacter ] );
 
 
 ##  Part 4: Concepts Related to Compact Lie Group

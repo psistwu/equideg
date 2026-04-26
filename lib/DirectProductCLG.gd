@@ -40,8 +40,11 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-DeclareOperation( "[,]",
+  DeclareOperation( "[,]",
     [ IsCompactLieGroupIrrCollection, IsInt, IsPosInt ] );
+
+  DeclareAttribute( "TensorProductDecomposition", IsCompactLieGroupCharacter );
+  DeclareAttribute( "GoursatInfo", IsCompactLieGroupConjugacyClassSubgroupsRep );
 
 #############################################################################
 ##

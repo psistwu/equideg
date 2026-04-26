@@ -139,8 +139,7 @@
 ##
 ##  <#GAPDoc Label="MaximalCCSs">
 ##  <ManSection>
-##  <Oper Name="MaximalOrbitTypes"
-##      Arg="a"/>
+##  <Oper Name="MaximalCCSs" Arg="a"/>
 ##  <Description>
 ##    This operation returns the maximal CCSs in <A>a</A>.
 ##  </Description>

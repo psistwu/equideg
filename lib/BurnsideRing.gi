@@ -702,8 +702,8 @@
       SetBasis( A, basis );
 
       # other attributes related to its Burnside ring sturcture
-      SetZeroAttr( fam_elmt, zero );
-      SetZeroAttr( A, zero );
+      SetZeroImmutable( fam_elmt, zero );
+      SetZeroImmutable( A, zero );
       SetOneImmutable( fam_elmt, basis[ d ] );
       SetOneImmutable( A, basis[ d ] );
       SetGeneratorsOfRing( A, basis );
@@ -836,8 +836,8 @@
       SetBasis( A, basis );
 
       # other attributes related to its Burnside ring sturcture
-      SetZeroAttr( fam_elmt, zero );
-      SetZeroAttr( A, zero );
+      SetZeroImmutable( fam_elmt, zero );
+      SetZeroImmutable( A, zero );
       SetOneImmutable( fam_elmt, basis[ 0, NumberOfZeroModeClasses( CCSs ) ] );
       SetOneImmutable( A, basis[ 0, NumberOfZeroModeClasses( CCSs ) ] );
       SetGeneratorsOfRing( A, basis );
@@ -878,7 +878,7 @@
       A := BurnsideRing( G );
       orbts := OrbitTypes( chi );
 
-      if not ( SchurIndicator( chi, 2 ) = 1 ) then
+      if not ( SchurIndicator( chi ) = 1 ) then
         return OneImmutable( A );
       fi;
 
@@ -887,7 +887,7 @@
       coeff_list := [ ];
 
       for Oi in Reversed( orbts ) do
-        coeff := (-1)^DimensionOfFixedSet( chi, Oi );
+        coeff := (-1)^DimensionOfFixedSet( chi, Oi, "real" );
         for j in [ 1 .. Size( ccs_list ) ] do
           Oj := ccs_list[ j ];
           coeff := coeff - coeff_list[ j ]*nLHnumber( Oi, Oj );
@@ -947,7 +947,7 @@
           continue;
         fi;
 
-        coeff := (-1)^DimensionOfFixedSet( chi, Oi );
+        coeff := (-1)^DimensionOfFixedSet( chi, Oi, "real" );
         for j in [ 1 .. Size( ccs_list ) ] do
           Oj := ccs_list[ j ];
           coeff := coeff - coeff_list[ j ]*nLHnumber( Oi, Oj );

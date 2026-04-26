@@ -46,6 +46,7 @@
 ##
 #F  ListA( <list1>, <list2>, ..., <listn>, f )
 ##
+##
   InstallGlobalFunction( ListA,
     function( args... )
       local f,

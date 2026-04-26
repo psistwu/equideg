@@ -10,28 +10,6 @@
 
 #############################################################################
 ##
-#A  Abbrv( <obj> )
-##
-##  <#GAPDoc Label="Abbrv">
-##  <ManSection>
-##  <Attr Name="Abbrv" Arg="obj"/>
-##  <Description>
-##  This is an attribute of new objects defined in this package
-##  which provides minimal amount of information.
-##  This attribute can be assigned to an object <A>obj</A> manually
-##  by <C>SetAbbrv(<A>obj</A>,<A>val</A>)</C>.
-##  However, it is generated automatically for
-##  certain types of objects.
-##  If object <A>obj</A> has this attribute,
-##    <C>ViewString(<A>obj</A>)</C> will simply return
-##    <C>Abbrv(<A>obj</A>)</C>.
-##  </Description>
-##  </ManSection>
-##  <#/GAPDoc>
-##
-
-#############################################################################
-##
 #V  INFO_LEVEL_EquiDeg
 ##
 ##  <#GAPDoc Label="INFO_LEVEL_EquiDeg">
@@ -69,6 +47,23 @@
 #############################################################################
 ##
 #A  Abbrv( <obj> )
+##
+##  <#GAPDoc Label="Abbrv">
+##  <ManSection>
+##  <Attr Name="Abbrv" Arg="obj"/>
+##  <Description>
+##  This is an attribute of new objects defined in this package
+##  which provides minimal amount of information.
+##  This attribute can be assigned to an object <A>obj</A> manually
+##  by <C>SetAbbrv(<A>obj</A>,<A>val</A>)</C>.
+##  However, it is generated automatically for
+##  certain types of objects.
+##  If object <A>obj</A> has this attribute,
+##    <C>ViewString(<A>obj</A>)</C> will simply return
+##    <C>Abbrv(<A>obj</A>)</C>.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 ##
   DeclareAttribute( "Abbrv", IsObject );
 
@@ -115,13 +110,29 @@
 #############################################################################
 ##
 #F  ListA( <list1>, <list2>, ..., <listn>, <f> )
+##  <#GAPDoc Label="ListA">
+##  <ManSection>
+##  <Func Name="ListA" Arg="list1,list2,...,listn,f"/>
+##  <Description>
+##    applies function <A>f</A> to each element of the lists <A>list1</A>, <A>list2</A>, ..., <A>listn</A> and returns the result as a list.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 ##
-  DeclareGlobalFunction( "ListA",
-      "Apply action (function with no return value on list of arguments" );
+  DeclareGlobalFunction( "ListA" );
 
 #############################################################################
 ##
 #O  Divides( <m>, <n> )
+##
+##  <#GAPDoc Label="Divides">
+##  <ManSection>
+##  <Func Name="Divides" Arg="m,n"/>
+##  <Description>
+##    Test if <A>m</A> divides <A>n</A>.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 ##
   DeclareOperation( "Divides", [ IsInt, IsInt ] );
 

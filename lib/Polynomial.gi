@@ -20,8 +20,7 @@
       if IsZero( lpol ) then
         return -infinity;
       else
-        return -DegreeOfLaurentPolynomial(
-               DenominatorOfRationalFunction( lpol ) );
+        return CoefficientsOfLaurentPolynomial( lpol )[ 2 ];
       fi;
     end
   );
@@ -43,7 +42,7 @@
       if IsZero( lpol ) then
         return 0;
       elif ( n > h ) or ( n < l ) then
-	return 0;
+	      return 0;
       else
         coeffs := CoefficientsOfLaurentPolynomial( lpol );
         return coeffs[ 1 ][ n - l + 1 ];

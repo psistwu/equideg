@@ -172,7 +172,7 @@
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
-  DeclareGlobalFunction( "NewLattice", "constructor of Lattice" );
+  DeclareGlobalFunction( "NewLattice" );
 
 #############################################################################
 ##

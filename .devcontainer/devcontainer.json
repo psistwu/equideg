@@ -3,22 +3,29 @@
     "image": "ghcr.io/psistwu/gap-docker:latest",
     "workspaceMount": "source=${localWorkspaceFolder},target=/opt/gap/pkg/equideg,type=bind",
     "workspaceFolder": "/opt/gap/pkg/equideg",
-    "mounts": [
-        "source=${localEnv:HOME}${localEnv:USERPROFILE}/.gitconfig,target=/root/.gitconfig,type=bind,consistency=cached"
-    ],
+    // "mounts": [
+    //     "source=${localEnv:HOME}${localEnv:USERPROFILE}/.gitconfig,target=/root/.gitconfig.win,type=bind,consistency=cached,ro"
+    // ],
     "features": {
         "ghcr.io/cirolosapio/devcontainers-features/alpine-git:latest": {},
         "ghcr.io/cirolosapio/devcontainers-features/alpine-gpg:latest": {},
         "ghcr.io/cirolosapio/devcontainers-features/alpine-openssh:latest": {}
     },
-    "settings": {},
-    "extensions": [
-        "ms-python.python",
-        "ms-toolsai.jupyter",
-        "gap.gap",
-        "wdhongtw.gpg-indicator"
-    ],
-    "runArgs": ["--env-file", ".devcontainer/devcontainer.env"],
-    "forwardPorts": [ 8888 ]
-    // "postCreateCommand": "jupyter lab --allow-root --no-browser"
+    "customizations": {
+        "vscode": {
+            "settings": {},
+            "extensions": [
+                "ms-python.python",
+                "ms-toolsai.jupyter",
+                "gap.gap",
+                "wdhongtw.gpg-indicator",
+                "github.vscode-github-actions"
+            ]
+        }
+    },
+    "runArgs": ["--env-file", ".devcontainer/devcontainer.env"]
+    // "forwardPorts": [ 8888 ],
+    // "postCreateCommand": "touch /root/.gitconfig"
+    // "postCreateCommand": "cp /root/.gitconfig.win /root/.gitconfig && git config --global gpg.program gpg && git config --global core.sshCommand ssh",
+    // "postStartCommand": "jupyter lab --allow-root --no-browser"
 }

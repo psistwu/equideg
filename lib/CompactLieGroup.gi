@@ -765,12 +765,12 @@
 
 #############################################################################
 ##
-#O  DimensionOfFixedSet( <chi>, <H> );
+#O  DimensionOfFixedSet( <chi>, <H>, <type> );
 ##
   InstallMethod( DimensionOfFixedSet,
     "dimension of fixed set of finite subgroup <H>",
-    [ IsCompactLieGroupCharacter, IsGroup ],
-    function( chi, H )
+    [ IsCompactLieGroupCharacter, IsGroup, IsString ],
+    function( chi, H, type )
       local G;
 
       G := UnderlyingGroup( chi );
@@ -779,28 +779,37 @@
         Error( "<H> must be a subgroup of <G>." );
       fi;
 
-      if IsFinite( H ) then
-        return Sum( List( H ), x -> Image( chi, x ) )/Order( H );
+      if not IsFinite( H ) then
+        TryNextMethod( );
       fi;
 
-      TryNextMethod( );
+      if not ( type in [ "real", "complex" ] ) then
+        Error( "Invalid type." );
+      fi;
+
+      if SchurIndicator( chi ) in [ 0, -1 ] and type = "real" then
+        return 2*Sum( List( H ), x -> Image( chi, x ) )/Order( H );
+      else
+        return Sum( List( H ), x -> Image( chi, x ) )/Order( H );
+      fi;
     end
   );
 
 #############################################################################
 ##
-#O  DimensionOfFixedSet( <chi>, <C> );
+#O  DimensionOfFixedSet( <chi>, <C>, <type> );
 ##
   InstallMethod( DimensionOfFixedSet,
     "returns dimension of fixed set of <C> whose representative is finite",
     [ IsCompactLieGroupCharacter,
-      IsCompactLieGroupConjugacyClassSubgroupsRep ],
-    function( chi, C )
+      IsCompactLieGroupConjugacyClassSubgroupsRep,
+      IsString ],
+    function( chi, C, type )
       if not ( Degree( OrderOfRepresentative( C ) ) = 0 ) then
         TryNextMethod( );
       fi;
 
-      return DimensionOfFixedSet( chi, Representative( C ) );
+      return DimensionOfFixedSet( chi, Representative( C ), type );
     end
   );
 
