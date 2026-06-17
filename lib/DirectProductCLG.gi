@@ -690,7 +690,7 @@
 
             class := rec(
               is_zero_mode		:= false,
-              order_of_weyl_group	:= 2*j*OrderOfWeylGroup( C2 )/
+              order_of_weyl_group	:= Order( NL )*OrderOfWeylGroup( C2 )/
                                            Number( epi2_list, epi -> Source( epi ) = H2 ),
               abbrv := StringFormatted( "{}|{} x {}|{}", "D_{}", "Z_{}", name_Z2, name_H2 ),
               goursat_info := rec( C1  := C1,
