@@ -664,7 +664,7 @@
 
               class := rec(
                 is_zero_mode := true,
-                order_of_weyl_group	:= 2*OrderOfWeylGroup( C2 )/
+                order_of_weyl_group	:= Order( NL )*OrderOfWeylGroup( C2 )/
                                            Number( epi2_list, epi -> Source( epi ) = H2 ),
                 abbrv := StringFormatted( "{}|{} x {}|{}", "O(2)", "SO(2)", name_Z2, name_H2 ),
                 goursat_info := rec( C1  := C1,
@@ -682,7 +682,8 @@
               Add( data.ccsClasses, class );
             fi;
 
-            # K = D_{jl}, Z_l (l >= 1)
+            # L = D_j, j > 1
+            # H1 = D_jl, Z1 = Z_l, l >= 1
             C1  := CCSs_O2[ j, 2 ];
             CZ1 := CCSs_O2[ 1, 1 ];
             H1  := Representative( C1 );
@@ -690,7 +691,7 @@
 
             class := rec(
               is_zero_mode		:= false,
-              order_of_weyl_group	:= 2*j*OrderOfWeylGroup( C2 )/
+              order_of_weyl_group	:= Order( NL )*OrderOfWeylGroup( C2 )/
                                            Number( epi2_list, epi -> Source( epi ) = H2 ),
               abbrv := StringFormatted( "{}|{} x {}|{}", "D_{}", "Z_{}", name_Z2, name_H2 ),
               goursat_info := rec( C1  := C1,
